@@ -1,0 +1,28 @@
+{
+  "TileLists": [
+    {
+      "Z": -3,
+      "X": [0, 1, 2],
+      "Y": [10, 10, 10],
+      "SpriteX": [2, 2, 2],
+      "SpriteY": [0, 0, 0],
+      "Texture": "test_tileset"
+    },
+    {
+      "Z": -3,
+      "X": [1, 2],
+      "Y": [10, 10],
+      "SpriteX": [1, 1],
+      "SpriteY": [0, 0],
+      "Texture": "test_tileset"
+    },
+    {
+      "Z": -3,
+      "X": [2],
+      "Y": [10],
+      "SpriteX": [0],
+      "SpriteY": [0],
+      "Texture": "test_tileset"
+    }
+  ]
+}
