@@ -3,7 +3,6 @@ using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Physics;
 using Microsoft.Xna.Framework;
 using System;
-using System.Diagnostics;
 
 namespace DilloAssault.GameState.Battle.Input
 {
@@ -15,7 +14,7 @@ namespace DilloAssault.GameState.Battle.Input
             var holdingLeft = ControlsManager.IsControlDown(playerIndex, Control.Left);
             var holdingRight = ControlsManager.IsControlDown(playerIndex, Control.Right);
 
-            if (holdingLeft && !holdingRight)
+            if (holdingLeft || ControlsManager.IsControlDownStart(playerIndex, Control.Left))
             {
                 if (avatar.Direction == Direction.Right)
                 {
@@ -33,7 +32,7 @@ namespace DilloAssault.GameState.Battle.Input
                     avatar.InfluenceVelocity = -4;
                 }
             }
-            else if (holdingRight && !holdingLeft)
+            else if (holdingRight || ControlsManager.IsControlDownStart(playerIndex, Control.Right))
             {
                 if (avatar.Direction == Direction.Left)
                 {

@@ -1,11 +1,8 @@
-﻿using DilloAssault.Configuration.Json.Avatars;
-using DilloAssault.Controls;
-using DilloAssault.GameState.Battle.Avatars;
+﻿using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Physics

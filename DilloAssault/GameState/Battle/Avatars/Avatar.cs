@@ -25,11 +25,9 @@ namespace DilloAssault.GameState.Battle.Avatars
         public Vector2 Velocity { get; set; }
         public Vector2 Acceleration { get; set; }
 
-        public int AvailableJumps { get; set; }
-
         public float RunningVelocity { get; set; }
-
         public int InfluenceVelocity { get; set; }
+        public int AvailableJumps { get; set; }
 
         public bool Grounded { get; set; }
 
