@@ -14,6 +14,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Configuration/Avatars/arthur.json
+/copy:Configuration/Avatars/arthur.json
+
 #begin Configuration/Scenes/test_scene.json
 /copy:Configuration/Scenes/test_scene.json
 
@@ -23,6 +26,18 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Graphics/Fonts/editor_font.spritefont
+
+#begin Graphics/Textures/white_pixel.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/white_pixel.png
 
 #begin Graphics/Tilesets/test_tileset.png
 /importer:TextureImporter

@@ -1,4 +1,5 @@
-﻿using DilloAssault.Configuration.Scenes;
+﻿using DilloAssault.Configuration;
+using DilloAssault.Configuration.Json.Scenes;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using System;
@@ -10,7 +11,8 @@ namespace DilloAssault.Assets
 {
     public class Scene(SceneJson json)
     {
-        public List<TileList> TileLists { get; set; } = GetTileLists(json);
+        public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetHurtBoxes(json.CollisionBoxes);
+        public List<TileList> TileLists { get; set; } = GetTileLists(json.TileLists);
 
         public void UpdateTile(int z, Point position, Point spriteLocation, TextureName textureName)
         {
@@ -18,11 +20,15 @@ namespace DilloAssault.Assets
 
             if (tileList == null)
             {
-                tileList = new TileList();
-                TileLists.Add(tileList);
-            }
+                tileList = new TileList
+                {
+                    Z = z
+                };
 
-            tileList.Z = z;
+                TileLists.Add(tileList);
+
+                TileLists = [.. TileLists.OrderBy(list => list.Z)];
+            }
 
             var tile = tileList.Tiles.SingleOrDefault(tile => tile.Position.Equals(position));
 
@@ -39,8 +45,6 @@ namespace DilloAssault.Assets
             tile.SpriteLocation = spriteLocation;
             tile.TextureName = textureName;
             tile.Z = z;
-
-            TileLists = [.. TileLists.OrderBy(list => list.Z)];
         }
 
         public void DeleteTile(int z, Point position)
@@ -63,11 +67,36 @@ namespace DilloAssault.Assets
             }
         }
 
-        private static List<TileList> GetTileLists(SceneJson json)
+        public void DeleteCollisionBox(Vector2 cursorPosition)
+        {
+            CollisionBoxes.RemoveAll(rectangle => rectangle.Contains(cursorPosition));
+        }
+
+        public void UpdateCollisionBox(Vector2 newEndPoint)
+        {
+            var index = CollisionBoxes.Count - 1;
+
+            var collisionBox = CollisionBoxes[index];
+
+            var newSize = newEndPoint - CollisionBoxes[index].Location.ToVector2();
+
+            if (newSize.X > 0 && newSize.Y > 0)
+            {
+                collisionBox.Width = (int)newSize.X;
+                collisionBox.Height = (int)newSize.Y;
+            }
+
+            CollisionBoxes.RemoveAt(index);
+            CollisionBoxes.Add(collisionBox);
+        }
+
+
+
+        private static List<TileList> GetTileLists(List<TileListJson> tileListJsons)
         {
             Collection<TileList> tileLists = [];
 
-            foreach (var jsonTileList in json.TileLists)
+            foreach (var jsonTileList in tileListJsons)
             {
                 var tileList = new TileList
                 {

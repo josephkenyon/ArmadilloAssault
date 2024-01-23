@@ -12,7 +12,6 @@ namespace DilloAssault.Graphics.Drawing
         private static SpriteFont EditorFont { get; set; }
 
         public static readonly int FullTileSize = 48;
-        private static readonly int SpriteTileSize = 48;
 
         public static Color GetColor(int z)
         {
@@ -26,7 +25,12 @@ namespace DilloAssault.Graphics.Drawing
                 return Color.White * constant;
             }
         }
+
         public static int TileSize => GameStateManager.State == State.Editor ? 32 : 48;
+
+        public static float ScaleConstant => (float) TileSize / FullTileSize;
+        public static float ReverseScaleConstant => (float)FullTileSize / TileSize;
+
         public static SpriteFont GetFont => GameStateManager.State == State.Editor ? EditorFont : EditorFont;
 
         public static void LoadContent(ContentManager contentManager)
@@ -43,7 +47,7 @@ namespace DilloAssault.Graphics.Drawing
         public static Rectangle GetSourceRectangle(Point point, Point? size = null)
         {
             var newSize = size ?? new Point(1, 1);
-            return new Rectangle(point.X * SpriteTileSize, point.Y * SpriteTileSize, newSize.X * SpriteTileSize, newSize.Y * SpriteTileSize);
+            return new Rectangle(point.X * FullTileSize, point.Y * FullTileSize, newSize.X * FullTileSize, newSize.Y * FullTileSize);
         }
     }
 }

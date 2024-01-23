@@ -13,7 +13,6 @@ namespace DilloAssault.Controls
             new(Keys.W, Control.Up),
             new(Keys.S, Control.Down),
             new(Keys.Space, Control.Jump),
-            new(Keys.Enter, Control.Confirm),
             new(Keys.Escape, Control.Start),
         ];
 
@@ -21,7 +20,6 @@ namespace DilloAssault.Controls
             new(Buttons.A, Control.Jump),
             new(Buttons.LeftTrigger, Control.Fire_Primary),
             new(Buttons.RightTrigger, Control.Fire_Secondary),
-            new(Buttons.A, Control.Confirm),
             new(Buttons.Start, Control.Start),
         ];
     }

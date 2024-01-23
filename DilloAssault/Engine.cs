@@ -1,4 +1,5 @@
-﻿using DilloAssault.Configuration;
+﻿using DilloAssault.Assets;
+using DilloAssault.Configuration;
 using DilloAssault.Controls;
 using DilloAssault.GameState;
 using DilloAssault.GameState.Battle;
@@ -32,9 +33,9 @@ namespace DilloAssault
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             ConfigurationManager.LoadContent(Content);
 
-            var Scene = ConfigurationManager.GetSceneConfiguration();
+            var Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
 
-            EditorManager.Initialize(BattleManager.Scene);
+            EditorManager.Initialize(Scene);
             BattleManager.Initialize();
 
             BattleManager.Scene = Scene;

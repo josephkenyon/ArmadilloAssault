@@ -1,6 +1,5 @@
 ﻿using DilloAssault.Assets;
 using DilloAssault.Configuration;
-using DilloAssault.Configuration.Scenes;
 using DilloAssault.Controls;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
@@ -45,7 +44,22 @@ namespace DilloAssault.GameState.Editor
             {
                 if (xTileIndex < SceneSize.X && yTileIndex < SceneSize.Y)
                 {
-                    Scene.UpdateTile(Z, new Point(xTileIndex, yTileIndex), SpriteSelectionIndex, SelectedTextureName);
+                    if (Z == 0)
+                    {
+                        var scaleConstant = DrawingHelper.ReverseScaleConstant;
+                        if (ControlsManager.IsControlDownStart(playerIndex, Control.Confirm))
+                        {
+                            Scene.CollisionBoxes.Add(new Rectangle((int)(aimPosition.X * scaleConstant), (int)(aimPosition.Y * scaleConstant), 0, 0));
+                        }
+                        else
+                        {
+                            Scene.UpdateCollisionBox(aimPosition * scaleConstant);
+                        }
+                    }
+                    else
+                    {
+                        Scene.UpdateTile(Z, new Point(xTileIndex, yTileIndex), SpriteSelectionIndex, SelectedTextureName);
+                    }
                 }
                 else if (xTileIndex > SceneSize.X)
                 {
@@ -61,7 +75,14 @@ namespace DilloAssault.GameState.Editor
             {
                 if (xTileIndex < SceneSize.X && yTileIndex < SceneSize.Y)
                 {
-                    Scene.DeleteTile(Z, new Point(xTileIndex, yTileIndex));
+                    if (Z == 0)
+                    {
+                        Scene.DeleteCollisionBox(aimPosition * DrawingHelper.ReverseScaleConstant);
+                    }
+                    else
+                    {
+                        Scene.DeleteTile(Z, new Point(xTileIndex, yTileIndex));
+                    }
                 }
             }
 
@@ -76,8 +97,8 @@ namespace DilloAssault.GameState.Editor
 
             if (ControlsManager.IsControlPressed(playerIndex, Control.Start))
             {
-                var json = JsonSerializer.Serialize(SceneManager.GetSceneJson(Scene));
-                File.WriteAllText(Path.Combine(ConfigurationHelper.ScenesPath, "test_scene.json"), json);
+                var json = JsonSerializer.Serialize(ConfigurationHelper.GetSceneJson(Scene));
+                File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "test_scene.json"), json);
             }
         }
 
@@ -87,8 +108,12 @@ namespace DilloAssault.GameState.Editor
 
             DrawingManager.DrawTexture(TextureName.test_tileset, new Point(SceneSize.X + 1, 1));
 
-            DrawingManager.DrawTexture(TextureName.test_tileset, new Point(SceneSize.X + 1, 1));
             DrawingManager.DrawString($"Z: {Z}", new Point(SceneSize.X, 0), DrawingHelper.GetFont);
+
+            if (Z == 0)
+            {
+                DrawingManager.DrawCollisionBoxes(Scene.CollisionBoxes);
+            }
         }
     }
 }

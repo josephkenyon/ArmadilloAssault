@@ -13,19 +13,26 @@ namespace DilloAssault.Graphics.Drawing
             _spriteBatch = new SpriteBatch(graphicsDevice);
         }
 
-        public static void DrawCollection(ICollection<IDrawableObject> drawableObjects)
+        public static void DrawCollection(IEnumerable<IDrawableObject> drawableObjects)
         {
-            if (drawableObjects.Count > 0)
+            _spriteBatch.Begin();
+
+            foreach (var drawableObject in drawableObjects)
             {
-                _spriteBatch.Begin();
-
-                foreach (var drawableObject in drawableObjects)
-                {
-                    DrawObject(drawableObject);
-                }
-
-                _spriteBatch.End();
+                DrawObject(drawableObject);
             }
+
+            _spriteBatch.End();
+        }
+
+        private static void DrawObject(IDrawableObject drawableObject)
+        {
+            _spriteBatch.Draw(
+                texture: TextureManager.GetTexture(drawableObject.TextureName),
+                destinationRectangle: DrawingHelper.GetDestinationRectangle(drawableObject.Position),
+                color: DrawingHelper.GetColor(drawableObject.Z),
+                sourceRectangle: DrawingHelper.GetSourceRectangle(drawableObject.SpriteLocation)
+            );
         }
 
         public static void DrawTexture(TextureName textureName, Point position)
@@ -44,20 +51,30 @@ namespace DilloAssault.Graphics.Drawing
         public static void DrawString(string text, Point position, SpriteFont spriteFont)
         {
             _spriteBatch.Begin();
-
             _spriteBatch.DrawString(spriteFont, text, position.ToVector2() * DrawingHelper.TileSize, Color.White);
-
             _spriteBatch.End();
         }
 
-        private static void DrawObject(IDrawableObject drawableObject)
+
+        public static void DrawCollisionBoxes(IEnumerable<Rectangle> rectangles)
         {
-            _spriteBatch.Draw(
-                texture: TextureManager.GetTexture(drawableObject.TextureName),
-                destinationRectangle: DrawingHelper.GetDestinationRectangle(drawableObject.Position),
-                color: DrawingHelper.GetColor(drawableObject.Z),
-                sourceRectangle: DrawingHelper.GetSourceRectangle(drawableObject.SpriteLocation)
-            );
+            _spriteBatch.Begin();
+
+            var scaleConstant = DrawingHelper.ScaleConstant;
+
+            foreach(var rectangle in rectangles)
+            {
+                var destinationRectangle = new Rectangle((int)(rectangle.X * scaleConstant), (int)(rectangle.Y * scaleConstant), (int)(rectangle.Width * scaleConstant), (int)(rectangle.Height * scaleConstant));
+
+                _spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.white_pixel),
+                    destinationRectangle: destinationRectangle,
+                    sourceRectangle: new Rectangle(0, 0, 1, 1),
+                    color: Color.Yellow * 0.35f
+                );
+            }
+
+            _spriteBatch.End();
         }
     }
 }

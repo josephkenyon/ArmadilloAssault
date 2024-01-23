@@ -1,7 +1,9 @@
 ﻿using DilloAssault.GameState;
 using DilloAssault.GameState.Battle;
+using DilloAssault.GameState.Battle.Avatars;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace DilloAssault.Controls
@@ -13,6 +15,16 @@ namespace DilloAssault.Controls
         public static void Initialize()
         {
             PlayerControlsStates = [];
+        }
+
+        public static bool IsControlDownStart(int playerIndex, Control control)
+        {
+            if (PlayerControlsStates.TryGetValue(playerIndex, out ControlsState value))
+            {
+                return value.IsControlDownStart(control);
+            }
+
+            return false;
         }
 
         public static bool IsControlDown(int playerIndex, Control control)

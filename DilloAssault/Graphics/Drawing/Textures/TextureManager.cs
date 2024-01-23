@@ -1,10 +1,7 @@
-﻿using DilloAssault.Assets;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace DilloAssault.Graphics.Drawing.Textures
 {
@@ -16,10 +13,10 @@ namespace DilloAssault.Graphics.Drawing.Textures
         {
             _textures = [];
 
-            foreach (var texture in Enum.GetValues(typeof(TextureName)).Cast<TextureName>())
-            {
-                _textures.Add(texture, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", texture.ToString())));
-            }
+            _textures.Add(TextureName.white_pixel, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "white_pixel")));
+
+            _textures.Add(TextureName.test_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "test_tileset")));
+
         }
 
         public static Texture2D GetTexture(TextureName textureName)

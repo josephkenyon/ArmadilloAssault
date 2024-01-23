@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DilloAssault.Configuration.Scenes
+namespace DilloAssault.Configuration.Json.Scenes
 {
     public class TileListJson
     {

@@ -9,6 +9,7 @@ namespace DilloAssault.Graphics.Drawing.Textures
 {
     public enum TextureName
     {
-        test_tileset
+        test_tileset,
+        white_pixel,
     }
 }

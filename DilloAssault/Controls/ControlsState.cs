@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DilloAssault.Controls
 {
@@ -25,6 +26,15 @@ namespace DilloAssault.Controls
             return down;
         }
 
+        public bool IsControlDownStart(Control control)
+        {
+            ControlDown.TryGetValue(control, out var down);
+
+            ControlDownFrames.TryGetValue(control, out var frames);
+
+            return down && frames == 1;
+        }
+
         public bool IsControlPressed(Control control)
         {
             ControlPress.TryGetValue(control, out var pressed);
@@ -39,10 +49,8 @@ namespace DilloAssault.Controls
                 ControlDown[control] = true;
             }
 
-            if (!ControlDownFrames.TryAdd(control, 0))
-            {
-                ControlDownFrames[control] = ControlDownFrames[control] + 1;
-            }
+            ControlDownFrames.TryAdd(control, 0);
+            ControlDownFrames[control] = ControlDownFrames[control] + 1;
         }
 
         public void OnControlUp(Control control)
