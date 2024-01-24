@@ -1,6 +1,8 @@
 ﻿using DilloAssault.Assets;
 using DilloAssault.Configuration.Json;
+using DilloAssault.Configuration.Json.Avatars;
 using DilloAssault.Configuration.Json.Scenes;
+using DilloAssault.GameState.Battle.Avatars;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -27,6 +29,20 @@ namespace DilloAssault.Configuration
             }
 
             return collisionBoxesList;
+        }
+
+        public static Dictionary<Animation, AnimationJson> GetAnimations(AnimationsJson animationsJson)
+        {
+            var animations = new Dictionary<Animation, AnimationJson>
+            {
+                { Animation.Resting, new AnimationJson { FrameCount = 1, X = 0, Y = 1 } },
+                { Animation.Running, animationsJson.Running },
+                { Animation.Jumping, animationsJson.Jumping },
+                { Animation.Spinning, animationsJson.Spinning },
+                { Animation.Falling, animationsJson.Falling },
+            };
+
+            return animations;
         }
 
         public static SceneJson GetSceneJson(Scene scene)
