@@ -1,12 +1,12 @@
 ﻿using DilloAssault.Assets;
 using DilloAssault.Configuration;
-using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Input;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Players;
 using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,16 +36,28 @@ namespace DilloAssault.GameState.Battle
             {
                 InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
                 PhysicsManager.UpdateAvatar(avatar.Value, Scene.CollisionBoxes);
+
+                avatar.Value.Update();
             }
         }
 
         public static void Draw()
         {
-            Scene.TileLists.ForEach(list => DrawingManager.DrawCollection([.. list.Tiles]));
+            foreach (var list in Scene.TileLists.Where(list => list.Z < 0))
+            {
+                DrawingManager.DrawCollection([.. list.Tiles]);
+            }
 
             foreach (var avatar in Avatars.Values)
             {
-                DrawingManager.DrawCollisionBoxes(avatar.GetHurtBoxes());
+                DrawingManager.DrawAvatarBackground(avatar);
+
+                DrawingManager.DrawAvatarForeground(avatar);
+            }
+
+            foreach (var list in Scene.TileLists.Where(list => list.Z > 0))
+            {
+                DrawingManager.DrawCollection([.. list.Tiles]);
             }
         }
     }

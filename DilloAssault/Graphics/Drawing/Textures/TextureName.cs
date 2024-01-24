@@ -11,5 +11,7 @@ namespace DilloAssault.Graphics.Drawing.Textures
     {
         test_tileset,
         white_pixel,
+        arthur,
+        arthur_arm
     }
 }

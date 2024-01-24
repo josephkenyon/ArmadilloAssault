@@ -14,8 +14,11 @@ namespace DilloAssault.Graphics.Drawing.Textures
             _textures = [];
 
             _textures.Add(TextureName.white_pixel, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "white_pixel")));
+            _textures.Add(TextureName.arthur_arm, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "arthur_arm")));
 
             _textures.Add(TextureName.test_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "test_tileset")));
+
+            _textures.Add(TextureName.arthur, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "arthur")));
 
         }
 

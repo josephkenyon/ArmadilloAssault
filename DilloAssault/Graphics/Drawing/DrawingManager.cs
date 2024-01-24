@@ -1,4 +1,6 @@
-﻿using DilloAssault.Graphics.Drawing.Textures;
+﻿using DilloAssault.GameState.Battle.Avatars;
+using DilloAssault.GameState.Battle.Physics;
+using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -55,6 +57,50 @@ namespace DilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
+        public static void DrawAvatarBackground(Avatar avatar)
+        {
+            _spriteBatch.Begin();
+
+            var flipDirection = avatar.Direction == Direction.Left;
+            var isSpinning = avatar.Animation == Animation.Spinning;
+
+            var offset = isSpinning ? avatar.Size.X / 2 : 0;
+
+            _spriteBatch.Draw(
+                texture: TextureManager.GetTexture(avatar.SpriteTextureName),
+                destinationRectangle: new Rectangle((int)avatar.Position.X + offset, (int)avatar.Position.Y + offset, avatar.Size.X, avatar.Size.Y),
+                sourceRectangle: avatar.GetSourceRectangle(),
+                color: Color.White,
+                rotation: isSpinning ? (flipDirection ? -avatar.SpinningAngle : avatar.SpinningAngle) : 0f,
+                origin: isSpinning ? new Vector2(64, 64) : Vector2.Zero,
+                flipDirection ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                1f
+            );
+
+            _spriteBatch.End();
+        }
+
+        public static void DrawAvatarForeground(Avatar avatar)
+        {
+            if (avatar.Animation != Animation.Spinning)
+            {
+                _spriteBatch.Begin();
+
+                var armOrigin = avatar.GetArmOrigin();
+
+                _spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(avatar.ArmTextureName),
+                    destinationRectangle: new Rectangle((int)(avatar.Position.X + armOrigin.X), (int)(avatar.Position.Y + armOrigin.Y), avatar.Size.X, avatar.Size.Y),
+                    null,
+                    Color.White,
+                    (float)avatar.AimAngle,
+                    avatar.GetArmOrigin(),
+                    avatar.Direction == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                    1f);
+
+                _spriteBatch.End();
+            }
+        }
 
         public static void DrawCollisionBoxes(IEnumerable<Rectangle> rectangles)
         {

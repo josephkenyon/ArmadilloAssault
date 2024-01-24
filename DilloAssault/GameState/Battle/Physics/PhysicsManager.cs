@@ -142,6 +142,15 @@ namespace DilloAssault.GameState.Battle.Physics
                 }
                 else
                 {
+                    if (avatar.AvailableJumps == 1)
+                    {
+                        avatar.SetAnimation(Animation.Jumping);
+                    }
+                    else
+                    {
+                        avatar.IncrementSpin();
+                        avatar.SetAnimation(Animation.Spinning);
+                    }
                     avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y + yDelta);
                 }
             }
@@ -161,10 +170,15 @@ namespace DilloAssault.GameState.Battle.Physics
                 {
                     avatar.Position = new Vector2(avatar.Position.X, (int)avatar.Position.Y);
                     avatar.Grounded = true;
-                    avatar.AvailableJumps = 1;
+                    avatar.AvailableJumps = 2;
 
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
                     avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
+
+                    if (avatar.Animation == Animation.Falling)
+                    {
+                        avatar.SetAnimation(Animation.Resting);
+                    }
                     return;
                 }
 
@@ -174,10 +188,26 @@ namespace DilloAssault.GameState.Battle.Physics
                 {
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
                     avatar.Position = new Vector2(avatar.Position.X, (int)avatar.Position.Y + (floorY - avatarBottomY));
+
+                    avatar.SetAnimation(Animation.Resting);
                 }
                 else
                 {
                     avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y + yDelta);
+
+                    if (avatar.AvailableJumps == 2)
+                    {
+                        avatar.AvailableJumps = 1;
+                    }
+
+                    if (avatar.Animation != Animation.Spinning)
+                    {
+                        avatar.SetAnimation(Animation.Falling);
+                    }
+                    else
+                    {
+                        avatar.IncrementSpin();
+                    }
                 }
             }
 

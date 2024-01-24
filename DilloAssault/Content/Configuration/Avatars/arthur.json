@@ -1,9 +1,41 @@
 {
+  "SpriteTextureName": "arthur",
+  "ArmTextureName": "arthur_arm",
+  "ArmOrigin": {
+    "X": 55,
+    "Y": 51
+  },
+  "Size": {
+    "X": 128,
+    "Y": 128
+  },
+  "Animations": {
+    "Running": {
+      "FrameCount": 10,
+      "X": 0,
+      "Y": 0
+    },
+    "Jumping": {
+      "FrameCount": 4,
+      "X": 0,
+      "Y": 1
+    },
+    "Spinning": {
+      "FrameCount": 1,
+      "X": 6,
+      "Y": 1
+    },
+    "Falling": {
+      "FrameCount": 2,
+      "X": 4,
+      "Y": 1
+    }
+  },
   "CollisionBox": {
     "X": 45,
     "Y": 15,
     "Width": 31,
-    "Height": 113 
+    "Height": 113
   },
   "HurtBoxes": {
     "X": [ 52, 44, 23, 48 ],
