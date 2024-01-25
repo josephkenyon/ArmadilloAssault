@@ -37,6 +37,7 @@ namespace DilloAssault.Configuration
             {
                 { Animation.Resting, new AnimationJson { FrameCount = 1, X = 0, Y = 1 } },
                 { Animation.Running, animationsJson.Running },
+                { Animation.Rolling, animationsJson.Spinning },
                 { Animation.Jumping, animationsJson.Jumping },
                 { Animation.Spinning, animationsJson.Spinning },
                 { Animation.Falling, animationsJson.Falling },

@@ -3,22 +3,25 @@ using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Physics;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace DilloAssault.GameState.Battle.Input
 {
     public static class InputManager
     {
-        internal static void UpdateAvatar(int playerIndex, Avatar avatar)
+        internal static void UpdateAvatar(int playerIndex, Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
         {
             var holdingLeft = ControlsManager.IsControlDown(playerIndex, Control.Left);
             var holdingRight = ControlsManager.IsControlDown(playerIndex, Control.Right);
 
-            HandleMovement(playerIndex, avatar);
+            HandleMovement(playerIndex, avatar, sceneCollisionBoxes);
             UpdateAimDirection(playerIndex, avatar);
+
+            var rolling = avatar.Animation == Animation.Rolling;
 
             var notTryingToMove = !holdingLeft && !holdingRight;
 
-            if (notTryingToMove && avatar.Grounded)
+            if (notTryingToMove && avatar.Grounded && !rolling)
             {
                 avatar.SetAnimation(Animation.Resting);
             }
@@ -42,9 +45,52 @@ namespace DilloAssault.GameState.Battle.Input
 
             if (ControlsManager.IsControlDownStart(playerIndex, Control.Jump) && avatar.AvailableJumps > 0)
             {
-                avatar.AvailableJumps--;
+                if (avatar.IsSpinning)
+                {
+                    avatar.AvailableJumps = 0;
+                }
+                else
+                {
+                    avatar.AvailableJumps--;
+                }
+
+                if (avatar.AvailableJumps == 0)
+                {
+                    if (holdingLeft && !holdingRight)
+                    {
+                        avatar.Direction = Direction.Left;
+
+                        avatar.Position = new Vector2(avatar.Position.X + 10f, avatar.Position.Y);
+                    }
+                    else if (!holdingLeft && holdingRight)
+                    {
+                        avatar.Direction = Direction.Right;
+
+                        avatar.Position = new Vector2(avatar.Position.X - 10f, avatar.Position.Y);
+                    }
+                }
+                else if (avatar.Animation == Animation.Rolling)
+                {
+                    avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y - 48f);
+                }
+
                 avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
                 avatar.Velocity = new Vector2(avatar.Velocity.X, -13.5f);
+            }
+
+            if (ControlsManager.IsControlDownStart(playerIndex, Control.Down) && avatar.Grounded)
+            {
+                avatar.SetAnimation(Animation.Rolling);
+                PhysicsManager.MoveIfIntersecting(avatar, sceneCollisionBoxes);
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Up) && avatar.Grounded && avatar.Animation == Animation.Rolling)
+            {
+                var ceiling = PhysicsManager.GetCeiling(avatar, sceneCollisionBoxes);
+                if (avatar.GetCollisionBox().Top - ceiling > 48)
+                {
+                    avatar.SetAnimation(Animation.Resting);
+                    avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y - 48);
+                }
             }
         }
 
@@ -113,54 +159,91 @@ namespace DilloAssault.GameState.Battle.Input
             }
         }
 
-        private static void HandleMovement(int playerIndex, Avatar avatar)
+        private static void HandleMovement(int playerIndex, Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
         {
+            if (ControlsManager.IsControlDownStart(playerIndex, Control.Down))
+            {
+                avatar.SetAnimation(Animation.Rolling);
+            }
+
             if (avatar.AimDirection.X > 0)
             {
-                if (avatar.Direction == Direction.Left && avatar.Animation != Animation.Spinning)
+                if (avatar.Direction == Direction.Left && !avatar.IsSpinning)
                 {
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                    avatar.Position = new Vector2(avatar.Position.X + 10, avatar.Position.Y);
                     avatar.Direction = Direction.Right;
+
+                    PhysicsManager.MoveIfIntersecting(avatar, sceneCollisionBoxes);
                 }
             }
             else if (avatar.AimDirection.X < 0)
             {
-                if (avatar.Direction == Direction.Right && avatar.Animation != Animation.Spinning)
+                if (avatar.Direction == Direction.Right && !avatar.IsSpinning)
                 {
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                    avatar.Position = new Vector2(avatar.Position.X - 8, avatar.Position.Y);
                     avatar.Direction = Direction.Left;
+
+                    PhysicsManager.MoveIfIntersecting(avatar, sceneCollisionBoxes);
                 }
             }
 
             if (ControlsManager.IsControlDown(playerIndex, Control.Left) || ControlsManager.IsControlDownStart(playerIndex, Control.Left))
             {
-                avatar.RunningBackwards = avatar.Direction == Direction.Right;
+                avatar.RunningBackwards = avatar.Direction == Direction.Right && !avatar.IsSpinning;
 
                 if (avatar.Grounded)
                 {
-                    avatar.SetAnimation(Animation.Running);
-                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - avatar.RunningAcceleration, -avatar.MaxVelocity.X, avatar.MaxVelocity.X);
+                    if (avatar.Animation != Animation.Rolling)
+                    {
+                        avatar.SetAnimation(Animation.Running);
+
+                        avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
+                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - avatar.RunningAcceleration, -avatar.MaxRunningVelocity, avatar.MaxRunningVelocity);
+                    }
+                    else
+                    {
+                        avatar.Direction = Direction.Left;
+                        avatar.IncrementSpin();
+
+                        avatar.Acceleration = new Vector2(-avatar.RunningAcceleration, avatar.Acceleration.Y);
+                    }
                 }
                 else
                 {
+                    avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
                     avatar.InfluenceVelocity = -4;
                 }
             }
             else if (ControlsManager.IsControlDown(playerIndex, Control.Right) || ControlsManager.IsControlDownStart(playerIndex, Control.Right))
             {
-                avatar.RunningBackwards = avatar.Direction == Direction.Left;
+                avatar.RunningBackwards = avatar.Direction == Direction.Left && !avatar.IsSpinning;
 
                 if (avatar.Grounded)
                 {
-                    avatar.SetAnimation(Animation.Running);
-                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + avatar.RunningAcceleration, -avatar.MaxVelocity.X, avatar.MaxVelocity.X);
+                    if (avatar.Animation != Animation.Rolling)
+                    {
+                        avatar.SetAnimation(Animation.Running);
+
+                        avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
+                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + avatar.RunningAcceleration, -avatar.MaxRunningVelocity, avatar.MaxRunningVelocity);
+                    }
+                    else
+                    {
+                        avatar.Direction = Direction.Right;
+                        avatar.IncrementSpin();
+
+                        avatar.Acceleration = new Vector2(avatar.RunningAcceleration, avatar.Acceleration.Y);
+                    }
                 }
                 else
                 {
+                    avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
                     avatar.InfluenceVelocity = 4;
                 }
+            }
+            else
+            {
+                avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
             }
         }
     }

@@ -37,6 +37,12 @@
     "Width": 31,
     "Height": 113
   },
+  "SpinningCollisionBox": {
+    "X": 48,
+    "Y": 48,
+    "Width": 32,
+    "Height": 32
+  },
   "HurtBoxes": {
     "X": [ 52, 44, 23, 48 ],
     "Y": [ 16, 38, 99, 80 ],

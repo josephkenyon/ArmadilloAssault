@@ -62,7 +62,7 @@ namespace DilloAssault.Graphics.Drawing
             _spriteBatch.Begin();
 
             var flipDirection = avatar.Direction == Direction.Left;
-            var isSpinning = avatar.Animation == Animation.Spinning;
+            var isSpinning = avatar.IsSpinning;
 
             var offset = isSpinning ? avatar.Size.X / 2 : 0;
 
@@ -82,7 +82,7 @@ namespace DilloAssault.Graphics.Drawing
 
         public static void DrawAvatarForeground(Avatar avatar)
         {
-            if (avatar.Animation != Animation.Spinning)
+            if (!avatar.IsSpinning)
             {
                 _spriteBatch.Begin();
 

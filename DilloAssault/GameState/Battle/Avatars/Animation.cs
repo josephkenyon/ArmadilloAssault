@@ -10,6 +10,7 @@ namespace DilloAssault.GameState.Battle.Avatars
     {
         Resting,
         Running,
+        Rolling,
         Jumping,
         Spinning,
         Falling

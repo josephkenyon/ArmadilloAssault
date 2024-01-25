@@ -51,6 +51,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/arthur_arm.png
 
+#begin Graphics/Textures/crosshair.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/crosshair.png
+
 #begin Graphics/Textures/white_pixel.png
 /importer:TextureImporter
 /processor:TextureProcessor

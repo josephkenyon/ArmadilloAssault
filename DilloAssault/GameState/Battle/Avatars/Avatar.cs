@@ -14,12 +14,15 @@ namespace DilloAssault.GameState.Battle.Avatars
         public static readonly int spriteWidth = 128;
         public static readonly int spriteHeight = 128;
 
-        public readonly Vector2 MaxVelocity = new(5.0f, 10);
+        public readonly Vector2 MaxVelocity = new(8f, 10);
 
         public readonly float RunningAcceleration = 0.65f;
         public readonly float JumpingAcceleration = 0.5f;
+        public readonly float MaxRunningVelocity = 6.5f;
 
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);
+
+        private readonly Rectangle SpinningCollisionBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningCollisionBox);
 
         private readonly IEnumerable<Rectangle> HurtBoxes = ConfigurationHelper.GetHurtBoxes(avatarJson.HurtBoxes);
 
@@ -46,13 +49,15 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public bool RunningBackwards { get; set; }
         public bool Grounded { get; set; }
+        public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
 
         public double AimAngle { get; set; }
-        public float SpinningAngle { get; private set; }
+        public float SpinningAngle { get; private set; } = (float)(Math.PI / -2f);
         public Vector2 AimDirection { get; set; }
 
         public int FrameCounter { get; set; }
         public int AnimationFrame { get; set; }
+
 
 
         public void Update()
@@ -126,9 +131,9 @@ namespace DilloAssault.GameState.Battle.Avatars
                 FrameCounter = 0;
                 AnimationFrame = 0;
 
-                if (Animation == Animation.Spinning)
+                if (!IsSpinning && (Animation == Animation.Spinning || Animation == Animation.Rolling))
                 {
-                    SpinningAngle = 0f;
+                    SpinningAngle = (float)(Math.PI / -2f);
                 }
             }
 
@@ -137,11 +142,28 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public void IncrementSpin()
         {
-            SpinningAngle += 0.1f + (Velocity.Y * 0.004f);
+            var velocityX = (Math.Clamp(Velocity.X, -MaxVelocity.X * 2f, MaxVelocity.X * 2f) * 0.007f);
+            var velocityY = (Math.Clamp(Velocity.Y, -MaxVelocity.Y * 2f, MaxVelocity.Y * 2f) * 0.007f);
+
+            if (velocityX < 0)
+            {
+                SpinningAngle += 0.1f - velocityX;
+            }
+            else
+            {
+                SpinningAngle += 0.1f + velocityX;
+            }
+
+            SpinningAngle += velocityY;
         }
 
         public Rectangle GetCollisionBox()
         {
+            if (Animation == Animation.Spinning || Animation == Animation.Rolling)
+            {
+                return CollisionHelper.OffsetRectangle(SpinningCollisionBox, Position);
+            }
+
             if (Direction == Direction.Right)
             {
                 return CollisionHelper.OffsetRectangle(CollisionBox, Position);
