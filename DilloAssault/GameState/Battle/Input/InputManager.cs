@@ -83,13 +83,21 @@ namespace DilloAssault.GameState.Battle.Input
                 avatar.SetAnimation(Animation.Rolling);
                 PhysicsManager.MoveIfIntersecting(avatar, sceneCollisionBoxes);
             }
-            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Up) && avatar.Grounded && avatar.Animation == Animation.Rolling)
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Up) && avatar.Animation == Animation.Rolling)
             {
-                var ceiling = PhysicsManager.GetCeiling(avatar, sceneCollisionBoxes);
-                if (avatar.GetCollisionBox().Top - ceiling > 48)
+                if (avatar.Grounded)
                 {
-                    avatar.SetAnimation(Animation.Resting);
-                    avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y - 48);
+                    var ceiling = PhysicsManager.GetCeiling(avatar, sceneCollisionBoxes);
+
+                    if (avatar.GetCollisionBox().Top - ceiling > 48)
+                    {
+                        avatar.SetAnimation(Animation.Resting);
+                        avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y - 48);
+                    }
+                }
+                else
+                {
+                    avatar.SetAnimation(Animation.Spinning);
                 }
             }
         }

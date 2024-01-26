@@ -230,7 +230,10 @@ namespace DilloAssault.GameState.Battle.Physics
                     else
                     {
                         avatar.IncrementSpin();
-                        avatar.SetAnimation(Animation.Spinning);
+                        if (avatar.Animation != Animation.Rolling)
+                        {
+                            avatar.SetAnimation(Animation.Spinning);
+                        }
                     }
 
                     avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y + yDelta);
@@ -271,12 +274,13 @@ namespace DilloAssault.GameState.Battle.Physics
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
                     avatar.Position = new Vector2(avatar.Position.X, (int)avatar.Position.Y + (floorY - avatarBottomY));
 
-                    if (avatar.Animation == Animation.Spinning)
+                    if (avatar.Animation == Animation.Spinning || avatar.Animation != Animation.Rolling)
                     {
-                        avatar.SetAnimation(Animation.Rolling);
-                    }
-                    else if (avatar.Animation != Animation.Rolling)
-                    {
+                        if (avatar.Animation == Animation.Spinning)
+                        {
+                            avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y - 48);
+                        }
+
                         avatar.SetAnimation(Animation.Resting);
                     }
 

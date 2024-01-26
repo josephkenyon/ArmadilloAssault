@@ -58,8 +58,6 @@ namespace DilloAssault.GameState.Battle.Avatars
         public int FrameCounter { get; set; }
         public int AnimationFrame { get; set; }
 
-
-
         public void Update()
         {
             var animation = Animations[Animation];
