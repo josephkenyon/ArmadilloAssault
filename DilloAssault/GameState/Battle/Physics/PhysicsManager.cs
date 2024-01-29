@@ -44,7 +44,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 if (avatarRightX == wallX)
                 {
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                    avatar.Position = new Vector2((int) avatar.Position.X, avatar.Position.Y);
+                    avatar.SetX((int)avatar.Position.X);
                     return;
                 }
 
@@ -52,11 +52,11 @@ namespace DilloAssault.GameState.Battle.Physics
                 {
                     newVelocityX = 0;
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                    avatar.Position = new Vector2((int)avatar.Position.X - (avatarRightX - wallX), avatar.Position.Y);
+                    avatar.SetX((int)avatar.Position.X - (avatarRightX - wallX));
                 }
                 else
                 {
-                    avatar.Position = new Vector2(avatar.Position.X + newVelocityX, avatar.Position.Y);
+                    avatar.SetX(avatar.Position.X + newVelocityX);
                 }
             }
             else if (newVelocityX < 0)
@@ -73,7 +73,7 @@ namespace DilloAssault.GameState.Battle.Physics
 
                 if (avatarLeftX == wallX)
                 {
-                    avatar.Position = new Vector2((int)avatar.Position.X, avatar.Position.Y);
+                    avatar.SetX((int)avatar.Position.X);
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
                     return;
                 }
@@ -82,11 +82,11 @@ namespace DilloAssault.GameState.Battle.Physics
                 {
                     newVelocityX = 0;
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                    avatar.Position = new Vector2(wallX - (avatarLeftX - (int)avatar.Position.X), avatar.Position.Y);
+                    avatar.SetX(wallX - (avatarLeftX - (int)avatar.Position.X));
                 }
                 else
                 {
-                    avatar.Position = new Vector2(avatar.Position.X + newVelocityX, avatar.Position.Y);
+                    avatar.SetX(avatar.Position.X + newVelocityX);
                 }
             }
 
@@ -120,24 +120,24 @@ namespace DilloAssault.GameState.Battle.Physics
 
                 if (rightDifference == smallestDifference)
                 {
-                    avatar.Position = new Vector2(avatar.Position.X + rightDifference, avatar.Position.Y);
+                    avatar.SetX(avatar.Position.X + rightDifference);
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
                 }
                 else if (leftDifference == smallestDifference)
                 {
-                    avatar.Position = new Vector2(avatar.Position.X - leftDifference, avatar.Position.Y);
+                    avatar.SetX(avatar.Position.X - leftDifference);
                     avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
                 }
                 else if (upDifference == smallestDifference)
                 {
-                    avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y - upDifference);
+                    avatar.SetY(avatar.Position.Y - upDifference);
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
 
                     avatar.Grounded = true;
                 }
                 else if (downDifference == smallestDifference)
                 {
-                    avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y + downDifference);
+                    avatar.SetY(avatar.Position.Y + downDifference);
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
                 }
             }
@@ -209,7 +209,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 {
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
                     avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
-                    avatar.Position = new Vector2(avatar.Position.X, (int)avatar.Position.Y);
+                    avatar.SetY((int)avatar.Position.Y);
                     return;
                 }
 
@@ -219,7 +219,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 {
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
                     avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
-                    avatar.Position = new Vector2(avatar.Position.X, (int)avatar.Position.Y + (ceilingY - avatarTopY));
+                    avatar.SetY((int)avatar.Position.Y + (ceilingY - avatarTopY));
                 }
                 else
                 {
@@ -236,7 +236,7 @@ namespace DilloAssault.GameState.Battle.Physics
                         }
                     }
 
-                    avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y + yDelta);
+                    avatar.SetY(avatar.Position.Y + yDelta);
                 }
             }
             else
@@ -253,7 +253,7 @@ namespace DilloAssault.GameState.Battle.Physics
 
                 if (avatarBottomY == floorY)
                 {
-                    avatar.Position = new Vector2(avatar.Position.X, (int)avatar.Position.Y);
+                    avatar.SetY((int)avatar.Position.Y);
                     avatar.Grounded = true;
                     avatar.AvailableJumps = 2;
 
@@ -272,13 +272,13 @@ namespace DilloAssault.GameState.Battle.Physics
                 if (avatarBottomY + yDelta >= floorY)
                 {
                     avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
-                    avatar.Position = new Vector2(avatar.Position.X, (int)avatar.Position.Y + (floorY - avatarBottomY));
+                    avatar.SetY((int)avatar.Position.Y + (floorY - avatarBottomY));
 
                     if (avatar.Animation == Animation.Spinning || avatar.Animation != Animation.Rolling)
                     {
                         if (avatar.Animation == Animation.Spinning)
                         {
-                            avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y - 48);
+                            avatar.SetY(avatar.Position.Y - 48);
                         }
 
                         avatar.SetAnimation(Animation.Resting);
@@ -288,7 +288,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 }
                 else
                 {
-                    avatar.Position = new Vector2(avatar.Position.X, avatar.Position.Y + yDelta);
+                    avatar.SetY(avatar.Position.Y + yDelta);
 
                     if (avatar.AvailableJumps == 2)
                     {

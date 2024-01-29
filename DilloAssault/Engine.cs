@@ -41,9 +41,10 @@ namespace DilloAssault
             var Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
 
             EditorManager.Initialize(Scene);
-            BattleManager.Initialize();
 
             BattleManager.Scene = Scene;
+
+            BattleManager.Initialize();
         }
 
         protected override void Update(GameTime gameTime)

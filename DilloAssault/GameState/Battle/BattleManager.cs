@@ -27,7 +27,7 @@ namespace DilloAssault.GameState.Battle
             Avatars = [];
             Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration()));
 
-            Avatars.Values.First().Position = new Vector2(606, 885);
+            Avatars.Values.First().SetPosition(new Vector2(606, 885));
         }
 
         public static void Update()

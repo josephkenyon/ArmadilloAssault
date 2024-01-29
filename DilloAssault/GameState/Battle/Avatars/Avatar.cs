@@ -37,8 +37,8 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public Animation Animation { get; private set; } = Animation.Resting;
 
-        public Direction Direction { get; set; }
-        public Vector2 Position { get; set; }
+        public Direction Direction { get; private set; }
+        public Vector2 Position { get; private set; }
 
         public Vector2 Velocity { get; set; }
         public Vector2 Acceleration { get; set; }
@@ -107,7 +107,6 @@ namespace DilloAssault.GameState.Battle.Avatars
 
             return new Vector2(armOriginX, ArmOriginJson.Y);
         }
-
 
         public Rectangle GetSourceRectangle()
         {
@@ -181,6 +180,33 @@ namespace DilloAssault.GameState.Battle.Avatars
             else
             {
                 return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, spriteWidth), Position));
+            }
+        }
+
+        public void SetX(float x)
+        {
+            Position = new Vector2(x, Position.Y);
+            PhysicsManager.MoveIfIntersecting(this, BattleManager.Scene.CollisionBoxes);
+        }
+
+        public void SetY(float y)
+        {
+            Position = new Vector2(Position.X, y);
+            PhysicsManager.MoveIfIntersecting(this, BattleManager.Scene.CollisionBoxes);
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            Position = position;
+            PhysicsManager.MoveIfIntersecting(this, BattleManager.Scene.CollisionBoxes);
+        }
+
+        public void SetDirection(Direction direction)
+        {
+            if (Direction != direction)
+            {
+                Direction = direction;
+                PhysicsManager.MoveIfIntersecting(this, BattleManager.Scene.CollisionBoxes);
             }
         }
     }
