@@ -36,7 +36,7 @@ namespace DilloAssault.GameState.Battle
         {
             foreach (var avatar in Avatars)
             {
-                InputManager.UpdateAvatar((int)avatar.Key, avatar.Value, Scene.CollisionBoxes);
+                InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
                 PhysicsManager.UpdateAvatar(avatar.Value, Scene.CollisionBoxes);
 
                 avatar.Value.Update();

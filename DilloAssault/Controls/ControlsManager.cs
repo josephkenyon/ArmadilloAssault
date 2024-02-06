@@ -133,7 +133,7 @@ namespace DilloAssault.Controls
             updateMouseControl(mouseState.RightButton, Control.Fire_Secondary);
             updateMouseControl(mouseState.LeftButton, Control.Confirm);
 
-            controlsState.AimPosition = mouseState.Position.ToVector2();
+            controlsState.AimPosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
 
             return controlsState;
         }

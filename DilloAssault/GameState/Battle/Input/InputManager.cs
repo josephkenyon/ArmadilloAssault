@@ -3,13 +3,12 @@ using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Physics;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace DilloAssault.GameState.Battle.Input
 {
     public static class InputManager
     {
-        internal static void UpdateAvatar(int playerIndex, Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        internal static void UpdateAvatar(int playerIndex, Avatar avatar)
         {
             var holdingLeft = ControlsManager.IsControlDown(playerIndex, Control.Left);
             var holdingRight = ControlsManager.IsControlDown(playerIndex, Control.Right);
@@ -19,7 +18,7 @@ namespace DilloAssault.GameState.Battle.Input
                 return;
             }
 
-            HandleMovement(playerIndex, avatar, sceneCollisionBoxes);
+            HandleMovement(playerIndex, avatar);
             UpdateAimDirection(playerIndex, avatar);
 
             var notTryingToMove = !holdingLeft && !holdingRight;
@@ -171,7 +170,7 @@ namespace DilloAssault.GameState.Battle.Input
             }
         }
 
-        private static void HandleMovement(int playerIndex, Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void HandleMovement(int playerIndex, Avatar avatar)
         {
             if (avatar.AimDirection.X > 0)
             {

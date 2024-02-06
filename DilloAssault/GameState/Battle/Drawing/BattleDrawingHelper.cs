@@ -24,30 +24,16 @@ namespace DilloAssault.GameState.Battle.Drawing
                 DrawAvatarArm(spriteBatch, avatar, Direction.Left);
             }
 
-            spriteBatch.End();
-
-            spriteBatch.Begin();
-
             foreach (var avatar in avatars)
             {
                 DrawAvatarBackground(spriteBatch, avatar);
             }
 
-            spriteBatch.End();
-            spriteBatch.Begin();
-
             foreach (var avatar in avatars.Where(avatar => !avatar.IsSpinning))
             {
-                DrawAvatarGun(spriteBatch,avatar);
-            }
-
-            spriteBatch.End();
-            spriteBatch.Begin();
-
-            foreach (var avatar in avatars.Where(avatar => !avatar.IsSpinning))
-            {
-                DrawAvatarArm(spriteBatch, avatar, Direction.Right);
                 DrawAvatarHead(spriteBatch, avatar);
+                DrawAvatarGun(spriteBatch, avatar);
+                DrawAvatarArm(spriteBatch, avatar, Direction.Right);
             }
 
             spriteBatch.End();

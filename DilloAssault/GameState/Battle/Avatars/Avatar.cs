@@ -46,8 +46,6 @@ namespace DilloAssault.GameState.Battle.Avatars
         public Vector2 Velocity { get; set; }
         public Vector2 Acceleration { get; set; }
 
-        public Vector2 PositionChange { get; set; }
-
         public float RunningVelocity { get; set; }
         public int InfluenceVelocity { get; set; }
         public int AvailableJumps { get; set; }
@@ -217,11 +215,11 @@ namespace DilloAssault.GameState.Battle.Avatars
             {
                 FrameCounter = 0;
                 AnimationFrame = 0;
+            }
 
-                if (!IsSpinning && (Animation == Animation.Spinning || Animation == Animation.Rolling))
-                {
-                    SpinningAngle = (float)(Math.PI / -2f);
-                }
+            if (!IsSpinning)
+            {
+                SpinningAngle = (float)(Math.PI / -2f);
             }
 
             Animation = animation;
@@ -264,16 +262,6 @@ namespace DilloAssault.GameState.Battle.Avatars
             {
                 return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, spriteWidth), Position));
             }
-        }
-
-        public void AddPositionChangeX(float x)
-        {
-            PositionChange = new Vector2(PositionChange.X + x, PositionChange.Y);
-        }
-
-        public void AddPositionChangeY(float y)
-        {
-            PositionChange = new Vector2(PositionChange.X, PositionChange.Y + y);
         }
 
         public void SetX(float x)

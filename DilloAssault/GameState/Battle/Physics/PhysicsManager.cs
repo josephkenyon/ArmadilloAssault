@@ -45,8 +45,6 @@ namespace DilloAssault.GameState.Battle.Physics
 
             ApplyHorizontalMotion(avatar, sceneCollisionBoxes);
             ApplyVerticalMotion(avatar, sceneCollisionBoxes);
-
-            avatar.PositionChange = Vector2.Zero;
         }
 
         private static bool CanExitSpinning(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
@@ -162,7 +160,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 return;
             }
 
-            var yDelta = Math.Min(avatar.Velocity.Y, avatar.MaxVelocity.Y) + avatar.PositionChange.X;
+            var yDelta = Math.Min(avatar.Velocity.Y, avatar.MaxVelocity.Y);
 
             if (avatarCollisionBox.Top + yDelta <= ceilingY)
             {
@@ -174,7 +172,10 @@ namespace DilloAssault.GameState.Battle.Physics
             {
                 if (avatar.AvailableJumps == 1)
                 {
-                    avatar.SetAnimation(Animation.Jumping);
+                    if (avatar.Animation != Animation.Rolling)
+                    {
+                        avatar.SetAnimation(Animation.Jumping);
+                    }
                 }
                 else
                 {
@@ -210,7 +211,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 return;
             }
 
-            var yDelta = Math.Min(avatar.Velocity.Y, avatar.MaxVelocity.Y) + avatar.PositionChange.Y;
+            var yDelta = Math.Min(avatar.Velocity.Y, avatar.MaxVelocity.Y);
 
             if (avatarCollisionBox.Bottom + yDelta >= floorY)
             {
