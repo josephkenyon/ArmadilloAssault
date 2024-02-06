@@ -73,7 +73,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Animation? BufferedAnimation { get; set; }
         private Direction? BufferedDirection { get; set; }
 
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol.ToString()))];
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun.ToString()))];
         private int WeaponSelectionIndex { get; set; }
 
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
@@ -162,7 +162,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             Weapons[WeaponSelectionIndex].Fire(weaponTip, weaponAngle);
         }
 
-        public float GetArmYOffset()
+        public float GetBreathingYOffset()
         {
             var A = 5f;
             var B = BreathingCycleFrameLength * 2;
@@ -188,14 +188,14 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public Vector2 GetHeadOrigin()
         {
-            var armOriginX = avatarJson.HeadOrigin.X;
+            var headOriginX = avatarJson.HeadOrigin.X;
 
             if (Direction == Direction.Left)
             {
-                armOriginX += ((Size.X / 2) - armOriginX) * 2;
+                headOriginX += ((Size.X / 2) - headOriginX) * 2;
             }
 
-            return new Vector2(armOriginX, avatarJson.HeadOrigin.Y);
+            return new Vector2(headOriginX, avatarJson.HeadOrigin.Y);
         }
 
         public Rectangle GetSourceRectangle()

@@ -103,21 +103,48 @@ namespace DilloAssault.GameState.Battle.Drawing
         private static void DrawAvatarArm(SpriteBatch spriteBatch, Avatar avatar, TextureName textureName)
         {
             var armOrigin = avatar.GetArmOrigin();
-            DrawAvatarBodyPart(spriteBatch, avatar, armOrigin, textureName);
+            DrawAvatarBodyPart(spriteBatch, avatar, armOrigin, textureName, true);
         }
         private static void DrawAvatarHead(SpriteBatch spriteBatch, Avatar avatar)
         {
             var headOrigin = avatar.GetHeadOrigin();
-            DrawAvatarBodyPart(spriteBatch, avatar, headOrigin, avatar.HeadTextureName);
+
+            double xOffset = 0;
+            double yOffset = -3;
+
+            if (avatar.AimAngle > 0f)
+            {
+                if (avatar.Direction == Direction.Right)
+                {
+                    xOffset = avatar.AimAngle * 7;
+                }
+                else
+                {
+                    yOffset -= avatar.AimAngle * 3;
+                }
+            }
+            else if (avatar.AimAngle < 0f)
+            {
+                if (avatar.Direction == Direction.Right)
+                {
+                    yOffset += avatar.AimAngle * 3;
+                }
+                else
+                {
+                    xOffset = avatar.AimAngle * 7;
+                }
+            }
+
+            DrawAvatarBodyPart(spriteBatch, avatar, headOrigin, avatar.HeadTextureName, offset: new Point((int)xOffset, (int)yOffset));
         }
 
-        private static void DrawAvatarBodyPart(SpriteBatch spriteBatch, Avatar avatar, Vector2 origin, TextureName textureName)
+        private static void DrawAvatarBodyPart(SpriteBatch spriteBatch, Avatar avatar, Vector2 origin, TextureName textureName, bool applyBreathing = false, Point? offset = null)
         {
             var spriteOffset = avatar.Direction == Direction.Left ? -avatar.SpriteOffset.X : avatar.SpriteOffset.X;
 
             var destinationRectangle = new Rectangle(
-               (int)(avatar.Position.X + origin.X + spriteOffset),
-               (int)(avatar.Position.Y + origin.Y + avatar.GetArmYOffset()),
+               (int)(avatar.Position.X + origin.X + spriteOffset + (offset != null ? ((Point)offset).X : 0)),
+               (int)(avatar.Position.Y + origin.Y + (applyBreathing ? avatar.GetBreathingYOffset() : 0) + (offset != null ? ((Point)offset).Y : 0)),
                avatar.Size.X,
                avatar.Size.Y
             );
@@ -128,7 +155,7 @@ namespace DilloAssault.GameState.Battle.Drawing
                 null,
                 Color.White,
                 (float)avatar.AimAngle,
-                avatar.GetArmOrigin(),
+                origin,
                 avatar.Direction == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 1f);
         }
