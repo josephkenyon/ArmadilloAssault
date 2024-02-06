@@ -6,9 +6,6 @@ using DilloAssault.GameState.Battle;
 using DilloAssault.GameState.Editor;
 using DilloAssault.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System.IO;
 
 namespace DilloAssault
 {
@@ -33,7 +30,7 @@ namespace DilloAssault
 
         protected override void LoadContent()
         {
-            Mouse.SetCursor(MouseCursor.FromTexture2D(Content.Load<Texture2D>(Path.Combine("Graphics", "Textures", "crosshair")), 0, 0));
+            //Mouse.SetCursor(MouseCursor.FromTexture2D(Content.Load<Texture2D>(Path.Combine("Graphics", "Textures", "crosshair")), 0, 0));
 
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             ConfigurationManager.LoadContent(Content);
@@ -54,7 +51,7 @@ namespace DilloAssault
             switch (GameStateManager.State)
             {
                 case State.Battle:
-                    BattleManager.Update();
+                    BattleManager.Update(Exit);
                     break;
                 case State.Editor:
                     EditorManager.Update();

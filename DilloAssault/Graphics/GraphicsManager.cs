@@ -20,6 +20,8 @@ namespace DilloAssault.Graphics
                 PreferredBackBufferHeight = 1080
             };
 
+            //_graphicsDeviceManager.IsFullScreen = true;
+
             _graphicsDeviceManager.ApplyChanges();
         }
 

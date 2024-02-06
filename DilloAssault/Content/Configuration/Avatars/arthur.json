@@ -1,13 +1,23 @@
 {
   "SpriteTextureName": "arthur",
-  "ArmTextureName": "arthur_arm",
+  "HeadTextureName": "arthur_head",
+  "LeftArmTextureName": "arthur_left_arm",
+  "RightArmTextureName": "arthur_right_arm",
   "ArmOrigin": {
     "X": 55,
     "Y": 51
   },
+  "HeadOrigin": {
+    "X": 61,
+    "Y": 28
+  },
   "Size": {
     "X": 128,
     "Y": 128
+  },
+  "SpriteOffset": {
+    "X": 10,
+    "Y": 0
   },
   "Animations": {
     "Running": {
@@ -32,14 +42,14 @@
     }
   },
   "CollisionBox": {
-    "X": 45,
-    "Y": 15,
-    "Width": 31,
-    "Height": 113
+    "X": 48,
+    "Y": 16,
+    "Width": 32,
+    "Height": 112
   },
   "SpinningCollisionBox": {
     "X": 48,
-    "Y": 48,
+    "Y": 52,
     "Width": 32,
     "Height": 32
   },

@@ -1,5 +1,5 @@
 ﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Json.Scenes;
+using DilloAssault.Configuration.Scenes;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using System;
@@ -11,6 +11,7 @@ namespace DilloAssault.Assets
 {
     public class Scene(SceneJson json)
     {
+        public TextureName BackgroundTexture { get; set; } = Enum.Parse<TextureName>(json.BackgroundTexture);
         public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetHurtBoxes(json.CollisionBoxes);
         public List<TileList> TileLists { get; set; } = GetTileLists(json.TileLists);
 
@@ -30,17 +31,14 @@ namespace DilloAssault.Assets
                 TileLists = [.. TileLists.OrderBy(list => list.Z)];
             }
 
-            var tile = tileList.Tiles.SingleOrDefault(tile => tile.Position.Equals(position));
+            tileList.Tiles.RemoveAll(tile => tile.Position.Equals(position));
 
-            if (tile == null)
+            var tile = new Tile
             {
-                tile = new Tile
-                {
-                    Position = position
-                };
+                Position = position
+            };
 
-                tileList.Tiles.Add(tile);
-            }
+            tileList.Tiles.Add(tile);
 
             tile.SpriteLocation = spriteLocation;
             tile.TextureName = textureName;
@@ -53,12 +51,9 @@ namespace DilloAssault.Assets
 
             if (tileList != null)
             {
-                var tile = tileList.Tiles.SingleOrDefault(tile => tile.Position.Equals(position));
+                var tiles = tileList.Tiles.Where(tile => tile.Position.Equals(position));
 
-                if (tile != null)
-                {
-                    tileList.Tiles.Remove(tile);
-                }
+                tileList.Tiles.RemoveAll(tile => tile.Position.Equals(position));
 
                 if (tileList.Tiles.Count == 0)
                 {
@@ -89,8 +84,6 @@ namespace DilloAssault.Assets
             CollisionBoxes.RemoveAt(index);
             CollisionBoxes.Add(collisionBox);
         }
-
-
 
         private static List<TileList> GetTileLists(List<TileListJson> tileListJsons)
         {

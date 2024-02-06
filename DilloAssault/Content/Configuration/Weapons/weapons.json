@@ -1,0 +1,28 @@
+[
+  {
+    "Type": "Pistol",
+    "TextureName": "pistol",
+    "ClipSize": 5,
+    "MaxRange": 750,
+    "BulletsFired": 1,
+    "BulletDamage": 25,
+    "Accuracy": 0.8,
+    "FireRate": 60,
+    "ReloadRate": 150,
+    "WeaponWeight": 5,
+    "RecoilStrength": 0.5
+  },
+  {
+    "Type": "Assault",
+    "TextureName": "assault",
+    "ClipSize": 10,
+    "MaxRange": 750,
+    "BulletsFired": 1,
+    "BulletDamage": 15,
+    "Accuracy": 0.7,
+    "FireRate": 20,
+    "ReloadRate": 240,
+    "WeaponWeight": 6,
+    "RecoilStrength": 0.4
+  }
+]

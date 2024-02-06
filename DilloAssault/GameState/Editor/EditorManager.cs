@@ -1,6 +1,7 @@
 ﻿using DilloAssault.Assets;
 using DilloAssault.Configuration;
 using DilloAssault.Controls;
+using DilloAssault.GameState.Editor.Drawing;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
@@ -98,21 +99,27 @@ namespace DilloAssault.GameState.Editor
             if (ControlsManager.IsControlPressed(playerIndex, Control.Start))
             {
                 var json = JsonSerializer.Serialize(ConfigurationHelper.GetSceneJson(Scene));
-                File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "test_scene.json"), json);
+                File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "jungle_scene.json"), json);
             }
         }
 
         public static void Draw()
         {
+            var scaleConstant = DrawingHelper.ScaleConstant;
+            var scaledTileSize = DrawingHelper.TileSize;
+            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, (int)(1920 * DrawingHelper.ScaleConstant), (int)(1080 * DrawingHelper.ScaleConstant)));
+
             Scene.TileLists.ForEach(list => DrawingManager.DrawCollection([.. list.Tiles]));
 
-            DrawingManager.DrawTexture(TextureName.test_tileset, new Point(SceneSize.X + 1, 1));
+            DrawingManager.DrawTexture(TextureName.test_tileset, new Vector2((SceneSize.X + 1) * scaledTileSize, 1 * scaledTileSize));
+
+            //DrawingManager.DrawTexture(Scene.BackgroundTexture, Point.Zero);
 
             DrawingManager.DrawString($"Z: {Z}", new Point(SceneSize.X, 0), DrawingHelper.GetFont);
 
             if (Z == 0)
             {
-                DrawingManager.DrawCollisionBoxes(Scene.CollisionBoxes);
+                EditorDrawingHelper.DrawCollisionBoxes(Scene.CollisionBoxes);
             }
         }
     }

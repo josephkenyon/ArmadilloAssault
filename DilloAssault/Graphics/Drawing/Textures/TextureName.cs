@@ -12,6 +12,15 @@ namespace DilloAssault.Graphics.Drawing.Textures
         test_tileset,
         white_pixel,
         arthur,
-        arthur_arm
+        arthur_right_arm,
+        arthur_left_arm,
+        pistol,
+        assault,
+        shotgun,
+        sniper,
+        forest_background,
+        jungle_level_background,
+        jungle_level_foreground,
+        arthur_head
     }
 }

@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
-using DilloAssault.Configuration.Json.Scenes;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
 using System;
 using System.Linq;
-using DilloAssault.Configuration.Json.Avatars;
+using DilloAssault.Configuration.Scenes;
+using DilloAssault.Configuration.Avatars;
+using DilloAssault.Configuration.Weapons;
 
 namespace DilloAssault.Configuration
 {
@@ -15,14 +16,80 @@ namespace DilloAssault.Configuration
         public static ContentManager ContentManager { get; set; }
 
 
-        private static Dictionary<string, SceneJson> _sceneJsons;
-        private static Dictionary<string, AvatarJson> _avatarJsons;
+        private static Dictionary<string, SceneJson> _sceneConfigurations;
+        private static Dictionary<string, AvatarJson> _avatarConfigurations;
+        private static Dictionary<string, WeaponJson> _weaponConfigurations;
 
         public static void LoadContent(ContentManager contentManager)
         {
             ContentManager = contentManager;
 
-            _sceneJsons = [];
+            LoadScenes();
+            LoadAvatars();
+            LoadWeapons();
+        }
+
+        private static void LoadWeapons()
+        {
+
+            _weaponConfigurations = [];
+
+            var fileNames = Directory
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Weapons"))
+                .Where(file => file.EndsWith(".json"));
+
+            var fileName = fileNames.First();
+    
+            using StreamReader r = new(fileName);
+
+            string json = r.ReadToEnd();
+
+            try
+            {
+                var weaponConfigurations = JsonConvert.DeserializeObject<List<WeaponJson>>(json);
+
+                weaponConfigurations.ForEach(weapon =>
+                {
+                    _weaponConfigurations.Add(weapon.Type, weapon);
+                });
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message, e);
+            }
+        }
+
+        private static void LoadAvatars()
+        {
+
+            _avatarConfigurations = [];
+
+            var fileNames = Directory
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Avatars"))
+                .Where(file => file.EndsWith(".json"));
+
+            foreach (var fileName in fileNames)
+            {
+                using StreamReader r = new(fileName);
+
+                string json = r.ReadToEnd();
+
+                try
+                {
+                    var avatarJson = JsonConvert.DeserializeObject<AvatarJson>(json);
+
+                    _avatarConfigurations.Add(Path.GetFileNameWithoutExtension(fileName), avatarJson);
+                }
+                catch (Exception e)
+                {
+                    Trace.TraceError(e.Message, e);
+                }
+            }
+        }
+
+        private static void LoadScenes()
+        {
+            _sceneConfigurations = [];
 
             var fileNames = Directory
                 .GetFiles(ConfigurationHelper.GetConfigurationPath("Scenes"))
@@ -38,32 +105,7 @@ namespace DilloAssault.Configuration
                 {
                     var sceneJson = JsonConvert.DeserializeObject<SceneJson>(json);
 
-                    _sceneJsons.Add(Path.GetFileNameWithoutExtension(fileName), sceneJson);
-                }
-                catch (Exception e)
-                {
-                    Trace.TraceError(e.Message, e);
-                }
-            }
-
-
-            _avatarJsons = [];
-
-            fileNames = Directory
-                .GetFiles(ConfigurationHelper.GetConfigurationPath("Avatars"))
-                .Where(file => file.EndsWith(".json"));
-
-            foreach (var fileName in fileNames)
-            {
-                using StreamReader r = new(fileName);
-
-                string json = r.ReadToEnd();
-
-                try
-                {
-                    var avatarJson = JsonConvert.DeserializeObject<AvatarJson>(json);
-
-                    _avatarJsons.Add(Path.GetFileNameWithoutExtension(fileName), avatarJson);
+                    _sceneConfigurations.Add(Path.GetFileNameWithoutExtension(fileName), sceneJson);
                 }
                 catch (Exception e)
                 {
@@ -74,12 +116,17 @@ namespace DilloAssault.Configuration
 
         public static SceneJson GetSceneConfiguration()
         {
-            return _sceneJsons.Values.First();
+            return _sceneConfigurations.Values.Last();
         }
 
         public static AvatarJson GetAvatarConfiguration()
         {
-            return _avatarJsons.Values.First();
+            return _avatarConfigurations.Values.First();
+        }
+
+        public static WeaponJson GetWeaponConfiguration(string weaponType)
+        {
+            return _weaponConfigurations[weaponType];
         }
     }
 }

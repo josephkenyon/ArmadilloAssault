@@ -1,7 +1,7 @@
 ﻿using DilloAssault.Assets;
-using DilloAssault.Configuration.Json;
-using DilloAssault.Configuration.Json.Avatars;
-using DilloAssault.Configuration.Json.Scenes;
+using DilloAssault.Configuration.Avatars;
+using DilloAssault.Configuration.Generics;
+using DilloAssault.Configuration.Scenes;
 using DilloAssault.GameState.Battle.Avatars;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
@@ -84,7 +84,7 @@ namespace DilloAssault.Configuration
                 Height = []
             };
 
-            foreach (var box in scene.CollisionBoxes)
+            foreach (var box in scene.CollisionBoxes.Where(box => box.Width > 1 && box.Height > 1))
             {
                 collisionBoxListJson.X.Add(box.X);
                 collisionBoxListJson.Y.Add(box.Y);
@@ -93,6 +93,8 @@ namespace DilloAssault.Configuration
             }
 
             json.CollisionBoxes = collisionBoxListJson;
+
+            json.BackgroundTexture = scene.BackgroundTexture.ToString();
 
             return json;
         }
