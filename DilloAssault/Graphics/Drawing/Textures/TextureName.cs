@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DilloAssault.Graphics.Drawing.Textures
+﻿namespace DilloAssault.Graphics.Drawing.Textures
 {
     public enum TextureName
     {
@@ -21,7 +14,11 @@ namespace DilloAssault.Graphics.Drawing.Textures
         forest_background,
         jungle_level_background,
         jungle_level_foreground,
+        mountain_background,
         arthur_head,
-        muzzle_flash_small
+        muzzle_flash_small,
+        muzzle_flash_large,
+        dust_cloud,
+        clouds
     }
 }

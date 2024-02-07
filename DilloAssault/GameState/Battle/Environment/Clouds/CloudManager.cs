@@ -1,0 +1,144 @@
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+
+namespace DilloAssault.GameState.Battle.Environment.Clouds
+{
+    public static class CloudManager
+    {
+        public static readonly int CloudSpriteSize = 256;
+        public static readonly float CloudSpeed = 1.5f;
+
+        public static List<Cloud> Clouds { get; private set; }
+        private static ICollection<Rectangle> CollisionBoxes { get; set; }
+        private static Random Random { get; set; }
+
+        private static List<int> AllowedXs { get; set; } = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
+        private static readonly int AllowedXsSize = AllowedXs.Count;
+        private static int SpeedSign { get; set; } = -1;
+        private static int LastY { get; set; } = -1;
+
+        private static int FramesSinceLastCloud = 0;
+
+        private static int LastSprite { get; set; } = 0;
+
+        public static void Initialize()
+        {
+            Clouds = [];
+
+            Random = new();
+
+            for (int i = 0; i < 12; i++)
+            {
+                CreateNewCloud(true);
+            }
+        }
+
+        public static void UpdateClouds()
+        {
+            Clouds.RemoveAll(cloud => (cloud.Position.X > (1920 + (cloud.Size.X * 2))) || cloud.Position.X < (0 - (cloud.Size.X * 2)));
+
+            foreach (var cloud in Clouds)
+            {
+                cloud.Position = new Vector2(cloud.Position.X + cloud.Speed / 2f, cloud.Position.Y);
+            }
+
+            if (FramesSinceLastCloud == 240)
+            {
+                CreateNewCloud(false);
+                FramesSinceLastCloud = 0;
+            }
+            else
+            {
+                FramesSinceLastCloud++;
+            }
+        }
+
+        private static void CreateNewCloud(bool anyX)
+        {
+            // SpriteX
+            var spriteX = LastSprite % 2;
+
+
+            // SpriteY
+            var spriteY = LastSprite / 2;
+
+            LastSprite++;
+
+            if (LastSprite == 8)
+            {
+                LastSprite = 0;
+            }
+
+
+            // Speed
+            var speed = (float)Random.NextDouble() + CloudSpeed / 2;
+
+
+            // Size
+            var randomSize = Random.NextDouble() * 2f + 1f;
+            var size = new Point((int)(CloudSpriteSize * randomSize), (int)(CloudSpriteSize * randomSize));
+
+
+            // Speed Sign
+            if (!anyX)
+            {
+                SpeedSign = SpeedSign == 0 ? 1 : 0;
+
+                speed = SpeedSign == 1 ? -speed : speed;
+            }
+
+            // X
+            var x = 0f;
+            if (anyX)
+            {
+                var xGeneration = Random.Next(0, AllowedXs.Count);
+                x = AllowedXs[xGeneration] * (1920 / AllowedXsSize) - size.X;
+
+                if (AllowedXs.Count < 1)
+                {
+                    AllowedXs = [0, 1, 2, 3, 4, 8, 9, 10, 11, 12];
+                }
+            }
+            else
+            {
+                x = speed < 0 ? 1920 + size.X : 0 - size.X;
+            }
+
+            // Speed Sign
+            if (anyX)
+            {
+                if ((x + (size.X / 2)) > (1920 / 2))
+                {
+                    speed = -speed;
+                }
+            }
+
+            // Y
+            int y = LastY + 1;
+
+            if (y > 6)
+            {
+                y = 0;
+            }
+
+            LastY = y + 2;
+
+            y = (y * 128) - (size.Y / 4);
+
+            // Add Cloud
+            Clouds.Add(new Cloud
+            {
+                Position = new Vector2((float)x, (float)y),
+                Size = size,
+                SpriteX = spriteX,
+                SpriteY = spriteY,
+                Speed = speed
+            });
+
+            Trace.WriteLine($"X: {x}, Y: {y}, Size: {size.X},{size.Y}, Sprite: {spriteX},{spriteY}, Speed: {speed}");
+        }
+    }
+}

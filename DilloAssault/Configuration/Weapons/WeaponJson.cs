@@ -7,6 +7,7 @@ namespace DilloAssault.Configuration.Weapons
     {
         public string Type { get; set; }
         public TextureName TextureName { get; set; }
+        public string EffectType { get; set; }
         public int ClipSize { get; set; }
         public int MaxRange { get; set; }
         public int FireRate { get; set; }
@@ -14,9 +15,9 @@ namespace DilloAssault.Configuration.Weapons
 
         public float BulletsFired { get; set; }
         public float BulletDamage { get; set; }
-        public float Accuracy { get; set; }
-        public float WeaponWeight { get; set; }
+        public int AccuracyConeDegrees { get; set; }
         public float RecoilStrength { get; set; }
+        public int RecoilRecoveryRate { get; set; }
 
         public PointJson SpriteOffset { get; set; }
     }

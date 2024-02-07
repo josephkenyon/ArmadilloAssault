@@ -1,5 +1,6 @@
 ﻿using DilloAssault.Configuration;
 using DilloAssault.Configuration.Avatars;
+using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Weapons;
 using DilloAssault.Graphics.Drawing.Textures;
@@ -73,19 +74,59 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Animation? BufferedAnimation { get; set; }
         private Direction? BufferedDirection { get; set; }
 
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol.ToString()))];
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun.ToString()))];
         private int WeaponSelectionIndex { get; set; }
+
+        public int BufferedShotFrameCounter { get; set; } = 0;
 
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
 
         public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire();
 
+        public float Recoil { get; set; }
+
+        public int FramesUntilRecoil { get; set; } = -1;
+
+        private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type.ToString());
+
         public void Update()
         {
             UpdateFrameCounter();
             UpdateBreathingFrameCounter();
+            UpdateRecoil();
 
             Weapons.ForEach(weapon => weapon.Update());
+        }
+
+        private void UpdateRecoil()
+        {
+            if (FramesUntilRecoil > -1)
+            {
+                if (FramesUntilRecoil == 0) {
+                    Recoil = (float)(CurrentWeaponConfiguration.RecoilStrength * 45 * Math.PI / 180);
+                }
+
+                FramesUntilRecoil--;
+            }
+
+            if (Recoil > 0)
+            {
+                Recoil -= (float)(Math.PI / 4 / CurrentWeaponConfiguration.RecoilRecoveryRate);
+            }
+
+            if (Recoil < 0)
+            {
+                Recoil = 0;
+            }
+        }
+
+        public void Fire()
+        {
+            var weaponTip = GetWeaponTip();
+
+            FramesUntilRecoil = 6;
+
+            Weapons[WeaponSelectionIndex].Fire(weaponTip, AimAngle, Direction);
         }
 
         private void UpdateFrameCounter()
@@ -148,16 +189,9 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
         }
 
-        public void Fire()
-        {
-            var weaponTip = GetWeaponTip();
-
-            Weapons[WeaponSelectionIndex].Fire(weaponTip, AimAngle);
-        }
-
         private Vector2 GetWeaponTip()
         {
-            var weaponOffset = ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type.ToString()).SpriteOffset;
+            var weaponOffset = CurrentWeaponConfiguration.SpriteOffset;
 
             var vectorX = weaponOffset.X;
             var vectorY = weaponOffset.Y;

@@ -2,11 +2,13 @@
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Effects;
+using DilloAssault.GameState.Battle.Environment.Clouds;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +16,25 @@ namespace DilloAssault.GameState.Battle.Drawing
 {
     public static class BattleDrawingHelper
     {
+        public static void DrawClouds()
+        {
+            var spriteBatch = DrawingManager.SpriteBatch;
+
+            spriteBatch.Begin();
+
+            foreach (var cloud in CloudManager.Clouds)
+            {
+                spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.clouds),
+                    destinationRectangle: new Rectangle((int)cloud.Position.X, (int)cloud.Position.Y, cloud.Size.X, cloud.Size.Y),
+                    sourceRectangle: new Rectangle(CloudManager.CloudSpriteSize * cloud.SpriteX, CloudManager.CloudSpriteSize * cloud.SpriteY, CloudManager.CloudSpriteSize, CloudManager.CloudSpriteSize),
+                    color: Color.White * Math.Clamp(0.45f * Math.Abs(cloud.Speed), 0.2f, 1f)
+                );
+            }
+
+            spriteBatch.End();
+        }
+
         public static void DrawBullets()
         {
             var spriteBatch = DrawingManager.SpriteBatch;
@@ -49,7 +70,11 @@ namespace DilloAssault.GameState.Battle.Drawing
                     texture: TextureManager.GetTexture(configuration.TextureName),
                     destinationRectangle: new Rectangle((int)effect.Position.X, (int)effect.Position.Y, configuration.Size.X, configuration.Size.Y),
                     sourceRectangle: new Rectangle(spriteX * configuration.SpriteSize.X, spriteY * configuration.SpriteSize.Y, configuration.SpriteSize.X, configuration.SpriteSize.Y),
-                    color: Color.White
+                    color: Color.White,
+                    rotation: 0f,
+                    origin: Vector2.Zero,
+                    effects: effect.Direction == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                    1f
                 );
             }
 
@@ -132,7 +157,7 @@ namespace DilloAssault.GameState.Battle.Drawing
         private static void DrawAvatarArm(SpriteBatch spriteBatch, Avatar avatar, TextureName textureName)
         {
             var armOrigin = avatar.GetArmSpriteOrigin();
-            DrawAvatarBodyPart(spriteBatch, avatar, armOrigin, textureName, true);
+            DrawAvatarBodyPart(spriteBatch, avatar, armOrigin, textureName, true, applyRecoil: true);
         }
         private static void DrawAvatarHead(SpriteBatch spriteBatch, Avatar avatar)
         {
@@ -167,7 +192,7 @@ namespace DilloAssault.GameState.Battle.Drawing
             DrawAvatarBodyPart(spriteBatch, avatar, headOrigin, avatar.HeadTextureName, offset: new Point((int)xOffset, (int)yOffset));
         }
 
-        private static void DrawAvatarBodyPart(SpriteBatch spriteBatch, Avatar avatar, Vector2 origin, TextureName textureName, bool applyBreathing = false, Point? offset = null)
+        private static void DrawAvatarBodyPart(SpriteBatch spriteBatch, Avatar avatar, Vector2 origin, TextureName textureName, bool applyBreathing = false, Point? offset = null, bool applyRecoil = false)
         {
             var spriteOffset = avatar.Direction == Direction.Left ? -avatar.SpriteOffset.X : avatar.SpriteOffset.X;
 
@@ -178,12 +203,19 @@ namespace DilloAssault.GameState.Battle.Drawing
                avatar.Size.Y
             );
 
+            var rotation = (float)avatar.ArmAngle;
+
+            if (applyRecoil)
+            {
+                rotation += (avatar.Direction == Direction.Left) ? avatar.Recoil : -avatar.Recoil;
+            }
+
             spriteBatch.Draw(
                 texture: TextureManager.GetTexture(textureName),
                 destinationRectangle: destinationRectangle,
                 null,
                 Color.White,
-                (float)avatar.ArmAngle,
+                rotation: rotation,
                 origin,
                 avatar.Direction == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 1f);

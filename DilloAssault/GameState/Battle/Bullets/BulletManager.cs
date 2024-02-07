@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DilloAssault.GameState.Battle.Effects;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,17 @@ namespace DilloAssault.GameState.Battle.Bullets
             {
                 if (CollisionBoxes.Any(box => box.Contains(bulletPosition)) || frameCounter == 200)
                 {
+                    var newBulletPosition = new Vector2(bulletPosition.X, bulletPosition.Y);
+                    while(CollisionBoxes.Any(box => box.Contains(newBulletPosition)) && frameCounter != 200)
+                    {
+                        newBulletPosition = new Vector2(
+                            newBulletPosition.X - (float)(Bullet_Speed / 10 * Math.Cos(bullet.Angle)),
+                            newBulletPosition.Y - (float)(Bullet_Speed / 10 * Math.Sin(bullet.Angle))
+                        );
+                    }
+
+                    bullet.DustCloudOffset = new Vector2(newBulletPosition.X - bulletPosition.X, newBulletPosition.Y - bulletPosition.Y);
+
                     bullet.FrameLife = frameCounter;
                 }
 
@@ -45,6 +57,11 @@ namespace DilloAssault.GameState.Battle.Bullets
 
         public static void UpdateBullets()
         {
+            foreach (var bullet in Bullets.Where(bullet => bullet.FrameCounter == bullet.FrameLife))
+            {
+                EffectManager.CreateEffect(bullet.Position + bullet.DustCloudOffset, EffectType.dust_cloud);
+            }
+
             Bullets.RemoveAll(bullet => bullet.FrameCounter == bullet.FrameLife);
 
             foreach (var bullet in Bullets)

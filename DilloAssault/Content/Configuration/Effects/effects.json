@@ -12,5 +12,33 @@
     },
     "FrameLife": 64,
     "SpriteRowLength": 8
+  },
+  {
+    "Type": "muzzle_flash_large",
+    "TextureName": "muzzle_flash_large",
+    "Size": {
+      "X": 128,
+      "Y": 128
+    },
+    "SpriteSize": {
+      "X": 128,
+      "Y": 128
+    },
+    "FrameLife": 64,
+    "SpriteRowLength": 8
+  },
+  {
+    "Type": "dust_cloud",
+    "TextureName": "dust_cloud",
+    "Size": {
+      "X": 64,
+      "Y": 64
+    },
+    "SpriteSize": {
+      "X": 192,
+      "Y": 192
+    },
+    "FrameLife": 63,
+    "SpriteRowLength": 8
   }
 ]

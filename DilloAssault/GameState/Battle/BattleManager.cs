@@ -5,6 +5,7 @@ using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Drawing;
 using DilloAssault.GameState.Battle.Effects;
+using DilloAssault.GameState.Battle.Environment.Clouds;
 using DilloAssault.GameState.Battle.Input;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Players;
@@ -35,6 +36,7 @@ namespace DilloAssault.GameState.Battle
 
             BulletManager.Initialize(Scene.CollisionBoxes);
             EffectManager.Initialize();
+            CloudManager.Initialize();
         }
 
         public static void Update(Action exit)
@@ -49,6 +51,7 @@ namespace DilloAssault.GameState.Battle
 
             BulletManager.UpdateBullets();
             EffectManager.UpdateEffects();
+            CloudManager.UpdateClouds();
 
             if (ControlsManager.IsControlDown(0, Control.Start))
             {
@@ -58,7 +61,9 @@ namespace DilloAssault.GameState.Battle
 
         public static void Draw()
         {
-            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080));
+            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f);
+
+            BattleDrawingHelper.DrawClouds();
 
             foreach (var list in Scene.TileLists.Where(list => list.Z < 0))
             {

@@ -2,15 +2,16 @@
   {
     "Type": "Pistol",
     "TextureName": "pistol",
+    "EffectType": "muzzle_flash_small",
     "ClipSize": 5,
     "MaxRange": 750,
     "BulletsFired": 1,
     "BulletDamage": 15,
-    "Accuracy": 0.8,
-    "FireRate": 45,
+    "AccuracyConeDegrees": 15,
+    "FireRate": 35,
     "ReloadRate": 150,
-    "WeaponWeight": 5,
     "RecoilStrength": 0.5,
+    "RecoilRecoveryRate": 30,
     "SpriteOffset": {
       "X": 54,
       "Y": 13
@@ -19,15 +20,16 @@
   {
     "Type": "Assault",
     "TextureName": "assault",
+    "EffectType": "muzzle_flash_small",
     "ClipSize": 10,
     "MaxRange": 750,
     "BulletsFired": 1,
     "BulletDamage": 8,
-    "Accuracy": 0.6,
-    "FireRate": 20,
+    "AccuracyConeDegrees": 25,
+    "FireRate": 30,
     "ReloadRate": 240,
-    "WeaponWeight": 8,
     "RecoilStrength": 0.4,
+    "RecoilRecoveryRate": 30,
     "SpriteOffset": {
       "X": 74,
       "Y": 15
@@ -36,15 +38,16 @@
   {
     "Type": "Shotgun",
     "TextureName": "shotgun",
+    "EffectType": "muzzle_flash_large",
     "ClipSize": 2,
     "MaxRange": 400,
     "BulletsFired": 6,
     "BulletDamage": 10,
-    "Accuracy": 0.5,
+    "AccuracyConeDegrees": 45,
     "FireRate": 60,
     "ReloadRate": 150,
-    "WeaponWeight": 7,
-    "RecoilStrength": 0.9,
+    "RecoilStrength": 1,
+    "RecoilRecoveryRate": 60,
     "SpriteOffset": {
       "X": 73,
       "Y": 17
@@ -53,15 +56,16 @@
   {
     "Type": "Sniper",
     "TextureName": "sniper",
+    "EffectType": "muzzle_flash_large",
     "ClipSize": 5,
     "MaxRange": 2000,
     "BulletsFired": 1,
     "BulletDamage": 40,
-    "Accuracy": 0.9,
+    "AccuracyConeDegrees": 0,
     "FireRate": 90,
     "ReloadRate": 240,
-    "WeaponWeight": 8,
     "RecoilStrength": 0.7,
+    "RecoilRecoveryRate": 30,
     "SpriteOffset": {
       "X": 74,
       "Y": 13

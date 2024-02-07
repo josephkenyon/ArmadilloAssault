@@ -22,11 +22,20 @@ namespace DilloAssault.GameState.Battle.Input
 
         private static void HandleFiring(int playerIndex, Avatar avatar)
         {
-            if (ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary))
+            if (ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary) || avatar.BufferedShotFrameCounter > 0)
             {
                 if (avatar.CanFire)
                 {
                     avatar.Fire();
+                    avatar.BufferedShotFrameCounter = 0;
+                }
+                else if (ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary))
+                {
+                    avatar.BufferedShotFrameCounter = 24;
+                }
+                else
+                {
+                    avatar.BufferedShotFrameCounter--;
                 }
             }
         }

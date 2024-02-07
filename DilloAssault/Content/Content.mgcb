@@ -32,6 +32,18 @@
 #begin Configuration/Weapons/weapons.json
 /copy:Configuration/Weapons/weapons.json
 
+#begin Graphics/Effects/dust_cloud.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Effects/dust_cloud.png
+
 #begin Graphics/Effects/muzzle_flash_large.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -111,6 +123,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Sprites/Arthur/arthur.png
 
+#begin Graphics/Sprites/clouds.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Sprites/clouds.png
+
 #begin Graphics/Textures/crosshair.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -158,6 +182,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/jungle_level_foreground.png
+
+#begin Graphics/Textures/mountain_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/mountain_background.png
 
 #begin Graphics/Textures/Weapons/assault.png
 /importer:TextureImporter

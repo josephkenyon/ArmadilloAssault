@@ -37,7 +37,7 @@ namespace DilloAssault.Graphics.Drawing
             );
         }
 
-        public static void DrawTexture(TextureName textureName, Rectangle destinationRectangle)
+        public static void DrawTexture(TextureName textureName, Rectangle destinationRectangle, float opacity = 1f)
         {
             _spriteBatch.Begin();
 
@@ -48,7 +48,7 @@ namespace DilloAssault.Graphics.Drawing
                 rotation: 0f,
                 effects: SpriteEffects.None,
                 origin: Vector2.Zero,
-                color: Color.White,
+                color: Color.White * opacity,
                 layerDepth: 1f
             );
 

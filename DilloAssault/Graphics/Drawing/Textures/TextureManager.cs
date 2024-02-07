@@ -21,6 +21,8 @@ namespace DilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.arthur_right_arm, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Arthur", "arthur_right_arm")));
             _textures.Add(TextureName.arthur_left_arm, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Arthur", "arthur_left_arm")));
 
+            _textures.Add(TextureName.clouds, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "clouds")));
+
             _textures.Add(TextureName.pistol, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "pistol")));
             _textures.Add(TextureName.assault, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "assault")));
             _textures.Add(TextureName.shotgun, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "shotgun")));
@@ -29,10 +31,13 @@ namespace DilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.forest_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "forest_background")));
             _textures.Add(TextureName.jungle_level_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "jungle_level_background")));
             _textures.Add(TextureName.jungle_level_foreground, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "jungle_level_foreground")));
+            _textures.Add(TextureName.mountain_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "mountain_background")));
 
             _textures.Add(TextureName.test_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "test_tileset")));
 
             _textures.Add(TextureName.muzzle_flash_small, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_small")));
+            _textures.Add(TextureName.muzzle_flash_large, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_large")));
+            _textures.Add(TextureName.dust_cloud, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "dust_cloud")));
         }
 
         public static Texture2D GetTexture(TextureName textureName)
