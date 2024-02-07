@@ -56,7 +56,9 @@ namespace DilloAssault.GameState.Battle.Avatars
         public bool CloseToGround { get; set; }
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
 
-        public double AimAngle { get; set; }
+        public double ArmAngle { get; set; }
+        public float AimAngle { get; set; }
+
         public float SpinningAngle { get; private set; } = (float)(Math.PI / -2f);
         public Vector2 AimDirection { get; set; }
 
@@ -76,7 +78,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
 
-        public bool CanFire => Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire();
+        public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire();
 
         public void Update()
         {
@@ -148,16 +150,46 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public void Fire()
         {
-            var weaponAngle = GetWeaponAngle();
+            var weaponTip = GetWeaponTip();
 
-            var weaponTip = GetArmOrigin();
+            Weapons[WeaponSelectionIndex].Fire(weaponTip, AimAngle);
+        }
 
-            weaponTip = new Vector2(
-                weaponTip.X + (float)(Size.X / 2 * Math.Cos(weaponAngle)),
-                weaponTip.Y + (float)(Size.X / 2 * Math.Sin(weaponAngle))
+        private Vector2 GetWeaponTip()
+        {
+            var weaponOffset = ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type.ToString()).SpriteOffset;
+
+            var vectorX = weaponOffset.X;
+            var vectorY = weaponOffset.Y;
+            if (Direction == Direction.Left)
+            {
+                vectorY = -vectorY;
+            }
+
+            var weaponTipVector = new Vector2(vectorX, vectorY);
+
+            var armOrigin = GetArmOrigin();
+
+            if (Direction == Direction.Right)
+            {
+                AimAngle = (float)Math.Clamp(AimAngle, -90 * Math.PI / 180, 55 * Math.PI / 180);
+            }
+            else
+            {
+                if (AimAngle < 0)
+                {
+                    AimAngle = (float)Math.Clamp(AimAngle, -270 * Math.PI / 180, -90 * Math.PI / 180);
+                }
+                else
+                {
+                    AimAngle = (float)Math.Clamp(AimAngle, 125 * Math.PI / 180, 270 * Math.PI / 180);
+                }
+            }
+
+            return new Vector2(
+                (float)(weaponTipVector.X * Math.Cos(AimAngle) - weaponTipVector.Y * Math.Sin(AimAngle)) + Position.X + armOrigin.X + SpriteOffset.X / 2,
+                (float)(weaponTipVector.Y * Math.Cos(AimAngle) + weaponTipVector.X * Math.Sin(AimAngle)) + Position.Y + armOrigin.Y
             );
-
-            Weapons[WeaponSelectionIndex].Fire(weaponTip, weaponAngle);
         }
 
         public float GetBreathingYOffset()
@@ -168,20 +200,26 @@ namespace DilloAssault.GameState.Battle.Avatars
             return (float)(A * Math.Sin(X * Math.PI / B)) - 3;
         }
 
-        public double GetWeaponAngle()
+        public Vector2 GetArmOrigin()
         {
-            return AimAngle + (Direction == Direction.Right ? 0 : Math.PI);
+            var armOriginX = avatarJson.ArmOrigin.X;
+            var armOriginY = avatarJson.ArmOrigin.Y;
+
+            armOriginX += SpriteOffset.X / 2;
+
+            return new Vector2(armOriginX, armOriginY);
         }
 
-        public Vector2 GetArmOrigin() {
+        public Vector2 GetArmSpriteOrigin() {
             var armOriginX = avatarJson.ArmOrigin.X;
+            var armOriginY = avatarJson.ArmOrigin.Y;
 
             if (Direction == Direction.Left)
             {
                 armOriginX += ((Size.X / 2) - armOriginX) * 2;
             }
 
-            return new Vector2(armOriginX, avatarJson.ArmOrigin.Y);
+            return new Vector2(armOriginX, armOriginY);
         }
 
         public Vector2 GetHeadOrigin()

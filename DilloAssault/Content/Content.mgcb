@@ -17,6 +17,9 @@
 #begin Configuration/Avatars/arthur.json
 /copy:Configuration/Avatars/arthur.json
 
+#begin Configuration/Effects/effects.json
+/copy:Configuration/Effects/effects.json
+
 #begin Configuration/Scenes/jungle_scene.json
 /copy:Configuration/Scenes/jungle_scene.json
 
@@ -28,6 +31,18 @@
 
 #begin Configuration/Weapons/weapons.json
 /copy:Configuration/Weapons/weapons.json
+
+#begin Graphics/Effects/muzzle_flash_small.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Effects/muzzle_flash_small.png
 
 #begin Graphics/Fonts/editor_font.spritefont
 /importer:FontDescriptionImporter

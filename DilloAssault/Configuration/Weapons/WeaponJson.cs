@@ -1,4 +1,5 @@
-﻿using DilloAssault.Graphics.Drawing.Textures;
+﻿using DilloAssault.Configuration.Generics;
+using DilloAssault.Graphics.Drawing.Textures;
 
 namespace DilloAssault.Configuration.Weapons
 {
@@ -16,5 +17,7 @@ namespace DilloAssault.Configuration.Weapons
         public float Accuracy { get; set; }
         public float WeaponWeight { get; set; }
         public float RecoilStrength { get; set; }
+
+        public PointJson SpriteOffset { get; set; }
     }
 }

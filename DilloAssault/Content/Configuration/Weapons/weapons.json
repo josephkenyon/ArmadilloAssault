@@ -7,10 +7,14 @@
     "BulletsFired": 1,
     "BulletDamage": 15,
     "Accuracy": 0.8,
-    "FireRate": 60,
+    "FireRate": 45,
     "ReloadRate": 150,
     "WeaponWeight": 5,
-    "RecoilStrength": 0.5
+    "RecoilStrength": 0.5,
+    "SpriteOffset": {
+      "X": 54,
+      "Y": 13
+    }
   },
   {
     "Type": "Assault",
@@ -23,7 +27,11 @@
     "FireRate": 20,
     "ReloadRate": 240,
     "WeaponWeight": 8,
-    "RecoilStrength": 0.4
+    "RecoilStrength": 0.4,
+    "SpriteOffset": {
+      "X": 74,
+      "Y": 15
+    }
   },
   {
     "Type": "Shotgun",
@@ -36,7 +44,11 @@
     "FireRate": 60,
     "ReloadRate": 150,
     "WeaponWeight": 7,
-    "RecoilStrength": 0.9
+    "RecoilStrength": 0.9,
+    "SpriteOffset": {
+      "X": 73,
+      "Y": 17
+    }
   },
   {
     "Type": "Sniper",
@@ -49,6 +61,10 @@
     "FireRate": 90,
     "ReloadRate": 240,
     "WeaponWeight": 8,
-    "RecoilStrength": 0.7
+    "RecoilStrength": 0.7,
+    "SpriteOffset": {
+      "X": 74,
+      "Y": 13
+    }
   }
 ]

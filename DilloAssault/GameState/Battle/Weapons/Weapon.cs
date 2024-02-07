@@ -1,7 +1,9 @@
 ﻿using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Bullets;
+using DilloAssault.GameState.Battle.Effects;
 using Microsoft.Xna.Framework;
 using System;
+using System.Reflection.Metadata;
 
 namespace DilloAssault.GameState.Battle.Weapons
 {
@@ -33,6 +35,13 @@ namespace DilloAssault.GameState.Battle.Weapons
             FramesSinceFired = 0;
 
             BulletManager.CreateBullet(weaponTip, (float)weaponAngle);
+
+            var effectPosition = new Vector2(
+                    weaponTip.X + (float)(18 * Math.Cos(weaponAngle)),
+                    weaponTip.Y + (float)(18 * Math.Sin(weaponAngle))
+            );
+
+            EffectManager.CreateEffect(effectPosition, EffectType.muzzle_flash_small);
         }
     }
 }

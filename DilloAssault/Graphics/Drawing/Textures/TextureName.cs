@@ -21,6 +21,7 @@ namespace DilloAssault.Graphics.Drawing.Textures
         forest_background,
         jungle_level_background,
         jungle_level_foreground,
-        arthur_head
+        arthur_head,
+        muzzle_flash_small
     }
 }

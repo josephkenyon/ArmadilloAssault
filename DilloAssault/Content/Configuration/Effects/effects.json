@@ -1,0 +1,16 @@
+[
+  {
+    "Type": "muzzle_flash_small",
+    "TextureName": "muzzle_flash_small",
+    "Size": {
+      "X": 64,
+      "Y": 64
+    },
+    "SpriteSize": {
+      "X": 64,
+      "Y": 64
+    },
+    "FrameLife": 64,
+    "SpriteRowLength": 8
+  }
+]

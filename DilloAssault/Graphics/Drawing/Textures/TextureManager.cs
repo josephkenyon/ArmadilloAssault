@@ -32,7 +32,7 @@ namespace DilloAssault.Graphics.Drawing.Textures
 
             _textures.Add(TextureName.test_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "test_tileset")));
 
-
+            _textures.Add(TextureName.muzzle_flash_small, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_small")));
         }
 
         public static Texture2D GetTexture(TextureName textureName)

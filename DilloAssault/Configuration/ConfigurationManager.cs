@@ -8,6 +8,7 @@ using System.Linq;
 using DilloAssault.Configuration.Scenes;
 using DilloAssault.Configuration.Avatars;
 using DilloAssault.Configuration.Weapons;
+using DilloAssault.Configuration.Effects;
 
 namespace DilloAssault.Configuration
 {
@@ -19,6 +20,7 @@ namespace DilloAssault.Configuration
         private static Dictionary<string, SceneJson> _sceneConfigurations;
         private static Dictionary<string, AvatarJson> _avatarConfigurations;
         private static Dictionary<string, WeaponJson> _weaponConfigurations;
+        private static Dictionary<string, EffectJson> _effectConfigurations;
 
         public static void LoadContent(ContentManager contentManager)
         {
@@ -27,6 +29,37 @@ namespace DilloAssault.Configuration
             LoadScenes();
             LoadAvatars();
             LoadWeapons();
+            LoadEffects();
+        }
+
+        private static void LoadEffects()
+        {
+
+            _effectConfigurations = [];
+
+            var fileNames = Directory
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Effects"))
+                .Where(file => file.EndsWith(".json"));
+
+            var fileName = fileNames.First();
+
+            using StreamReader r = new(fileName);
+
+            string json = r.ReadToEnd();
+
+            try
+            {
+                var effectConfigurations = JsonConvert.DeserializeObject<List<EffectJson>>(json);
+
+                effectConfigurations.ForEach(effect =>
+                {
+                    _effectConfigurations.Add(effect.Type, effect);
+                });
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message, e);
+            }
         }
 
         private static void LoadWeapons()
@@ -127,6 +160,11 @@ namespace DilloAssault.Configuration
         public static WeaponJson GetWeaponConfiguration(string weaponType)
         {
             return _weaponConfigurations[weaponType];
+        }
+
+        public static EffectJson GetEffectConfiguration(string effectType)
+        {
+            return _effectConfigurations[effectType];
         }
     }
 }

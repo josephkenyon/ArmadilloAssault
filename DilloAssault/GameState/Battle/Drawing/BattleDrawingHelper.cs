@@ -1,7 +1,8 @@
 ﻿using DilloAssault.Configuration;
 using DilloAssault.GameState.Battle.Avatars;
+using DilloAssault.GameState.Battle.Bullets;
+using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.GameState.Battle.Physics;
-using DilloAssault.GameState.Battle.Weapons;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
@@ -13,6 +14,48 @@ namespace DilloAssault.GameState.Battle.Drawing
 {
     public static class BattleDrawingHelper
     {
+        public static void DrawBullets()
+        {
+            var spriteBatch = DrawingManager.SpriteBatch;
+
+            spriteBatch.Begin();
+
+            foreach (var bullet in BulletManager.Bullets)
+            {
+                spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.white_pixel),
+                    destinationRectangle: new Rectangle((int)bullet.Position.X, (int)bullet.Position.Y, 3, 3),
+                    color: Color.Black * 0.3f
+                );
+            }
+
+            spriteBatch.End();
+        }
+
+        public static void DrawEffects()
+        {
+            var spriteBatch = DrawingManager.SpriteBatch;
+
+            spriteBatch.Begin();
+            
+            foreach (var effect in EffectManager.Effects)
+            {
+                var configuration = ConfigurationManager.GetEffectConfiguration(effect.Type.ToString());
+
+                var spriteX = effect.FrameCounter % configuration.SpriteRowLength;
+                var spriteY = effect.FrameCounter / configuration.SpriteRowLength;
+
+                spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(configuration.TextureName),
+                    destinationRectangle: new Rectangle((int)effect.Position.X, (int)effect.Position.Y, configuration.Size.X, configuration.Size.Y),
+                    sourceRectangle: new Rectangle(spriteX * configuration.SpriteSize.X, spriteY * configuration.SpriteSize.Y, configuration.SpriteSize.X, configuration.SpriteSize.Y),
+                    color: Color.White
+                );
+            }
+
+            spriteBatch.End();
+        }
+
         public static void DrawAvatars(ICollection<Avatar> avatars)
         {
             var spriteBatch = DrawingManager.SpriteBatch;
@@ -88,7 +131,7 @@ namespace DilloAssault.GameState.Battle.Drawing
 
         private static void DrawAvatarArm(SpriteBatch spriteBatch, Avatar avatar, TextureName textureName)
         {
-            var armOrigin = avatar.GetArmOrigin();
+            var armOrigin = avatar.GetArmSpriteOrigin();
             DrawAvatarBodyPart(spriteBatch, avatar, armOrigin, textureName, true);
         }
         private static void DrawAvatarHead(SpriteBatch spriteBatch, Avatar avatar)
@@ -98,26 +141,26 @@ namespace DilloAssault.GameState.Battle.Drawing
             double xOffset = 0;
             double yOffset = -3;
 
-            if (avatar.AimAngle > 0f)
+            if (avatar.ArmAngle > 0f)
             {
                 if (avatar.Direction == Direction.Right)
                 {
-                    xOffset = avatar.AimAngle * 7;
+                    xOffset = avatar.ArmAngle * 7;
                 }
                 else
                 {
-                    yOffset -= avatar.AimAngle * 3;
+                    yOffset -= avatar.ArmAngle * 3;
                 }
             }
-            else if (avatar.AimAngle < 0f)
+            else if (avatar.ArmAngle < 0f)
             {
                 if (avatar.Direction == Direction.Right)
                 {
-                    yOffset += avatar.AimAngle * 3;
+                    yOffset += avatar.ArmAngle * 3;
                 }
                 else
                 {
-                    xOffset = avatar.AimAngle * 7;
+                    xOffset = avatar.ArmAngle * 7;
                 }
             }
 
@@ -140,7 +183,7 @@ namespace DilloAssault.GameState.Battle.Drawing
                 destinationRectangle: destinationRectangle,
                 null,
                 Color.White,
-                (float)avatar.AimAngle,
+                (float)avatar.ArmAngle,
                 origin,
                 avatar.Direction == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 1f);

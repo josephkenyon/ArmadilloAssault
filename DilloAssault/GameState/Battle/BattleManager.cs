@@ -2,7 +2,9 @@
 using DilloAssault.Configuration;
 using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
+using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Drawing;
+using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.GameState.Battle.Input;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Players;
@@ -30,6 +32,9 @@ namespace DilloAssault.GameState.Battle
             Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration()));
 
             Avatars.Values.First().SetPosition(new Vector2(1000, 0));
+
+            BulletManager.Initialize(Scene.CollisionBoxes);
+            EffectManager.Initialize();
         }
 
         public static void Update(Action exit)
@@ -41,6 +46,9 @@ namespace DilloAssault.GameState.Battle
 
                 avatar.Value.Update();
             }
+
+            BulletManager.UpdateBullets();
+            EffectManager.UpdateEffects();
 
             if (ControlsManager.IsControlDown(0, Control.Start))
             {
@@ -64,8 +72,8 @@ namespace DilloAssault.GameState.Battle
                 DrawingManager.DrawCollection([.. list.Tiles]);
             }
 
-            //DrawingManager.DrawTexture(Scene.ForegroundTexture, Point.Zero);
-            
+            BattleDrawingHelper.DrawBullets();
+            BattleDrawingHelper.DrawEffects();
         }
     }
 }
