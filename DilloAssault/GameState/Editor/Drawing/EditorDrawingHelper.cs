@@ -1,6 +1,7 @@
 ﻿using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace DilloAssault.GameState.Editor.Drawing
@@ -28,6 +29,11 @@ namespace DilloAssault.GameState.Editor.Drawing
             }
 
             spriteBatch.End();
+        }
+
+        internal static void DrawCollisionBoxes(Func<Rectangle> getShellBox)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace DilloAssault.GameState.Battle.Drawing
                 spriteBatch.Draw(
                     texture: TextureManager.GetTexture(bullet.TextureName),
                     destinationRectangle: new Rectangle((int)bullet.Position.X, (int)bullet.Position.Y, bullet.Size.X, bullet.Size.Y),
-                    sourceRectangle: new Rectangle(0, 0, 118, 32),
+                    null,
                     color: Color.White,
                     rotation: bullet.Angle,
                     origin: Vector2.Zero,

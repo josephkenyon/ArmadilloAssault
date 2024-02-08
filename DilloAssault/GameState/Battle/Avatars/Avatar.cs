@@ -28,6 +28,8 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         private readonly IEnumerable<Rectangle> HurtBoxes = ConfigurationHelper.GetHurtBoxes(avatarJson.HurtBoxes);
 
+        private readonly Rectangle ShellBox = ConfigurationHelper.GetRectangle(avatarJson.ShellBox);
+
         private readonly Dictionary<Animation, AnimationJson> Animations = ConfigurationHelper.GetAnimations(avatarJson.Animations);
 
         public readonly Point Size = new(avatarJson.Size.X, avatarJson.Size.Y);
@@ -71,7 +73,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Animation? BufferedAnimation { get; set; }
         private Direction? BufferedDirection { get; set; }
 
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun.ToString()))];
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol.ToString()))];
         private int WeaponSelectionIndex { get; set; }
 
         public int BufferedShotFrameCounter { get; set; } = 0;
@@ -330,6 +332,18 @@ namespace DilloAssault.GameState.Battle.Avatars
             else
             {
                 return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, spriteWidth), Position));
+            }
+        }
+
+        public Rectangle GetShellBox()
+        {
+            if (Direction == Direction.Right)
+            {
+                return CollisionHelper.OffsetRectangle(ShellBox, Position);
+            }
+            else
+            {
+                return CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(ShellBox, spriteWidth), Position);
             }
         }
 

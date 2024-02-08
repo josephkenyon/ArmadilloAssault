@@ -51,8 +51,8 @@
     "EffectType": "muzzle_flash_large",
     "BulletTexture": "shotgun_bullet",
     "BulletSize": {
-      "X": 6,
-      "Y": 6
+      "X": 5,
+      "Y": 5
     },
     "ClipSize": 2,
     "MaxRange": 400,
