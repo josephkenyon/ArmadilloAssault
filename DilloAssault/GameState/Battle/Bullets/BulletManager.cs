@@ -1,9 +1,12 @@
 ﻿using DilloAssault.Configuration.Weapons;
+using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Effects;
+using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace DilloAssault.GameState.Battle.Bullets
 {
@@ -12,12 +15,12 @@ namespace DilloAssault.GameState.Battle.Bullets
         public static readonly float Bullet_Speed = 44f;
 
         public static List<Bullet> Bullets { get; private set; }
-        private static ICollection<Rectangle> CollisionBoxes { get; set; }
+        private static List<KeyValuePair<Rectangle, LineQuad>> CollisionLinePairs { get; set; }
 
         public static void Initialize(ICollection<Rectangle> collisionBoxes)
         {
             Bullets = [];
-            CollisionBoxes = collisionBoxes;
+            CollisionLinePairs = collisionBoxes.Select(box => new KeyValuePair<Rectangle, LineQuad>(box, LineQuad.CreateFrom(box))).ToList();
         }
              
         public static void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory)
@@ -30,48 +33,79 @@ namespace DilloAssault.GameState.Battle.Bullets
                 Angle = angleTrajectory
             };
 
-            var frameCounter = 0;
-            var bulletPosition = position;
-            while(bullet.FrameLife == -1)
-            {
-                if (CollisionBoxes.Any(box => box.Contains(bulletPosition)) || frameCounter == 200)
-                {
-                    var newBulletPosition = new Vector2(bulletPosition.X, bulletPosition.Y);
-                    while(CollisionBoxes.Any(box => box.Contains(newBulletPosition)) && frameCounter != 200)
-                    {
-                        newBulletPosition = new Vector2(
-                            newBulletPosition.X - (float)(Bullet_Speed / 10 * Math.Cos(bullet.Angle)),
-                            newBulletPosition.Y - (float)(Bullet_Speed / 10 * Math.Sin(bullet.Angle))
-                        );
-                    }
-
-                    bullet.DustCloudOffset = new Vector2(newBulletPosition.X - bulletPosition.X, newBulletPosition.Y - bulletPosition.Y);
-
-                    bullet.FrameLife = frameCounter;
-                }
-
-                bulletPosition = GetNewBulletPosition(bulletPosition, bullet.Angle);
-
-                frameCounter++;
-            }
-
             Bullets.Add(bullet);
         }
 
-        public static void UpdateBullets()
+        public static void UpdateBullets(List<Avatar> avatars)
         {
-            foreach (var bullet in Bullets.Where(bullet => bullet.FrameCounter == bullet.FrameLife))
-            {
-                EffectManager.CreateEffect(bullet.Position + bullet.DustCloudOffset, EffectType.dust_cloud);
-            }
+            var boxLists = avatars.Select(avatar => {
+                var hurtBoxes = avatar.GetHurtBoxes().Select(box => new KeyValuePair<bool, LineQuad>(false, LineQuad.CreateFrom(box))).ToList();
 
-            Bullets.RemoveAll(bullet => bullet.FrameCounter == bullet.FrameLife);
+                hurtBoxes.Add(new(true, LineQuad.CreateFrom(avatar.GetShellBox())));
 
-            foreach (var bullet in Bullets)
-            {
-                bullet.Position = GetNewBulletPosition(bullet.Position, bullet.Angle);
-                bullet.FrameCounter++;
-            }
+                return hurtBoxes;
+            }).ToList();
+
+            Bullets.RemoveAll(bullet => {
+                var endOfLife = false;
+        
+                var newBulletPosition = GetNewBulletPosition(bullet.Position, bullet.Angle);
+
+                var bulletTrajectory = new Line(bullet.Position, newBulletPosition);
+
+                var terrainIntersections = CollisionLinePairs
+                    .Select(linePair => bulletTrajectory.GetIntersection(linePair.Value))
+                    .Where(vector => vector != null)
+                    .Select(vector => (Vector2) vector)
+                    .OrderBy(vector => GeometryHelper.DistanceBetweenTwoVectors(bullet.Position, vector));
+
+                if (terrainIntersections.Any())
+                {
+                    var terrain = terrainIntersections.First();
+                    var testBulletPosition = bullet.Position;
+
+                    EffectManager.CreateEffect(terrainIntersections.First(), EffectType.dust_cloud);
+                    endOfLife = true;
+                }
+
+                if (!endOfLife)
+                {
+                    for (int i = 0; i < avatars.Count; i++)
+                    {
+                        var avatarCenter = avatars[i].GetCenter();
+                        if (GeometryHelper.DistanceBetweenTwoVectors(avatarCenter, bullet.Position) <= (Bullet_Speed * 2))
+                        {
+                            var intersections = boxLists[i]
+                                .Select(linePair => new KeyValuePair<bool, Vector2?>(linePair.Key, bulletTrajectory.GetIntersection(linePair.Value)))
+                                .Where(pair => pair.Value != null)
+                                .Select(pair => new KeyValuePair<bool, Vector2>(pair.Key, (Vector2)pair.Value))
+                                .OrderBy(pair => GeometryHelper.DistanceBetweenTwoVectors(bullet.Position, pair.Value));
+
+                            if (intersections.Any())
+                            {
+                                var pair = intersections.First();
+                                if (pair.Key == true)
+                                {
+                                    RichochetBullet(bullet);
+                                }
+                                else
+                                {
+                                    avatars[i].HitByBullet(bullet);
+                                    EffectManager.CreateEffect(pair.Value, EffectType.blood_splatter);
+                                    endOfLife = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!endOfLife)
+                {
+                    bullet.Position = GetNewBulletPosition(bullet.Position, bullet.Angle);
+                }
+
+                return endOfLife;
+            });
         }
 
         private static Vector2 GetNewBulletPosition(Vector2 position, float angle)
@@ -80,6 +114,11 @@ namespace DilloAssault.GameState.Battle.Bullets
                     position.X + (float)(Bullet_Speed * Math.Cos(angle)),
                     position.Y + (float)(Bullet_Speed * Math.Sin(angle))
             );
+        }
+
+        private static void RichochetBullet(Bullet bullet)
+        {
+            bullet.Angle += (float)Math.PI;
         }
     }
 }

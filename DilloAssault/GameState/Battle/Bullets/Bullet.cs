@@ -12,8 +12,6 @@ namespace DilloAssault.GameState.Battle.Bullets
         public Vector2 DustCloudOffset { get; set; }
         public float Angle { get; set; }
         public int Damage { get; set; }
-        public int FrameCounter { get; set; } = 0;
-        public int FrameLife { get; set; } = -1;
 
         public void Update()
         {

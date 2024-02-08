@@ -10,6 +10,7 @@ namespace DilloAssault.GameState.Battle.Effects
     {
         muzzle_flash_small,
         muzzle_flash_large,
-        dust_cloud
+        dust_cloud,
+        blood_splatter
     }
 }

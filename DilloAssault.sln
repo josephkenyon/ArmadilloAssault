@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DilloAssault", "DilloAssault\DilloAssault.csproj", "{A54A9626-80DE-4509-B767-C768B4E87846}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{45F69E0B-1C40-46D9-B3D6-158931E7A414}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A54A9626-80DE-4509-B767-C768B4E87846}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54A9626-80DE-4509-B767-C768B4E87846}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A54A9626-80DE-4509-B767-C768B4E87846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45F69E0B-1C40-46D9-B3D6-158931E7A414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45F69E0B-1C40-46D9-B3D6-158931E7A414}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45F69E0B-1C40-46D9-B3D6-158931E7A414}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45F69E0B-1C40-46D9-B3D6-158931E7A414}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

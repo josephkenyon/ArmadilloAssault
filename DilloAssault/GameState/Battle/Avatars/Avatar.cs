@@ -1,6 +1,7 @@
 ﻿using DilloAssault.Configuration;
 using DilloAssault.Configuration.Avatars;
 using DilloAssault.Configuration.Weapons;
+using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Weapons;
 using DilloAssault.Graphics.Drawing.Textures;
@@ -73,7 +74,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Animation? BufferedAnimation { get; set; }
         private Direction? BufferedDirection { get; set; }
 
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol.ToString()))];
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun.ToString()))];
         private int WeaponSelectionIndex { get; set; }
 
         public int BufferedShotFrameCounter { get; set; } = 0;
@@ -188,6 +189,16 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
         }
 
+        public Vector2 GetCenter()
+        {
+            return new Vector2(Position.X + (Size.X / 2), Position.Y + (Size.Y / 2));
+        }
+
+        public void HitByBullet(Bullet bullet)
+        {
+
+        }
+        
         private Vector2 GetWeaponTip()
         {
             var weaponOffset = CurrentWeaponConfiguration.SpriteOffset;

@@ -17,6 +17,7 @@
         muzzle_flash_small,
         muzzle_flash_large,
         dust_cloud,
+        blood_splatter,
         clouds,
         bullet,
         shotgun_bullet,

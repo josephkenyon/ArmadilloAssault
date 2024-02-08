@@ -40,5 +40,19 @@
     },
     "FrameLife": 63,
     "SpriteRowLength": 8
+  },
+  {
+    "Type": "blood_splatter",
+    "TextureName": "blood_splatter",
+    "Size": {
+      "X": 64,
+      "Y": 64
+    },
+    "SpriteSize": {
+      "X": 96,
+      "Y": 96
+    },
+    "FrameLife": 63,
+    "SpriteRowLength": 8
   }
 ]

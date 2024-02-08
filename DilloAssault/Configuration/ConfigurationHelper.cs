@@ -16,7 +16,7 @@ namespace DilloAssault.Configuration
         public static JsonSerializerSettings JsonSerializerSettings => new() { TypeNameHandling = TypeNameHandling.Auto, ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
         public static string GetConfigurationPath(string folderName) => Path.Combine(ConfigurationManager.ContentManager.RootDirectory, "Configuration", folderName);
 
-        public static Rectangle GetRectangle(RectangleJson rectangleJson) => new Rectangle(rectangleJson.X, rectangleJson.Y, rectangleJson.Width, rectangleJson.Height);
+        public static Rectangle GetRectangle(RectangleJson rectangleJson) => new(rectangleJson.X, rectangleJson.Y, rectangleJson.Width, rectangleJson.Height);
         public static List<Rectangle> GetHurtBoxes(HurtBoxListJson collisionBoxListJson)
         {
             List<Rectangle> collisionBoxesList = [];

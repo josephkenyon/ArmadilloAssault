@@ -8,6 +8,6 @@ namespace DilloAssault.GameState.Battle.Effects
         public EffectType Type { get; set; }
         public Vector2 Position { get; set; }
         public Direction? Direction { get; set; }
-        public int FrameCounter { get; set; } = -1;
+        public int FrameCounter { get; set; }
     }
 }

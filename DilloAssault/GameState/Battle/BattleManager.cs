@@ -49,8 +49,10 @@ namespace DilloAssault.GameState.Battle
                 avatar.Value.Update();
             }
 
-            BulletManager.UpdateBullets();
             EffectManager.UpdateEffects();
+
+            BulletManager.UpdateBullets([.. Avatars.Values]);
+
             CloudManager.UpdateClouds();
 
             if (ControlsManager.IsControlDown(0, Control.Start))
