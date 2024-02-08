@@ -8,6 +8,8 @@ namespace DilloAssault.Configuration.Weapons
         public string Type { get; set; }
         public TextureName TextureName { get; set; }
         public string EffectType { get; set; }
+        public TextureName BulletTexture { get; set; }
+        public PointJson BulletSize { get; set; }
         public int ClipSize { get; set; }
         public int MaxRange { get; set; }
         public int FireRate { get; set; }

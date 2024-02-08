@@ -5,7 +5,7 @@ namespace DilloAssault.GameState.Battle.Physics
 {
     public static class CollisionHelper
     {
-        public static readonly int PassableYThreshold = 24;
+        public static readonly int PassableYThreshold = 18;
         public static Rectangle OffsetRectangle(Rectangle rectangle, Vector2 Offset) => new(rectangle.X + (int)Offset.X, rectangle.Y + (int)Offset.Y, rectangle.Width, rectangle.Height);
         public static Rectangle FlipRectangle(Rectangle rectangle, int spriteWidth) => new(spriteWidth - rectangle.X - rectangle.Width, rectangle.Y, rectangle.Width, rectangle.Height);
 

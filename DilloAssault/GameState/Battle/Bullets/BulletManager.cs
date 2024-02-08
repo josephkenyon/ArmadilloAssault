@@ -1,4 +1,5 @@
-﻿using DilloAssault.GameState.Battle.Effects;
+﻿using DilloAssault.Configuration.Weapons;
+using DilloAssault.GameState.Battle.Effects;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,12 @@ namespace DilloAssault.GameState.Battle.Bullets
             CollisionBoxes = collisionBoxes;
         }
              
-        public static void CreateBullet(Vector2 position, float angleTrajectory)
+        public static void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory)
         {
             var bullet = new Bullet
             {
+                TextureName = weaponConfiguration.BulletTexture,
+                Size = weaponConfiguration.BulletSize.ToPoint(),
                 Position = position,
                 Angle = angleTrajectory
             };

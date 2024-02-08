@@ -17,6 +17,9 @@
 #begin Configuration/Avatars/arthur.json
 /copy:Configuration/Avatars/arthur.json
 
+#begin Configuration/Avatars/axel.json
+/copy:Configuration/Avatars/axel.json
+
 #begin Configuration/Effects/effects.json
 /copy:Configuration/Effects/effects.json
 
@@ -86,6 +89,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Sprites/arthur.png
+
+#begin Graphics/Sprites/axel.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Sprites/axel.png
 
 #begin Graphics/Sprites/clouds.png
 /importer:TextureImporter
@@ -170,6 +185,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/mountain_background.png
+
+#begin Graphics/Textures/shotgun_bullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/shotgun_bullet.png
 
 #begin Graphics/Textures/Weapons/assault.png
 /importer:TextureImporter

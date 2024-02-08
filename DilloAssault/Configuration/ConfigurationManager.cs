@@ -154,7 +154,7 @@ namespace DilloAssault.Configuration
 
         public static AvatarJson GetAvatarConfiguration()
         {
-            return _avatarConfigurations.Values.First();
+            return _avatarConfigurations.Values.Last();
         }
 
         public static WeaponJson GetWeaponConfiguration(string weaponType)

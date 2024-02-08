@@ -3,6 +3,11 @@
     "Type": "Pistol",
     "TextureName": "pistol",
     "EffectType": "muzzle_flash_small",
+    "BulletTexture": "bullet",
+    "BulletSize": {
+      "X": 8,
+      "Y": 2
+    },
     "ClipSize": 5,
     "MaxRange": 750,
     "BulletsFired": 1,
@@ -21,6 +26,11 @@
     "Type": "Assault",
     "TextureName": "assault",
     "EffectType": "muzzle_flash_small",
+    "BulletTexture": "bullet",
+    "BulletSize": {
+      "X": 8,
+      "Y": 2
+    },
     "ClipSize": 10,
     "MaxRange": 750,
     "BulletsFired": 1,
@@ -39,6 +49,11 @@
     "Type": "Shotgun",
     "TextureName": "shotgun",
     "EffectType": "muzzle_flash_large",
+    "BulletTexture": "shotgun_bullet",
+    "BulletSize": {
+      "X": 6,
+      "Y": 6
+    },
     "ClipSize": 2,
     "MaxRange": 400,
     "BulletsFired": 6,
@@ -57,6 +72,11 @@
     "Type": "Sniper",
     "TextureName": "sniper",
     "EffectType": "muzzle_flash_large",
+    "BulletTexture": "bullet",
+    "BulletSize": {
+      "X": 16,
+      "Y": 4
+    },
     "ClipSize": 5,
     "MaxRange": 2000,
     "BulletsFired": 1,

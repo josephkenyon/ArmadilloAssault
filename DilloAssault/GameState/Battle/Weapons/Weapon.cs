@@ -47,7 +47,7 @@ namespace DilloAssault.GameState.Battle.Weapons
                 Random r = new();
                 double rDouble = r.NextDouble() * configuration.AccuracyConeDegrees - configuration.AccuracyConeDegrees / 2;
 
-                BulletManager.CreateBullet(weaponTip, (float)(newAngle + rDouble * Math.PI / 180));
+                BulletManager.CreateBullet(configuration, weaponTip, (float)(newAngle + rDouble * Math.PI / 180));
             }
 
 

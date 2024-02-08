@@ -1,10 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DilloAssault.Graphics.Drawing.Textures;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace DilloAssault.GameState.Battle.Bullets
 {
     public class Bullet
     {
+        public TextureName TextureName { get; set; }
+        public Point Size { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 DustCloudOffset { get; set; }
         public float Angle { get; set; }

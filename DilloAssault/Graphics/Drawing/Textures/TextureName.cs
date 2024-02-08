@@ -5,6 +5,7 @@
         test_tileset,
         white_pixel,
         arthur,
+        axel,
         pistol,
         assault,
         shotgun,
@@ -18,5 +19,6 @@
         dust_cloud,
         clouds,
         bullet,
+        shotgun_bullet,
     }
 }

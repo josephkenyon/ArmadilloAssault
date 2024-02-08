@@ -10,14 +10,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Drawing
 {
     public static class BattleDrawingHelper
     {
-        private static readonly Point ZeroPoint = Point.Zero;
-
         public static void DrawClouds()
         {
             var spriteBatch = DrawingManager.SpriteBatch;
@@ -46,8 +43,8 @@ namespace DilloAssault.GameState.Battle.Drawing
             foreach (var bullet in BulletManager.Bullets)
             {
                 spriteBatch.Draw(
-                    texture: TextureManager.GetTexture(TextureName.bullet),
-                    destinationRectangle: new Rectangle((int)bullet.Position.X, (int)bullet.Position.Y, 16, 4),
+                    texture: TextureManager.GetTexture(bullet.TextureName),
+                    destinationRectangle: new Rectangle((int)bullet.Position.X, (int)bullet.Position.Y, bullet.Size.X, bullet.Size.Y),
                     sourceRectangle: new Rectangle(0, 0, 118, 32),
                     color: Color.White,
                     rotation: bullet.Angle,
