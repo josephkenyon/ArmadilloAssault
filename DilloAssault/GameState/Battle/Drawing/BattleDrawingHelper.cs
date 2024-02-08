@@ -16,6 +16,8 @@ namespace DilloAssault.GameState.Battle.Drawing
 {
     public static class BattleDrawingHelper
     {
+        private static readonly Point ZeroPoint = Point.Zero;
+
         public static void DrawClouds()
         {
             var spriteBatch = DrawingManager.SpriteBatch;
@@ -92,27 +94,26 @@ namespace DilloAssault.GameState.Battle.Drawing
 
             spriteBatch.Begin();
 
-            foreach (var avatar in avatars.Where(avatar => !avatar.IsSpinning))
-            {
-                DrawAvatarArm(spriteBatch, avatar, Direction.Left);
-            }
-
             foreach (var avatar in avatars)
             {
-                DrawAvatarBackground(spriteBatch, avatar);
-            }
+                if (!avatar.IsSpinning) {
+                    DrawAvatarArm(spriteBatch, avatar, Direction.Left);
+                }
 
-            foreach (var avatar in avatars.Where(avatar => !avatar.IsSpinning))
-            {
-                DrawAvatarHead(spriteBatch, avatar);
-                DrawAvatarGun(spriteBatch, avatar);
-                DrawAvatarArm(spriteBatch, avatar, Direction.Right);
+                DrawAvatarBody(spriteBatch, avatar);
+
+                if (!avatar.IsSpinning)
+                {
+                    DrawAvatarHead(spriteBatch, avatar);
+                    DrawAvatarGun(spriteBatch, avatar);
+                    DrawAvatarArm(spriteBatch, avatar, Direction.Right);
+                }
             }
 
             spriteBatch.End();
         }
 
-        private static void DrawAvatarBackground(SpriteBatch spriteBatch, Avatar avatar)
+        private static void DrawAvatarBody(SpriteBatch spriteBatch, Avatar avatar)
         {
 
             var flipDirection = avatar.Direction == Direction.Left;
@@ -133,8 +134,9 @@ namespace DilloAssault.GameState.Battle.Drawing
                 destinationRectangle = new Rectangle(destinationRectangle.X + spriteOffset, destinationRectangle.Y, destinationRectangle.Width, destinationRectangle.Height);
             }
 
+            // Draw left leg, or body if spinning
             spriteBatch.Draw(
-                texture: TextureManager.GetTexture(avatar.SpriteTextureName),
+                texture: TextureManager.GetTexture(avatar.TextureName),
                 destinationRectangle: destinationRectangle,
                 sourceRectangle: sourceRectangle,
                 color: Color.White,
@@ -143,12 +145,41 @@ namespace DilloAssault.GameState.Battle.Drawing
                 flipDirection ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 1f
             );
+
+            if (!isSpinning)
+            {
+                // Draw body
+                spriteBatch.Draw(
+                   texture: TextureManager.GetTexture(avatar.TextureName),
+                   destinationRectangle: destinationRectangle,
+                   sourceRectangle: new Rectangle(Point.Zero, avatar.Size),
+                   color: Color.White,
+                   rotation: isSpinning ? (flipDirection ? -avatar.SpinningAngle : avatar.SpinningAngle) : 0f,
+                   origin: isSpinning ? new Vector2(64, 64) : Vector2.Zero,
+                   flipDirection ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                   1f
+                );
+
+                sourceRectangle = new Rectangle(sourceRectangle.X, sourceRectangle.Y + (1 * avatar.Size.Y), sourceRectangle.Width, sourceRectangle.Height);
+
+                // Draw right leg
+                spriteBatch.Draw(
+                   texture: TextureManager.GetTexture(avatar.TextureName),
+                   destinationRectangle: destinationRectangle,
+                   sourceRectangle: sourceRectangle,
+                   color: Color.White,
+                   rotation: isSpinning ? (flipDirection ? -avatar.SpinningAngle : avatar.SpinningAngle) : 0f,
+                   origin: isSpinning ? new Vector2(64, 64) : Vector2.Zero,
+                   flipDirection ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                   1f
+                );
+            }
         }
 
         private static void DrawAvatarArm(SpriteBatch spriteBatch, Avatar avatar, Direction direction)
         {
-            var textureName = direction == Direction.Right ? avatar.RightArmTextureName : avatar.LeftArmTextureName;
-            DrawAvatarArm(spriteBatch, avatar, textureName);
+            var spriteLocation = new Point(direction == Direction.Right ? 3 : 2, 0);
+            DrawAvatarArm(spriteBatch, avatar, spriteLocation, avatar.TextureName);
         }
 
         private static void DrawAvatarGun(SpriteBatch spriteBatch, Avatar avatar)
@@ -156,16 +187,17 @@ namespace DilloAssault.GameState.Battle.Drawing
             var weapon = avatar.SelectedWeapon;
             var textureName = ConfigurationManager.GetWeaponConfiguration(weapon.Type.ToString()).TextureName;
 
-            DrawAvatarArm(spriteBatch, avatar, textureName);
+            DrawAvatarArm(spriteBatch, avatar, Point.Zero, textureName);
         }
 
-        private static void DrawAvatarArm(SpriteBatch spriteBatch, Avatar avatar, TextureName textureName)
+        private static void DrawAvatarArm(SpriteBatch spriteBatch, Avatar avatar, Point spriteLocation, TextureName textureName)
         {
             var armOrigin = avatar.GetArmSpriteOrigin();
-            DrawAvatarBodyPart(spriteBatch, avatar, armOrigin, textureName, true, applyRecoil: true);
+            DrawAvatarBodyPart(spriteBatch, avatar, armOrigin, spriteLocation, textureName, true, applyRecoil: true);
         }
         private static void DrawAvatarHead(SpriteBatch spriteBatch, Avatar avatar)
         {
+            var spriteLocation = new Point(1, 0);
             var headOrigin = avatar.GetHeadOrigin();
 
             double xOffset = 0;
@@ -194,10 +226,10 @@ namespace DilloAssault.GameState.Battle.Drawing
                 }
             }
 
-            DrawAvatarBodyPart(spriteBatch, avatar, headOrigin, avatar.HeadTextureName, offset: new Point((int)xOffset, (int)yOffset));
+            DrawAvatarBodyPart(spriteBatch, avatar, headOrigin, spriteLocation, avatar.TextureName, offset: new Point((int)xOffset, (int)yOffset));
         }
 
-        private static void DrawAvatarBodyPart(SpriteBatch spriteBatch, Avatar avatar, Vector2 origin, TextureName textureName, bool applyBreathing = false, Point? offset = null, bool applyRecoil = false)
+        private static void DrawAvatarBodyPart(SpriteBatch spriteBatch, Avatar avatar, Vector2 origin, Point spriteLocation, TextureName textureName, bool applyBreathing = false, Point? offset = null, bool applyRecoil = false)
         {
             var spriteOffset = avatar.Direction == Direction.Left ? -avatar.SpriteOffset.X : avatar.SpriteOffset.X;
 
@@ -218,7 +250,7 @@ namespace DilloAssault.GameState.Battle.Drawing
             spriteBatch.Draw(
                 texture: TextureManager.GetTexture(textureName),
                 destinationRectangle: destinationRectangle,
-                null,
+                sourceRectangle: new Rectangle(spriteLocation.X * avatar.Size.X, spriteLocation.Y * avatar.Size.Y, avatar.Size.X, avatar.Size.Y),
                 Color.White,
                 rotation: rotation,
                 origin,

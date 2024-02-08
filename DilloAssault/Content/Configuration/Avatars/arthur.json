@@ -1,8 +1,5 @@
 {
-  "SpriteTextureName": "arthur",
-  "HeadTextureName": "arthur_head",
-  "LeftArmTextureName": "arthur_left_arm",
-  "RightArmTextureName": "arthur_right_arm",
+  "TextureName": "arthur",
   "ArmOrigin": {
     "X": 55,
     "Y": 51
@@ -23,22 +20,22 @@
     "Running": {
       "FrameCount": 10,
       "X": 0,
-      "Y": 0
+      "Y": 1
     },
     "Jumping": {
       "FrameCount": 4,
       "X": 0,
-      "Y": 1
+      "Y": 3
     },
     "Spinning": {
       "FrameCount": 1,
-      "X": 6,
-      "Y": 1
+      "X": 4,
+      "Y": 0
     },
     "Falling": {
       "FrameCount": 2,
       "X": 4,
-      "Y": 1
+      "Y": 3
     }
   },
   "CollisionBox": {

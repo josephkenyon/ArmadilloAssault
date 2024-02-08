@@ -35,7 +35,7 @@ namespace DilloAssault.Configuration
         {
             var animations = new Dictionary<Animation, AnimationJson>
             {
-                { Animation.Resting, new AnimationJson { FrameCount = 1, X = 0, Y = 1 } },
+                { Animation.Resting, new AnimationJson { FrameCount = 1, X = 0, Y = 3 } },
                 { Animation.Running, animationsJson.Running },
                 { Animation.Rolling, animationsJson.Spinning },
                 { Animation.Jumping, animationsJson.Jumping },

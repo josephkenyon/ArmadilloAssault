@@ -5,10 +5,7 @@ namespace DilloAssault.Configuration.Avatars
 {
     public class AvatarJson
     {
-        public TextureName SpriteTextureName { get; set; }
-        public TextureName HeadTextureName { get; set; }
-        public TextureName LeftArmTextureName { get; set; }
-        public TextureName RightArmTextureName { get; set; }
+        public TextureName TextureName { get; set; }
         public PointJson ArmOrigin { get; set; }
         public PointJson HeadOrigin { get; set; }
         public AnimationsJson Animations { get; set; }

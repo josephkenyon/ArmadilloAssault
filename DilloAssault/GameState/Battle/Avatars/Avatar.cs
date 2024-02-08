@@ -34,10 +34,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public readonly Point SpriteOffset = new(avatarJson.SpriteOffset.X, avatarJson.SpriteOffset.Y);
 
-        public readonly TextureName SpriteTextureName = avatarJson.SpriteTextureName;
-        public readonly TextureName HeadTextureName = avatarJson.HeadTextureName;
-        public readonly TextureName LeftArmTextureName = avatarJson.LeftArmTextureName;
-        public readonly TextureName RightArmTextureName = avatarJson.RightArmTextureName;
+        public readonly TextureName TextureName = avatarJson.TextureName;
 
         public Animation Animation { get; private set; } = Animation.Resting;
 

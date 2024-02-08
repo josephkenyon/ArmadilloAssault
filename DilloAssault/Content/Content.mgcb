@@ -75,43 +75,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Graphics/Fonts/editor_font.spritefont
 
-#begin Graphics/Sprites/Arthur/arthur_head.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Sprites/Arthur/arthur_head.png
-
-#begin Graphics/Sprites/Arthur/arthur_left_arm.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Sprites/Arthur/arthur_left_arm.png
-
-#begin Graphics/Sprites/Arthur/arthur_right_arm.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Sprites/Arthur/arthur_right_arm.png
-
-#begin Graphics/Sprites/Arthur/arthur.png
+#begin Graphics/Sprites/arthur.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -121,7 +85,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/Sprites/Arthur/arthur.png
+/build:Graphics/Sprites/arthur.png
 
 #begin Graphics/Sprites/clouds.png
 /importer:TextureImporter
