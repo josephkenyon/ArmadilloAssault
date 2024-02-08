@@ -149,7 +149,7 @@ namespace DilloAssault.Configuration
 
         public static SceneJson GetSceneConfiguration()
         {
-            return _sceneConfigurations.Values.Last();
+            return _sceneConfigurations.Values.First();
         }
 
         public static AvatarJson GetAvatarConfiguration()

@@ -33,6 +33,8 @@ namespace DilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.jungle_level_foreground, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "jungle_level_foreground")));
             _textures.Add(TextureName.mountain_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "mountain_background")));
 
+            _textures.Add(TextureName.bullet, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "bullet")));
+
             _textures.Add(TextureName.test_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "test_tileset")));
 
             _textures.Add(TextureName.muzzle_flash_small, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_small")));

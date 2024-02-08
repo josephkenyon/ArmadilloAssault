@@ -44,9 +44,14 @@ namespace DilloAssault.GameState.Battle.Drawing
             foreach (var bullet in BulletManager.Bullets)
             {
                 spriteBatch.Draw(
-                    texture: TextureManager.GetTexture(TextureName.white_pixel),
-                    destinationRectangle: new Rectangle((int)bullet.Position.X, (int)bullet.Position.Y, 3, 3),
-                    color: Color.Black * 0.3f
+                    texture: TextureManager.GetTexture(TextureName.bullet),
+                    destinationRectangle: new Rectangle((int)bullet.Position.X, (int)bullet.Position.Y, 16, 4),
+                    sourceRectangle: new Rectangle(0, 0, 118, 32),
+                    color: Color.White,
+                    rotation: bullet.Angle,
+                    origin: Vector2.Zero,
+                    effects: SpriteEffects.None,
+                    1f
                 );
             }
 
@@ -170,22 +175,22 @@ namespace DilloAssault.GameState.Battle.Drawing
             {
                 if (avatar.Direction == Direction.Right)
                 {
-                    xOffset = avatar.ArmAngle * 7;
+                    xOffset = avatar.ArmAngle * 10;
                 }
                 else
                 {
-                    yOffset -= avatar.ArmAngle * 3;
+                    yOffset -= avatar.ArmAngle * 4;
                 }
             }
             else if (avatar.ArmAngle < 0f)
             {
                 if (avatar.Direction == Direction.Right)
                 {
-                    yOffset += avatar.ArmAngle * 3;
+                    yOffset += avatar.ArmAngle * 4;
                 }
                 else
                 {
-                    xOffset = avatar.ArmAngle * 7;
+                    xOffset = avatar.ArmAngle * 10;
                 }
             }
 

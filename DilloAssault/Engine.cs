@@ -18,7 +18,7 @@ namespace DilloAssault
         {
             GraphicsManager.Initialize(this);
 
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "Content"; 
             IsMouseVisible = true;
         }
 

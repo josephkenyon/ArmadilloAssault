@@ -19,6 +19,7 @@
         muzzle_flash_small,
         muzzle_flash_large,
         dust_cloud,
-        clouds
+        clouds,
+        bullet,
     }
 }
