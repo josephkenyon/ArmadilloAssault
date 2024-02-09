@@ -11,8 +11,6 @@ namespace DilloAssault.Graphics.Drawing
     {
         private static SpriteBatch _spriteBatch;
 
-        public static SpriteBatch SpriteBatch => _spriteBatch;
-
         public static void LoadContent(GraphicsDevice graphicsDevice) {
             _spriteBatch = new SpriteBatch(graphicsDevice);
         }
@@ -78,6 +76,27 @@ namespace DilloAssault.Graphics.Drawing
         {
             _spriteBatch.Begin();
             _spriteBatch.DrawString(spriteFont, text, position.ToVector2() * DrawingHelper.TileSize, Color.White);
+            _spriteBatch.End();
+        }
+
+        public static void DrawCollisionBoxes(IEnumerable<Rectangle> rectangles)
+        {
+            _spriteBatch.Begin();
+
+            var scaleConstant = DrawingHelper.ScaleConstant;
+
+            foreach (var rectangle in rectangles)
+            {
+                var destinationRectangle = new Rectangle((int)(rectangle.X * scaleConstant), (int)(rectangle.Y * scaleConstant), (int)(rectangle.Width * scaleConstant), (int)(rectangle.Height * scaleConstant));
+
+                _spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.white_pixel),
+                    destinationRectangle: destinationRectangle,
+                    sourceRectangle: new Rectangle(0, 0, 1, 1),
+                    color: Color.Yellow * 0.35f
+                );
+            }
+
             _spriteBatch.End();
         }
     }

@@ -10,9 +10,6 @@ namespace DilloAssault.Assets
         public Point Position { get; set; }
         public Point SpriteLocation { get; set; }
         public TextureName TextureName { get; set; }
-
-        Vector2 IDrawableObject.Position => Position.ToVector2();
-
         public Rectangle GetDestinationRectangle() => DrawingHelper.GetDestinationRectangle(Position);
         public Rectangle? GetSourceRectangle() => DrawingHelper.GetSourceRectangle(SpriteLocation);
     }

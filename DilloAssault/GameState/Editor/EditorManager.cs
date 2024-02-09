@@ -2,7 +2,6 @@
 using DilloAssault.Configuration;
 using DilloAssault.Configuration.Textures;
 using DilloAssault.Controls;
-using DilloAssault.GameState.Editor.Drawing;
 using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System.IO;
@@ -107,19 +106,18 @@ namespace DilloAssault.GameState.Editor
         {
             var scaleConstant = DrawingHelper.ScaleConstant;
             var scaledTileSize = DrawingHelper.TileSize;
+
             DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, (int)(1920 * DrawingHelper.ScaleConstant), (int)(1080 * DrawingHelper.ScaleConstant)));
 
             Scene.TileLists.ForEach(list => DrawingManager.DrawCollection([.. list.Tiles]));
 
             DrawingManager.DrawTexture(TextureName.test_tileset, new Vector2((SceneSize.X + 1) * scaledTileSize, 1 * scaledTileSize));
 
-            //DrawingManager.DrawTexture(Scene.BackgroundTexture, Point.Zero);
-
             DrawingManager.DrawString($"Z: {Z}", new Point(SceneSize.X, 0), DrawingHelper.GetFont);
 
             if (Z == 0)
             {
-                EditorDrawingHelper.DrawCollisionBoxes(Scene.CollisionBoxes);
+                DrawingManager.DrawCollisionBoxes(Scene.CollisionBoxes);
             }
         }
     }

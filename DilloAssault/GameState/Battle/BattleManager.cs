@@ -3,12 +3,12 @@ using DilloAssault.Configuration;
 using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Bullets;
-using DilloAssault.GameState.Battle.Drawing;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.GameState.Battle.Environment.Clouds;
 using DilloAssault.GameState.Battle.Input;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Players;
+using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
@@ -72,7 +72,7 @@ namespace DilloAssault.GameState.Battle
                 DrawingManager.DrawCollection([.. list.Tiles]);
             }
 
-            BattleDrawingHelper.DrawAvatars(Avatars.Values);
+            DrawingManager.DrawCollection(GetAvatars());
 
             foreach (var list in Scene.TileLists.Where(list => list.Z > 0))
             {
@@ -82,6 +82,31 @@ namespace DilloAssault.GameState.Battle
             DrawingManager.DrawCollection(BulletManager.Bullets);
 
             DrawingManager.DrawCollection(EffectManager.Effects);
+        }
+
+        private static List<IDrawableObject> GetAvatars()
+        {
+            var avatarCollection = new List<IDrawableObject>();
+
+            var notSpinningAvatars = Avatars.Values.Where(avatar => !avatar.IsSpinning).ToList();
+            var spinningAvatars = Avatars.Values.Where(avatar => avatar.IsSpinning).ToList();
+
+            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetArm(avatar, Direction.Left)));
+
+            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetLeg(avatar, Direction.Left)));
+
+            foreach (var avatar in Avatars.Values)
+            {
+                avatarCollection.Add(AvatarDrawingHelper.GetBody(avatar));
+            }
+
+            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetLeg(avatar, Direction.Right)));
+
+            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetHead(avatar)));
+            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetGun(avatar)));
+            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetArm(avatar, Direction.Right)));
+
+            return avatarCollection;
         }
     }
 }

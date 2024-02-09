@@ -1,7 +1,6 @@
 ﻿using DilloAssault.Configuration.Avatars;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
-using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

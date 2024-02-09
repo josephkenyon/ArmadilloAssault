@@ -23,11 +23,11 @@
 #begin Configuration/Effects/effects.json
 /copy:Configuration/Effects/effects.json
 
+#begin Configuration/Scenes/gusty_gorge.json
+/copy:Configuration/Scenes/gusty_gorge.json
+
 #begin Configuration/Scenes/jungle_scene.json
 /copy:Configuration/Scenes/jungle_scene.json
-
-#begin Configuration/Scenes/test_scene_2.json
-/copy:Configuration/Scenes/test_scene_2.json
 
 #begin Configuration/Scenes/test_scene.json
 /copy:Configuration/Scenes/test_scene.json
