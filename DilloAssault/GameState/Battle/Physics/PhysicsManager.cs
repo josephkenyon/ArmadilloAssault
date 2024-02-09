@@ -1,4 +1,5 @@
-﻿using DilloAssault.GameState.Battle.Avatars;
+﻿using DilloAssault.Configuration.Avatars;
+using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
@@ -61,7 +62,7 @@ namespace DilloAssault.GameState.Battle.Physics
             avatar.Velocity = new Vector2(
                 Math.Clamp(
                     avatar.Velocity.X + avatar.Acceleration.X,
-                    -avatar.MaxVelocity.X, avatar.MaxVelocity.X
+                    -AvatarConstants.MaxVelocity.X, AvatarConstants.MaxVelocity.X
                 ),
                 avatar.Velocity.Y
             );
@@ -86,7 +87,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 avatar.Velocity.X,
                 Math.Clamp(
                     avatar.Velocity.Y + avatar.Acceleration.Y,
-                    -avatar.MaxVelocity.Y, avatar.MaxVelocity.Y
+                    -AvatarConstants.MaxVelocity.Y, AvatarConstants.MaxVelocity.Y
                 )
             );
 
@@ -161,7 +162,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 return;
             }
 
-            var yDelta = Math.Min(avatar.Velocity.Y, avatar.MaxVelocity.Y);
+            var yDelta = Math.Min(avatar.Velocity.Y, AvatarConstants.MaxVelocity.Y);
 
             if (avatarCollisionBox.Top + yDelta <= ceilingY)
             {
@@ -212,7 +213,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 return;
             }
 
-            var yDelta = Math.Min(avatar.Velocity.Y, avatar.MaxVelocity.Y);
+            var yDelta = Math.Min(avatar.Velocity.Y, AvatarConstants.MaxVelocity.Y);
 
             if (avatarCollisionBox.Bottom + yDelta >= floorY)
             {
@@ -256,7 +257,7 @@ namespace DilloAssault.GameState.Battle.Physics
             {
                 avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
 
-                var decelerationConstant = avatar.Grounded ? avatar.RunningAcceleration : 4f;
+                var decelerationConstant = avatar.Grounded ? AvatarConstants.RunningAcceleration : 4f;
 
                 if (avatar.Animation == Animation.Rolling)
                 {

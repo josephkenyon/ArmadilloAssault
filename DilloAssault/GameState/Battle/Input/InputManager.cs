@@ -1,4 +1,5 @@
-﻿using DilloAssault.Controls;
+﻿using DilloAssault.Configuration.Avatars;
+using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
@@ -144,14 +145,14 @@ namespace DilloAssault.GameState.Battle.Input
                         avatar.SetBufferedAnimiation(Animation.Running);
 
                         avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - avatar.RunningAcceleration, -avatar.MaxRunningVelocity, avatar.MaxRunningVelocity);
+                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - AvatarConstants.RunningAcceleration, -AvatarConstants.MaxRunningVelocity, AvatarConstants.MaxRunningVelocity);
                     }
                     else
                     {
                         avatar.SetDirection(Direction.Left);
                         avatar.IncrementSpin();
 
-                        avatar.Acceleration = new Vector2(-avatar.RunningAcceleration, avatar.Acceleration.Y);
+                        avatar.Acceleration = new Vector2(-AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else
@@ -171,14 +172,14 @@ namespace DilloAssault.GameState.Battle.Input
                         avatar.SetBufferedAnimiation(Animation.Running);
 
                         avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + avatar.RunningAcceleration, -avatar.MaxRunningVelocity, avatar.MaxRunningVelocity);
+                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + AvatarConstants.RunningAcceleration, -AvatarConstants.MaxRunningVelocity, AvatarConstants.MaxRunningVelocity);
                     }
                     else
                     {
                         avatar.SetDirection(Direction.Right);
                         avatar.IncrementSpin();
 
-                        avatar.Acceleration = new Vector2(avatar.RunningAcceleration, avatar.Acceleration.Y);
+                        avatar.Acceleration = new Vector2(AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else
@@ -209,11 +210,11 @@ namespace DilloAssault.GameState.Battle.Input
             {
                 if (avatar.RunningVelocity > 0)
                 {
-                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - avatar.RunningAcceleration, 0, avatar.RunningVelocity);
+                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - AvatarConstants.RunningAcceleration, 0, avatar.RunningVelocity);
                 }
                 else if (avatar.RunningVelocity < 0)
                 {
-                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + avatar.RunningAcceleration, avatar.RunningVelocity, 0);
+                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + AvatarConstants.RunningAcceleration, avatar.RunningVelocity, 0);
                 }
             }
 

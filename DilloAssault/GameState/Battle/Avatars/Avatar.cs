@@ -15,45 +15,34 @@ namespace DilloAssault.GameState.Battle.Avatars
 {
     public class Avatar(AvatarJson avatarJson)
     {
-        public static readonly int spriteWidth = 128;
-        public static readonly int spriteHeight = 128;
 
-        public readonly Vector2 MaxVelocity = new(8f, 11);
-
-        public readonly float RunningAcceleration = 0.65f;
-        public readonly float JumpingAcceleration = 0.5f;
-        public readonly float MaxRunningVelocity = 6.5f;
-
+        // Collision
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);
-
         private readonly Rectangle SpinningCollisionBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningCollisionBox);
 
+        // Hurt Boxes
         private readonly IEnumerable<Rectangle> HurtBoxes = ConfigurationHelper.GetHurtBoxes(avatarJson.HurtBoxes);
-
         private readonly Rectangle ShellBox = ConfigurationHelper.GetRectangle(avatarJson.ShellBox);
 
-        private readonly Dictionary<Animation, AnimationJson> Animations = ConfigurationHelper.GetAnimations(avatarJson.Animations);
-
+        // Drawing
+        public readonly TextureName TextureName = avatarJson.TextureName;
         public readonly Point Size = new(avatarJson.Size.X, avatarJson.Size.Y);
-
         public readonly Point SpriteOffset = new(avatarJson.SpriteOffset.X, avatarJson.SpriteOffset.Y);
 
-        public readonly TextureName TextureName = avatarJson.TextureName;
-
+        // Animation
+        private readonly Dictionary<Animation, AnimationJson> Animations = ConfigurationHelper.GetAnimations(avatarJson.Animations);
         public Animation Animation { get; private set; } = Animation.Resting;
 
+        // Physics
         public Direction Direction { get; private set; }
         public Vector2 Position { get; private set; }
-
         public Vector2 Velocity { get; set; }
         public Vector2 Acceleration { get; set; }
-
         public float RunningVelocity { get; set; }
         public int InfluenceVelocity { get; set; }
         public int AvailableJumps { get; set; }
-
-        public bool DropThrough { get; set; }
         public bool RunningBackwards { get; set; }
+        public bool DropThrough { get; set; }
         public bool Grounded { get; set; }
         public bool CloseToGround { get; set; }
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
@@ -112,7 +101,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
             if (Recoil > 0)
             {
-                Recoil -= (float)(Math.PI / 4 / CurrentWeaponConfiguration.RecoilRecoveryRate);
+                Recoil -= (float)(Math.PI / 4f / CurrentWeaponConfiguration.RecoilRecoveryRate);
             }
 
             if (Recoil < 0)
@@ -310,8 +299,8 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public void IncrementSpin()
         {
-            var velocityX = (Math.Clamp(Velocity.X, -MaxVelocity.X * 2f, MaxVelocity.X * 2f) * 0.007f);
-            var velocityY = (Math.Clamp(Velocity.Y, -MaxVelocity.Y * 2f, MaxVelocity.Y * 2f) * 0.007f);
+            var velocityX = (Math.Clamp(Velocity.X, -AvatarConstants.MaxVelocity.X * 2f, AvatarConstants.MaxVelocity.X * 2f) * 0.007f);
+            var velocityY = (Math.Clamp(Velocity.Y, -AvatarConstants.MaxVelocity.Y * 2f, AvatarConstants.MaxVelocity.Y * 2f) * 0.007f);
 
             if (velocityX < 0)
             {
@@ -343,7 +332,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
             else
             {
-                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, spriteWidth), Position));
+                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, AvatarConstants.spriteWidth), Position));
             }
         }
 
@@ -355,7 +344,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
             else
             {
-                return CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(ShellBox, spriteWidth), Position);
+                return CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(ShellBox, AvatarConstants.spriteWidth), Position);
             }
         }
 
