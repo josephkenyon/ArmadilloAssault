@@ -21,5 +21,6 @@
         clouds,
         bullet,
         shotgun_bullet,
+        ricochet
     }
 }

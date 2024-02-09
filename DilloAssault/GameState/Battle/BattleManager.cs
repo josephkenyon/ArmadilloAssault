@@ -1,5 +1,6 @@
 ﻿using DilloAssault.Assets;
 using DilloAssault.Configuration;
+using DilloAssault.Configuration.Avatars;
 using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Bullets;
@@ -30,9 +31,13 @@ namespace DilloAssault.GameState.Battle
             ];
 
             Avatars = [];
-            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration()));
+            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
+
+            Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
+
 
             Avatars.Values.First().SetPosition(new Vector2(1000, 0));
+            Avatars.Values.Last().SetPosition(new Vector2(500, 0));
 
             BulletManager.Initialize(Scene.CollisionBoxes);
             EffectManager.Initialize();

@@ -40,6 +40,7 @@ namespace DilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.muzzle_flash_large, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_large")));
             _textures.Add(TextureName.dust_cloud, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "dust_cloud")));
             _textures.Add(TextureName.blood_splatter, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "blood_splatter")));
+            _textures.Add(TextureName.ricochet, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "ricochet")));
         }
 
         public static Texture2D GetTexture(TextureName textureName)

@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 
 namespace DilloAssault.GameState.Battle.Bullets
 {
@@ -88,6 +87,7 @@ namespace DilloAssault.GameState.Battle.Bullets
                                 if (pair.Key == true)
                                 {
                                     RichochetBullet(bullet);
+                                    EffectManager.CreateEffect(pair.Value, EffectType.ricochet);
                                 }
                                 else
                                 {
@@ -119,7 +119,11 @@ namespace DilloAssault.GameState.Battle.Bullets
 
         private static void RichochetBullet(Bullet bullet)
         {
-            bullet.Angle += (float)Math.PI;
+            var goingUp = Math.Sin(bullet.Angle) < 0;
+
+            var ricochetAmount = (float)(Math.PI / 2.5f);
+
+            bullet.Angle += goingUp ? ricochetAmount : -ricochetAmount;
         }
     }
 }

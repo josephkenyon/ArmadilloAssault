@@ -54,5 +54,19 @@
     },
     "FrameLife": 63,
     "SpriteRowLength": 8
+  },
+  {
+    "Type": "ricochet",
+    "TextureName": "ricochet",
+    "Size": {
+      "X": 32,
+      "Y": 32
+    },
+    "SpriteSize": {
+      "X": 32,
+      "Y": 32
+    },
+    "FrameLife": 20,
+    "SpriteRowLength": 4
   }
 ]

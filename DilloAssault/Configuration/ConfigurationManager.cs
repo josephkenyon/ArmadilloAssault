@@ -18,7 +18,7 @@ namespace DilloAssault.Configuration
 
 
         private static Dictionary<string, SceneJson> _sceneConfigurations;
-        private static Dictionary<string, AvatarJson> _avatarConfigurations;
+        private static Dictionary<AvatarType, AvatarJson> _avatarConfigurations;
         private static Dictionary<WeaponType, WeaponJson> _weaponConfigurations;
         private static Dictionary<EffectType, EffectJson> _effectConfigurations;
 
@@ -111,7 +111,11 @@ namespace DilloAssault.Configuration
                 {
                     var avatarJson = JsonConvert.DeserializeObject<AvatarJson>(json);
 
-                    _avatarConfigurations.Add(Path.GetFileNameWithoutExtension(fileName), avatarJson);
+                    var avatarName = Path.GetFileNameWithoutExtension(fileName);
+
+                    var avatarType = string.Concat(avatarName[0].ToString().ToUpper(), avatarName.AsSpan(1));
+
+                    _avatarConfigurations.Add(Enum.Parse<AvatarType>(avatarType), avatarJson);
                 }
                 catch (Exception e)
                 {
@@ -152,9 +156,9 @@ namespace DilloAssault.Configuration
             return _sceneConfigurations.Values.First();
         }
 
-        public static AvatarJson GetAvatarConfiguration()
+        public static AvatarJson GetAvatarConfiguration(AvatarType type)
         {
-            return _avatarConfigurations.Values.First();
+            return _avatarConfigurations[type];
         }
 
         public static WeaponJson GetWeaponConfiguration(WeaponType weaponType)

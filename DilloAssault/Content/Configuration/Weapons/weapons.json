@@ -12,7 +12,7 @@
     "MaxRange": 750,
     "BulletsFired": 1,
     "BulletDamage": 15,
-    "AccuracyConeDegrees": 15,
+    "AccuracyConeDegrees": 3,
     "FireRate": 35,
     "ReloadRate": 150,
     "RecoilStrength": 0.5,

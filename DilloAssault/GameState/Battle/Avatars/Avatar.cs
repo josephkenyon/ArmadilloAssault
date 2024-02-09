@@ -64,7 +64,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Animation? BufferedAnimation { get; set; }
         private Direction? BufferedDirection { get; set; }
 
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun))];
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
         private int WeaponSelectionIndex { get; set; }
 
         public int BufferedShotFrameCounter { get; set; } = 0;
