@@ -1,4 +1,5 @@
-﻿using DilloAssault.Configuration.Weapons;
+﻿using DilloAssault.Configuration.Effects;
+using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.Generics;

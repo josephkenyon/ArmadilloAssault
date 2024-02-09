@@ -65,7 +65,7 @@ namespace DilloAssault.GameState.Battle
         {
             DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f);
 
-            BattleDrawingHelper.DrawClouds();
+            DrawingManager.DrawCollection(CloudManager.Clouds);
 
             foreach (var list in Scene.TileLists.Where(list => list.Z < 0))
             {

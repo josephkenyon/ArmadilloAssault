@@ -1,9 +1,10 @@
 ﻿using DilloAssault.Configuration;
+using DilloAssault.Configuration.Textures;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.GameState.Battle.Environment.Clouds;
-using DilloAssault.GameState.Battle.Physics;
+using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
@@ -15,25 +16,6 @@ namespace DilloAssault.GameState.Battle.Drawing
 {
     public static class BattleDrawingHelper
     {
-        public static void DrawClouds()
-        {
-            var spriteBatch = DrawingManager.SpriteBatch;
-
-            spriteBatch.Begin();
-
-            foreach (var cloud in CloudManager.Clouds)
-            {
-                spriteBatch.Draw(
-                    texture: TextureManager.GetTexture(TextureName.clouds),
-                    destinationRectangle: new Rectangle((int)cloud.Position.X, (int)cloud.Position.Y, cloud.Size.X, cloud.Size.Y),
-                    sourceRectangle: new Rectangle(CloudManager.CloudSpriteSize * cloud.SpriteX, CloudManager.CloudSpriteSize * cloud.SpriteY, CloudManager.CloudSpriteSize, CloudManager.CloudSpriteSize),
-                    color: Color.White * Math.Clamp(0.45f * Math.Abs(cloud.Speed), 0.2f, 1f)
-                );
-            }
-
-            spriteBatch.End();
-        }
-
         public static void DrawBullets()
         {
             var spriteBatch = DrawingManager.SpriteBatch;
@@ -65,7 +47,7 @@ namespace DilloAssault.GameState.Battle.Drawing
             
             foreach (var effect in EffectManager.Effects)
             {
-                var configuration = ConfigurationManager.GetEffectConfiguration(effect.Type.ToString());
+                var configuration = ConfigurationManager.GetEffectConfiguration(effect.Type);
 
                 var spriteX = effect.FrameCounter % configuration.SpriteRowLength;
                 var spriteY = effect.FrameCounter / configuration.SpriteRowLength;
@@ -182,7 +164,7 @@ namespace DilloAssault.GameState.Battle.Drawing
         private static void DrawAvatarGun(SpriteBatch spriteBatch, Avatar avatar)
         {
             var weapon = avatar.SelectedWeapon;
-            var textureName = ConfigurationManager.GetWeaponConfiguration(weapon.Type.ToString()).TextureName;
+            var textureName = ConfigurationManager.GetWeaponConfiguration(weapon.Type).TextureName;
 
             DrawAvatarArm(spriteBatch, avatar, Point.Zero, textureName);
         }

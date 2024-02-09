@@ -1,4 +1,6 @@
-﻿using DilloAssault.Graphics.Drawing.Textures;
+﻿using DilloAssault.Configuration.Textures;
+using DilloAssault.Generics;
+using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -31,9 +33,13 @@ namespace DilloAssault.Graphics.Drawing
         {
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(drawableObject.TextureName),
-                destinationRectangle: DrawingHelper.GetDestinationRectangle(drawableObject.Position),
-                color: DrawingHelper.GetColor(drawableObject.Z),
-                sourceRectangle: DrawingHelper.GetSourceRectangle(drawableObject.SpriteLocation)
+                destinationRectangle: drawableObject.GetDestinationRectangle(),
+                sourceRectangle: drawableObject.GetSourceRectangle(),
+                color: DrawingHelper.GetColor(drawableObject.Z) * drawableObject.Opacity,
+                rotation: drawableObject.GetRotation(),
+                origin: drawableObject.GetOrigin(),
+                effects: drawableObject.GetDirection() == Direction.Right ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                layerDepth: drawableObject.LayerDepth
             );
         }
 

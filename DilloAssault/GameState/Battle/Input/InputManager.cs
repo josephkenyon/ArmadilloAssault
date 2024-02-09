@@ -1,6 +1,6 @@
 ﻿using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.GameState.Battle.Physics;
+using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 

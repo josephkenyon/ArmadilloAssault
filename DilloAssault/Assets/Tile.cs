@@ -1,5 +1,5 @@
-﻿using DilloAssault.Graphics.Drawing;
-using DilloAssault.Graphics.Drawing.Textures;
+﻿using DilloAssault.Configuration.Textures;
+using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 
 namespace DilloAssault.Assets
@@ -10,5 +10,10 @@ namespace DilloAssault.Assets
         public Point Position { get; set; }
         public Point SpriteLocation { get; set; }
         public TextureName TextureName { get; set; }
+
+        Vector2 IDrawableObject.Position => Position.ToVector2();
+
+        public Rectangle GetDestinationRectangle() => DrawingHelper.GetDestinationRectangle(Position);
+        public Rectangle? GetSourceRectangle() => DrawingHelper.GetSourceRectangle(SpriteLocation);
     }
 }

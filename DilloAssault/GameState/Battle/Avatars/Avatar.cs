@@ -1,10 +1,11 @@
 ﻿using DilloAssault.Configuration;
 using DilloAssault.Configuration.Avatars;
+using DilloAssault.Configuration.Textures;
 using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Weapons;
-using DilloAssault.Graphics.Drawing.Textures;
+using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -74,7 +75,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Animation? BufferedAnimation { get; set; }
         private Direction? BufferedDirection { get; set; }
 
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun.ToString()))];
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun))];
         private int WeaponSelectionIndex { get; set; }
 
         public int BufferedShotFrameCounter { get; set; } = 0;
@@ -87,7 +88,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public int FramesUntilRecoil { get; set; } = -1;
 
-        private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type.ToString());
+        private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
 
         public void Update()
         {

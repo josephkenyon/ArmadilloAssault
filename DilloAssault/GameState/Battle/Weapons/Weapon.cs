@@ -1,11 +1,11 @@
 ﻿using DilloAssault.Configuration;
+using DilloAssault.Configuration.Effects;
 using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Effects;
-using DilloAssault.GameState.Battle.Physics;
+using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
-using System.Reflection.Metadata;
 
 namespace DilloAssault.GameState.Battle.Weapons
 {
@@ -13,7 +13,7 @@ namespace DilloAssault.GameState.Battle.Weapons
     {
         private readonly int FireRate = weaponJson.FireRate;
 
-        public WeaponType Type { get; set; } = Enum.Parse<WeaponType>(weaponJson.Type);
+        public WeaponType Type { get; set; } = weaponJson.Type;
         public int Ammo { get; set; }
         public int FramesSinceFired { get; set; } = -1;
 
@@ -39,7 +39,7 @@ namespace DilloAssault.GameState.Battle.Weapons
 
             FramesSinceFired = 0;
 
-            var configuration = ConfigurationManager.GetWeaponConfiguration(Type.ToString());
+            var configuration = ConfigurationManager.GetWeaponConfiguration(Type);
 
             var newAngle = weaponAngle;
 
@@ -51,7 +51,7 @@ namespace DilloAssault.GameState.Battle.Weapons
             }
 
 
-            var effectType = ConfigurationManager.GetWeaponConfiguration(Type.ToString()).EffectType;
+            var effectType = ConfigurationManager.GetWeaponConfiguration(Type).EffectType;
 
             EffectManager.CreateEffect(weaponTip, Enum.Parse<EffectType>(effectType), direction, weaponAngle);
         }

@@ -1,4 +1,5 @@
-﻿using DilloAssault.Graphics.Drawing;
+﻿using DilloAssault.Configuration.Textures;
+using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using System;

@@ -1,4 +1,5 @@
-﻿using DilloAssault.GameState.Battle.Physics;
+﻿using DilloAssault.Configuration.Effects;
+using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 
 namespace DilloAssault.GameState.Battle.Effects

@@ -1,9 +1,9 @@
 ﻿using DilloAssault.Assets;
 using DilloAssault.Configuration;
+using DilloAssault.Configuration.Textures;
 using DilloAssault.Controls;
 using DilloAssault.GameState.Editor.Drawing;
 using DilloAssault.Graphics.Drawing;
-using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using System.IO;
 using System.Text.Json;

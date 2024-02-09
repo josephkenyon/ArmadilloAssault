@@ -19,8 +19,8 @@ namespace DilloAssault.Configuration
 
         private static Dictionary<string, SceneJson> _sceneConfigurations;
         private static Dictionary<string, AvatarJson> _avatarConfigurations;
-        private static Dictionary<string, WeaponJson> _weaponConfigurations;
-        private static Dictionary<string, EffectJson> _effectConfigurations;
+        private static Dictionary<WeaponType, WeaponJson> _weaponConfigurations;
+        private static Dictionary<EffectType, EffectJson> _effectConfigurations;
 
         public static void LoadContent(ContentManager contentManager)
         {
@@ -157,12 +157,12 @@ namespace DilloAssault.Configuration
             return _avatarConfigurations.Values.First();
         }
 
-        public static WeaponJson GetWeaponConfiguration(string weaponType)
+        public static WeaponJson GetWeaponConfiguration(WeaponType weaponType)
         {
             return _weaponConfigurations[weaponType];
         }
 
-        public static EffectJson GetEffectConfiguration(string effectType)
+        public static EffectJson GetEffectConfiguration(EffectType effectType)
         {
             return _effectConfigurations[effectType];
         }

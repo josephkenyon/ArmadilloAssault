@@ -44,6 +44,12 @@ namespace DilloAssault.Graphics.Drawing
             return new Rectangle(point.X * TileSize, point.Y * TileSize, newSize.X * TileSize, newSize.Y * TileSize);
         }
 
+        public static Rectangle GetDestinationRectangle(Vector2 point, Point? size = null)
+        {
+            var newSize = size ?? new Point(1, 1);
+            return new Rectangle((int)(point.X * TileSize), (int)(point.Y * TileSize), newSize.X * TileSize, newSize.Y * TileSize);
+        }
+
         public static Rectangle GetSourceRectangle(Point point, Point? size = null)
         {
             var newSize = size ?? new Point(1, 1);

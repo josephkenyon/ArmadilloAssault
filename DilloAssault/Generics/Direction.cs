@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DilloAssault.GameState.Battle.Physics
+namespace DilloAssault.Generics
 {
     public enum Direction
     {

@@ -133,8 +133,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
             {
                 Position = new Vector2((float)x, (float)y),
                 Size = size,
-                SpriteX = spriteX,
-                SpriteY = spriteY,
+                SpriteLocation = new(spriteX, spriteY),
                 Speed = speed
             });
 

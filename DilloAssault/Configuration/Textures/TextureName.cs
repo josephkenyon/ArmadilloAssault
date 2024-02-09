@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Graphics.Drawing.Textures
+﻿namespace DilloAssault.Configuration.Textures
 {
     public enum TextureName
     {

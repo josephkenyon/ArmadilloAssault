@@ -1,5 +1,5 @@
 ﻿using DilloAssault.Configuration.Generics;
-using DilloAssault.Graphics.Drawing.Textures;
+using DilloAssault.Configuration.Textures;
 
 namespace DilloAssault.Configuration.Avatars
 {

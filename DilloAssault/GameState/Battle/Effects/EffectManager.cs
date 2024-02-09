@@ -1,5 +1,6 @@
 ﻿using DilloAssault.Configuration;
-using DilloAssault.GameState.Battle.Physics;
+using DilloAssault.Configuration.Effects;
+using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace DilloAssault.GameState.Battle.Effects
 
         public static void CreateEffect(Vector2 position, EffectType effectType, Direction? direction = null, double? weaponAngle = null)
         {
-            var effectConfiguration = ConfigurationManager.GetEffectConfiguration(effectType.ToString());
+            var effectConfiguration = ConfigurationManager.GetEffectConfiguration(effectType);
 
             var effectPosition = new Vector2(
                 position.X - effectConfiguration.Size.X / 2,
@@ -44,7 +45,7 @@ namespace DilloAssault.GameState.Battle.Effects
 
         public static void UpdateEffects()
         {
-            Effects.RemoveAll(effect => effect.FrameCounter == ConfigurationManager.GetEffectConfiguration(effect.Type.ToString()).FrameLife);
+            Effects.RemoveAll(effect => effect.FrameCounter == ConfigurationManager.GetEffectConfiguration(effect.Type).FrameLife);
 
             foreach (var effect in Effects)
             {
