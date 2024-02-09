@@ -1,72 +1,18 @@
 ﻿using DilloAssault.Configuration;
 using DilloAssault.Configuration.Textures;
 using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Effects;
-using DilloAssault.GameState.Battle.Environment.Clouds;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 
 namespace DilloAssault.GameState.Battle.Drawing
 {
     public static class BattleDrawingHelper
     {
-        public static void DrawBullets()
-        {
-            var spriteBatch = DrawingManager.SpriteBatch;
-
-            spriteBatch.Begin();
-
-            foreach (var bullet in BulletManager.Bullets)
-            {
-                spriteBatch.Draw(
-                    texture: TextureManager.GetTexture(bullet.TextureName),
-                    destinationRectangle: new Rectangle((int)bullet.Position.X, (int)bullet.Position.Y, bullet.Size.X, bullet.Size.Y),
-                    null,
-                    color: Color.White,
-                    rotation: bullet.Angle,
-                    origin: Vector2.Zero,
-                    effects: SpriteEffects.None,
-                    1f
-                );
-            }
-
-            spriteBatch.End();
-        }
-
-        public static void DrawEffects()
-        {
-            var spriteBatch = DrawingManager.SpriteBatch;
-
-            spriteBatch.Begin();
-            
-            foreach (var effect in EffectManager.Effects)
-            {
-                var configuration = ConfigurationManager.GetEffectConfiguration(effect.Type);
-
-                var spriteX = effect.FrameCounter % configuration.SpriteRowLength;
-                var spriteY = effect.FrameCounter / configuration.SpriteRowLength;
-
-                spriteBatch.Draw(
-                    texture: TextureManager.GetTexture(configuration.TextureName),
-                    destinationRectangle: new Rectangle((int)effect.Position.X, (int)effect.Position.Y, configuration.Size.X, configuration.Size.Y),
-                    sourceRectangle: new Rectangle(spriteX * configuration.SpriteSize.X, spriteY * configuration.SpriteSize.Y, configuration.SpriteSize.X, configuration.SpriteSize.Y),
-                    color: Color.White,
-                    rotation: 0f,
-                    origin: Vector2.Zero,
-                    effects: effect.Direction == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-                    1f
-                );
-            }
-
-            spriteBatch.End();
-        }
-
         public static void DrawAvatars(ICollection<Avatar> avatars)
         {
             var spriteBatch = DrawingManager.SpriteBatch;

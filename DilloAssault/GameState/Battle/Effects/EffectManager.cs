@@ -33,14 +33,7 @@ namespace DilloAssault.GameState.Battle.Effects
                 );
             }
 
-            var effect = new Effect
-            {
-                Position = effectPosition,
-                Direction = direction,
-                Type = effectType
-            };
-
-            Effects.Add(effect);
+            Effects.Add(new Effect(effectType, effectPosition, direction));
         }
 
         public static void UpdateEffects()

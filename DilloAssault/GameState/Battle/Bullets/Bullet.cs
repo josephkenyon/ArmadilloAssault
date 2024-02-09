@@ -1,10 +1,11 @@
 ﻿using DilloAssault.Configuration.Textures;
+using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
 
 namespace DilloAssault.GameState.Battle.Bullets
 {
-    public class Bullet
+    public class Bullet : IDrawableObject
     {
         public TextureName TextureName { get; set; }
         public Point Size { get; set; }
@@ -12,6 +13,8 @@ namespace DilloAssault.GameState.Battle.Bullets
         public Vector2 DustCloudOffset { get; set; }
         public float Angle { get; set; }
         public int Damage { get; set; }
+
+        public Rectangle GetDestinationRectangle() => new Rectangle(Position.ToPoint(), Size);
 
         public void Update()
         {

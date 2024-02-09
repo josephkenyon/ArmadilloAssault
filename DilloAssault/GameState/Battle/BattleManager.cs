@@ -41,6 +41,8 @@ namespace DilloAssault.GameState.Battle
 
         public static void Update(Action exit)
         {
+            EffectManager.UpdateEffects();
+
             foreach (var avatar in Avatars)
             {
                 InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
@@ -48,8 +50,6 @@ namespace DilloAssault.GameState.Battle
 
                 avatar.Value.Update();
             }
-
-            EffectManager.UpdateEffects();
 
             BulletManager.UpdateBullets([.. Avatars.Values]);
 
@@ -79,8 +79,9 @@ namespace DilloAssault.GameState.Battle
                 DrawingManager.DrawCollection([.. list.Tiles]);
             }
 
-            BattleDrawingHelper.DrawBullets();
-            BattleDrawingHelper.DrawEffects();
+            DrawingManager.DrawCollection(BulletManager.Bullets);
+
+            DrawingManager.DrawCollection(EffectManager.Effects);
         }
     }
 }

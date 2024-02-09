@@ -8,7 +8,7 @@ namespace DilloAssault.Graphics.Drawing
     {
         int Z => 0;
         Vector2 Position { get; }
-        Point SpriteLocation { get; }
+        Point SpriteLocation => Point.Zero;
         TextureName TextureName { get; }
         Rectangle GetDestinationRectangle();
         Rectangle? GetSourceRectangle() => null;
