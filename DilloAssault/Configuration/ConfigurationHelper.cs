@@ -2,7 +2,6 @@
 using DilloAssault.Configuration.Avatars;
 using DilloAssault.Configuration.Generics;
 using DilloAssault.Configuration.Scenes;
-using DilloAssault.GameState.Battle.Avatars;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Collections.Generic;
