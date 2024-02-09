@@ -15,8 +15,6 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         private class Body(Avatar avatar) : IDrawableObject
         {
-            private readonly bool FlipDirection = avatar.Direction == Direction.Left;
-
             public Direction GetDirection() => avatar.Direction;
 
             private float SpriteOffset => avatar.Direction == Direction.Left ? -avatar.SpriteOffset.X : avatar.SpriteOffset.X;
@@ -30,9 +28,9 @@ namespace DilloAssault.GameState.Battle.Avatars
                 avatar.Size.Y
             );
 
-            public Vector2 GetOrigin() => avatar.IsSpinning ? new Vector2(avatar.Size.X / 2, avatar.Size.Y / 2) : Vector2.Zero;
+            public Vector2 GetOrigin() => avatar.Origin;
 
-            public float GetRotation() => avatar.IsSpinning ? (FlipDirection ? -avatar.SpinningAngle : avatar.SpinningAngle) : 0f;
+            public float GetRotation() => avatar.IsSpinning ? avatar.Rotation : 0f;
 
             public Rectangle? GetSourceRectangle() => avatar.IsSpinning ? avatar.GetSourceRectangle() : new Rectangle(Point.Zero, avatar.Size);
         }

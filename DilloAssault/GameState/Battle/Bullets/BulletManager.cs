@@ -39,9 +39,12 @@ namespace DilloAssault.GameState.Battle.Bullets
         public static void UpdateBullets(List<Avatar> avatars)
         {
             var boxLists = avatars.Select(avatar => {
-                var hurtBoxes = avatar.GetHurtBoxes().Select(box => new KeyValuePair<bool, LineQuad>(false, LineQuad.CreateFrom(box))).ToList();
+                var hurtBoxes = avatar.GetHurtBoxes().Select(box => new KeyValuePair<bool, LineQuad>(false,
+                    avatar.IsSpinning ? LineQuad.CreateFrom(box, avatar.OffsetOrigin, avatar.Rotation) : LineQuad.CreateFrom(box)
+                )).ToList();
 
-                hurtBoxes.Add(new(true, LineQuad.CreateFrom(avatar.GetShellBox())));
+                var shellBox = avatar.GetShellBox();
+                hurtBoxes.Add(new(true, avatar.IsSpinning ? LineQuad.CreateFrom(shellBox, avatar.OffsetOrigin, avatar.Rotation) : LineQuad.CreateFrom(shellBox)));
 
                 return hurtBoxes;
             }).ToList();
@@ -121,9 +124,47 @@ namespace DilloAssault.GameState.Battle.Bullets
         {
             var goingUp = Math.Sin(bullet.Angle) < 0;
 
-            var ricochetAmount = (float)(Math.PI / 2.5f);
+            var ricochetAmount = (float)(Math.PI / 2f);
 
             bullet.Angle += goingUp ? ricochetAmount : -ricochetAmount;
+        }
+
+        private static double CalculateNormalAngle(double x1, double y1, double x2, double y2)
+        {
+            // Calculate the normal vector
+            var normalVector = CalculateNormalVector(x1, y1, x2, y2);
+
+            // Calculate the angle of the normal vector using atan2
+            double angle = Math.Atan2(normalVector.Item2, normalVector.Item1);
+
+            return angle;
+        }
+
+        private static (double, double) CalculateNormalVector(double x1, double y1, double x2, double y2)
+        {
+            // Calculate the direction vector
+            double directionX = x2 - x1;
+            double directionY = y2 - y1;
+
+            // Calculate the length of the direction vector
+            double length = Math.Sqrt(directionX * directionX + directionY * directionY);
+
+            // Normalize the direction vector
+            double normalizedDirectionX = directionX / length;
+            double normalizedDirectionY = directionY / length;
+
+            // Rotate the normalized direction vector by 90 degrees to get the normal vector
+            double normalX = -normalizedDirectionY;
+            double normalY = normalizedDirectionX;
+
+            return (normalX, normalY);
+        }
+
+        private class ContactPointDetails(bool reflect, Vector2? contactPoint, Line edge)
+        {
+            public bool Reflect { get; set; }
+            public Vector2? ContactPoint { get; set; }
+            public Line Edge { get; set; }
         }
     }
 }

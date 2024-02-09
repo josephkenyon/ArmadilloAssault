@@ -44,7 +44,7 @@ namespace DilloAssault.GameState.Battle.Input
         private static void UpdateAimDirection(int playerIndex, Avatar avatar)
         {
             var aimPosition = ControlsManager.GetAimPosition(playerIndex);
-            var origin = avatar.Position + avatar.GetArmOrigin();
+            var origin = playerIndex == 0 ? avatar.Position + avatar.GetArmOrigin() : Vector2.Zero;
 
             avatar.AimDirection = aimPosition - origin;
 
@@ -142,7 +142,7 @@ namespace DilloAssault.GameState.Battle.Input
                 {
                     if (avatar.Animation != Animation.Rolling)
                     {
-                        avatar.SetBufferedAnimiation(Animation.Running);
+                        avatar.BufferAnimation(Animation.Running);
 
                         avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
                         avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - AvatarConstants.RunningAcceleration, -AvatarConstants.MaxRunningVelocity, AvatarConstants.MaxRunningVelocity);
@@ -152,7 +152,7 @@ namespace DilloAssault.GameState.Battle.Input
                         avatar.SetDirection(Direction.Left);
                         avatar.IncrementSpin();
 
-                        avatar.Acceleration = new Vector2(-AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
+                        //avatar.Acceleration = new Vector2(-AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else
@@ -169,7 +169,7 @@ namespace DilloAssault.GameState.Battle.Input
                 {
                     if (avatar.Animation != Animation.Rolling)
                     {
-                        avatar.SetBufferedAnimiation(Animation.Running);
+                        avatar.BufferAnimation(Animation.Running);
 
                         avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
                         avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + AvatarConstants.RunningAcceleration, -AvatarConstants.MaxRunningVelocity, AvatarConstants.MaxRunningVelocity);
@@ -179,7 +179,7 @@ namespace DilloAssault.GameState.Battle.Input
                         avatar.SetDirection(Direction.Right);
                         avatar.IncrementSpin();
 
-                        avatar.Acceleration = new Vector2(AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
+                        //avatar.Acceleration = new Vector2(AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else
@@ -198,7 +198,7 @@ namespace DilloAssault.GameState.Battle.Input
 
             if (notTryingToMove && avatar.Grounded && !avatar.IsSpinning)
             {
-                avatar.SetBufferedAnimiation(Animation.Resting);
+                avatar.BufferAnimation(Animation.Resting);
             }
 
             if (notTryingToMove || avatar.Grounded)
@@ -255,23 +255,23 @@ namespace DilloAssault.GameState.Battle.Input
                     }
                     else
                     {
-                        avatar.SetBufferedAnimiation(Animation.Rolling);
+                        avatar.BufferAnimation(Animation.Rolling);
                     }
                 }
                 else
                 {
-                    avatar.SetBufferedAnimiation(Animation.Rolling);
+                    avatar.BufferAnimation(Animation.Rolling);
                 }
             }
             else if (ControlsManager.IsControlDownStart(playerIndex, Control.Up) && avatar.IsSpinning)
             {
                 if (avatar.Grounded)
                 {
-                    avatar.SetBufferedAnimiation(Animation.Resting);
+                    avatar.BufferAnimation(Animation.Resting);
                 }
                 else
                 {
-                    avatar.SetBufferedAnimiation(Animation.Spinning);
+                    avatar.BufferAnimation(Animation.Spinning);
                 }
             }
         }

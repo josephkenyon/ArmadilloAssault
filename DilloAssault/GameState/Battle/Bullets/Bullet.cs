@@ -14,7 +14,9 @@ namespace DilloAssault.GameState.Battle.Bullets
         public float Angle { get; set; }
         public int Damage { get; set; }
 
-        public Rectangle GetDestinationRectangle() => new Rectangle(Position.ToPoint(), Size);
+        public float GetRotation() => Angle;
+
+        public Rectangle GetDestinationRectangle() => new(Position.ToPoint(), Size);
 
         public void Update()
         {

@@ -61,5 +61,17 @@
     "Y": 34,
     "Width": 18,
     "Height": 60
+  },
+  "SpinningShellBox": {
+    "X": 36,
+    "Y": 38,
+    "Width": 56,
+    "Height": 20
+  },
+  "SpinningHurtBox": {
+    "X": 32,
+    "Y": 56,
+    "Width": 56,
+    "Height": 26
   }
 }

@@ -222,7 +222,7 @@ namespace DilloAssault.GameState.Battle.Physics
 
                 if (avatar.Animation == Animation.Spinning || avatar.Animation != Animation.Rolling)
                 {
-                    avatar.SetBufferedAnimiation(Animation.Resting);
+                    avatar.BufferAnimation(Animation.Resting);
                 }
             }
             else

@@ -45,7 +45,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
                 cloud.Position = new Vector2(cloud.Position.X + cloud.Speed / 2f, cloud.Position.Y);
             }
 
-            if (FramesSinceLastCloud == 240)
+            if (FramesSinceLastCloud == 200)
             {
                 CreateNewCloud(false);
                 FramesSinceLastCloud = 0;
@@ -119,14 +119,14 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
             // Y
             int y = LastY + 1;
 
-            if (y > 6)
+            if (y > 10)
             {
                 y = 0;
             }
 
-            LastY = y + 2;
+            LastY = y;
 
-            y = (y * 128) - (size.Y / 4);
+            y = (y * 64) - (size.Y / 4);
 
             // Add Cloud
             Clouds.Add(new Cloud

@@ -15,7 +15,6 @@ namespace DilloAssault.GameState.Battle.Avatars
 {
     public class Avatar(AvatarJson avatarJson)
     {
-
         // Collision
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);
         private readonly Rectangle SpinningCollisionBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningCollisionBox);
@@ -23,11 +22,14 @@ namespace DilloAssault.GameState.Battle.Avatars
         // Hurt Boxes
         private readonly IEnumerable<Rectangle> HurtBoxes = ConfigurationHelper.GetHurtBoxes(avatarJson.HurtBoxes);
         private readonly Rectangle ShellBox = ConfigurationHelper.GetRectangle(avatarJson.ShellBox);
+        private readonly Rectangle SpinningHurtBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningHurtBox);
+        private readonly Rectangle SpinningShellBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningShellBox);
 
         // Drawing
         public readonly TextureName TextureName = avatarJson.TextureName;
         public readonly Point Size = new(avatarJson.Size.X, avatarJson.Size.Y);
         public readonly Point SpriteOffset = new(avatarJson.SpriteOffset.X, avatarJson.SpriteOffset.Y);
+        public Vector2 SpriteOffsetVector => new(Direction == Direction.Left ? -SpriteOffset.X : SpriteOffset.X, SpriteOffset.Y);
 
         // Animation
         private readonly Dictionary<Animation, AnimationJson> Animations = ConfigurationHelper.GetAnimations(avatarJson.Animations);
@@ -50,7 +52,8 @@ namespace DilloAssault.GameState.Battle.Avatars
         public double ArmAngle { get; set; }
         public float AimAngle { get; set; }
 
-        public float SpinningAngle { get; private set; } = (float)(Math.PI / -2f);
+        private float SpinningAngle { get; set; } = (float)(Math.PI / -2f);
+        public float Rotation => Direction == Direction.Left ? -SpinningAngle : SpinningAngle;
         public Vector2 AimDirection { get; set; }
 
         private int FrameCounter { get; set; }
@@ -76,6 +79,9 @@ namespace DilloAssault.GameState.Battle.Avatars
         public float Recoil { get; set; }
 
         public int FramesUntilRecoil { get; set; } = -1;
+
+        public Vector2 Origin => IsSpinning ? new Vector2(Size.X / 2, Size.Y / 2) : Vector2.Zero;
+        public Vector2 OffsetOrigin => Origin + Position + SpriteOffsetVector;
 
         private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
 
@@ -328,23 +334,35 @@ namespace DilloAssault.GameState.Battle.Avatars
         {
             if (Direction == Direction.Right)
             {
-                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(box, Position));
+                if (IsSpinning)
+                {
+                    return [CollisionHelper.OffsetRectangle(SpinningHurtBox, Position + SpriteOffsetVector)];
+                }
+
+                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(box, Position + SpriteOffsetVector));
             }
             else
             {
-                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, AvatarConstants.spriteWidth), Position));
+                if (IsSpinning)
+                {
+                    return [CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(SpinningHurtBox, AvatarConstants.spriteWidth), Position + SpriteOffsetVector)];
+                }
+
+                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, AvatarConstants.spriteWidth), Position + SpriteOffsetVector));
             }
         }
 
         public Rectangle GetShellBox()
         {
+            var box = IsSpinning == true ? SpinningShellBox : ShellBox;
+
             if (Direction == Direction.Right)
             {
-                return CollisionHelper.OffsetRectangle(ShellBox, Position);
+                return CollisionHelper.OffsetRectangle(box, Position + SpriteOffsetVector);
             }
             else
             {
-                return CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(ShellBox, AvatarConstants.spriteWidth), Position);
+                return CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, AvatarConstants.spriteWidth), Position + SpriteOffsetVector);
             }
         }
 
@@ -370,7 +388,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
         }
 
-        public void SetBufferedAnimiation(Animation bufferedAnimation)
+        public void BufferAnimation(Animation bufferedAnimation)
         {
             BufferedAnimation = bufferedAnimation;
         }

@@ -15,6 +15,8 @@ namespace DilloAssault.Configuration.Avatars
         public RectangleJson SpinningCollisionBox { get; set; }
         public HurtBoxListJson HurtBoxes { get; set; }
         public RectangleJson ShellBox { get; set; }
+        public RectangleJson SpinningShellBox { get; set; }
+        public RectangleJson SpinningHurtBox { get; set; }
         public int SpriteWidth { get; set; }
         public int SpriteHeight { get; set; }
     }

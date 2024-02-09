@@ -27,7 +27,8 @@ namespace DilloAssault.GameState.Battle
         public static void Initialize()
         {
             Players = [
-                new Player { Name = "Player1", ConnectionId = null, PlayerControllerIndex = -1, PlayerIndex = 1 }
+                new Player { Name = "Player1", ConnectionId = null, PlayerControllerIndex = -1, PlayerIndex = 1 },
+                new Player { Name = "Player2", ConnectionId = null, PlayerControllerIndex = 1, PlayerIndex = 2 }
             ];
 
             Avatars = [];

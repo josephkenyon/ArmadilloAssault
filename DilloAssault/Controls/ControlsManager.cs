@@ -1,9 +1,7 @@
 ﻿using DilloAssault.GameState;
 using DilloAssault.GameState.Battle;
-using DilloAssault.GameState.Battle.Avatars;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 
 namespace DilloAssault.Controls
@@ -96,7 +94,7 @@ namespace DilloAssault.Controls
             }
             else
             {
-                UpdateGamePadControlState(controlsState, GetIndex(playerIndex));
+                UpdateGamePadControlState(controlsState, GetIndex(playerIndex - 1));
             }
         }
 
@@ -146,11 +144,11 @@ namespace DilloAssault.Controls
             {
                 if (state.IsButtonDown(controlMapping.Key))
                 {
-                    controlsState.OnControlUp(controlMapping.Value);
+                    controlsState.OnControlDown(controlMapping.Value);
                 }
                 else if (state.IsButtonUp(controlMapping.Key))
                 {
-                    controlsState.OnControlDown(controlMapping.Value);
+                    controlsState.OnControlUp(controlMapping.Value);
                 }
             }
 
@@ -160,14 +158,18 @@ namespace DilloAssault.Controls
                 {
                     controlsState.OnControlDown(control);
                 }
+                else
+                {
+                    controlsState.OnControlUp(control);
+                }
             }
 
             updateThumbstickControl(state.ThumbSticks.Left.X < -ControlsHelper.ThumbStickConstant, Control.Left);
             updateThumbstickControl(state.ThumbSticks.Left.X > ControlsHelper.ThumbStickConstant, Control.Right);
-            updateThumbstickControl(state.ThumbSticks.Left.Y < -ControlsHelper.ThumbStickConstant, Control.Up);
-            updateThumbstickControl(state.ThumbSticks.Left.Y > ControlsHelper.ThumbStickConstant, Control.Down);
+            updateThumbstickControl(state.ThumbSticks.Left.Y > ControlsHelper.ThumbStickConstant, Control.Up);
+            updateThumbstickControl(state.ThumbSticks.Left.Y < -ControlsHelper.ThumbStickConstant, Control.Down);
 
-            controlsState.AimPosition = new Vector2(state.ThumbSticks.Left.X, state.ThumbSticks.Left.Y);
+            controlsState.AimPosition = new Vector2(state.ThumbSticks.Right.X, -state.ThumbSticks.Right.Y);
 
             return controlsState;
         }
