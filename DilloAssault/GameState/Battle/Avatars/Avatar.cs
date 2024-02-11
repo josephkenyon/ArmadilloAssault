@@ -9,6 +9,7 @@ using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Avatars
@@ -34,6 +35,8 @@ namespace DilloAssault.GameState.Battle.Avatars
         // Animation
         private readonly Dictionary<Animation, AnimationJson> Animations = ConfigurationHelper.GetAnimations(avatarJson.Animations);
         public Animation Animation { get; private set; } = Animation.Resting;
+        private int FrameCounter { get; set; }
+        private int AnimationFrame { get; set; }
 
         // Physics
         public Direction Direction { get; private set; }
@@ -49,54 +52,53 @@ namespace DilloAssault.GameState.Battle.Avatars
         public bool CloseToGround { get; set; }
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
 
+        // Rotation
         public double ArmAngle { get; set; }
         public float AimAngle { get; set; }
-
         private float SpinningAngle { get; set; } = (float)(Math.PI / -2f);
         public float Rotation => Direction == Direction.Left ? -SpinningAngle : SpinningAngle;
         public Vector2 AimDirection { get; set; }
-
-        private int FrameCounter { get; set; }
-        private int AnimationFrame { get; set; }
-
-        private int BreathingFrameCounter { get; set; }
-        private bool BreathingIn { get; set; }
-
-        private readonly int BreathingCycleFrameLength = 80;
-
-        private Animation? BufferedAnimation { get; set; }
-        private Direction? BufferedDirection { get; set; }
-
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
-        private int WeaponSelectionIndex { get; set; }
-
-        public int BufferedShotFrameCounter { get; set; } = 0;
-
-        public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
-
-        public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire();
-
-        public float Recoil { get; set; }
-
-        public int FramesUntilRecoil { get; set; } = -1;
-
         public Vector2 Origin => IsSpinning ? new Vector2(Size.X / 2, Size.Y / 2) : Vector2.Zero;
         public Vector2 OffsetOrigin => Origin + Position + SpriteOffsetVector;
 
+        // Breathing
+        private int BreathingFrameCounter { get; set; }
+        private bool BreathingIn { get; set; }
+
+        // Buffers
+        private Animation? BufferedAnimation { get; set; }
+        private Direction? BufferedDirection { get; set; }
+
+        // Weapons
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun))];
+        private int WeaponSelectionIndex { get; set; }
+        public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
         private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
+        public bool HoldingAutomaticWeapon => SelectedWeapon.Type == WeaponType.Assault;
+        public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire() && ReloadingFrames == 0;
+        public int BufferedShotFrameCounter { get; set; } = 0;
+        public float Recoil { get; set; }
+        public int ReloadingFrames { get; set; }
+        public int FramesUntilRecoil { get; set; } = -1;
 
         public void Update()
         {
             UpdateFrameCounter();
             UpdateBreathingFrameCounter();
             UpdateRecoil();
+            UpdateReloading();
 
             Weapons.ForEach(weapon => weapon.Update());
         }
 
         private void UpdateRecoil()
         {
-            if (FramesUntilRecoil > -1)
+            if (ReloadingFrames == CurrentWeaponConfiguration.ReloadRate)
+            {
+                Recoil = (float)(Math.PI / 2);
+                FramesUntilRecoil = -1;
+            }
+            else if (FramesUntilRecoil >= 0)
             {
                 if (FramesUntilRecoil == 0) {
                     Recoil = (float)(CurrentWeaponConfiguration.RecoilStrength * 45 * Math.PI / 180);
@@ -107,7 +109,15 @@ namespace DilloAssault.GameState.Battle.Avatars
 
             if (Recoil > 0)
             {
-                Recoil -= (float)(Math.PI / 4f / CurrentWeaponConfiguration.RecoilRecoveryRate);
+                if (ReloadingFrames > 0)
+                {
+                    Recoil -= (float)(Math.PI / 2 / CurrentWeaponConfiguration.ReloadRate);
+                    Trace.WriteLine(Recoil);
+                }
+                else
+                {
+                    Recoil -= (float)(Math.PI / 4 / CurrentWeaponConfiguration.RecoilRecoveryRate);
+                }
             }
 
             if (Recoil < 0)
@@ -122,7 +132,24 @@ namespace DilloAssault.GameState.Battle.Avatars
 
             FramesUntilRecoil = 6;
 
-            Weapons[WeaponSelectionIndex].Fire(weaponTip, AimAngle, Direction);
+            var currentWeapon = Weapons[WeaponSelectionIndex];
+            currentWeapon.Fire(weaponTip, AimAngle, Direction);
+
+            if (currentWeapon.AmmoInClip == 0)
+            {
+                if (currentWeapon.Ammo > 0)
+                {
+                    ReloadingFrames = CurrentWeaponConfiguration.ReloadRate;
+                }
+                else if (CurrentWeaponConfiguration.Type != WeaponType.Pistol)
+                {
+                    Weapons.Remove(currentWeapon);
+                    if (WeaponSelectionIndex == Weapons.Count)
+                    {
+                        WeaponSelectionIndex--;
+                    }
+                }
+            }
         }
 
         private void UpdateFrameCounter()
@@ -164,9 +191,21 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
         }
 
+        private void UpdateReloading()
+        {
+            if (ReloadingFrames > 0)
+            {
+                ReloadingFrames--;
+            }
+            else if (SelectedWeapon.AmmoInClip == 0 && SelectedWeapon.Ammo > 0)
+            {
+                SelectedWeapon.Reload();
+            }
+        }
+
         private void UpdateBreathingFrameCounter()
         {
-            if (BreathingFrameCounter == BreathingCycleFrameLength * 2)
+            if (BreathingFrameCounter == AvatarConstants.BreathingCycleFrameLength * 2)
             {
                 BreathingIn = false;
             }
@@ -235,8 +274,8 @@ namespace DilloAssault.GameState.Battle.Avatars
         public float GetBreathingYOffset()
         {
             var A = 5f;
-            var B = BreathingCycleFrameLength * 2;
-            var X = Math.Clamp(BreathingFrameCounter, 0, BreathingCycleFrameLength);
+            var B = AvatarConstants.BreathingCycleFrameLength * 2;
+            var X = Math.Clamp(BreathingFrameCounter, 0, AvatarConstants.BreathingCycleFrameLength);
             return (float)(A * Math.Sin(X * Math.PI / B)) - 3;
         }
 

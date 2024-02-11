@@ -23,7 +23,10 @@ namespace DilloAssault.GameState.Battle.Input
 
         private static void HandleFiring(int playerIndex, Avatar avatar)
         {
-            if (ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary) || avatar.BufferedShotFrameCounter > 0)
+            var clickedFire = ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary);
+            var holdingFire = ControlsManager.IsControlDown(playerIndex, Control.Fire_Primary);
+
+            if (clickedFire || (holdingFire && avatar.HoldingAutomaticWeapon) || avatar.BufferedShotFrameCounter > 0)
             {
                 if (avatar.CanFire)
                 {
@@ -152,7 +155,7 @@ namespace DilloAssault.GameState.Battle.Input
                         avatar.SetDirection(Direction.Left);
                         avatar.IncrementSpin();
 
-                        //avatar.Acceleration = new Vector2(-AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
+                        avatar.Acceleration = new Vector2(-AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else

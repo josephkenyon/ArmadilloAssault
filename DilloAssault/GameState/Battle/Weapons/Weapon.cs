@@ -1,4 +1,5 @@
 ﻿using DilloAssault.Configuration;
+using DilloAssault.Configuration.Avatars;
 using DilloAssault.Configuration.Effects;
 using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Bullets;
@@ -14,7 +15,8 @@ namespace DilloAssault.GameState.Battle.Weapons
         private readonly int FireRate = weaponJson.FireRate;
 
         public WeaponType Type { get; set; } = weaponJson.Type;
-        public int Ammo { get; set; }
+        public int AmmoInClip { get; set; } = weaponJson.ClipSize;
+        public int Ammo { get; set; } = weaponJson.ClipSize * (weaponJson.ClipsGiven - 1);
         public int FramesSinceFired { get; set; } = -1;
 
         public void Update()
@@ -25,9 +27,16 @@ namespace DilloAssault.GameState.Battle.Weapons
             }
         }
 
+        public void Reload()
+        {
+            var clipSize = weaponJson.ClipSize;
+            AmmoInClip = clipSize;
+            Ammo -= clipSize;
+        }
+
         public bool CanFire()
         {
-            return FramesSinceFired < 0 || FramesSinceFired > FireRate;
+            return (FramesSinceFired < 0 || FramesSinceFired > FireRate) && AmmoInClip > 0;
         }
 
         public void Fire(Vector2 weaponTip, double weaponAngle, Direction direction)
@@ -50,6 +59,7 @@ namespace DilloAssault.GameState.Battle.Weapons
                 BulletManager.CreateBullet(configuration, weaponTip, (float)(newAngle + rDouble * Math.PI / 180));
             }
 
+            AmmoInClip--;
 
             var effectType = ConfigurationManager.GetWeaponConfiguration(Type).EffectType;
 

@@ -160,11 +160,11 @@ namespace DilloAssault.GameState.Battle.Bullets
             return (normalX, normalY);
         }
 
-        private class ContactPointDetails(bool reflect, Vector2? contactPoint, Line edge)
-        {
-            public bool Reflect { get; set; }
-            public Vector2? ContactPoint { get; set; }
-            public Line Edge { get; set; }
-        }
+        //private class ContactPointDetails(bool reflect, Vector2? contactPoint, Line edge)
+        //{
+        //    public bool Reflect { get; set; }
+        //    public Vector2? ContactPoint { get; set; }
+        //    public Line Edge { get; set; }
+        //}
     }
 }

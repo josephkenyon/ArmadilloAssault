@@ -136,8 +136,6 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
                 SpriteLocation = new(spriteX, spriteY),
                 Speed = speed
             });
-
-            Trace.WriteLine($"X: {x}, Y: {y}, Size: {size.X},{size.Y}, Sprite: {spriteX},{spriteY}, Speed: {speed}");
         }
     }
 }

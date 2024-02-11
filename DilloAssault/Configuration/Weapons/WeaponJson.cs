@@ -20,6 +20,7 @@ namespace DilloAssault.Configuration.Weapons
         public int AccuracyConeDegrees { get; set; }
         public float RecoilStrength { get; set; }
         public int RecoilRecoveryRate { get; set; }
+        public int ClipsGiven { get; set; }
 
         public PointJson SpriteOffset { get; set; }
     }

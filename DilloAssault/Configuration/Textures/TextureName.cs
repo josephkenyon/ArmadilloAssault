@@ -21,6 +21,8 @@
         clouds,
         bullet,
         shotgun_bullet,
-        ricochet
+        ricochet,
+        crates,
+        crates_parachuting
     }
 }
