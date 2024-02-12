@@ -52,7 +52,7 @@ namespace DilloAssault.GameState.Battle
             foreach (var avatar in Avatars)
             {
                 InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
-                PhysicsManager.UpdateAvatar(avatar.Value, Scene.CollisionBoxes);
+                PhysicsManager.Update(avatar.Value, Scene.CollisionBoxes);
 
                 avatar.Value.Update();
             }

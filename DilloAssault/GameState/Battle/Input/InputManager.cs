@@ -242,6 +242,11 @@ namespace DilloAssault.GameState.Battle.Input
                     {
                         avatar.SetBufferedDirection(Direction.Right);
                     }
+
+                    if (avatar.Animation != Animation.Rolling)
+                    {
+                        avatar.SetAnimation(Animation.Spinning);
+                    }
                 }
 
                 avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);

@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Avatars
 {
-    public class Avatar(AvatarJson avatarJson)
+    public class Avatar(AvatarJson avatarJson) : PhysicsObject
     {
         // Collision
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);
@@ -39,17 +39,9 @@ namespace DilloAssault.GameState.Battle.Avatars
         private int AnimationFrame { get; set; }
 
         // Physics
-        public Direction Direction { get; private set; }
-        public Vector2 Position { get; private set; }
-        public Vector2 Velocity { get; set; }
-        public Vector2 Acceleration { get; set; }
-        public float RunningVelocity { get; set; }
-        public int InfluenceVelocity { get; set; }
         public int AvailableJumps { get; set; }
         public bool RunningBackwards { get; set; }
         public bool DropThrough { get; set; }
-        public bool Grounded { get; set; }
-        public bool CloseToGround { get; set; }
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
 
         // Rotation
@@ -81,14 +73,71 @@ namespace DilloAssault.GameState.Battle.Avatars
         public int ReloadingFrames { get; set; }
         public int FramesUntilRecoil { get; set; } = -1;
 
+        public override bool LowDrag => IsSpinning;
+
         public void Update()
         {
             UpdateFrameCounter();
             UpdateBreathingFrameCounter();
             UpdateRecoil();
             UpdateReloading();
+            UpdatePhysics();
 
             Weapons.ForEach(weapon => weapon.Update());
+        }
+
+        private void UpdatePhysics()
+        {
+            if (Grounded)
+            {
+                Falling = false;
+                Rising = false;
+                AvailableJumps = 2;
+                if (Animation == Animation.Falling)
+                {
+                    SetAnimation(Animation.Resting);
+                }
+                else if (Animation == Animation.Spinning)
+                {
+                    BufferAnimation(Animation.Resting);
+                }
+            }
+            else if (Falling)
+            {
+                Rising = false;
+
+                if (AvailableJumps == 2)
+                {
+                    AvailableJumps = 1;
+                }
+
+                if (!IsSpinning)
+                {
+                    SetAnimation(Animation.Falling);
+                }
+                else
+                {
+                    IncrementSpin();
+                }
+            }
+            else if (Rising)
+            {
+                if (AvailableJumps == 1)
+                {
+                    if (Animation != Animation.Rolling)
+                    {
+                        SetAnimation(Animation.Jumping);
+                    }
+                }
+                else
+                {
+                    IncrementSpin();
+                    if (Animation != Animation.Rolling)
+                    {
+                        SetAnimation(Animation.Spinning);
+                    }
+                }
+            }
         }
 
         private void UpdateRecoil()
@@ -359,7 +408,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             SpinningAngle += velocityY;
         }
 
-        public Rectangle GetCollisionBox()
+        public override Rectangle GetCollisionBox()
         {
             if (Animation == Animation.Spinning || Animation == Animation.Rolling)
             {
@@ -405,25 +454,23 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
         }
 
-        public void SetX(float x)
-        {
-            Position = new Vector2(x, Position.Y);
-        }
-        public void SetY(float y)
-        {
-            Position = new Vector2(Position.X, y);
-        }
-
-        public void SetPosition(Vector2 position)
-        {
-            Position = position;
-        }
-
         public void SetDirection(Direction direction)
         {
             if (Direction != direction)
             {
                 Direction = direction;
+
+                if (IsSpinning)
+                {
+                    if (direction == Direction.Left)
+                    {
+                        SetX(Position.X + 10);
+                    }
+                    else
+                    {
+                        SetX(Position.X - 10);
+                    }
+                }
             }
         }
 

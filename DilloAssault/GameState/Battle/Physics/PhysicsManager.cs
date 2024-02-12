@@ -12,7 +12,13 @@ namespace DilloAssault.GameState.Battle.Physics
     {
         private static readonly float gravityAcceleration = 0.035f;
          
-        public static void UpdateAvatar(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        public static void Update(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
+        {
+            ApplyHorizontalMotion(physicsObject, sceneCollisionBoxes);
+            ApplyVerticalMotion(physicsObject, sceneCollisionBoxes);
+        }
+
+        public static void Update(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
         {
             avatar.Grounded = false;
             avatar.CloseToGround = false;
@@ -44,9 +50,9 @@ namespace DilloAssault.GameState.Battle.Physics
                 }
             }
 
-            ApplyHorizontalMotion(avatar, sceneCollisionBoxes);
-            ApplyVerticalMotion(avatar, sceneCollisionBoxes);
+            Update(avatar as PhysicsObject, sceneCollisionBoxes);
         }
+
 
         private static bool CanExitSpinning(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
         {
@@ -56,236 +62,199 @@ namespace DilloAssault.GameState.Battle.Physics
             return collisionBox.Top - ceiling > 64;
         }
 
-        private static void ApplyHorizontalMotion(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void ApplyHorizontalMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
         {
-            avatar.Velocity = new Vector2(
+            physicsObject.Velocity = new Vector2(
                 Math.Clamp(
-                    avatar.Velocity.X + avatar.Acceleration.X,
+                    physicsObject.Velocity.X + physicsObject.Acceleration.X,
                     -AvatarConstants.MaxVelocity.X, AvatarConstants.MaxVelocity.X
                 ),
-                avatar.Velocity.Y
+                physicsObject.Velocity.Y
             );
 
-            var xVelocity = avatar.Velocity.X + avatar.RunningVelocity + avatar.InfluenceVelocity;
+            var xVelocity = physicsObject.Velocity.X + physicsObject.RunningVelocity + physicsObject.InfluenceVelocity;
 
             if (xVelocity > 0)
             {
-                ApplyRightMotion(avatar, sceneCollisionBoxes, xVelocity);
+                ApplyRightMotion(physicsObject, sceneCollisionBoxes, xVelocity);
             }
             else if (xVelocity < 0)
             {
-                ApplyLeftMotion(avatar, sceneCollisionBoxes, xVelocity);
+                ApplyLeftMotion(physicsObject, sceneCollisionBoxes, xVelocity);
             }
 
-            DecelerateX(avatar);
+            DecelerateX(physicsObject);
         }
 
-        private static void ApplyVerticalMotion(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void ApplyVerticalMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
         {
-            avatar.Velocity = new Vector2(
-                avatar.Velocity.X,
+            physicsObject.Velocity = new Vector2(
+                physicsObject.Velocity.X,
                 Math.Clamp(
-                    avatar.Velocity.Y + avatar.Acceleration.Y,
+                    physicsObject.Velocity.Y + physicsObject.Acceleration.Y,
                     -AvatarConstants.MaxVelocity.Y, AvatarConstants.MaxVelocity.Y
                 )
             );
 
-            if (avatar.Velocity.Y < 0)
+            if (physicsObject.Velocity.Y < 0)
             {
-                ApplyUpwardMotion(avatar, sceneCollisionBoxes);
+                ApplyUpwardMotion(physicsObject, sceneCollisionBoxes);
             }
             else
             {
-                ApplyDownwardMotion(avatar, sceneCollisionBoxes);
+                ApplyDownwardMotion(physicsObject, sceneCollisionBoxes);
             }
 
-            DecelerateY(avatar);
+            DecelerateY(physicsObject);
         }
 
-        private static void ApplyLeftMotion(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes, float deltaX)
+        private static void ApplyLeftMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes, float deltaX)
         {
-            var avatarCollisionBox = avatar.GetCollisionBox();
-            var wallX = GetLeftWall(avatarCollisionBox, sceneCollisionBoxes);
+            var collisionBox = physicsObject.GetCollisionBox();
+            var wallX = GetLeftWall(collisionBox, sceneCollisionBoxes);
 
-            if (avatarCollisionBox.Left == wallX)
+            if (collisionBox.Left == wallX)
             {
-                avatar.SetX((int)avatar.Position.X);
-                avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
+                physicsObject.SetX((int)physicsObject.Position.X);
+                physicsObject.Velocity = new Vector2(0, physicsObject.Velocity.Y);
                 return;
             }
 
-            if (avatarCollisionBox.Left + deltaX <= wallX)
+            if (collisionBox.Left + deltaX <= wallX)
             {
-                avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                avatar.SetX(wallX - (avatarCollisionBox.Left - (int)avatar.Position.X));
+                physicsObject.Velocity = new Vector2(0, physicsObject.Velocity.Y);
+                physicsObject.SetX(wallX - (collisionBox.Left - (int)physicsObject.Position.X));
             }
             else
             {
-                avatar.SetX(avatar.Position.X + deltaX);
+                physicsObject.SetX(physicsObject.Position.X + deltaX);
             }
         }
 
-        private static void ApplyRightMotion(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes, float deltaX)
+        private static void ApplyRightMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes, float deltaX)
         {
-            var avatarCollisionBox = avatar.GetCollisionBox();
+            var avatarCollisionBox = physicsObject.GetCollisionBox();
             var wallX = GetRightWall(avatarCollisionBox, sceneCollisionBoxes);
 
             if (avatarCollisionBox.Right == wallX)
             {
-                avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                avatar.SetX((int)avatar.Position.X);
+                physicsObject.Velocity = new Vector2(0, physicsObject.Velocity.Y);
+                physicsObject.SetX((int)physicsObject.Position.X);
                 return;
             }
 
             if (avatarCollisionBox.Right + deltaX >= wallX)
             {
-                avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                avatar.SetX((int)avatar.Position.X - (avatarCollisionBox.Right - wallX));
+                physicsObject.Velocity = new Vector2(0, physicsObject.Velocity.Y);
+                physicsObject.SetX((int)physicsObject.Position.X - (avatarCollisionBox.Right - wallX));
             }
             else
             {
-                avatar.SetX(avatar.Position.X + deltaX);
+                physicsObject.SetX(physicsObject.Position.X + deltaX);
             }
         }
 
-        private static void ApplyUpwardMotion(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void ApplyUpwardMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
         {
-            var avatarCollisionBox = avatar.GetCollisionBox();
+            var avatarCollisionBox = physicsObject.GetCollisionBox();
             var ceilingY = GetCeiling(avatarCollisionBox, sceneCollisionBoxes);
 
             if (avatarCollisionBox.Top == ceilingY)
             {
-                avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
-                avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
-                avatar.SetY((int)avatar.Position.Y);
+                physicsObject.Velocity = new Vector2(physicsObject.Velocity.X, 0);
+                physicsObject.Acceleration = new Vector2(physicsObject.Acceleration.X, 0);
+                physicsObject.SetY((int)physicsObject.Position.Y);
                 return;
             }
 
-            var yDelta = Math.Min(avatar.Velocity.Y, AvatarConstants.MaxVelocity.Y);
+            var yDelta = Math.Min(physicsObject.Velocity.Y, AvatarConstants.MaxVelocity.Y);
 
             if (avatarCollisionBox.Top + yDelta <= ceilingY)
             {
-                avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
-                avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
-                avatar.SetY((int)avatar.Position.Y + (ceilingY - avatarCollisionBox.Top));
+                physicsObject.Velocity = new Vector2(physicsObject.Velocity.X, 0);
+                physicsObject.Acceleration = new Vector2(physicsObject.Acceleration.X, 0);
+                physicsObject.SetY((int)physicsObject.Position.Y + (ceilingY - avatarCollisionBox.Top));
             }
             else
             {
-                if (avatar.AvailableJumps == 1)
-                {
-                    if (avatar.Animation != Animation.Rolling)
-                    {
-                        avatar.SetAnimation(Animation.Jumping);
-                    }
-                }
-                else
-                {
-                    avatar.IncrementSpin();
-                    if (avatar.Animation != Animation.Rolling)
-                    {
-                        avatar.SetAnimation(Animation.Spinning);
-                    }
-                }
-
-                avatar.SetY(avatar.Position.Y + yDelta);
+                physicsObject.Rising = true;
+                physicsObject.SetY(physicsObject.Position.Y + yDelta);
             }
         }
 
-        private static void ApplyDownwardMotion(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void ApplyDownwardMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
         {
-            var avatarCollisionBox = avatar.GetCollisionBox();
-            var floorY = GetFloor(avatarCollisionBox, sceneCollisionBoxes);
+            var collisionBox = physicsObject.GetCollisionBox();
+            var floorY = GetFloor(collisionBox, sceneCollisionBoxes);
 
-            if (avatarCollisionBox.Bottom == floorY)
+            if (collisionBox.Bottom == floorY)
             {
-                avatar.SetY((int)avatar.Position.Y);
-                avatar.Grounded = true;
-                avatar.AvailableJumps = 2;
+                physicsObject.SetY((int)physicsObject.Position.Y);
+                physicsObject.Grounded = true;
 
-                avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
-                avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
-
-                if (avatar.Animation == Animation.Falling)
-                {
-                    avatar.SetAnimation(Animation.Resting);
-                }
+                physicsObject.Velocity = new Vector2(physicsObject.Velocity.X, 0);
+                physicsObject.Acceleration = new Vector2(physicsObject.Acceleration.X, 0);
                 return;
             }
 
-            var yDelta = Math.Min(avatar.Velocity.Y, AvatarConstants.MaxVelocity.Y);
+            var yDelta = Math.Min(physicsObject.Velocity.Y, AvatarConstants.MaxVelocity.Y);
 
-            if (avatarCollisionBox.Bottom + yDelta >= floorY)
+            if (collisionBox.Bottom + yDelta >= floorY)
             {
-                avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
-                avatar.Grounded = true;
-                avatar.SetY((int)avatar.Position.Y + (floorY - avatarCollisionBox.Bottom));
-
-                if (avatar.Animation == Animation.Spinning || avatar.Animation != Animation.Rolling)
-                {
-                    avatar.BufferAnimation(Animation.Resting);
-                }
+                physicsObject.Velocity = new Vector2(physicsObject.Velocity.X, 0);
+                physicsObject.Grounded = true;
+                physicsObject.SetY((int)physicsObject.Position.Y + (floorY - collisionBox.Bottom));
             }
             else
             {
-                avatar.SetY(avatar.Position.Y + yDelta);
+                physicsObject.SetY(physicsObject.Position.Y + yDelta);
 
-                if (floorY - avatarCollisionBox.Bottom < 48)
+                if (floorY - collisionBox.Bottom < 48)
                 {
-                    avatar.CloseToGround = true;
+                    physicsObject.CloseToGround = true;
                 }
 
-                if (avatar.AvailableJumps == 2)
+                physicsObject.Falling = true;
+                physicsObject.Rising = false;
+            }
+        }
+
+        private static void DecelerateX(PhysicsObject physicsObject)
+        {
+            if (PhysicsHelper.FloatsAreEqual(physicsObject.Acceleration.X, 0))
+            {
+                physicsObject.Acceleration = new Vector2(0, physicsObject.Acceleration.Y);
+
+                var decelerationConstant = physicsObject.Grounded ? AvatarConstants.RunningAcceleration : 4f;
+
+                if (physicsObject.LowDrag && !physicsObject.Grounded)
                 {
-                    avatar.AvailableJumps = 1;
+                    decelerationConstant = 0.4f;
                 }
 
-                if (!avatar.IsSpinning)
+                if (physicsObject.Velocity.X > 0)
                 {
-                    avatar.SetAnimation(Animation.Falling);
+                    var newVelocityX = Math.Max(0, physicsObject.Velocity.X - decelerationConstant);
+                    physicsObject.Velocity = new Vector2(newVelocityX, physicsObject.Velocity.Y);
                 }
-                else
+                else if (physicsObject.Velocity.X < 0)
                 {
-                    avatar.IncrementSpin();
+                    var newVelocityX = Math.Min(0, physicsObject.Velocity.X + decelerationConstant);
+                    physicsObject.Velocity = new Vector2(newVelocityX, physicsObject.Velocity.Y);
                 }
             }
         }
 
-        private static void DecelerateX(Avatar avatar)
+        private static void DecelerateY(PhysicsObject physicsObject)
         {
-            if (PhysicsHelper.FloatsAreEqual(avatar.Acceleration.X, 0))
+            if (PhysicsHelper.FloatsAreEqual(physicsObject.Acceleration.Y, 0) || physicsObject.Grounded)
             {
-                avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-
-                var decelerationConstant = avatar.Grounded ? AvatarConstants.RunningAcceleration : 4f;
-
-                if (avatar.Animation == Animation.Rolling)
-                {
-                    decelerationConstant = 0.35f;
-                }
-
-                if (avatar.Velocity.X > 0)
-                {
-                    var newVelocityX = Math.Max(0, avatar.Velocity.X - decelerationConstant);
-                    avatar.Velocity = new Vector2(newVelocityX, avatar.Velocity.Y);
-                }
-                else if (avatar.Velocity.X < 0)
-                {
-                    var newVelocityX = Math.Min(0, avatar.Velocity.X + decelerationConstant);
-                    avatar.Velocity = new Vector2(newVelocityX, avatar.Velocity.Y);
-                }
-            }
-        }
-
-        private static void DecelerateY(Avatar avatar)
-        {
-            if (PhysicsHelper.FloatsAreEqual(avatar.Acceleration.Y, 0) || avatar.Grounded)
-            {
-                avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
+                physicsObject.Acceleration = new Vector2(physicsObject.Acceleration.X, 0);
             }
 
-            if (!avatar.Grounded)
+            if (!physicsObject.Grounded)
             {
-                avatar.Acceleration = new Vector2(avatar.Acceleration.X, avatar.Acceleration.Y + gravityAcceleration);
+                physicsObject.Acceleration = new Vector2(physicsObject.Acceleration.X, physicsObject.Acceleration.Y + gravityAcceleration);
             }
         }
 
@@ -362,61 +331,5 @@ namespace DilloAssault.GameState.Battle.Physics
 
             return 1080;
         }
-
-        //public static void MoveIfIntersecting(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
-        //{
-        //    var collisionBox = avatar.GetCollisionBox();
-
-        //    var candidates = sceneCollisionBoxes.Where(box => collisionBox.Height > CollisionHelper.PassableYThreshold && box.Intersects(collisionBox));
-
-        //    if (candidates.Count() > 1)
-        //    {
-        //        avatar.SetAnimation(Animation.Rolling);
-        //    }
-        //    else if (candidates.Count() == 1)
-        //    {
-        //        var box = candidates.First();
-
-        //        var rightDifference = box.Right - collisionBox.Left;
-        //        var leftDifference = collisionBox.Right - box.Left;
-        //        var upDifference = collisionBox.Bottom - box.Top;
-        //        var downDifference = box.Bottom - collisionBox.Top;
-
-        //        List<int> differences = [rightDifference, leftDifference, upDifference, downDifference];
-
-        //        differences = [.. differences.Where(difference => difference > 0).Order()];
-
-        //        var smallestDifference = differences.First();
-
-        //        if (rightDifference == smallestDifference)
-        //        {
-        //            avatar.SetX(avatar.Position.X + rightDifference);
-        //            avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-        //        }
-        //        else if (leftDifference == smallestDifference)
-        //        {
-        //            avatar.SetX(avatar.Position.X - leftDifference);
-        //            avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-        //        }
-        //        else if (upDifference == smallestDifference)
-        //        {
-        //            avatar.SetY(avatar.Position.Y - upDifference);
-        //            avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
-
-        //            avatar.Grounded = true;
-        //        }
-        //        else if (downDifference == smallestDifference)
-        //        {
-        //            avatar.SetY(avatar.Position.Y + downDifference);
-        //            avatar.Velocity = new Vector2(avatar.Velocity.X, 0);
-        //        }
-        //    }
-
-        //    var moreCandidates = sceneCollisionBoxes.Where(box => box.Intersects(avatar.GetCollisionBox()));
-        //    if (moreCandidates.Any())
-        //    {
-        //        MoveIfIntersecting(avatar, sceneCollisionBoxes);
-        //    }
-        //}
     }
 }
