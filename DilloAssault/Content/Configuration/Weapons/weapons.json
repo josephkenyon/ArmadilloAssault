@@ -37,7 +37,7 @@
     "BulletsFired": 1,
     "BulletDamage": 8,
     "AccuracyConeDegrees": 10,
-    "FireRate": 20,
+    "FireRate": 12,
     "ReloadRate": 180,
     "RecoilStrength": 0.3,
     "RecoilRecoveryRate": 20,

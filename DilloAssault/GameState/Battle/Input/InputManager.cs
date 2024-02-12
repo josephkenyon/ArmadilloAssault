@@ -182,7 +182,7 @@ namespace DilloAssault.GameState.Battle.Input
                         avatar.SetDirection(Direction.Right);
                         avatar.IncrementSpin();
 
-                        //avatar.Acceleration = new Vector2(AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
+                        avatar.Acceleration = new Vector2(AvatarConstants.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else
