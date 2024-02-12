@@ -6,9 +6,11 @@ namespace DilloAssault.GameState.Battle.Physics
     public abstract class PhysicsObject
     {
         public Direction Direction { get; protected set; }
-        public Vector2 Position { get; protected set; }
-        public Vector2 Velocity { get; set; }
-        public Vector2 Acceleration { get; set; }
+        public Vector2 Position { get; protected set; } = Vector2.Zero;
+        public Vector2 Velocity { get; set; } = Vector2.Zero;
+        public Vector2 Acceleration { get; set; } = Vector2.Zero;
+
+        public readonly Vector2 MaxVelocity = new(8f, 11);
 
         public float RunningVelocity { get; set; }
         public int InfluenceVelocity { get; set; }

@@ -31,7 +31,7 @@ namespace DilloAssault.GameState.Battle.Weapons
         {
             var clipSize = weaponJson.ClipSize;
             AmmoInClip = clipSize;
-            Ammo -= clipSize;
+            Ammo -= clipSize + AmmoInClip;
         }
 
         public bool CanFire()

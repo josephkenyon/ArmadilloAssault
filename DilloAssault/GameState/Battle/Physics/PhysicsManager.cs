@@ -67,7 +67,7 @@ namespace DilloAssault.GameState.Battle.Physics
             physicsObject.Velocity = new Vector2(
                 Math.Clamp(
                     physicsObject.Velocity.X + physicsObject.Acceleration.X,
-                    -AvatarConstants.MaxVelocity.X, AvatarConstants.MaxVelocity.X
+                    -physicsObject.MaxVelocity.X, physicsObject.MaxVelocity.X
                 ),
                 physicsObject.Velocity.Y
             );
@@ -92,7 +92,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 physicsObject.Velocity.X,
                 Math.Clamp(
                     physicsObject.Velocity.Y + physicsObject.Acceleration.Y,
-                    -AvatarConstants.MaxVelocity.Y, AvatarConstants.MaxVelocity.Y
+                    -physicsObject.MaxVelocity.Y, physicsObject.MaxVelocity.Y
                 )
             );
 
@@ -167,7 +167,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 return;
             }
 
-            var yDelta = Math.Min(physicsObject.Velocity.Y, AvatarConstants.MaxVelocity.Y);
+            var yDelta = Math.Min(physicsObject.Velocity.Y, physicsObject.MaxVelocity.Y);
 
             if (avatarCollisionBox.Top + yDelta <= ceilingY)
             {
@@ -197,7 +197,7 @@ namespace DilloAssault.GameState.Battle.Physics
                 return;
             }
 
-            var yDelta = Math.Min(physicsObject.Velocity.Y, AvatarConstants.MaxVelocity.Y);
+            var yDelta = Math.Min(physicsObject.Velocity.Y, physicsObject.MaxVelocity.Y);
 
             if (collisionBox.Bottom + yDelta >= floorY)
             {
@@ -229,7 +229,7 @@ namespace DilloAssault.GameState.Battle.Physics
 
                 if (physicsObject.LowDrag && !physicsObject.Grounded)
                 {
-                    decelerationConstant = 0.4f;
+                    decelerationConstant = 0.25f;
                 }
 
                 if (physicsObject.Velocity.X > 0)

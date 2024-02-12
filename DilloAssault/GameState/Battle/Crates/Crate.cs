@@ -1,26 +1,29 @@
 ﻿using DilloAssault.Configuration.Textures;
 using DilloAssault.Configuration.Weapons;
+using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace DilloAssault.GameState.Battle.Crates
 {
-    public class Crate(CrateType type) : IDrawableObject
+    public class Crate(CrateType type) : PhysicsObject, IDrawableObject
     {
         private static readonly Random Random = new();
 
-        private readonly int CrateSize = 64;
+        public static readonly int Size = 64;
         public TextureName TextureName => TextureName.crates;
         public CrateType Type { get; private set; } = type;
-        public Vector2 Position { get; set; }
 
         public readonly int HealthGiven = type == CrateType.Health ? 35 : 0;
         public readonly WeaponType? WeaponType = type == CrateType.Weapon ? GetRandomWeaponType() : null;
 
-        public Rectangle GetCollisionBox() => new((int)Position.X + 2 * CrateSize, (int)Position.X + 8, 60, 48);
-        public Rectangle GetSourceRectangle() => new((int)Type * CrateSize, 0, CrateSize, CrateSize);
-        public Rectangle GetDestinationRectangle() => new((int)Position.X, (int)Position.Y, CrateSize, CrateSize);
+        public override Rectangle GetCollisionBox() => new((int)Position.X + 2, (int)Position.Y + 8, 60, 48);
+        public Rectangle? GetSourceRectangle() => new((int)Type * Size, 0, Size, Size);
+        public Rectangle GetDestinationRectangle() => new((int)Position.X, (int)Position.Y, Size, Size);
+        public List<Rectangle> RelevantCollisionBoxes { get; set; } = [];
+
 
         private static WeaponType GetRandomWeaponType()
         {

@@ -4,6 +4,7 @@ using DilloAssault.Configuration.Avatars;
 using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Bullets;
+using DilloAssault.GameState.Battle.Crates;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.GameState.Battle.Environment.Clouds;
 using DilloAssault.GameState.Battle.Input;
@@ -41,6 +42,7 @@ namespace DilloAssault.GameState.Battle
             Avatars.Values.Last().SetPosition(new Vector2(500, 0));
 
             BulletManager.Initialize(Scene.CollisionBoxes);
+            CrateManager.Initialize(Scene.CollisionBoxes);
             EffectManager.Initialize();
             CloudManager.Initialize();
         }
@@ -61,6 +63,8 @@ namespace DilloAssault.GameState.Battle
 
             CloudManager.UpdateClouds();
 
+            CrateManager.UpdateCrates(Avatars.Values);
+
             if (ControlsManager.IsControlDown(0, Control.Start))
             {
                 exit.Invoke();
@@ -79,6 +83,8 @@ namespace DilloAssault.GameState.Battle
             }
 
             DrawingManager.DrawCollection(GetAvatars());
+
+            DrawingManager.DrawCollection(CrateManager.Crates);
 
             foreach (var list in Scene.TileLists.Where(list => list.Z > 0))
             {

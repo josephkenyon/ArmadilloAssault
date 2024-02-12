@@ -38,6 +38,10 @@ namespace DilloAssault.GameState.Battle.Avatars
         private int FrameCounter { get; set; }
         private int AnimationFrame { get; set; }
 
+        // Health
+        private int health = 100;
+        public int Health { get { return health; } set { health = Math.Clamp(value, 0, 100); } }
+
         // Physics
         public int AvailableJumps { get; set; }
         public bool RunningBackwards { get; set; }
@@ -393,8 +397,8 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public void IncrementSpin()
         {
-            var velocityX = (Math.Clamp(Velocity.X, -AvatarConstants.MaxVelocity.X * 2f, AvatarConstants.MaxVelocity.X * 2f) * 0.007f);
-            var velocityY = (Math.Clamp(Velocity.Y, -AvatarConstants.MaxVelocity.Y * 2f, AvatarConstants.MaxVelocity.Y * 2f) * 0.007f);
+            var velocityX = Math.Clamp(Velocity.X, -MaxVelocity.X * 2f, MaxVelocity.X * 2f) * 0.007f;
+            var velocityY = Math.Clamp(Velocity.Y, -MaxVelocity.Y * 2f, MaxVelocity.Y * 2f) * 0.007f;
 
             if (velocityX < 0)
             {
@@ -462,14 +466,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
                 if (IsSpinning)
                 {
-                    if (direction == Direction.Left)
-                    {
-                        SetX(Position.X + 10);
-                    }
-                    else
-                    {
-                        SetX(Position.X - 10);
-                    }
+                    Position -= SpriteOffsetVector;
                 }
             }
         }
@@ -516,6 +513,23 @@ namespace DilloAssault.GameState.Battle.Avatars
         public bool HasBufferedAnimation()
         {
             return BufferedAnimation != null;
+        }
+
+        public void GiveWeapon(WeaponType weaponType)
+        {
+            var configuration = ConfigurationManager.GetWeaponConfiguration(weaponType);
+            var weapon = Weapons.SingleOrDefault(weapon => weapon.Type == weaponType);
+            if (weapon != null)
+            {
+                weapon.Ammo += configuration.ClipsGiven * configuration.ClipSize;
+            }
+            else
+            {
+                var newWeapon = new Weapon(configuration);
+                Weapons.Add(newWeapon);
+
+                WeaponSelectionIndex = Weapons.IndexOf(newWeapon);
+            }
         }
     }
 }

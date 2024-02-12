@@ -12,7 +12,6 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
         public static readonly float CloudSpeed = 1.5f;
 
         public static List<Cloud> Clouds { get; private set; }
-        private static ICollection<Rectangle> CollisionBoxes { get; set; }
         private static Random Random { get; set; }
 
         private static List<int> AllowedXs { get; set; } = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
