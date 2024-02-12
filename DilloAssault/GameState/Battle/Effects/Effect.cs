@@ -11,7 +11,7 @@ namespace DilloAssault.GameState.Battle.Effects
     {
         public EffectType Type { get; set; } = type;
         public Vector2 Position { get; set; } = position;
-        public int FrameCounter { get; set; }
+        public int FrameCounter { get; set; } = -1;
 
         private readonly EffectJson Configuration = ConfigurationManager.GetEffectConfiguration(type);
         public TextureName TextureName => Configuration.TextureName;

@@ -4,6 +4,7 @@ using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
+using System.Diagnostics;
 
 namespace DilloAssault.GameState.Battle.Input
 {
@@ -18,10 +19,10 @@ namespace DilloAssault.GameState.Battle.Input
 
             HandleMovement(playerIndex, avatar);
             UpdateAimDirection(playerIndex, avatar);
-            HandleFiring(playerIndex, avatar);
+            HandleWeaponControls(playerIndex, avatar);
         }
 
-        private static void HandleFiring(int playerIndex, Avatar avatar)
+        private static void HandleWeaponControls(int playerIndex, Avatar avatar)
         {
             var clickedFire = ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary);
             var holdingFire = ControlsManager.IsControlDown(playerIndex, Control.Fire_Primary);
@@ -41,6 +42,14 @@ namespace DilloAssault.GameState.Battle.Input
                 {
                     avatar.BufferedShotFrameCounter--;
                 }
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Reload))
+            {
+                avatar.Reload();
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Cycle_Weapon))
+            {
+                avatar.CycleWeapon();
             }
         }
 

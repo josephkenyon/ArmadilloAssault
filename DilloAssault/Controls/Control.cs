@@ -15,6 +15,8 @@ namespace DilloAssault.Controls
         Jump,
         Fire_Primary,
         Fire_Secondary,
+        Reload,
+        Cycle_Weapon,
         Confirm,
         Start
     }

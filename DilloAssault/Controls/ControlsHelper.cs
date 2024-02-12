@@ -12,12 +12,16 @@ namespace DilloAssault.Controls
             new(Keys.D, Control.Right),
             new(Keys.W, Control.Up),
             new(Keys.S, Control.Down),
+            new(Keys.Tab, Control.Cycle_Weapon),
+            new(Keys.R, Control.Reload),
             new(Keys.Space, Control.Jump),
             new(Keys.Escape, Control.Start),
         ];
 
         public readonly static List<KeyValuePair<Buttons, Control>> ButtonControlMappings = [
             new(Buttons.A, Control.Jump),
+            new(Buttons.X, Control.Reload),
+            new(Buttons.Y, Control.Cycle_Weapon),
             new(Buttons.LeftTrigger, Control.Fire_Primary),
             new(Buttons.RightTrigger, Control.Fire_Secondary),
             new(Buttons.Start, Control.Start),
