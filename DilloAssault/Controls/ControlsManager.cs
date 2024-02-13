@@ -1,8 +1,9 @@
-﻿using DilloAssault.GameState;
-using DilloAssault.GameState.Battle;
+﻿using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DilloAssault.Controls
 {
@@ -57,24 +58,35 @@ namespace DilloAssault.Controls
 
         public static void Update()
         {
-            if (GameStateManager.State == State.Editor)
+            UpdateControlState();
+
+            if (ServerManager.IsServing)
             {
-                UpdateControlState(0);
+                for (var i = 0; i < ServerManager.PlayerCount; i++)
+                {
+                    UpdateControlState(i + 1, ServerManager.GetPlayerControlsDown(i), ServerManager.GetPlayerAimPosition(i));
+                }
+            }
+        }
+
+        private static void UpdateControlState()
+        {
+            ControlsState controlsState;
+
+            if (!PlayerControlsStates.TryGetValue(0, out ControlsState value))
+            {
+                controlsState = new ControlsState();
+                PlayerControlsStates.Add(0, controlsState);
             }
             else
             {
-                var playerIndex = 0;
-                foreach (var player in BattleManager.Players)
-                {
-                    UpdateControlState(playerIndex);
-
-                    playerIndex++;
-                }
+                controlsState = value;
             }
 
+            UpdateMouseKeyboardControlState(controlsState);
         }
 
-        private static void UpdateControlState(int playerIndex)
+        private static void UpdateControlState(int playerIndex, List<Control> areControlsDown, Vector2 aimPosition)
         {
             ControlsState controlsState;
 
@@ -88,17 +100,23 @@ namespace DilloAssault.Controls
                 controlsState = value;
             }
 
-            if (playerIndex == 0)
+
+            foreach (var control in Enum.GetValues<Control>())
             {
-                UpdateMouseKeyboardControlState(controlsState);
+                if (areControlsDown.Contains(control))
+                {
+                    controlsState.OnControlDown(control);
+                }
+                else
+                {
+                    controlsState.OnControlUp(control);
+                }
             }
-            else
-            {
-                UpdateGamePadControlState(controlsState, GetIndex(playerIndex - 1));
-            }
+
+            controlsState.AimPosition = aimPosition;
         }
 
-        private static ControlsState UpdateMouseKeyboardControlState(ControlsState controlsState)
+        private static void UpdateMouseKeyboardControlState(ControlsState controlsState)
         {
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
@@ -132,11 +150,9 @@ namespace DilloAssault.Controls
             updateMouseControl(mouseState.LeftButton, Control.Confirm);
 
             controlsState.AimPosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
-
-            return controlsState;
         }
 
-        private static ControlsState UpdateGamePadControlState(ControlsState controlsState, PlayerIndex playerIndex)
+        private static void UpdateGamePadControlState(ControlsState controlsState, PlayerIndex playerIndex)
         {
             var state = GamePad.GetState(playerIndex);
 
@@ -170,8 +186,6 @@ namespace DilloAssault.Controls
             updateThumbstickControl(state.ThumbSticks.Left.Y < -ControlsHelper.ThumbStickConstant, Control.Down);
 
             controlsState.AimPosition = new Vector2(state.ThumbSticks.Right.X, -state.ThumbSticks.Right.Y);
-
-            return controlsState;
         }
 
         private static PlayerIndex GetIndex(int index)
@@ -183,6 +197,22 @@ namespace DilloAssault.Controls
                 2 => PlayerIndex.Three,
                 _ => PlayerIndex.Four,
             };
+        }
+
+        public static List<Control> AreControlsDown(int index)
+        {
+            var list = new List<Control>();
+
+            foreach (var control in Enum.GetValues<Control>())
+            {
+                var isControlDown = IsControlDown(index, control);
+                if (isControlDown)
+                {
+                    list.Add(control);
+                }
+            }
+
+            return list;
         }
     }
 }

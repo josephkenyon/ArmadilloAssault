@@ -40,12 +40,10 @@ namespace DilloAssault.GameState.Battle.Input
                 if (avatar.CanFire)
                 {
                     avatar.Fire();
-                    avatar.BufferedShotFrameCounter = 0;
                 }
                 else if (avatar.SelectedWeapon.AmmoInClip == 0 && avatar.SelectedWeapon.CanReload())
                 {
                     avatar.Reload();
-                    avatar.BufferedShotFrameCounter = 0;
                 }
                 else if (ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary))
                 {
@@ -61,7 +59,7 @@ namespace DilloAssault.GameState.Battle.Input
         private static void UpdateAimDirection(int playerIndex, Avatar avatar)
         {
             var aimPosition = ControlsManager.GetAimPosition(playerIndex);
-            var origin = playerIndex == 0 ? avatar.Position + avatar.GetArmOrigin() : Vector2.Zero;
+            var origin = avatar.Position + avatar.GetArmOrigin();
 
             avatar.AimDirection = aimPosition - origin;
 

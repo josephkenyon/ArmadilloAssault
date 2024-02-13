@@ -6,6 +6,7 @@ using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Weapons;
 using DilloAssault.Generics;
+using DilloAssault.Web.Communication;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private readonly Dictionary<Animation, AnimationJson> Animations = ConfigurationHelper.GetAnimations(avatarJson.Animations);
         public Animation Animation { get; private set; } = Animation.Resting;
         private int FrameCounter { get; set; }
-        private int AnimationFrame { get; set; }
+        public int AnimationFrame { get; private set; }
 
         // Health
         private int health = 100;
@@ -50,14 +51,14 @@ namespace DilloAssault.GameState.Battle.Avatars
         // Rotation
         public double ArmAngle { get; set; }
         public float AimAngle { get; set; }
-        private float SpinningAngle { get; set; } = (float)(Math.PI / -2f);
+        public float SpinningAngle { get; private set; } = (float)(Math.PI / -2f);
         public float Rotation => Direction == Direction.Left ? -SpinningAngle : SpinningAngle;
         public Vector2 AimDirection { get; set; }
         public Vector2 Origin => IsSpinning ? new Vector2(Size.X / 2, Size.Y / 2) : Vector2.Zero;
         public Vector2 OffsetOrigin => Origin + Position + SpriteOffsetVector;
 
         // Breathing
-        private int BreathingFrameCounter { get; set; }
+        public int BreathingFrameCounter { get; private set; }
         private bool BreathingIn { get; set; }
 
         // Buffers
@@ -65,7 +66,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Direction? BufferedDirection { get; set; }
 
         // Weapons
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol)), new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Shotgun))];
+        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
         private int WeaponSelectionIndex { get; set; }
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
         private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
@@ -98,6 +99,18 @@ namespace DilloAssault.GameState.Battle.Avatars
             UpdatePhysics();
 
             Weapons.ForEach(weapon => weapon.Update());
+        }
+
+        public void Update(AvatarUpdate avatarUpdate)
+        {
+            Position = avatarUpdate.Position;
+            Animation = avatarUpdate.Animation;
+            AnimationFrame = avatarUpdate.AnimationFrame;
+            BreathingFrameCounter = avatarUpdate.BreathingFrameCounter;
+            Recoil = avatarUpdate.Recoil;
+            Direction = avatarUpdate.Direction;
+            SpinningAngle = avatarUpdate.SpinningAngle;
+            ArmAngle = (float)avatarUpdate.ArmAngle;
         }
 
         private void UpdatePhysics()
@@ -233,6 +246,8 @@ namespace DilloAssault.GameState.Battle.Avatars
             {
                 Reload();
             }
+
+            BufferedShotFrameCounter = 0;
         }
 
         public void Reload()
@@ -244,6 +259,8 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Recoil = (float)(Math.PI / 2);
                 FramesUntilRecoil = -1;
             }
+
+            BufferedShotFrameCounter = 0;
         }
 
         public void CycleWeapon()

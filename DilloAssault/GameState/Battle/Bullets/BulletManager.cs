@@ -60,7 +60,7 @@ namespace DilloAssault.GameState.Battle.Bullets
                     .Select(linePair => bulletTrajectory.GetIntersection(linePair.Value))
                     .Where(vector => vector != null)
                     .Select(vector => (Vector2) vector)
-                    .OrderBy(vector => GeometryHelper.DistanceBetweenTwoVectors(bullet.Position, vector));
+                    .OrderBy(vector => Generics.MathUtils.DistanceBetweenTwoVectors(bullet.Position, vector));
 
                 if (terrainIntersections.Any())
                 {
@@ -76,13 +76,13 @@ namespace DilloAssault.GameState.Battle.Bullets
                     for (int i = 0; i < avatars.Count; i++)
                     {
                         var avatarCenter = avatars[i].GetCenter();
-                        if (GeometryHelper.DistanceBetweenTwoVectors(avatarCenter, bullet.Position) <= (Bullet_Speed * 2))
+                        if (Generics.MathUtils.DistanceBetweenTwoVectors(avatarCenter, bullet.Position) <= (Bullet_Speed * 2))
                         {
                             var intersections = boxLists[i]
                                 .Select(linePair => new KeyValuePair<bool, Vector2?>(linePair.Key, bulletTrajectory.GetIntersection(linePair.Value)))
                                 .Where(pair => pair.Value != null)
                                 .Select(pair => new KeyValuePair<bool, Vector2>(pair.Key, (Vector2)pair.Value))
-                                .OrderBy(pair => GeometryHelper.DistanceBetweenTwoVectors(bullet.Position, pair.Value));
+                                .OrderBy(pair => Generics.MathUtils.DistanceBetweenTwoVectors(bullet.Position, pair.Value));
 
                             if (intersections.Any())
                             {

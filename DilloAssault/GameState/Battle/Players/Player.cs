@@ -1,8 +1,6 @@
-﻿using System;
+﻿using DilloAssault.Controls;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DilloAssault.GameState.Battle.Players
 {
@@ -12,5 +10,7 @@ namespace DilloAssault.GameState.Battle.Players
         public string ConnectionId { get; set; }
         public int PlayerIndex { get; set; }
         public int PlayerControllerIndex { get; set; }
+        public Vector2 AimPosition { get; set; } = Vector2.Zero;
+        public List<Control> AreControlsDown { get; set; } = [];
     }
 }

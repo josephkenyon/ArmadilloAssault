@@ -9,11 +9,11 @@ using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.GameState.Battle.Environment.Clouds;
 using DilloAssault.GameState.Battle.Input;
 using DilloAssault.GameState.Battle.Physics;
-using DilloAssault.GameState.Battle.Players;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
+using DilloAssault.Web.Client;
+using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,21 +22,19 @@ namespace DilloAssault.GameState.Battle
     public static class BattleManager
     {
         public static Scene Scene { get; set; }
-        public static List<Player> Players { get; set; }
         public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; }
 
-        public static void Initialize()
+        public static void Initialize(int playerCount)
         {
-            Players = [
-                new Player { Name = "Player1", ConnectionId = null, PlayerControllerIndex = -1, PlayerIndex = 1 },
-                new Player { Name = "Player2", ConnectionId = null, PlayerControllerIndex = 1, PlayerIndex = 2 }
-            ];
-
+            Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
             Avatars = [];
+
             Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
 
-            Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
-
+            if (playerCount == 2)
+            {
+                Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
+            }
 
             Avatars.Values.First().SetPosition(new Vector2(1000, 0));
             Avatars.Values.Last().SetPosition(new Vector2(500, 0));
@@ -47,27 +45,48 @@ namespace DilloAssault.GameState.Battle
             CloudManager.Initialize();
         }
 
-        public static void Update(Action exit)
+        public static void Update()
         {
             EffectManager.UpdateEffects();
 
+            var index = 0;
             foreach (var avatar in Avatars)
             {
-                InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
-                PhysicsManager.Update(avatar.Value, Scene.CollisionBoxes);
+                if (ServerManager.IsServing)
+                {
+                    InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
+                    PhysicsManager.Update(avatar.Value, Scene.CollisionBoxes);
+                    avatar.Value.Update();
+                }
+                else if (ClientManager.AvatarUpdates.Count > index)
+                {
+                    var avatarUpdate = ClientManager.AvatarUpdates[index];
 
-                avatar.Value.Update();
+                    avatar.Value.Update(avatarUpdate);
+                }
+
+                index++;
             }
 
-            BulletManager.UpdateBullets([.. Avatars.Values]);
+            if (ServerManager.IsServing)
+            {
+                BulletManager.UpdateBullets([.. Avatars.Values]);
+            }
 
             CloudManager.UpdateClouds();
 
-            CrateManager.UpdateCrates(Avatars.Values);
+            if (ServerManager.IsServing)
+            {
+                CrateManager.UpdateCrates(Avatars.Values);
+            }
 
             if (ControlsManager.IsControlDown(0, Control.Start))
             {
-                exit.Invoke();
+                GameStateManager.State = State.Menu;
+            }
+            else if (ServerManager.IsServing)
+            {
+                ServerManager.SendBattleUpdates();
             }
         }
 

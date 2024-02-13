@@ -221,7 +221,7 @@ namespace DilloAssault.GameState.Battle.Physics
 
         private static void DecelerateX(PhysicsObject physicsObject)
         {
-            if (PhysicsHelper.FloatsAreEqual(physicsObject.Acceleration.X, 0))
+            if (MathUtils.FloatsAreEqual(physicsObject.Acceleration.X, 0))
             {
                 physicsObject.Acceleration = new Vector2(0, physicsObject.Acceleration.Y);
 
@@ -247,7 +247,7 @@ namespace DilloAssault.GameState.Battle.Physics
 
         private static void DecelerateY(PhysicsObject physicsObject)
         {
-            if (PhysicsHelper.FloatsAreEqual(physicsObject.Acceleration.Y, 0) || physicsObject.Grounded)
+            if (MathUtils.FloatsAreEqual(physicsObject.Acceleration.Y, 0) || physicsObject.Grounded)
             {
                 physicsObject.Acceleration = new Vector2(physicsObject.Acceleration.X, 0);
             }

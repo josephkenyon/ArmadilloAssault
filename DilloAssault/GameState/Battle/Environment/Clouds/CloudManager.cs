@@ -118,7 +118,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
             // Y
             int y = LastY + 1;
 
-            if (y > 10)
+            if (y > 14)
             {
                 y = 0;
             }

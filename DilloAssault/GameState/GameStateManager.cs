@@ -1,13 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DilloAssault.Graphics;
 
 namespace DilloAssault.GameState
 {
     public static class GameStateManager
     {
-        public static State State { get; set; }
+        private static State _state;
+        public static State State { get { return _state; } set { SetState(value); } }
+
+        private static void SetState(State newState)
+        {
+            _state = newState;
+
+            if (_state == State.Battle)
+            {
+                GraphicsManager.SetBattleCursor();
+            }
+            else
+            {
+                GraphicsManager.SetMenuCursor();
+            }
+        }
     }
 }

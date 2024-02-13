@@ -123,7 +123,7 @@ namespace DilloAssault.Generics
 
             if (intersections.Count > 0)
             {
-                return intersections.OrderBy(vector => GeometryHelper.DistanceBetweenTwoVectors(vector, A)).First();
+                return intersections.OrderBy(vector => MathUtils.DistanceBetweenTwoVectors(vector, A)).First();
             }
 
             return null;

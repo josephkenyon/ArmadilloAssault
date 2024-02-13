@@ -2,6 +2,7 @@
 {
     public enum TextureName
     {
+        crosshair,
         test_tileset,
         white_pixel,
         arthur,

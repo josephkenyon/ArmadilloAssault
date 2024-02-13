@@ -9,7 +9,6 @@ namespace DilloAssault.GameState
     public enum State
     {
         Menu,
-        Character_Select,
         Editor,
         Battle
     }
