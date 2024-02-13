@@ -131,7 +131,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
                 if (applyRecoil)
                 {
-                    rotation += (avatar.Direction == Direction.Left) ? avatar.Recoil : -avatar.Recoil;
+                    rotation += (avatar.Direction == Direction.Left) ? avatar.GetRecoil : -avatar.GetRecoil;
                 }
 
                 return rotation;

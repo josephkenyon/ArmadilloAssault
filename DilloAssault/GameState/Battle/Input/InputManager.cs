@@ -27,11 +27,24 @@ namespace DilloAssault.GameState.Battle.Input
             var clickedFire = ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary);
             var holdingFire = ControlsManager.IsControlDown(playerIndex, Control.Fire_Primary);
 
-            if (clickedFire || (holdingFire && avatar.HoldingAutomaticWeapon) || avatar.BufferedShotFrameCounter > 0)
+            if (ControlsManager.IsControlDownStart(playerIndex, Control.Cycle_Weapon))
+            {
+                avatar.CycleWeapon();
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Reload))
+            {
+                avatar.Reload();
+            }
+            else if (clickedFire || (holdingFire && avatar.HoldingAutomaticWeapon) || avatar.BufferedShotFrameCounter > 0)
             {
                 if (avatar.CanFire)
                 {
                     avatar.Fire();
+                    avatar.BufferedShotFrameCounter = 0;
+                }
+                else if (avatar.SelectedWeapon.AmmoInClip == 0 && avatar.SelectedWeapon.CanReload())
+                {
+                    avatar.Reload();
                     avatar.BufferedShotFrameCounter = 0;
                 }
                 else if (ControlsManager.IsControlDownStart(playerIndex, Control.Fire_Primary))
@@ -42,14 +55,6 @@ namespace DilloAssault.GameState.Battle.Input
                 {
                     avatar.BufferedShotFrameCounter--;
                 }
-            }
-            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Reload))
-            {
-                avatar.Reload();
-            }
-            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Cycle_Weapon))
-            {
-                avatar.CycleWeapon();
             }
         }
 

@@ -37,6 +37,17 @@ namespace DilloAssault.GameState.Battle.Weapons
             }
         }
 
+        public bool HasFullClip()
+        {
+            return AmmoInClip == weaponJson.ClipSize;
+        }
+
+        public bool CanReload()
+        {
+            var clipSize = weaponJson.ClipSize;
+            return Ammo >= clipSize - AmmoInClip;
+        }
+
         public bool CanFire()
         {
             return (FramesSinceFired < 0 || FramesSinceFired > FireRate) && AmmoInClip > 0;

@@ -9,7 +9,6 @@ using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Avatars
@@ -71,12 +70,19 @@ namespace DilloAssault.GameState.Battle.Avatars
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
         private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
         public bool HoldingAutomaticWeapon => SelectedWeapon.Type == WeaponType.Assault;
-        public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire() && ReloadingFrames < 0 && SwitchingWeaponFrames == 0;
+        public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire() && !Reloading && !SwitchingWeapons;
         public int BufferedShotFrameCounter { get; set; } = 0;
-        public float Recoil { get; set; }
-        public int ReloadingFrames { get; set; } = -1;
-        public int SwitchingWeaponFrames { get; set; }
+
+        public float GetRecoil => (SelectedWeapon.AmmoInClip == 0 && SelectedWeapon.Ammo == 0) ? (float)(Math.PI / 4) : Recoil;
+        private float Recoil { get; set; }
+        public bool HasRecoil { get; set; } = false;
         public int FramesUntilRecoil { get; set; } = -1;
+
+        public bool Reloading { get; set; } = false;
+        public int ReloadingFrames { get; set; } = 0;
+
+        public bool SwitchingWeapons { get; set; } = false;
+        public int SwitchingWeaponFrames { get; set; } = 0;
 
         private static readonly int WeaponSwitchFrames = 10;
 
@@ -88,6 +94,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             UpdateBreathingFrameCounter();
             UpdateRecoil();
             UpdateReloading();
+            UpdateSwitchingWeapons();
             UpdatePhysics();
 
             Weapons.ForEach(weapon => weapon.Update());
@@ -147,13 +154,39 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
         }
 
+        private void UpdateSwitchingWeapons()
+        {
+            if (SwitchingWeapons)
+            {
+                if (SwitchingWeaponFrames > 0)
+                {
+                    SwitchingWeaponFrames--;
+                }
+                else
+                {
+                    SwitchingWeapons = false;
+                }
+            }
+        }
+
+        private void UpdateReloading()
+        {
+            if (Reloading)
+            {
+                if (ReloadingFrames > 0)
+                {
+                    ReloadingFrames--;
+                }
+                else
+                {
+                    Reloading = false;
+                    SelectedWeapon.Reload();
+                }
+            }
+        }
+
         private void UpdateRecoil()
         {
-            if (SwitchingWeaponFrames > 0)
-            {
-                SwitchingWeaponFrames--;
-            }
-
             if (FramesUntilRecoil >= 0)
             {
                 if (FramesUntilRecoil == 0) {
@@ -165,15 +198,15 @@ namespace DilloAssault.GameState.Battle.Avatars
 
             if (Recoil > 0)
             {
-                if (SwitchingWeaponFrames > 0)
+                if (SwitchingWeapons)
                 {
                     Recoil -= (float)(Math.PI / 2 / WeaponSwitchFrames);
                 }
-                else if (ReloadingFrames > 0)
+                else if (Reloading)
                 {
                     Recoil -= (float)(Math.PI / 2 / CurrentWeaponConfiguration.ReloadRate);
                 }
-                else
+                else if (HasRecoil)
                 {
                     Recoil -= (float)(Math.PI / 4 / CurrentWeaponConfiguration.RecoilRecoveryRate);
                 }
@@ -182,6 +215,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             if (Recoil < 0)
             {
                 Recoil = 0;
+                HasRecoil = false;
             }
         }
 
@@ -190,28 +224,25 @@ namespace DilloAssault.GameState.Battle.Avatars
             var weaponTip = GetWeaponTip();
 
             FramesUntilRecoil = 6;
+            HasRecoil = true;
 
             var currentWeapon = Weapons[WeaponSelectionIndex];
             currentWeapon.Fire(weaponTip, AimAngle, Direction);
 
-            if (currentWeapon.AmmoInClip == 0)
+            if (currentWeapon.AmmoInClip == 0 && currentWeapon.CanReload())
             {
-                if (currentWeapon.Ammo > 0)
-                {
-                    Reload();
-                }
+                Reload();
             }
         }
 
         public void Reload()
         {
-            var currentWeapon = Weapons[WeaponSelectionIndex];
-            if (currentWeapon.Ammo > 0 && currentWeapon.Ammo != currentWeapon.AmmoInClip && currentWeapon.AmmoInClip != CurrentWeaponConfiguration.ClipSize)
+            if (!Reloading && !SelectedWeapon.HasFullClip() && SelectedWeapon.CanReload())
             {
                 ReloadingFrames = CurrentWeaponConfiguration.ReloadRate;
+                Reloading = true;
                 Recoil = (float)(Math.PI / 2);
                 FramesUntilRecoil = -1;
-                SwitchingWeaponFrames = 0;
             }
         }
 
@@ -220,7 +251,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             if (Weapons.Count > WeaponSelectionIndex + 1)
             {
                 WeaponSelectionIndex++;
-                if (SelectedWeapon.Ammo != 0)
+                if (SelectedWeapon.Ammo != 0 || SelectedWeapon.AmmoInClip != 0)
                 {
                     HandleWeaponChange();
                 }
@@ -241,7 +272,8 @@ namespace DilloAssault.GameState.Battle.Avatars
             SwitchingWeaponFrames = WeaponSwitchFrames;
             Recoil = (float)(Math.PI / 2);
             FramesUntilRecoil = -1;
-            ReloadingFrames = -1;
+            ReloadingFrames = 0;
+            SwitchingWeapons = true;    
 
             var newWeapon = Weapons[WeaponSelectionIndex];
             if (newWeapon.AmmoInClip == 0)
@@ -286,19 +318,6 @@ namespace DilloAssault.GameState.Battle.Avatars
             else
             {
                 FrameCounter++;
-            }
-        }
-
-        private void UpdateReloading()
-        {
-            if (ReloadingFrames > 0)
-            {
-                ReloadingFrames--;
-            }
-            else if (ReloadingFrames == 0 && SelectedWeapon.Ammo > 0)
-            {
-                SelectedWeapon.Reload();
-                ReloadingFrames = -1;
             }
         }
 
@@ -575,6 +594,8 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Weapons.Add(newWeapon);
 
                 WeaponSelectionIndex = Weapons.IndexOf(newWeapon);
+
+                Weapons = [.. Weapons.OrderBy(weapon => (int)weapon.Type)];
             }
         }
     }
