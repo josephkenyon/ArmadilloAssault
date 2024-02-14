@@ -40,21 +40,7 @@ namespace DilloAssault.Graphics
         {
             if (GameStateManager.State == State.Menu)
             {
-                if (ServerManager.IsServing)
-                {
-                    if (ServerManager.PlayerCount > 0)
-                    {
-                        _graphicsDevice.Clear(Color.Blue);
-                    }
-                    else
-                    {
-                        _graphicsDevice.Clear(Color.Red);
-                    }
-                }
-                else
-                {
-                    _graphicsDevice.Clear(Color.Black);
-                }
+                _graphicsDevice.Clear(Color.Black);
             }
             else
             {

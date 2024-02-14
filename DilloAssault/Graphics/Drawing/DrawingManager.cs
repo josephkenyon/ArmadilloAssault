@@ -1,9 +1,11 @@
-﻿using DilloAssault.Configuration.Textures;
+﻿using DilloAssault.Configuration.Menu;
+using DilloAssault.Configuration.Textures;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DilloAssault.Graphics.Drawing
 {
@@ -76,6 +78,34 @@ namespace DilloAssault.Graphics.Drawing
         {
             _spriteBatch.Begin();
             _spriteBatch.DrawString(spriteFont, text, position.ToVector2() * DrawingHelper.TileSize, Color.White);
+            _spriteBatch.End();
+        }
+
+        public static void DrawMenuButtons(IEnumerable<ButtonJson> buttons)
+        {
+            _spriteBatch.Begin();
+
+            foreach (var button in buttons)
+            {
+                var destinationRectangle = button.GetRectangle();
+
+                _spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.white_pixel),
+                    destinationRectangle: destinationRectangle,
+                    sourceRectangle: new Rectangle(0, 0, 1, 1),
+                    color: Color.Red * 0.5f
+                );
+
+                var font = DrawingHelper.GetFont;
+                var size = font.MeasureString(button.Text);
+
+                var textPosition = destinationRectangle.Center - (size / 2).ToPoint();
+
+                _spriteBatch.DrawString(
+                    font, button.Text, textPosition.ToVector2(), Color.White
+                );
+            }
+
             _spriteBatch.End();
         }
 

@@ -3,7 +3,8 @@
     public enum ServerMessageType
     {
         Initiate,
-        Termination,
+        Kick,
+        EndConnection,
         LobbyUpdate,
         BattleInitialization,
         BattleUpdate,

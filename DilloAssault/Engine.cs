@@ -8,11 +8,14 @@ using DilloAssault.GameState.Menu;
 using DilloAssault.Graphics;
 using DilloAssault.Web.Client;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace DilloAssault
 {
     public class Engine : Game
     {
+        private static Action ExitAction { get; set; }
+
         public Engine()
         {
             GraphicsManager.Initialize(this);
@@ -26,6 +29,8 @@ namespace DilloAssault
             ControlsManager.Initialize();
 
             GameStateManager.State = State.Menu;
+
+            ExitAction = Exit;
 
             base.Initialize();
         }
@@ -57,7 +62,7 @@ namespace DilloAssault
             switch (GameStateManager.State)
             {
                 case State.Menu:
-                    MenuManager.Update(Exit);
+                    MenuManager.Update();
                     break;
                 case State.Battle:
                     BattleManager.Update();
@@ -76,6 +81,9 @@ namespace DilloAssault
 
             switch (GameStateManager.State)
             {
+                case State.Menu:
+                    MenuManager.Draw();
+                    break;
                 case State.Battle:
                     BattleManager.Draw();
                     break;
@@ -85,6 +93,11 @@ namespace DilloAssault
             }
 
             base.Draw(gameTime);
+        }
+
+        public static void Quit()
+        {
+            ExitAction.Invoke();
         }
     }
 }

@@ -1,0 +1,91 @@
+[
+  {
+    "Name": "Root",
+    "Buttons": [
+      {
+        "Text": "Join Game",
+        "Actions": [ "navigate_to", "start_client" ],
+        "Data": "ClientLobby",
+        "Position": {
+          "X": 400,
+          "Y": 240
+        },
+        "Size": {
+          "X": 400,
+          "Y": 150
+        }
+      },
+      {
+        "Text": "Host Game",
+        "Actions": [ "navigate_to", "start_server" ],
+        "Data": "ServerLobby",
+        "Position": {
+          "X": 1120,
+          "Y": 240
+        },
+        "Size": {
+          "X": 400,
+          "Y": 150
+        }
+      },
+      {
+        "Text": "Exit Game",
+        "Actions": [ "back" ],
+        "Position": {
+          "X": 760,
+          "Y": 600
+        },
+        "Size": {
+          "X": 400,
+          "Y": 150
+        }
+      }
+    ]
+  },
+  {
+    "Name": "ServerLobby",
+    "Buttons": [
+      {
+        "Text": "Start Game",
+        "Actions": [ "start_game" ],
+        "Position": {
+          "X": 760,
+          "Y": 240
+        },
+        "Size": {
+          "X": 400,
+          "Y": 150
+        }
+      },
+      {
+        "Text": "Cancel",
+        "Actions": [ "stop_server", "back" ],
+        "Position": {
+          "X": 760,
+          "Y": 600
+        },
+        "Size": {
+          "X": 400,
+          "Y": 150
+        }
+      }
+    ]
+  },
+  {
+    "Name": "ClientLobby",
+    "Buttons": [
+      {
+        "Text": "Leave",
+        "Actions": [ "stop_client" ],
+        "Position": {
+          "X": 760,
+          "Y": 600
+        },
+        "Size": {
+          "X": 400,
+          "Y": 150
+        }
+      }
+    ]
+  }
+]

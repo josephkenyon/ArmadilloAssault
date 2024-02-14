@@ -10,10 +10,7 @@ using WebSocketSharp.Server;
 using WebSocketSharp;
 using DilloAssault.GameState.Battle;
 using DilloAssault.GameState;
-using DilloAssault.Controls;
 using System.Diagnostics;
-using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Linq;
 
 namespace DilloAssault.Web.Server
 {
@@ -31,17 +28,27 @@ namespace DilloAssault.Web.Server
             WebSocketServer.Start();
         }
 
-        public void StartGame()
+        public void MessageIntialization()
         {
-            BattleManager.Initialize(ServerManager.PlayerCount + 1);
-            GameStateManager.State = State.Battle;
-
             Players.ForEach(player =>
             {
                 var message = new ServerMessage {
                     Type = ServerMessageType.BattleInitialization,
                     ClientId = player.ConnectionId,
                     PlayerCount = Players.Count + 1
+                };
+                Broadcast(message);
+            });
+        }
+
+        public void MessageGameEnd()
+        {
+            Players.ForEach(player =>
+            {
+                var message = new ServerMessage
+                {
+                    Type = ServerMessageType.BattleTermination,
+                    ClientId = player.ConnectionId
                 };
                 Broadcast(message);
             });
@@ -106,10 +113,22 @@ namespace DilloAssault.Web.Server
                 {
                     UpdateInput(clientMessage);
                 }
+                else if (clientMessage.Type == ClientMessageType.LeaveGame)
+                {
+                    Players.RemoveAll(player => player.ConnectionId == clientMessage.Id);
+
+                    var message = new ServerMessage
+                    {
+                        Type = ServerMessageType.EndConnection,
+                        ClientId = clientMessage.Id
+                    };
+
+                    Broadcast(message);
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Trace.WriteLine(ex.Message);
             }
         }
 

@@ -1,7 +1,11 @@
 ﻿using DilloAssault.Controls;
+using DilloAssault.GameState.Battle;
+using DilloAssault.GameState;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using DilloAssault.GameState.Menu;
 
 namespace DilloAssault.Web.Server
 {
@@ -9,7 +13,7 @@ namespace DilloAssault.Web.Server
     {
         private static Server Server { get; set; }
         public static IObserver<string> Observer { get; private set; }
-        public static int PlayerCount => Server.Players != null ? Server.Players.Count : 0;
+        public static int PlayerCount => Server != null && Server.Players != null ? Server.Players.Count : 0;
 
         public static List<Control> GetPlayerControlsDown(int playerIndex)
         {
@@ -37,12 +41,31 @@ namespace DilloAssault.Web.Server
 
             Observer = Server;
 
-            Server.Start();
+            try
+            {
+                Server.Start();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+                Server = null;
+                MenuManager.Back();
+            }
         }
 
         public static void StartGame()
         {
-            Server.StartGame();
+            BattleManager.Initialize(PlayerCount + 1);
+            GameStateManager.State = State.Battle;
+
+            Server.MessageIntialization();
+        }
+
+        public static void EndGame()
+        {
+            GameStateManager.State = State.Menu;
+
+            Server.MessageGameEnd();
         }
 
         public static void TerminateGame()

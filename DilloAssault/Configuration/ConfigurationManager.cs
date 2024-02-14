@@ -9,6 +9,7 @@ using DilloAssault.Configuration.Scenes;
 using DilloAssault.Configuration.Avatars;
 using DilloAssault.Configuration.Weapons;
 using DilloAssault.Configuration.Effects;
+using DilloAssault.Configuration.Menu;
 
 namespace DilloAssault.Configuration
 {
@@ -16,7 +17,7 @@ namespace DilloAssault.Configuration
     {
         public static ContentManager ContentManager { get; set; }
 
-
+        private static Dictionary<string, MenuJson> _menuConfigurations;
         private static Dictionary<string, SceneJson> _sceneConfigurations;
         private static Dictionary<AvatarType, AvatarJson> _avatarConfigurations;
         private static Dictionary<WeaponType, WeaponJson> _weaponConfigurations;
@@ -26,19 +27,19 @@ namespace DilloAssault.Configuration
         {
             ContentManager = contentManager;
 
+            LoadMenus();
             LoadScenes();
             LoadAvatars();
             LoadWeapons();
             LoadEffects();
         }
 
-        private static void LoadEffects()
+        private static void LoadMenus()
         {
-
-            _effectConfigurations = [];
+            _menuConfigurations = [];
 
             var fileNames = Directory
-                .GetFiles(ConfigurationHelper.GetConfigurationPath("Effects"))
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Menus"))
                 .Where(file => file.EndsWith(".json"));
 
             var fileName = fileNames.First();
@@ -49,11 +50,11 @@ namespace DilloAssault.Configuration
 
             try
             {
-                var effectConfigurations = JsonConvert.DeserializeObject<List<EffectJson>>(json);
+                var menuJsons = JsonConvert.DeserializeObject<List<MenuJson>>(json);
 
-                effectConfigurations.ForEach(effect =>
+                menuJsons.ForEach(menuJson =>
                 {
-                    _effectConfigurations.Add(effect.Type, effect);
+                    _menuConfigurations.Add(menuJson.Name, menuJson);
                 });
             }
             catch (Exception e)
@@ -62,33 +63,30 @@ namespace DilloAssault.Configuration
             }
         }
 
-        private static void LoadWeapons()
+        private static void LoadScenes()
         {
-
-            _weaponConfigurations = [];
+            _sceneConfigurations = [];
 
             var fileNames = Directory
-                .GetFiles(ConfigurationHelper.GetConfigurationPath("Weapons"))
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Scenes"))
                 .Where(file => file.EndsWith(".json"));
 
-            var fileName = fileNames.First();
-    
-            using StreamReader r = new(fileName);
-
-            string json = r.ReadToEnd();
-
-            try
+            foreach (var fileName in fileNames)
             {
-                var weaponConfigurations = JsonConvert.DeserializeObject<List<WeaponJson>>(json);
+                using StreamReader r = new(fileName);
 
-                weaponConfigurations.ForEach(weapon =>
+                string json = r.ReadToEnd();
+
+                try
                 {
-                    _weaponConfigurations.Add(weapon.Type, weapon);
-                });
-            }
-            catch (Exception e)
-            {
-                Trace.TraceError(e.Message, e);
+                    var sceneJson = JsonConvert.DeserializeObject<SceneJson>(json);
+
+                    _sceneConfigurations.Add(Path.GetFileNameWithoutExtension(fileName), sceneJson);
+                }
+                catch (Exception e)
+                {
+                    Trace.TraceError(e.Message, e);
+                }
             }
         }
 
@@ -123,32 +121,70 @@ namespace DilloAssault.Configuration
                 }
             }
         }
-
-        private static void LoadScenes()
+        private static void LoadWeapons()
         {
-            _sceneConfigurations = [];
+
+            _weaponConfigurations = [];
 
             var fileNames = Directory
-                .GetFiles(ConfigurationHelper.GetConfigurationPath("Scenes"))
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Weapons"))
                 .Where(file => file.EndsWith(".json"));
 
-            foreach (var fileName in fileNames)
+            var fileName = fileNames.First();
+
+            using StreamReader r = new(fileName);
+
+            string json = r.ReadToEnd();
+
+            try
             {
-                using StreamReader r = new(fileName);
+                var weaponConfigurations = JsonConvert.DeserializeObject<List<WeaponJson>>(json);
 
-                string json = r.ReadToEnd();
-
-                try
+                weaponConfigurations.ForEach(weapon =>
                 {
-                    var sceneJson = JsonConvert.DeserializeObject<SceneJson>(json);
-
-                    _sceneConfigurations.Add(Path.GetFileNameWithoutExtension(fileName), sceneJson);
-                }
-                catch (Exception e)
-                {
-                    Trace.TraceError(e.Message, e);
-                }
+                    _weaponConfigurations.Add(weapon.Type, weapon);
+                });
             }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message, e);
+            }
+        }
+
+
+        private static void LoadEffects()
+        {
+
+            _effectConfigurations = [];
+
+            var fileNames = Directory
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Effects"))
+                .Where(file => file.EndsWith(".json"));
+
+            var fileName = fileNames.First();
+
+            using StreamReader r = new(fileName);
+
+            string json = r.ReadToEnd();
+
+            try
+            {
+                var effectConfigurations = JsonConvert.DeserializeObject<List<EffectJson>>(json);
+
+                effectConfigurations.ForEach(effect =>
+                {
+                    _effectConfigurations.Add(effect.Type, effect);
+                });
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message, e);
+            }
+        }
+
+        public static MenuJson GetScreenConfiguration(string name)
+        {
+            return _menuConfigurations.Values.Single(screen => screen.Name == name);
         }
 
         public static SceneJson GetSceneConfiguration()

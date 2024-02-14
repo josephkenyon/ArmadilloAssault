@@ -50,23 +50,32 @@ namespace DilloAssault.GameState.Battle
             EffectManager.UpdateEffects();
 
             var index = 0;
-            foreach (var avatar in Avatars)
+            if (ServerManager.IsServing)
             {
-                if (ServerManager.IsServing)
+                foreach (var avatar in Avatars)
                 {
                     InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
                     PhysicsManager.Update(avatar.Value, Scene.CollisionBoxes);
                     avatar.Value.Update();
-                }
-                else if (ClientManager.AvatarUpdates.Count > index)
-                {
-                    var avatarUpdate = ClientManager.AvatarUpdates[index];
 
-                    avatar.Value.Update(avatarUpdate);
+                    index++;
                 }
-
-                index++;
             }
+            else
+            {
+                var updates = ClientManager.AvatarUpdates;
+
+                foreach (var avatar in Avatars)
+                {
+                    if (updates.Count > index)
+                    {
+                        avatar.Value.Update(updates[index]);
+                    }
+
+                    index++;
+                }
+            }
+           
 
             if (ServerManager.IsServing)
             {
@@ -82,6 +91,11 @@ namespace DilloAssault.GameState.Battle
 
             if (ControlsManager.IsControlDown(0, Control.Start))
             {
+                if (ServerManager.IsServing)
+                {
+                    ServerManager.EndGame();
+                }
+
                 GameStateManager.State = State.Menu;
             }
             else if (ServerManager.IsServing)
