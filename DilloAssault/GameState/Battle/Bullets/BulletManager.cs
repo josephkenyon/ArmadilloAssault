@@ -1,8 +1,10 @@
 ﻿using DilloAssault.Configuration.Effects;
 using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Avatars;
+using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.Generics;
+using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -30,7 +32,8 @@ namespace DilloAssault.GameState.Battle.Bullets
                 TextureName = weaponConfiguration.BulletTexture,
                 Size = weaponConfiguration.BulletSize.ToPoint(),
                 Position = position,
-                Angle = angleTrajectory
+                Angle = angleTrajectory,
+                Damage = weaponConfiguration.BulletDamage
             };
 
             Bullets.Add(bullet);
@@ -158,6 +161,41 @@ namespace DilloAssault.GameState.Battle.Bullets
             double normalY = normalizedDirectionX;
 
             return (normalX, normalY);
+        }
+
+        public static BulletsUpdate GetBulletsUpdate()
+        {
+            var bulletUpdates = new BulletsUpdate();
+
+            foreach (var bullet in Bullets)
+            {
+                bulletUpdates.Textures.Add(bullet.TextureName);
+                bulletUpdates.Xs.Add((int)bullet.Position.X);
+                bulletUpdates.Ys.Add((int)bullet.Position.Y);
+                bulletUpdates.SizeXs.Add(bullet.Size.X);
+                bulletUpdates.SizeYs.Add(bullet.Size.Y);
+                bulletUpdates.Rotations.Add((int)bullet.GetRotation());
+            }
+
+            return bulletUpdates;
+        }
+
+        public static void UpdateBullets(BulletsUpdate bulletsUpdate)
+        {
+            Bullets = [];
+
+            for (int i = 0; i < bulletsUpdate.Textures.Count; i++)
+            {
+                var Bullet = new Bullet
+                {
+                    Angle = bulletsUpdate.Rotations[i],
+                    Position = bulletsUpdate.GetPosition(i),
+                    TextureName = bulletsUpdate.Textures[i],
+                    Size = new Point(bulletsUpdate.SizeXs[i], bulletsUpdate.SizeYs[i])
+                };
+
+                Bullets.Add(Bullet);
+            }
         }
 
         //private class ContactPointDetails(bool reflect, Vector2? contactPoint, Line edge)

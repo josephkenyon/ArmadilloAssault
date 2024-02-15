@@ -9,8 +9,7 @@ namespace DilloAssault.GameState.Battle.Physics
         public Vector2 Position { get; protected set; } = Vector2.Zero;
         public Vector2 Velocity { get; set; } = Vector2.Zero;
         public Vector2 Acceleration { get; set; } = Vector2.Zero;
-
-        public readonly Vector2 MaxVelocity = new(8f, 11);
+        public virtual Vector2 MaxVelocity => new(8f, 11);
 
         public float RunningVelocity { get; set; }
         public int InfluenceVelocity { get; set; }

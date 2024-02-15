@@ -6,7 +6,7 @@ using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Weapons;
 using DilloAssault.Generics;
-using DilloAssault.Web.Communication;
+using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -37,6 +37,8 @@ namespace DilloAssault.GameState.Battle.Avatars
         public Animation Animation { get; private set; } = Animation.Resting;
         private int FrameCounter { get; set; }
         public int AnimationFrame { get; private set; }
+
+        public bool IsDead => Health < 1 || Animation == Animation.Dead;
 
         // Health
         private int health = 100;
@@ -69,7 +71,8 @@ namespace DilloAssault.GameState.Battle.Avatars
         private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
         private int WeaponSelectionIndex { get; set; }
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
-        private WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
+        public TextureName OverrideWeaponTexture { get; private set; }
+        public WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
         public bool HoldingAutomaticWeapon => SelectedWeapon.Type == WeaponType.Assault;
         public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire() && !Reloading && !SwitchingWeapons;
         public int BufferedShotFrameCounter { get; set; } = 0;
@@ -101,16 +104,33 @@ namespace DilloAssault.GameState.Battle.Avatars
             Weapons.ForEach(weapon => weapon.Update());
         }
 
+        public AvatarUpdate GetUpdate()
+        {
+            return new AvatarUpdate
+            {
+                Position = Position,
+                Animation = Animation,
+                Recoil = GetRecoil,
+                AnimationFrame = AnimationFrame,
+                BreathingFrameCounter = BreathingFrameCounter,
+                Direction = Direction,
+                SpinningAngle = SpinningAngle,
+                ArmAngle = (float)ArmAngle,
+                WeaponTexture = CurrentWeaponConfiguration.TextureName
+            };
+        }
+
         public void Update(AvatarUpdate avatarUpdate)
         {
             Position = avatarUpdate.Position;
             Animation = avatarUpdate.Animation;
             AnimationFrame = avatarUpdate.AnimationFrame;
-            BreathingFrameCounter = avatarUpdate.BreathingFrameCounter;
-            Recoil = avatarUpdate.Recoil;
             Direction = avatarUpdate.Direction;
+            Recoil = avatarUpdate.Recoil;
+            BreathingFrameCounter = avatarUpdate.BreathingFrameCounter;
             SpinningAngle = avatarUpdate.SpinningAngle;
             ArmAngle = (float)avatarUpdate.ArmAngle;
+            OverrideWeaponTexture = avatarUpdate.WeaponTexture;
         }
 
         private void UpdatePhysics()
@@ -366,7 +386,12 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public void HitByBullet(Bullet bullet)
         {
-
+            Health -= bullet.Damage;
+            
+            if (IsDead)
+            {
+                Animation = Animation.Dead;
+            }
         }
         
         private Vector2 GetWeaponTip()
@@ -455,7 +480,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             return new Rectangle()
             {
                 X = (animation.X + AnimationFrame) * Size.X,
-                Y = animation.Y * Size.Y + (IsSpinning ? 1 : 0),
+                Y = animation.Y * Size.Y,
                 Width = Size.X,
                 Height = Size.Y
             };

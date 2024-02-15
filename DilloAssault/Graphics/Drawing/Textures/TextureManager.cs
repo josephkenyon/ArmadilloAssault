@@ -29,9 +29,6 @@ namespace DilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.shotgun, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "shotgun")));
             _textures.Add(TextureName.sniper, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "sniper")));
 
-            _textures.Add(TextureName.forest_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "forest_background")));
-            _textures.Add(TextureName.jungle_level_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "jungle_level_background")));
-            _textures.Add(TextureName.jungle_level_foreground, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "jungle_level_foreground")));
             _textures.Add(TextureName.mountain_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "mountain_background")));
 
             _textures.Add(TextureName.bullet, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "bullet")));

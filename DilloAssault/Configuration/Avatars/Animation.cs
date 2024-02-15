@@ -2,6 +2,7 @@
 {
     public enum Animation
     {
+        Dead,
         Resting,
         Running,
         Rolling,

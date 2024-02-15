@@ -7,6 +7,7 @@ using DilloAssault.GameState.Editor;
 using DilloAssault.GameState.Menu;
 using DilloAssault.Graphics;
 using DilloAssault.Web.Client;
+using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using System;
 
@@ -65,7 +66,14 @@ namespace DilloAssault
                     MenuManager.Update();
                     break;
                 case State.Battle:
-                    BattleManager.Update();
+                    if (ServerManager.IsServing)
+                    {
+                        BattleManager.UpdateServer();
+                    }
+                    else
+                    {
+                        BattleManager.UpdateClient();
+                    }
                     break;
                 case State.Editor:
                     EditorManager.Update();

@@ -11,6 +11,10 @@ using WebSocketSharp;
 using DilloAssault.GameState.Battle;
 using DilloAssault.GameState;
 using System.Diagnostics;
+using DilloAssault.GameState.Battle.Effects;
+using DilloAssault.Web.Communication.Updates;
+using DilloAssault.GameState.Battle.Crates;
+using DilloAssault.GameState.Battle.Bullets;
 
 namespace DilloAssault.Web.Server
 {
@@ -30,13 +34,16 @@ namespace DilloAssault.Web.Server
 
         public void MessageIntialization()
         {
+            var index = 1;
             Players.ForEach(player =>
             {
                 var message = new ServerMessage {
                     Type = ServerMessageType.BattleInitialization,
                     ClientId = player.ConnectionId,
-                    PlayerCount = Players.Count + 1
+                    PlayerCount = Players.Count + 1,
+                    AvatarIndex = index++
                 };
+
                 Broadcast(message);
             });
         }
@@ -60,19 +67,7 @@ namespace DilloAssault.Web.Server
 
             foreach (var avatar in BattleManager.Avatars.Values)
             {
-                var avatarUpdate = new AvatarUpdate
-                {
-                    Position = avatar.Position,
-                    Animation = avatar.Animation,
-                    Recoil = avatar.GetRecoil,
-                    AnimationFrame = avatar.AnimationFrame,
-                    BreathingFrameCounter = avatar.BreathingFrameCounter,
-                    Direction = avatar.Direction,
-                    SpinningAngle = avatar.SpinningAngle,
-                    ArmAngle = (float)avatar.ArmAngle
-                };
-
-                avatarUpdatesList.Add(avatarUpdate);
+                avatarUpdatesList.Add(avatar.GetUpdate());
             }
 
             Players.ForEach(player =>
@@ -81,7 +76,12 @@ namespace DilloAssault.Web.Server
                 {
                     Type = ServerMessageType.BattleUpdate,
                     ClientId = player.ConnectionId,
-                    AvatarUpdates = avatarUpdatesList
+                    FrameUpdate = new FrameUpdate {
+                        AvatarUpdates = avatarUpdatesList,
+                        EffectsUpdate = EffectManager.GetEffectsUpdate(),
+                        CratesUpdate = CrateManager.GetCratesUpdate(),
+                        BulletsUpdate = BulletManager.GetBulletsUpdate(),
+                    }
                 };
 
                 Broadcast(message);
@@ -111,6 +111,7 @@ namespace DilloAssault.Web.Server
                 }
                 else if (clientMessage.Type == ClientMessageType.InputUpdate)
                 {
+                    //Trace.WriteLine($"Received input at frame {BattleManager.BattleFrameCounter}");
                     UpdateInput(clientMessage);
                 }
                 else if (clientMessage.Type == ClientMessageType.LeaveGame)

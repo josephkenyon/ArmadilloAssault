@@ -16,7 +16,7 @@ namespace DilloAssault.Configuration.Weapons
         public int ReloadRate { get; set; }
 
         public float BulletsFired { get; set; }
-        public float BulletDamage { get; set; }
+        public int BulletDamage { get; set; }
         public int AccuracyConeDegrees { get; set; }
         public float RecoilStrength { get; set; }
         public int RecoilRecoveryRate { get; set; }

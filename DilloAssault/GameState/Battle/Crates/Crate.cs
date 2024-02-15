@@ -12,18 +12,18 @@ namespace DilloAssault.GameState.Battle.Crates
     {
         private static readonly Random Random = new();
 
-        public static readonly int Size = 64;
-        public TextureName TextureName => TextureName.crates;
+        public Point Size => Grounded ? new Point(64, 64) : new Point(128, 192);
+        public TextureName TextureName => Grounded ? TextureName.crates : TextureName.crates_parachuting;
         public CrateType Type { get; private set; } = type;
 
         public readonly int HealthGiven = type == CrateType.Health ? 35 : 0;
         public readonly WeaponType? WeaponType = type == CrateType.Weapon ? GetRandomWeaponType() : null;
 
         public override Rectangle GetCollisionBox() => new((int)Position.X + 2, (int)Position.Y + 8, 60, 48);
-        public Rectangle? GetSourceRectangle() => new((int)Type * Size, 0, Size, Size);
-        public Rectangle GetDestinationRectangle() => new((int)Position.X, (int)Position.Y, Size, Size);
+        public Rectangle? GetSourceRectangle() => new((int)Type * Size.X, 0, Size.X, Size.Y);
+        public Rectangle GetDestinationRectangle() => new((int)Position.X - (!Grounded ? 31 : 0), (int)Position.Y - (!Grounded ? 126 : 0), Size.X, Size.Y);
         public List<Rectangle> RelevantCollisionBoxes { get; set; } = [];
-
+        public override Vector2 MaxVelocity => new(8f, 2);
 
         private static WeaponType GetRandomWeaponType()
         {

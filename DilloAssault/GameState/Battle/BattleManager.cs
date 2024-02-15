@@ -12,10 +12,15 @@ using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Web.Client;
+using DilloAssault.Web.Communication.Updates;
 using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
 
 namespace DilloAssault.GameState.Battle
 {
@@ -23,11 +28,14 @@ namespace DilloAssault.GameState.Battle
     {
         public static Scene Scene { get; set; }
         public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; }
+        public static int AvatarIndex { get; private set; }
 
-        public static void Initialize(int playerCount)
+        public static void Initialize(int playerCount, int avatarIndex = 0)
         {
             Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
             Avatars = [];
+
+            AvatarIndex = avatarIndex;
 
             Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
 
@@ -45,63 +53,84 @@ namespace DilloAssault.GameState.Battle
             CloudManager.Initialize();
         }
 
-        public static void Update()
+        public static void UpdateServer()
         {
             EffectManager.UpdateEffects();
 
             var index = 0;
-            if (ServerManager.IsServing)
+
+            foreach (var avatarPair in Avatars)
             {
-                foreach (var avatar in Avatars)
+                var avatar = avatarPair.Value;
+
+                if (!avatar.IsDead)
                 {
-                    InputManager.UpdateAvatar((int)avatar.Key, avatar.Value);
-                    PhysicsManager.Update(avatar.Value, Scene.CollisionBoxes);
-                    avatar.Value.Update();
-
-                    index++;
+                    InputManager.UpdateAvatar(index, avatar);
                 }
-            }
-            else
-            {
-                var updates = ClientManager.AvatarUpdates;
 
-                foreach (var avatar in Avatars)
+                PhysicsManager.Update(avatar, Scene.CollisionBoxes);
+
+
+                if (!avatar.IsDead)
                 {
-                    if (updates.Count > index)
-                    {
-                        avatar.Value.Update(updates[index]);
-                    }
-
-                    index++;
+                    avatar.Update();
                 }
-            }
-           
 
-            if (ServerManager.IsServing)
-            {
-                BulletManager.UpdateBullets([.. Avatars.Values]);
+                index++;
             }
+
+            BulletManager.UpdateBullets([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
 
             CloudManager.UpdateClouds();
 
-            if (ServerManager.IsServing)
-            {
-                CrateManager.UpdateCrates(Avatars.Values);
-            }
+            CrateManager.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
 
             if (ControlsManager.IsControlDown(0, Control.Start))
             {
-                if (ServerManager.IsServing)
-                {
-                    ServerManager.EndGame();
-                }
-
+                ServerManager.EndGame();
                 GameStateManager.State = State.Menu;
             }
-            else if (ServerManager.IsServing)
+            else
             {
                 ServerManager.SendBattleUpdates();
             }
+        }
+
+        public static void UpdateClient()
+        {
+            CloudManager.UpdateClouds();
+
+            FrameUpdate frame = null;
+            if (ClientManager.Frames.Count > 4)
+            {
+                frame = ClientManager.Frames.Last();
+                ClientManager.Frames.Clear();
+            }
+
+            if (ClientManager.Frames.Count > 0)
+            {
+                frame = ClientManager.Frames.Dequeue();
+            }
+
+            if (frame == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < frame.AvatarUpdates.Count; i++)
+            {
+                var avatar = Avatars.Values.ElementAt(i);
+                if (i == AvatarIndex && !avatar.IsDead)
+                {
+                    InputManager.UpdateAvatar(i, avatar);
+                }
+
+                avatar.Update(frame.AvatarUpdates[i]);
+            }
+
+            EffectManager.UpdateEffects(frame.EffectsUpdate);
+            CrateManager.UpdateCrates(frame.CratesUpdate);
+            BulletManager.UpdateBullets(frame.BulletsUpdate);
         }
 
         public static void Draw()
@@ -133,23 +162,22 @@ namespace DilloAssault.GameState.Battle
         {
             var avatarCollection = new List<IDrawableObject>();
 
-            var notSpinningAvatars = Avatars.Values.Where(avatar => !avatar.IsSpinning).ToList();
-            var spinningAvatars = Avatars.Values.Where(avatar => avatar.IsSpinning).ToList();
+            var notSpinningOrDeadAvatars = Avatars.Values.Where(avatar => !avatar.IsSpinning && !avatar.IsDead).ToList();
 
-            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetArm(avatar, Direction.Left)));
+            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetArm(avatar, Direction.Left)));
 
-            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetLeg(avatar, Direction.Left)));
+            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetLeg(avatar, Direction.Left)));
 
             foreach (var avatar in Avatars.Values)
             {
                 avatarCollection.Add(AvatarDrawingHelper.GetBody(avatar));
             }
 
-            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetLeg(avatar, Direction.Right)));
+            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetLeg(avatar, Direction.Right)));
 
-            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetHead(avatar)));
-            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetGun(avatar)));
-            notSpinningAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetArm(avatar, Direction.Right)));
+            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetHead(avatar)));
+            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetGun(avatar)));
+            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(AvatarDrawingHelper.GetArm(avatar, Direction.Right)));
 
             return avatarCollection;
         }

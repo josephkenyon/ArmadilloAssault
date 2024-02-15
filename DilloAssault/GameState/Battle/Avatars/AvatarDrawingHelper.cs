@@ -32,7 +32,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
             public float GetRotation() => avatar.IsSpinning ? avatar.Rotation : 0f;
 
-            public Rectangle? GetSourceRectangle() => avatar.IsSpinning ? avatar.GetSourceRectangle() : new Rectangle(Point.Zero, avatar.Size);
+            public Rectangle? GetSourceRectangle() => avatar.IsSpinning || avatar.IsDead ? avatar.GetSourceRectangle() : new Rectangle(Point.Zero, avatar.Size);
         }
 
         public static IDrawableObject GetLeg(Avatar avatar, Direction whichLeg)
@@ -75,8 +75,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public static IDrawableObject GetGun(Avatar avatar)
         {
-            var weapon = avatar.SelectedWeapon;
-            var textureName = ConfigurationManager.GetWeaponConfiguration(weapon.Type).TextureName;
+            var textureName = avatar.OverrideWeaponTexture != TextureName.nothing ? avatar.OverrideWeaponTexture : avatar.CurrentWeaponConfiguration.TextureName;
 
             return GetArm(avatar, Point.Zero, textureName);
         }

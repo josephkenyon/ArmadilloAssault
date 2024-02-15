@@ -1,6 +1,7 @@
 ﻿using DilloAssault.Configuration;
 using DilloAssault.Configuration.Effects;
 using DilloAssault.Generics;
+using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,37 @@ namespace DilloAssault.GameState.Battle.Effects
             foreach (var effect in Effects)
             {
                 effect.FrameCounter++;
+            }
+        }
+
+        public static EffectsUpdate GetEffectsUpdate()
+        {
+            var effects = new EffectsUpdate();
+
+            foreach (var effect in Effects)
+            {
+                effects.Types.Add(effect.Type);
+                effects.Directions.Add(effect.GetDirection());
+                effects.Xs.Add((int)effect.Position.X);
+                effects.Ys.Add((int)effect.Position.Y);
+                effects.Frames.Add(effect.FrameCounter);
+            }
+
+            return effects;
+        }
+
+        public static void UpdateEffects(EffectsUpdate effectsUpdate)
+        {
+            Effects = [];
+
+            for (int i = 0; i < effectsUpdate.Types.Count; i++)
+            {
+                var effect = new Effect(effectsUpdate.Types[i], effectsUpdate.GetPosition(i), effectsUpdate.Directions[i])
+                {
+                    FrameCounter = effectsUpdate.Frames[i]
+                };
+
+                Effects.Add(effect);
             }
         }
     }

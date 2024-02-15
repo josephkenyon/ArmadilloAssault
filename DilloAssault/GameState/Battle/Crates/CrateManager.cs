@@ -1,6 +1,7 @@
 ﻿using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Physics;
+using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,14 @@ namespace DilloAssault.GameState.Battle.Crates
         private static int TimeSinceLastCrate { get; set; }
         private static Random Random { get; set; }
 
-        private static bool InitialDrop { get; set; } = false;
+        private static bool InitialDrop { get; set; }
 
         public static void Initialize(ICollection<Rectangle> collisionBoxes)
         {
+            InitialDrop = false;
+
+            TimeSinceLastCrate = 0;
+
             CollisionBoxes = collisionBoxes.Where(box =>
             {
                 var testRectangle = new Rectangle(box.Center.X, box.Top - 10, 48, 10);
@@ -27,7 +32,7 @@ namespace DilloAssault.GameState.Battle.Crates
                     return false;
                 }
 
-                return box.Top > 48;
+                return box.Top > 48 && box.Width > 96;
             }).ToList();
 
             Crates = [];
@@ -80,7 +85,7 @@ namespace DilloAssault.GameState.Battle.Crates
         private static void CreateNewCrate(CrateType? crateType = null)
         {
             var collisionBoxIndex = Random.Next(0, CollisionBoxes.Count);
-            var type = (crateType != null) ? (int)crateType : Random.Next(0, 2);
+            var type = (crateType != null) ? (int)crateType : Math.Clamp(Random.Next(-1, 2), 0, 1);
 
             var relevantCollisionBox = CollisionBoxes[collisionBoxIndex];
 
@@ -91,7 +96,7 @@ namespace DilloAssault.GameState.Battle.Crates
 
             var x = Random.Next(relevantCollisionBox.Left + 24, relevantCollisionBox.Right - 24);
 
-            crate.SetX(x - (Crate.Size / 2));
+            crate.SetX(x - (crate.Size.X / 2));
 
             Crates.Add(crate);
         }
@@ -105,6 +110,36 @@ namespace DilloAssault.GameState.Battle.Crates
             else if (crate.Type == CrateType.Weapon)
             {
                 avatar.GiveWeapon((WeaponType)crate.WeaponType);
+            }
+        }
+
+        public static CratesUpdate GetCratesUpdate()
+        {
+            var crates = new CratesUpdate();
+
+            foreach (var crate in Crates)
+            {
+                crates.Types.Add(crate.Type);
+                crates.Xs.Add((int)crate.Position.X);
+                crates.Ys.Add((int)crate.Position.Y);
+                crates.Groundeds.Add(crate.Grounded);
+            }
+
+            return crates;
+        }
+
+        public static void UpdateCrates(CratesUpdate cratesUpdate)
+        {
+            Crates = [];
+
+            for (int i = 0; i < cratesUpdate.Types.Count; i++)
+            {
+                var crate = new Crate(cratesUpdate.Types[i]);
+
+                crate.Grounded = cratesUpdate.Groundeds[i];
+                crate.SetPosition(cratesUpdate.GetPosition(i));
+
+                Crates.Add(crate);
             }
         }
     }

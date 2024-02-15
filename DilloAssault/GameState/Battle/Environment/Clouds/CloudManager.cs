@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 
 namespace DilloAssault.GameState.Battle.Environment.Clouds
 {
@@ -11,20 +9,27 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
         public static readonly int CloudSpriteSize = 256;
         public static readonly float CloudSpeed = 1.5f;
 
+
         public static List<Cloud> Clouds { get; private set; }
         private static Random Random { get; set; }
 
-        private static List<int> AllowedXs { get; set; } = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
-        private static readonly int AllowedXsSize = AllowedXs.Count;
-        private static int SpeedSign { get; set; } = -1;
-        private static int LastY { get; set; } = -1;
-
-        private static int FramesSinceLastCloud = 0;
-
-        private static int LastSprite { get; set; } = 0;
+        private static List<int> AllowedXs { get; set; }
+        private static int AllowedXsSize { get; set; }
+        private static int SpeedSign { get; set; }
+        private static int LastY { get; set; }
+        private static int LastSprite { get; set; }
+        private static int FramesSinceLastCloud { get; set; }
 
         public static void Initialize()
         {
+            AllowedXs = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
+            AllowedXsSize = AllowedXs.Count;
+
+            SpeedSign = -1;
+            LastY = -1;
+            FramesSinceLastCloud = 0;
+            LastSprite = 0;
+
             Clouds = [];
 
             Random = new();

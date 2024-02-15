@@ -15,19 +15,23 @@ namespace DilloAssault.GameState.Menu
 
         public static void Update()
         {
-           if (ControlsManager.IsControlDownStart(0, Control.Confirm))
+            if (ControlsManager.IsControlDownStart(0, Control.Confirm))
             {
                 var currentMenu = ConfigurationManager.GetScreenConfiguration(MenuStack.Peek());
 
-                foreach(var button in currentMenu.Buttons)
+                foreach (var button in currentMenu.Buttons)
                 {
                     var rectangle = button.GetRectangle();
-                    if (rectangle.Contains(ControlsManager.GetAimPosition(0))) {
+                    if (rectangle.Contains(ControlsManager.GetAimPosition(0)))
+                    {
                         button.Actions.ForEach(action => InvokeAction(action, button.Data));
                         break;
                     }
                 }
-
+            }
+            else if (ControlsManager.IsControlDownStart(0, Control.Start))
+            {
+                Back();
             }
         }
 

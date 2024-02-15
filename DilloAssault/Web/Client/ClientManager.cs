@@ -4,8 +4,10 @@ using DilloAssault.GameState.Battle;
 using DilloAssault.GameState.Menu;
 using DilloAssault.Generics;
 using DilloAssault.Web.Communication;
+using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace DilloAssault.Web.Client
@@ -13,10 +15,12 @@ namespace DilloAssault.Web.Client
     public static class ClientManager
     {
         private static Client Client { get; set; }
-        public static List<AvatarUpdate> AvatarUpdates { get; private set; } = [];
+        public static int BattleFrame { get; private set; } = 0;
 
         private static Vector2 LastAim = Vector2.Zero;
         private static bool LastUpdateWasEmpty = false;
+
+        public static Queue<FrameUpdate> Frames { get; private set; } = [];
 
         private static Thread Thread { get; set; }
 
@@ -81,12 +85,14 @@ namespace DilloAssault.Web.Client
         {
             if (serverMessage.Type == ServerMessageType.BattleInitialization)
             {
-                BattleManager.Initialize(serverMessage.PlayerCount);
+                BattleManager.Initialize(serverMessage.PlayerCount, serverMessage.AvatarIndex);
                 GameStateManager.State = State.Battle;
             }
             else if (serverMessage.Type == ServerMessageType.BattleUpdate)
             {
-                AvatarUpdates = serverMessage.AvatarUpdates;
+                //Trace.WriteLine($"Received battle update of {serverMessage.Frame.BattleFrame} at frame {BattleManager.BattleFrameCounter}");
+
+                Frames.Enqueue(serverMessage.FrameUpdate);
             }
             else if (serverMessage.Type == ServerMessageType.BattleTermination)
             {
