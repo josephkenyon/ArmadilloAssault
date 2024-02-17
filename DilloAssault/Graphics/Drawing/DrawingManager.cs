@@ -1,9 +1,11 @@
 ﻿using DilloAssault.Configuration.Menu;
 using DilloAssault.Configuration.Textures;
+using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -105,6 +107,40 @@ namespace DilloAssault.Graphics.Drawing
                     font, button.Text, textPosition.ToVector2(), Color.White
                 );
             }
+
+            _spriteBatch.End();
+        }
+
+        public static void DrawHud(Avatar avatar)
+        {
+            _spriteBatch.Begin();
+
+            _spriteBatch.Draw(
+                texture: TextureManager.GetTexture(TextureName.white_pixel),
+                destinationRectangle: new Rectangle((int)avatar.Position.X + 16, (int)avatar.Position.Y - 24, 96, 8),
+                sourceRectangle: new Rectangle(0, 0, 1, 1),
+                color: Color.Black * 0.5f
+            );
+
+            _spriteBatch.Draw(
+               texture: TextureManager.GetTexture(TextureName.white_pixel),
+               destinationRectangle: new Rectangle((int)avatar.Position.X + 16, (int)avatar.Position.Y - 24, 96 * (avatar.Health / 100), 8),
+               sourceRectangle: new Rectangle(0, 0, 1, 1),
+               color: Color.Red * 0.5f
+            );
+
+            var weapon = avatar.SelectedWeapon;
+
+            _spriteBatch.Draw(
+                texture: TextureManager.GetTexture(TextureName.bullet_box),
+                destinationRectangle: new Rectangle((int)avatar.Position.X + 24, (int)avatar.Position.Y - 64, 32, 32),
+                color: Color.White
+             );
+
+            _spriteBatch.DrawString(
+                DrawingHelper.GetFont, $"x {weapon.AmmoInClip + weapon.Ammo}", new Vector2(avatar.Position.X + 64, avatar.Position.Y - 56), Color.White
+            );
+
 
             _spriteBatch.End();
         }

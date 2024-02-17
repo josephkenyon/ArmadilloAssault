@@ -58,7 +58,15 @@ namespace DilloAssault.GameState.Battle.Input
 
         private static void UpdateAimDirection(int playerIndex, Avatar avatar)
         {
-            var aimPosition = ControlsManager.GetAimPosition(playerIndex);
+            var nullableAimPosition = ControlsManager.GetNullableAimPosition(playerIndex);
+
+            if (nullableAimPosition == null)
+            {
+                return;
+            }
+
+            var aimPosition = (Vector2)nullableAimPosition;
+
             var origin = avatar.Position + avatar.GetArmOrigin();
 
             avatar.AimDirection = aimPosition - origin;

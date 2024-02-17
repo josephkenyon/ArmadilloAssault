@@ -10,6 +10,7 @@
         start_server,
         stop_server,
         start_game,
+        open_editor,
         exit
     }
 }

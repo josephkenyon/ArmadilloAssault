@@ -38,17 +38,8 @@ namespace DilloAssault
 
         protected override void LoadContent()
         {
-
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             ConfigurationManager.LoadContent(Content);
-
-            var Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
-
-            EditorManager.Initialize(Scene);
-
-            BattleManager.Scene = Scene;
-
-            //BattleManager.Initialize();
         }
 
         protected override void Update(GameTime gameTime)

@@ -1,4 +1,5 @@
-﻿using DilloAssault.Graphics;
+﻿using DilloAssault.GameState.Editor;
+using DilloAssault.Graphics;
 
 namespace DilloAssault.GameState
 {
@@ -17,6 +18,11 @@ namespace DilloAssault.GameState
             }
             else
             {
+                if (_state == State.Editor)
+                {
+                    EditorManager.Initialize();
+                }
+
                 GraphicsManager.SetMenuCursor();
             }
         }

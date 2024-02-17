@@ -25,6 +25,11 @@ namespace DilloAssault.Web.Server
             return [];
         }
 
+        public static void ClearPlayerControlsDown(int playerIndex)
+        {
+            Server.Players[playerIndex].AreControlsDown = [];
+        }
+
         public static Vector2 GetPlayerAimPosition(int playerIndex)
         {
             if (Server.Players.Count > playerIndex)

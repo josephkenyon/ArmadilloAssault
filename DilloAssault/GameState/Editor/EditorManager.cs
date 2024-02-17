@@ -18,9 +18,9 @@ namespace DilloAssault.GameState.Editor
         public static Point SpriteSelectionIndex { get; set; }
         public static TextureName SelectedTextureName { get; set; }
 
-        public static void Initialize(Scene scene)
+        public static void Initialize()
         {
-            Scene = scene;
+            Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
             Z = -1;
             SelectedTextureName = TextureName.test_tileset;
             SpriteSelectionIndex = new Point(0, 0);
@@ -98,7 +98,8 @@ namespace DilloAssault.GameState.Editor
             if (ControlsManager.IsControlPressed(playerIndex, Control.Start))
             {
                 var json = JsonSerializer.Serialize(ConfigurationHelper.GetSceneJson(Scene));
-                File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "jungle_scene.json"), json);
+                File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "editor.json"), json);
+                GameStateManager.State = State.Menu;
             }
         }
 

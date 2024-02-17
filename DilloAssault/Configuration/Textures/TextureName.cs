@@ -25,6 +25,8 @@
         shotgun_bullet,
         ricochet,
         crates,
-        crates_parachuting
+        crates_parachuting,
+        bullet_box,
+        titan
     }
 }

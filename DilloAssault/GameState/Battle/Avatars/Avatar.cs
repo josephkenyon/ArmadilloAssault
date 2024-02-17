@@ -68,7 +68,7 @@ namespace DilloAssault.GameState.Battle.Avatars
         private Direction? BufferedDirection { get; set; }
 
         // Weapons
-        private List<Weapon> Weapons { get; set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
+        public List<Weapon> Weapons { get; private set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
         private int WeaponSelectionIndex { get; set; }
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
         public TextureName OverrideWeaponTexture { get; private set; }
@@ -111,12 +111,14 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Position = Position,
                 Animation = Animation,
                 Recoil = GetRecoil,
+                Health = Health,
                 AnimationFrame = AnimationFrame,
                 BreathingFrameCounter = BreathingFrameCounter,
                 Direction = Direction,
                 SpinningAngle = SpinningAngle,
                 ArmAngle = (float)ArmAngle,
-                WeaponTexture = CurrentWeaponConfiguration.TextureName
+                Weapons = Weapons,
+                WeaponSelectionIndex = WeaponSelectionIndex,
             };
         }
 
@@ -125,12 +127,14 @@ namespace DilloAssault.GameState.Battle.Avatars
             Position = avatarUpdate.Position;
             Animation = avatarUpdate.Animation;
             AnimationFrame = avatarUpdate.AnimationFrame;
+            Health = avatarUpdate.Health;
             Direction = avatarUpdate.Direction;
             Recoil = avatarUpdate.Recoil;
             BreathingFrameCounter = avatarUpdate.BreathingFrameCounter;
             SpinningAngle = avatarUpdate.SpinningAngle;
             ArmAngle = (float)avatarUpdate.ArmAngle;
-            OverrideWeaponTexture = avatarUpdate.WeaponTexture;
+            Weapons = avatarUpdate.Weapons;
+            WeaponSelectionIndex = avatarUpdate.WeaponSelectionIndex;
         }
 
         private void UpdatePhysics()
@@ -323,38 +327,47 @@ namespace DilloAssault.GameState.Battle.Avatars
         {
             var animation = Animations[Animation];
 
-            if (FrameCounter >= 3)
+            if (animation.FrameCount == 1)
             {
                 FrameCounter = 0;
+                AnimationFrame = 0;
 
-                if (RunningBackwards && Animation == Animation.Running)
-                {
-                    AnimationFrame--;
-                }
-                else
-                {
-                    AnimationFrame++;
-                }
-
-                if (AnimationFrame == animation.FrameCount)
-                {
-                    if (Animation == Animation.Running)
-                    {
-                        AnimationFrame = 0;
-                    }
-                    else
-                    {
-                        AnimationFrame--;
-                    }
-                }
-                else if (AnimationFrame <= 0 && RunningBackwards)
-                {
-                    AnimationFrame = animation.FrameCount - 1;
-                }
             }
             else
             {
-                FrameCounter++;
+                if (FrameCounter >= 3)
+                {
+                    FrameCounter = 0;
+
+                    if (RunningBackwards && Animation == Animation.Running)
+                    {
+                        AnimationFrame--;
+                    }
+                    else
+                    {
+                        AnimationFrame++;
+                    }
+
+                    if (AnimationFrame == animation.FrameCount)
+                    {
+                        if (Animation == Animation.Running)
+                        {
+                            AnimationFrame = 0;
+                        }
+                        else
+                        {
+                            AnimationFrame--;
+                        }
+                    }
+                    else if (AnimationFrame <= 0 && RunningBackwards)
+                    {
+                        AnimationFrame = animation.FrameCount - 1;
+                    }
+                }
+                else
+                {
+                    FrameCounter++;
+                }
             }
         }
 
@@ -384,9 +397,9 @@ namespace DilloAssault.GameState.Battle.Avatars
             return new Vector2(Position.X + (Size.X / 2), Position.Y + (Size.Y / 2));
         }
 
-        public void HitByBullet(Bullet bullet)
+        public void HitByBullet(Bullet bullet, bool headShot)
         {
-            Health -= bullet.Damage;
+            Health -= headShot ? (int)(bullet.Damage * 1.5f) : bullet.Damage;
             
             if (IsDead)
             {
@@ -488,18 +501,21 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public void SetAnimation(Animation animation)
         {
-            if (Animation != animation)
+            if (Animation != Animation.Dead)
             {
-                FrameCounter = 0;
-                AnimationFrame = 0;
-            }
+                if (Animation != animation)
+                {
+                    FrameCounter = 0;
+                    AnimationFrame = 0;
+                }
 
-            if (!IsSpinning)
-            {
-                SpinningAngle = (float)(Math.PI / -2f);
-            }
+                if (!IsSpinning)
+                {
+                    SpinningAngle = (float)(Math.PI / -2f);
+                }
 
-            Animation = animation;
+                Animation = animation;
+            }
         }
 
         public void IncrementSpin()
@@ -629,6 +645,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             if (weapon != null)
             {
                 weapon.Ammo += configuration.ClipsGiven * configuration.ClipSize;
+                WeaponSelectionIndex = Weapons.IndexOf(weapon);
             }
             else
             {
@@ -636,8 +653,6 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Weapons.Add(newWeapon);
 
                 WeaponSelectionIndex = Weapons.IndexOf(newWeapon);
-
-                Weapons = [.. Weapons.OrderBy(weapon => (int)weapon.Type)];
             }
         }
     }

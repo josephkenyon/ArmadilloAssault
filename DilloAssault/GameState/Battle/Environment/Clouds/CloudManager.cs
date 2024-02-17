@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DilloAssault.GameState.Battle.Environment.Clouds
 {
     public static class CloudManager
     {
+        private static readonly int CloudSpawnRate = 300;
         public static readonly int CloudSpriteSize = 256;
         public static readonly float CloudSpeed = 1.5f;
 
@@ -27,16 +29,17 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
 
             SpeedSign = -1;
             LastY = -1;
-            FramesSinceLastCloud = 0;
+            FramesSinceLastCloud = CloudSpawnRate;
             LastSprite = 0;
 
             Clouds = [];
 
             Random = new();
 
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 9; i++)
             {
-                CreateNewCloud(true);
+                CreateNewCloud(true, false);
+                CreateNewCloud(true, true);
             }
         }
 
@@ -49,9 +52,10 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
                 cloud.Position = new Vector2(cloud.Position.X + cloud.Speed / 2f, cloud.Position.Y);
             }
 
-            if (FramesSinceLastCloud == 200)
+            if (FramesSinceLastCloud == CloudSpawnRate)
             {
-                CreateNewCloud(false);
+                CreateNewCloud(false, false);
+                CreateNewCloud(false, true);
                 FramesSinceLastCloud = 0;
             }
             else
@@ -60,7 +64,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
             }
         }
 
-        private static void CreateNewCloud(bool anyX)
+        private static void CreateNewCloud(bool anyX, bool foreground)
         {
             // SpriteX
             var spriteX = LastSprite % 2;
@@ -82,7 +86,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
 
 
             // Size
-            var randomSize = Random.NextDouble() * 2f + 1f;
+            var randomSize = 2f + 1f;
             var size = new Point((int)(CloudSpriteSize * randomSize), (int)(CloudSpriteSize * randomSize));
 
 
@@ -108,7 +112,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
             }
             else
             {
-                x = speed < 0 ? 1920 + size.X : 0 - size.X;
+                x = speed < 0 ? 1920 : 0 - size.X;
             }
 
             // Speed Sign
@@ -123,14 +127,14 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
             // Y
             int y = LastY + 1;
 
-            if (y > 14)
+            if (y > 12)
             {
                 y = 0;
             }
 
             LastY = y;
 
-            y = (y * 64) - (size.Y / 4);
+            y = (y * 64) - (size.Y / 2);
 
             // Add Cloud
             Clouds.Add(new Cloud
@@ -138,8 +142,11 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
                 Position = new Vector2((float)x, (float)y),
                 Size = size,
                 SpriteLocation = new(spriteX, spriteY),
-                Speed = speed
+                Speed = speed,
+                Foreground = foreground
             });
+
+            //Trace.WriteLine($"{x}, {y}, {size.X}, {size.Y}");
         }
     }
 }

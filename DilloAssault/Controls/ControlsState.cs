@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace DilloAssault.Controls
 {
     public class ControlsState
     {
-        public Vector2 AimPosition { get; set; }
+        public Vector2? AimPosition { get; set; }
         private Dictionary<Control, int> ControlDownFrames { get; set; }
         private Dictionary<Control, bool> ControlDown { get; set; }
         private Dictionary<Control, bool> ControlPress { get; set; }
@@ -15,8 +14,6 @@ namespace DilloAssault.Controls
             ControlDownFrames = [];
             ControlDown = [];
             ControlPress = [];
-
-            AimPosition = Vector2.Zero;
         }
 
         public bool IsControlDown(Control control)

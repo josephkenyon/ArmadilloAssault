@@ -10,14 +10,31 @@ using System;
 
 namespace DilloAssault.GameState.Battle.Weapons
 {
-    public class Weapon(WeaponJson weaponJson)
+    public class Weapon
     {
-        private readonly int FireRate = weaponJson.FireRate;
+        private readonly int FireRate;
 
-        public WeaponType Type { get; set; } = weaponJson.Type;
-        public int AmmoInClip { get; set; } = weaponJson.ClipSize;
-        public int Ammo { get; set; } = weaponJson.ClipSize * (weaponJson.ClipsGiven - 1);
+        public WeaponType Type { get; set; }
+        public int AmmoInClip { get; set; }
+        public int Ammo { get; set; }
         public int FramesSinceFired { get; set; } = -1;
+
+        private readonly WeaponJson WeaponJson;
+
+        public Weapon()
+        {
+
+        }
+
+        public Weapon(WeaponJson weaponJson)
+        {
+            FireRate = weaponJson.FireRate;
+            Type = weaponJson.Type;
+            AmmoInClip = weaponJson.ClipSize;
+            Ammo = weaponJson.ClipSize * (weaponJson.ClipsGiven - 1);
+
+            WeaponJson = weaponJson;
+        }
 
         public void Update()
         {
@@ -29,7 +46,7 @@ namespace DilloAssault.GameState.Battle.Weapons
 
         public void Reload()
         {
-            var clipSize = weaponJson.ClipSize;
+            var clipSize = WeaponJson.ClipSize;
             if (Ammo >= clipSize - AmmoInClip)
             {
                 Ammo -= clipSize - AmmoInClip;
@@ -39,12 +56,12 @@ namespace DilloAssault.GameState.Battle.Weapons
 
         public bool HasFullClip()
         {
-            return AmmoInClip == weaponJson.ClipSize;
+            return AmmoInClip == WeaponJson.ClipSize;
         }
 
         public bool CanReload()
         {
-            var clipSize = weaponJson.ClipSize;
+            var clipSize = WeaponJson.ClipSize;
             return Ammo >= clipSize - AmmoInClip;
         }
 

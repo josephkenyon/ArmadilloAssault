@@ -7,8 +7,6 @@ using DilloAssault.Web.Communication;
 using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 
 namespace DilloAssault.Web.Client
 {
@@ -20,9 +18,28 @@ namespace DilloAssault.Web.Client
         private static Vector2 LastAim = Vector2.Zero;
         private static bool LastUpdateWasEmpty = false;
 
-        public static Queue<FrameUpdate> Frames { get; private set; } = [];
+        private static Queue<FrameUpdate> Frames { get; set; } = new();
 
-        private static Thread Thread { get; set; }
+        public static FrameUpdate PopFrame()
+        {
+            FrameUpdate frame = null;
+
+            while (Frames.Count > 4)
+            {
+                Frames.Dequeue();
+            }
+
+            if (Frames.Count == 1)
+            {
+                frame = Frames.Peek();
+            }
+            else if (Frames.Count > 1)
+            {
+                frame = Frames.Dequeue();
+            }
+
+            return frame;
+        }
 
         public static void AttemptConnection()
         {

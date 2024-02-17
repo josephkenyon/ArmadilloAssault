@@ -4,5 +4,6 @@
     {
         Arthur,
         Axel,
+        Titan,
     }
 }

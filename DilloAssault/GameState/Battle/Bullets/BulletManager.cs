@@ -1,7 +1,6 @@
 ﻿using DilloAssault.Configuration.Effects;
 using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.Generics;
 using DilloAssault.Web.Communication.Updates;
@@ -42,12 +41,26 @@ namespace DilloAssault.GameState.Battle.Bullets
         public static void UpdateBullets(List<Avatar> avatars)
         {
             var boxLists = avatars.Select(avatar => {
-                var hurtBoxes = avatar.GetHurtBoxes().Select(box => new KeyValuePair<bool, LineQuad>(false,
-                    avatar.IsSpinning ? LineQuad.CreateFrom(box, avatar.OffsetOrigin, avatar.Rotation) : LineQuad.CreateFrom(box)
-                )).ToList();
+                var avatarHurtBoxes = avatar.GetHurtBoxes().OrderBy(rec => rec.Top);
+
+
+                var headBox = true && !avatar.IsSpinning;
+
+                var hurtBoxes = avatarHurtBoxes.Select(box =>
+                {
+                    var keyValuePair = new KeyValuePair<HurtBoxType, LineQuad>(
+                        headBox ? HurtBoxType.Head : HurtBoxType.Standard,
+                        avatar.IsSpinning ? LineQuad.CreateFrom(box, avatar.OffsetOrigin, avatar.Rotation) : LineQuad.CreateFrom(box)
+                    );
+
+                    headBox = false;
+
+                    return keyValuePair;
+                }
+                ).ToList();
 
                 var shellBox = avatar.GetShellBox();
-                hurtBoxes.Add(new(true, avatar.IsSpinning ? LineQuad.CreateFrom(shellBox, avatar.OffsetOrigin, avatar.Rotation) : LineQuad.CreateFrom(shellBox)));
+                hurtBoxes.Add(new(HurtBoxType.Shell, avatar.IsSpinning ? LineQuad.CreateFrom(shellBox, avatar.OffsetOrigin, avatar.Rotation) : LineQuad.CreateFrom(shellBox)));
 
                 return hurtBoxes;
             }).ToList();
@@ -63,7 +76,7 @@ namespace DilloAssault.GameState.Battle.Bullets
                     .Select(linePair => bulletTrajectory.GetIntersection(linePair.Value))
                     .Where(vector => vector != null)
                     .Select(vector => (Vector2) vector)
-                    .OrderBy(vector => Generics.MathUtils.DistanceBetweenTwoVectors(bullet.Position, vector));
+                    .OrderBy(vector => MathUtils.DistanceBetweenTwoVectors(bullet.Position, vector));
 
                 if (terrainIntersections.Any())
                 {
@@ -79,25 +92,25 @@ namespace DilloAssault.GameState.Battle.Bullets
                     for (int i = 0; i < avatars.Count; i++)
                     {
                         var avatarCenter = avatars[i].GetCenter();
-                        if (Generics.MathUtils.DistanceBetweenTwoVectors(avatarCenter, bullet.Position) <= (Bullet_Speed * 2))
+                        if (MathUtils.DistanceBetweenTwoVectors(avatarCenter, bullet.Position) <= (Bullet_Speed * 2))
                         {
                             var intersections = boxLists[i]
-                                .Select(linePair => new KeyValuePair<bool, Vector2?>(linePair.Key, bulletTrajectory.GetIntersection(linePair.Value)))
+                                .Select(linePair => new KeyValuePair<HurtBoxType, Vector2?>(linePair.Key, bulletTrajectory.GetIntersection(linePair.Value)))
                                 .Where(pair => pair.Value != null)
-                                .Select(pair => new KeyValuePair<bool, Vector2>(pair.Key, (Vector2)pair.Value))
-                                .OrderBy(pair => Generics.MathUtils.DistanceBetweenTwoVectors(bullet.Position, pair.Value));
+                                .Select(pair => new KeyValuePair<HurtBoxType, Vector2>(pair.Key, (Vector2)pair.Value))
+                                .OrderBy(pair => MathUtils.DistanceBetweenTwoVectors(bullet.Position, pair.Value));
 
                             if (intersections.Any())
                             {
                                 var pair = intersections.First();
-                                if (pair.Key == true)
+                                if (pair.Key == HurtBoxType.Shell)
                                 {
                                     RichochetBullet(bullet);
                                     EffectManager.CreateEffect(pair.Value, EffectType.ricochet);
                                 }
                                 else
                                 {
-                                    avatars[i].HitByBullet(bullet);
+                                    avatars[i].HitByBullet(bullet, pair.Key == HurtBoxType.Head);
                                     EffectManager.CreateEffect(pair.Value, EffectType.blood_splatter);
                                     endOfLife = true;
                                 }

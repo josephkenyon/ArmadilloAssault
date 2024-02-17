@@ -11,13 +11,13 @@
     "ClipSize": 5,
     "MaxRange": 750,
     "BulletsFired": 1,
-    "BulletDamage": 15,
+    "BulletDamage": 10,
     "AccuracyConeDegrees": 3,
     "FireRate": 35,
     "ReloadRate": 120,
     "RecoilStrength": 0.5,
     "RecoilRecoveryRate": 30,
-    "ClipsGiven": 5,
+    "ClipsGiven": 3,
     "SpriteOffset": {
       "X": 54,
       "Y": 13
@@ -35,13 +35,13 @@
     "ClipSize": 12,
     "MaxRange": 750,
     "BulletsFired": 1,
-    "BulletDamage": 8,
+    "BulletDamage": 9,
     "AccuracyConeDegrees": 10,
     "FireRate": 12,
     "ReloadRate": 180,
     "RecoilStrength": 0.3,
     "RecoilRecoveryRate": 20,
-    "ClipsGiven": 2,
+    "ClipsGiven": 1,
     "SpriteOffset": {
       "X": 74,
       "Y": 15
@@ -59,13 +59,13 @@
     "ClipSize": 2,
     "MaxRange": 400,
     "BulletsFired": 6,
-    "BulletDamage": 10,
+    "BulletDamage": 7,
     "AccuracyConeDegrees": 45,
     "FireRate": 60,
     "ReloadRate": 90,
     "RecoilStrength": 1,
     "RecoilRecoveryRate": 60,
-    "ClipsGiven": 4,
+    "ClipsGiven": 2,
     "SpriteOffset": {
       "X": 73,
       "Y": 17
@@ -89,7 +89,7 @@
     "ReloadRate": 240,
     "RecoilStrength": 0.7,
     "RecoilRecoveryRate": 30,
-    "ClipsGiven": 2,
+    "ClipsGiven": 1,
     "SpriteOffset": {
       "X": 74,
       "Y": 13

@@ -12,6 +12,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
         public TextureName TextureName => TextureName.clouds;
         public Point SpriteLocation { get; set; }
         public float Speed { get; set; }
+        public bool Foreground { get; set; }
 
         public Rectangle? GetSourceRectangle() => new Rectangle(
             CloudManager.CloudSpriteSize * SpriteLocation.X,
@@ -20,7 +21,7 @@ namespace DilloAssault.GameState.Battle.Environment.Clouds
             CloudManager.CloudSpriteSize
         );
 
-        public float Opacity => Math.Clamp(0.45f * Math.Abs(Speed), 0.2f, 1f);
+        public float Opacity => Foreground ? Math.Clamp(0.25f * Math.Abs(Speed), 0.1f, 0.3f) : Math.Clamp(0.45f * Math.Abs(Speed), 0.2f, 1f);
 
         public Rectangle GetDestinationRectangle() => new(Position.ToPoint(), Size);
     }

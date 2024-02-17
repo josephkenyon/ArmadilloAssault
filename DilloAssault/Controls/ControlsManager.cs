@@ -46,11 +46,21 @@ namespace DilloAssault.Controls
             return false;
         }
 
-        public static Vector2 GetAimPosition(int playerIndex)
+        public static Vector2? GetNullableAimPosition(int playerIndex)
         {
             if (PlayerControlsStates.TryGetValue(playerIndex, out ControlsState value))
             {
                 return value.AimPosition;
+            }
+
+            return null;
+        }
+
+        public static Vector2 GetAimPosition(int playerIndex)
+        {
+            if (PlayerControlsStates.TryGetValue(playerIndex, out ControlsState value))
+            {
+                return value.AimPosition == null ? Vector2.Zero : (Vector2)value.AimPosition;
             }
 
             return Vector2.Zero;
@@ -65,6 +75,7 @@ namespace DilloAssault.Controls
                 for (var i = 0; i < ServerManager.PlayerCount; i++)
                 {
                     UpdateControlState(i + 1, ServerManager.GetPlayerControlsDown(i), ServerManager.GetPlayerAimPosition(i));
+                    ServerManager.ClearPlayerControlsDown(i);
                 }
             }
         }

@@ -12,15 +12,10 @@ using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
 using DilloAssault.Web.Client;
-using DilloAssault.Web.Communication.Updates;
 using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 
 namespace DilloAssault.GameState.Battle
 {
@@ -37,15 +32,23 @@ namespace DilloAssault.GameState.Battle
 
             AvatarIndex = avatarIndex;
 
-            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
+            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
+            Avatars.Values.First().SetPosition(new Vector2(150, 0));
 
-            if (playerCount == 2)
+            if (playerCount == 1)
             {
                 Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
+                Avatars.Values.Last().SetPosition(new Vector2(1650, 0));
+                Avatars.Values.Last().SetDirection(Direction.Left);
             }
 
-            Avatars.Values.First().SetPosition(new Vector2(1000, 0));
-            Avatars.Values.Last().SetPosition(new Vector2(500, 0));
+            if (playerCount == 1)
+            {
+                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
+                Avatars.Values.Last().SetPosition(new Vector2(420, 750));
+                Avatars.Values.Last().SetDirection(Direction.Right);
+            }
+
 
             BulletManager.Initialize(Scene.CollisionBoxes);
             CrateManager.Initialize(Scene.CollisionBoxes);
@@ -71,10 +74,7 @@ namespace DilloAssault.GameState.Battle
                 PhysicsManager.Update(avatar, Scene.CollisionBoxes);
 
 
-                if (!avatar.IsDead)
-                {
-                    avatar.Update();
-                }
+                avatar.Update();
 
                 index++;
             }
@@ -100,18 +100,7 @@ namespace DilloAssault.GameState.Battle
         {
             CloudManager.UpdateClouds();
 
-            FrameUpdate frame = null;
-            if (ClientManager.Frames.Count > 4)
-            {
-                frame = ClientManager.Frames.Last();
-                ClientManager.Frames.Clear();
-            }
-
-            if (ClientManager.Frames.Count > 0)
-            {
-                frame = ClientManager.Frames.Dequeue();
-            }
-
+            var frame = ClientManager.PopFrame();
             if (frame == null)
             {
                 return;
@@ -137,7 +126,7 @@ namespace DilloAssault.GameState.Battle
         {
             DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f);
 
-            DrawingManager.DrawCollection(CloudManager.Clouds);
+            DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => !cloud.Foreground));
 
             foreach (var list in Scene.TileLists.Where(list => list.Z < 0))
             {
@@ -156,6 +145,10 @@ namespace DilloAssault.GameState.Battle
             DrawingManager.DrawCollection(BulletManager.Bullets);
 
             DrawingManager.DrawCollection(EffectManager.Effects);
+
+            DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
+
+            DrawingManager.DrawHud(Avatars[(PlayerIndex)AvatarIndex]);
         }
 
         private static List<IDrawableObject> GetAvatars()

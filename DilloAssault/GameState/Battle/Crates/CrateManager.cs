@@ -19,6 +19,8 @@ namespace DilloAssault.GameState.Battle.Crates
 
         private static bool InitialDrop { get; set; }
 
+        private static int CrateSpawnRate(int avatarCount) => 500 - (avatarCount * 50);
+
         public static void Initialize(ICollection<Rectangle> collisionBoxes)
         {
             InitialDrop = false;
@@ -44,7 +46,7 @@ namespace DilloAssault.GameState.Battle.Crates
         {
             TimeSinceLastCrate++;
 
-            if (!InitialDrop && TimeSinceLastCrate == 60 * 5)
+            if (!InitialDrop && TimeSinceLastCrate == CrateSpawnRate(avatars.Count))
             {
                 InitialDrop = true;
                 TimeSinceLastCrate = 0;
@@ -53,10 +55,9 @@ namespace DilloAssault.GameState.Battle.Crates
                 {
                     CreateNewCrate(CrateType.Weapon);
                     CreateNewCrate(CrateType.Weapon);
-                    CreateNewCrate(CrateType.Weapon);
                 }
             }
-            else if (TimeSinceLastCrate >= 60 * 10 && Crates.Count <= 10)
+            else if (TimeSinceLastCrate >= CrateSpawnRate(avatars.Count) && Crates.Count <= 10)
             {
                 TimeSinceLastCrate = 0;
                 CreateNewCrate();
