@@ -6,6 +6,7 @@ using DilloAssault.GameState.Battle.Bullets;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Weapons;
 using DilloAssault.Generics;
+using DilloAssault.Sound;
 using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System;
@@ -87,10 +88,13 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public bool SwitchingWeapons { get; set; } = false;
         public int SwitchingWeaponFrames { get; set; } = 0;
+        public int FramesSinceLastHurtSound { get; set; } = 0;
 
         private static readonly int WeaponSwitchFrames = 10;
 
         public override bool LowDrag => IsSpinning;
+
+        public bool Jumped { get; set; }
 
         public void Update()
         {
@@ -100,6 +104,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             UpdateReloading();
             UpdateSwitchingWeapons();
             UpdatePhysics();
+            UpdateSound();
 
             Weapons.ForEach(weapon => weapon.Update());
         }
@@ -135,6 +140,16 @@ namespace DilloAssault.GameState.Battle.Avatars
             ArmAngle = (float)avatarUpdate.ArmAngle;
             Weapons = avatarUpdate.Weapons;
             WeaponSelectionIndex = avatarUpdate.WeaponSelectionIndex;
+        }
+
+        private void UpdateSound()
+        {
+            FramesSinceLastHurtSound++;
+            if (Jumped)
+            {
+                SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Jump);
+                Jumped = false;
+            }
         }
 
         private void UpdatePhysics()
@@ -271,6 +286,8 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Reload();
             }
 
+            SoundManager.PlayWeaponSound(currentWeapon.Type);
+
             BufferedShotFrameCounter = 0;
         }
 
@@ -403,7 +420,17 @@ namespace DilloAssault.GameState.Battle.Avatars
             
             if (IsDead)
             {
+                if (FramesSinceLastHurtSound > 5)
+                {
+                    FramesSinceLastHurtSound = 0;
+                    SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Dead);
+                }
                 Animation = Animation.Dead;
+            }
+            else if (FramesSinceLastHurtSound > 5)
+            {
+                FramesSinceLastHurtSound = 0;
+                SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Hurt);
             }
         }
         
@@ -654,6 +681,8 @@ namespace DilloAssault.GameState.Battle.Avatars
 
                 WeaponSelectionIndex = Weapons.IndexOf(newWeapon);
             }
+
+            SoundManager.PlayBattleSound(BattleSound.ammo);
         }
     }
 }

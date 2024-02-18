@@ -1,10 +1,11 @@
 ﻿using DilloAssault.Configuration;
+using DilloAssault.Configuration.Avatars;
 using DilloAssault.Configuration.Menu;
 using DilloAssault.Controls;
 using DilloAssault.Graphics.Drawing;
+using DilloAssault.Sound;
 using DilloAssault.Web.Client;
 using DilloAssault.Web.Server;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,6 +24,7 @@ namespace DilloAssault.GameState.Menu
                     var rectangle = button.GetRectangle();
                     if (rectangle.Contains(ControlsManager.GetAimPosition(0)))
                     {
+                        SoundManager.PlayMenuSound(MenuSound.confirm);
                         button.Actions.ForEach(action => InvokeAction(action, button.Data));
                         break;
                     }
@@ -31,6 +33,8 @@ namespace DilloAssault.GameState.Menu
             else if (ControlsManager.IsControlDownStart(0, Control.Start))
             {
                 var cancelButton = CurrentMenu.Buttons.SingleOrDefault(button => button.Actions.Contains(MenuAction.back));
+
+                SoundManager.PlayMenuSound(MenuSound.cancel);
 
                 if (cancelButton != null)
                 {

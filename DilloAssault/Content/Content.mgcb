@@ -326,3 +326,117 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Tilesets/test_tileset.png
 
+#begin Sound/Arthur/arthur_dead.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Arthur/arthur_dead.mp3
+
+#begin Sound/Arthur/arthur_hurt.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Arthur/arthur_hurt.mp3
+
+#begin Sound/Arthur/arthur_jump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Arthur/arthur_jump.mp3
+
+#begin Sound/Arthur/arthur_ready.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Arthur/arthur_ready.mp3
+
+#begin Sound/Axel/axel_dead.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Axel/axel_dead.mp3
+
+#begin Sound/Axel/axel_hurt.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Axel/axel_hurt.mp3
+
+#begin Sound/Axel/axel_jump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Axel/axel_jump.mp3
+
+#begin Sound/Axel/axel_ready.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Axel/axel_ready.mp3
+
+#begin Sound/Battle/ammo.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Battle/ammo.mp3
+
+#begin Sound/Menu/cancel.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Menu/cancel.mp3
+
+#begin Sound/Menu/confirm.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Menu/confirm.mp3
+
+#begin Sound/Titan/titan_dead.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Titan/titan_dead.mp3
+
+#begin Sound/Titan/titan_hurt.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Titan/titan_hurt.mp3
+
+#begin Sound/Titan/titan_jump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Titan/titan_jump.mp3
+
+#begin Sound/Titan/titan_ready.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Titan/titan_ready.mp3
+
+#begin Sound/Weapon/assault.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Weapon/assault.mp3
+
+#begin Sound/Weapon/pistol.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Weapon/pistol.mp3
+
+#begin Sound/Weapon/shotgun.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Weapon/shotgun.mp3
+
+#begin Sound/Weapon/sniper.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Weapon/sniper.mp3
+

@@ -44,7 +44,7 @@ namespace DilloAssault.GameState.Battle
 
             if (playerCount == 1)
             {
-                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
+                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
                 Avatars.Values.Last().SetPosition(new Vector2(420, 750));
                 Avatars.Values.Last().SetDirection(Direction.Right);
             }
@@ -147,6 +147,17 @@ namespace DilloAssault.GameState.Battle
             DrawingManager.DrawCollection(EffectManager.Effects);
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
+
+            //var boxList = new List<Rectangle>();
+            //var boxesList = Avatars.Values.Select(avatar => avatar.GetHurtBoxes());
+            //foreach (var boxes in boxesList)
+            //{
+            //    boxList.AddRange(boxes);
+            //}
+
+            //boxList.AddRange(Avatars.Values.Select(avatar => avatar.GetShellBox()));
+
+            //DrawingManager.DrawCollisionBoxes(boxList);
 
             DrawingManager.DrawHud(Avatars[(PlayerIndex)AvatarIndex]);
         }

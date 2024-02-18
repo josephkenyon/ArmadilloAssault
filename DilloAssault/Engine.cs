@@ -6,6 +6,7 @@ using DilloAssault.GameState.Battle;
 using DilloAssault.GameState.Editor;
 using DilloAssault.GameState.Menu;
 using DilloAssault.Graphics;
+using DilloAssault.Sound;
 using DilloAssault.Web.Client;
 using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
@@ -40,6 +41,7 @@ namespace DilloAssault
         {
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             ConfigurationManager.LoadContent(Content);
+            SoundManager.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)

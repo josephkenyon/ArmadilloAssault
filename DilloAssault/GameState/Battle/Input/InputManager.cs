@@ -4,7 +4,6 @@ using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
-using System.Diagnostics;
 
 namespace DilloAssault.GameState.Battle.Input
 {
@@ -269,6 +268,7 @@ namespace DilloAssault.GameState.Battle.Input
                     }
                 }
 
+                avatar.Jumped = true;
                 avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
                 avatar.Velocity = new Vector2(avatar.Velocity.X, -18f);
             }

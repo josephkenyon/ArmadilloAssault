@@ -111,9 +111,11 @@ namespace DilloAssault.Configuration
 
                     var avatarName = Path.GetFileNameWithoutExtension(fileName);
 
-                    var avatarType = string.Concat(avatarName[0].ToString().ToUpper(), avatarName.AsSpan(1));
+                    var avatarType = Enum.Parse<AvatarType>(string.Concat(avatarName[0].ToString().ToUpper(), avatarName.AsSpan(1)));
 
-                    _avatarConfigurations.Add(Enum.Parse<AvatarType>(avatarType), avatarJson);
+                    avatarJson.Type = avatarType;
+
+                    _avatarConfigurations.Add(avatarType, avatarJson);
                 }
                 catch (Exception e)
                 {
