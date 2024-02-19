@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace DilloAssault.Configuration.Generics
 {
@@ -10,5 +8,7 @@ namespace DilloAssault.Configuration.Generics
         public int Y { get; set; }
 
         public Point ToPoint() => new(X, Y);
+
+        internal Vector2 ToVector2() => new(X, Y);
     }
 }

@@ -4,42 +4,19 @@ using DilloAssault.GameState.Battle;
 using DilloAssault.GameState.Menu;
 using DilloAssault.Generics;
 using DilloAssault.Web.Communication;
-using DilloAssault.Web.Communication.Updates;
+using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace DilloAssault.Web.Client
 {
     public static class ClientManager
     {
         private static Client Client { get; set; }
-        public static int BattleFrame { get; private set; } = 0;
 
         private static Vector2 LastAim = Vector2.Zero;
+
         private static bool LastUpdateWasEmpty = false;
-
-        private static Queue<FrameUpdate> Frames { get; set; } = new();
-
-        public static FrameUpdate PopFrame()
-        {
-            FrameUpdate frame = null;
-
-            while (Frames.Count > 4)
-            {
-                Frames.Dequeue();
-            }
-
-            if (Frames.Count == 1)
-            {
-                frame = Frames.Peek();
-            }
-            else if (Frames.Count > 1)
-            {
-                frame = Frames.Dequeue();
-            }
-
-            return frame;
-        }
+        public static BattleFrame BattleFrame { get; set; }
 
         public static void AttemptConnection()
         {
@@ -107,9 +84,7 @@ namespace DilloAssault.Web.Client
             }
             else if (serverMessage.Type == ServerMessageType.BattleUpdate)
             {
-                //Trace.WriteLine($"Received battle update of {serverMessage.Frame.BattleFrame} at frame {BattleManager.BattleFrameCounter}");
-
-                Frames.Enqueue(serverMessage.FrameUpdate);
+                BattleManager.BattleFrame = serverMessage.BattleFrame;
             }
             else if (serverMessage.Type == ServerMessageType.BattleTermination)
             {

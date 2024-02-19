@@ -1,20 +1,17 @@
-﻿using DilloAssault.GameState.Battle.Players;
+﻿using DilloAssault.GameState;
+using DilloAssault.GameState.Battle;
+using DilloAssault.GameState.Battle.Players;
+using DilloAssault.Web.Communication;
+using DilloAssault.Web.Communication.Frame;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Net;
-using Newtonsoft.Json;
-using DilloAssault.Web.Communication;
-using System.Linq;
-using WebSocketSharp.Server;
-using WebSocketSharp;
-using DilloAssault.GameState.Battle;
-using DilloAssault.GameState;
 using System.Diagnostics;
-using DilloAssault.GameState.Battle.Effects;
-using DilloAssault.Web.Communication.Updates;
-using DilloAssault.GameState.Battle.Crates;
-using DilloAssault.GameState.Battle.Bullets;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 
 namespace DilloAssault.Web.Server
 {
@@ -41,7 +38,8 @@ namespace DilloAssault.Web.Server
                     Type = ServerMessageType.BattleInitialization,
                     ClientId = player.ConnectionId,
                     PlayerCount = Players.Count + 1,
-                    AvatarIndex = index++
+                    AvatarIndex = index++,
+                    BattleFrame = BattleManager.BattleFrame
                 };
 
                 Broadcast(message);
@@ -61,30 +59,23 @@ namespace DilloAssault.Web.Server
             });
         }
 
-        public void SendBattleUpdates()
+        public void SendBattleUpdates(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
         {
-            var avatarUpdatesList = new List<AvatarUpdate>();
-
-            foreach (var avatar in BattleManager.Avatars.Values)
-            {
-                avatarUpdatesList.Add(avatar.GetUpdate());
-            }
-
+            var index = 1;
             Players.ForEach(player =>
             {
+                battleFrame.HudFrame = hudFrames.ElementAt(index);
+
                 var message = new ServerMessage
                 {
                     Type = ServerMessageType.BattleUpdate,
                     ClientId = player.ConnectionId,
-                    FrameUpdate = new FrameUpdate {
-                        AvatarUpdates = avatarUpdatesList,
-                        EffectsUpdate = EffectManager.GetEffectsUpdate(),
-                        CratesUpdate = CrateManager.GetCratesUpdate(),
-                        BulletsUpdate = BulletManager.GetBulletsUpdate(),
-                    }
+                    BattleFrame = battleFrame
                 };
 
                 Broadcast(message);
+
+                index++;
             });
         }
 

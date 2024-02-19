@@ -7,7 +7,6 @@ using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.GameState.Battle.Weapons;
 using DilloAssault.Generics;
 using DilloAssault.Sound;
-using DilloAssault.Web.Communication.Updates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -35,6 +34,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         // Animation
         private readonly Dictionary<Animation, AnimationJson> Animations = ConfigurationHelper.GetAnimations(avatarJson.Animations);
+        public AvatarType Type { get; private set; } = avatarJson.Type;
         public Animation Animation { get; private set; } = Animation.Resting;
         private int FrameCounter { get; set; }
         public int AnimationFrame { get; private set; }
@@ -48,7 +48,6 @@ namespace DilloAssault.GameState.Battle.Avatars
         // Physics
         public int AvailableJumps { get; set; }
         public bool RunningBackwards { get; set; }
-        public bool DropThrough { get; set; }
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
 
         // Rotation
@@ -72,7 +71,6 @@ namespace DilloAssault.GameState.Battle.Avatars
         public List<Weapon> Weapons { get; private set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
         private int WeaponSelectionIndex { get; set; }
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
-        public TextureName OverrideWeaponTexture { get; private set; }
         public WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
         public bool HoldingAutomaticWeapon => SelectedWeapon.Type == WeaponType.Assault;
         public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire() && !Reloading && !SwitchingWeapons;
@@ -88,7 +86,7 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public bool SwitchingWeapons { get; set; } = false;
         public int SwitchingWeaponFrames { get; set; } = 0;
-        public int FramesSinceLastHurtSound { get; set; } = 0;
+        public int FramesSinceLastHurtSound { get; set; } = 15;
 
         private static readonly int WeaponSwitchFrames = 10;
 
@@ -107,39 +105,6 @@ namespace DilloAssault.GameState.Battle.Avatars
             UpdateSound();
 
             Weapons.ForEach(weapon => weapon.Update());
-        }
-
-        public AvatarUpdate GetUpdate()
-        {
-            return new AvatarUpdate
-            {
-                Position = Position,
-                Animation = Animation,
-                Recoil = GetRecoil,
-                Health = Health,
-                AnimationFrame = AnimationFrame,
-                BreathingFrameCounter = BreathingFrameCounter,
-                Direction = Direction,
-                SpinningAngle = SpinningAngle,
-                ArmAngle = (float)ArmAngle,
-                Weapons = Weapons,
-                WeaponSelectionIndex = WeaponSelectionIndex,
-            };
-        }
-
-        public void Update(AvatarUpdate avatarUpdate)
-        {
-            Position = avatarUpdate.Position;
-            Animation = avatarUpdate.Animation;
-            AnimationFrame = avatarUpdate.AnimationFrame;
-            Health = avatarUpdate.Health;
-            Direction = avatarUpdate.Direction;
-            Recoil = avatarUpdate.Recoil;
-            BreathingFrameCounter = avatarUpdate.BreathingFrameCounter;
-            SpinningAngle = avatarUpdate.SpinningAngle;
-            ArmAngle = (float)avatarUpdate.ArmAngle;
-            Weapons = avatarUpdate.Weapons;
-            WeaponSelectionIndex = avatarUpdate.WeaponSelectionIndex;
         }
 
         private void UpdateSound()
@@ -416,18 +381,20 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public void HitByBullet(Bullet bullet, bool headShot)
         {
-            Health -= headShot ? (int)(bullet.Damage * 1.5f) : bullet.Damage;
+            var wasAlive = Health > 1;
+            var damage = ConfigurationManager.GetWeaponConfiguration(bullet.WeaponType).BulletDamage;
+            Health -= headShot ? (int)(damage * 1.5f) : damage;
             
             if (IsDead)
             {
-                if (FramesSinceLastHurtSound > 5)
+                if (FramesSinceLastHurtSound > 15 || wasAlive)
                 {
                     FramesSinceLastHurtSound = 0;
                     SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Dead);
                 }
                 Animation = Animation.Dead;
             }
-            else if (FramesSinceLastHurtSound > 5)
+            else if (FramesSinceLastHurtSound > 15)
             {
                 FramesSinceLastHurtSound = 0;
                 SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Hurt);
@@ -487,43 +454,6 @@ namespace DilloAssault.GameState.Battle.Avatars
             armOriginX += SpriteOffset.X / 2;
 
             return new Vector2(armOriginX, armOriginY);
-        }
-
-        public Vector2 GetArmSpriteOrigin() {
-            var armOriginX = avatarJson.ArmOrigin.X;
-            var armOriginY = avatarJson.ArmOrigin.Y;
-
-            if (Direction == Direction.Left)
-            {
-                armOriginX += ((Size.X / 2) - armOriginX) * 2;
-            }
-
-            return new Vector2(armOriginX, armOriginY);
-        }
-
-        public Vector2 GetHeadOrigin()
-        {
-            var headOriginX = avatarJson.HeadOrigin.X;
-
-            if (Direction == Direction.Left)
-            {
-                headOriginX += ((Size.X / 2) - headOriginX) * 2;
-            }
-
-            return new Vector2(headOriginX, avatarJson.HeadOrigin.Y);
-        }
-
-        public Rectangle GetSourceRectangle()
-        {
-            var animation = Animations[Animation];
-
-            return new Rectangle()
-            {
-                X = (animation.X + AnimationFrame) * Size.X,
-                Y = animation.Y * Size.Y,
-                Width = Size.X,
-                Height = Size.Y
-            };
         }
 
         public void SetAnimation(Animation animation)
@@ -681,8 +611,6 @@ namespace DilloAssault.GameState.Battle.Avatars
 
                 WeaponSelectionIndex = Weapons.IndexOf(newWeapon);
             }
-
-            SoundManager.PlayBattleSound(BattleSound.ammo);
         }
     }
 }

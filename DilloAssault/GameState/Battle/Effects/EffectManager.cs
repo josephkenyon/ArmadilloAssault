@@ -1,10 +1,12 @@
 ﻿using DilloAssault.Configuration;
 using DilloAssault.Configuration.Effects;
 using DilloAssault.Generics;
-using DilloAssault.Web.Communication.Updates;
+using DilloAssault.Graphics.Drawing;
+using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DilloAssault.GameState.Battle.Effects
 {
@@ -47,35 +49,49 @@ namespace DilloAssault.GameState.Battle.Effects
             }
         }
 
-        public static EffectsUpdate GetEffectsUpdate()
+        public static EffectFrame GetEffectFrame()
         {
-            var effects = new EffectsUpdate();
+            var effectFrame = new EffectFrame();
 
             foreach (var effect in Effects)
             {
-                effects.Types.Add(effect.Type);
-                effects.Directions.Add(effect.GetDirection());
-                effects.Xs.Add((int)effect.Position.X);
-                effects.Ys.Add((int)effect.Position.Y);
-                effects.Frames.Add(effect.FrameCounter);
+                effectFrame.Types.Add(effect.Type);
+                effectFrame.PositionXs.Add(effect.Position.X);
+                effectFrame.PositionYs.Add(effect.Position.Y);
+                effectFrame.Directions.Add(effect.Direction);
+                effectFrame.Frames.Add(effect.FrameCounter);
             }
 
-            return effects;
+            return effectFrame;
         }
 
-        public static void UpdateEffects(EffectsUpdate effectsUpdate)
+        public static ICollection<DrawableEffect> GetDrawableEffects(EffectFrame effectFrame)
         {
-            Effects = [];
+            var drawableEffects = new List<DrawableEffect>();
 
-            for (int i = 0; i < effectsUpdate.Types.Count; i++)
+            var index = 0;
+            foreach (var type in effectFrame.Types)
             {
-                var effect = new Effect(effectsUpdate.Types[i], effectsUpdate.GetPosition(i), effectsUpdate.Directions[i])
+                try
                 {
-                    FrameCounter = effectsUpdate.Frames[i]
-                };
+                    var drawableEffect = new DrawableEffect(
+                        type,
+                        new Vector2(effectFrame.PositionXs[index], effectFrame.PositionYs[index]),
+                        effectFrame.Directions[index],
+                        effectFrame.Frames[index]
+                    );
 
-                Effects.Add(effect);
+                    drawableEffects.Add(drawableEffect);
+                }
+                catch (Exception ex)
+                {
+                    Trace.Write(ex);
+                }
+
+                index++;
             }
+
+            return drawableEffects;
         }
     }
 }

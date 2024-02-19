@@ -3,10 +3,12 @@ using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.Generics;
-using DilloAssault.Web.Communication.Updates;
+using DilloAssault.Graphics.Drawing;
+using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Bullets
@@ -28,11 +30,9 @@ namespace DilloAssault.GameState.Battle.Bullets
         {
             var bullet = new Bullet
             {
-                TextureName = weaponConfiguration.BulletTexture,
-                Size = weaponConfiguration.BulletSize.ToPoint(),
                 Position = position,
                 Angle = angleTrajectory,
-                Damage = weaponConfiguration.BulletDamage
+                WeaponType = weaponConfiguration.Type
             };
 
             Bullets.Add(bullet);
@@ -176,39 +176,47 @@ namespace DilloAssault.GameState.Battle.Bullets
             return (normalX, normalY);
         }
 
-        public static BulletsUpdate GetBulletsUpdate()
+        public static BulletFrame GetBulletFrame()
         {
-            var bulletUpdates = new BulletsUpdate();
+            var bulletFrame = new BulletFrame();
 
             foreach (var bullet in Bullets)
             {
-                bulletUpdates.Textures.Add(bullet.TextureName);
-                bulletUpdates.Xs.Add((int)bullet.Position.X);
-                bulletUpdates.Ys.Add((int)bullet.Position.Y);
-                bulletUpdates.SizeXs.Add(bullet.Size.X);
-                bulletUpdates.SizeYs.Add(bullet.Size.Y);
-                bulletUpdates.Rotations.Add((int)bullet.GetRotation());
+                bulletFrame.WeaponTypes.Add(bullet.WeaponType);
+                bulletFrame.PositionXs.Add(bullet.Position.X);
+                bulletFrame.PositionYs.Add(bullet.Position.Y);
+                bulletFrame.Rotations.Add(bullet.Angle);
             }
 
-            return bulletUpdates;
+            return bulletFrame;
         }
 
-        public static void UpdateBullets(BulletsUpdate bulletsUpdate)
+        public static ICollection<DrawableBullet> GetDrawableBullets(BulletFrame bulletFrame)
         {
-            Bullets = [];
+            var drawableBullets = new List<DrawableBullet>();
 
-            for (int i = 0; i < bulletsUpdate.Textures.Count; i++)
+            var index = 0;
+            foreach (var type in bulletFrame.WeaponTypes)
             {
-                var Bullet = new Bullet
+                try
                 {
-                    Angle = bulletsUpdate.Rotations[i],
-                    Position = bulletsUpdate.GetPosition(i),
-                    TextureName = bulletsUpdate.Textures[i],
-                    Size = new Point(bulletsUpdate.SizeXs[i], bulletsUpdate.SizeYs[i])
-                };
+                    var drawableBullet = new DrawableBullet(
+                        type,
+                        new Vector2(bulletFrame.PositionXs[index], bulletFrame.PositionYs[index]),
+                        bulletFrame.Rotations[index]
+                    );
 
-                Bullets.Add(Bullet);
+                    drawableBullets.Add(drawableBullet);
+                }
+                catch (Exception ex)
+                {
+                    Trace.Write(ex);
+                }
+
+                index++;
             }
+
+            return drawableBullets;
         }
 
         //private class ContactPointDetails(bool reflect, Vector2? contactPoint, Line edge)

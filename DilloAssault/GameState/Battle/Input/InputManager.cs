@@ -277,11 +277,7 @@ namespace DilloAssault.GameState.Battle.Input
             {
                 if (avatar.IsSpinning)
                 {
-                    if (avatar.Grounded)
-                    {
-                        avatar.DropThrough = true;
-                    }
-                    else
+                    if (!avatar.Grounded)
                     {
                         avatar.BufferAnimation(Animation.Rolling);
                     }

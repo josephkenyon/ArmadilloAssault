@@ -3,6 +3,7 @@ using DilloAssault.Configuration.Textures;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing.Textures;
+using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -111,34 +112,32 @@ namespace DilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
-        public static void DrawHud(Avatar avatar)
+        public static void DrawHud(HudFrame hudFrame)
         {
             _spriteBatch.Begin();
 
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(TextureName.white_pixel),
-                destinationRectangle: new Rectangle((int)avatar.Position.X + 16, (int)avatar.Position.Y - 24, 96, 8),
+                destinationRectangle: new Rectangle(hudFrame.AvatarX + 16, hudFrame.AvatarY - 24, 96, 8),
                 sourceRectangle: new Rectangle(0, 0, 1, 1),
                 color: Color.Black * 0.5f
             );
 
             _spriteBatch.Draw(
                texture: TextureManager.GetTexture(TextureName.white_pixel),
-               destinationRectangle: new Rectangle((int)avatar.Position.X + 16, (int)avatar.Position.Y - 24, 96 * (avatar.Health / 100), 8),
+               destinationRectangle: new Rectangle(hudFrame.AvatarX + 16, hudFrame.AvatarY - 24, 96 * (hudFrame.Health / 100), 8),
                sourceRectangle: new Rectangle(0, 0, 1, 1),
                color: Color.Red * 0.5f
             );
 
-            var weapon = avatar.SelectedWeapon;
-
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(TextureName.bullet_box),
-                destinationRectangle: new Rectangle((int)avatar.Position.X + 24, (int)avatar.Position.Y - 64, 32, 32),
+                destinationRectangle: new Rectangle(hudFrame.AvatarX + 24, hudFrame.AvatarY - 64, 32, 32),
                 color: Color.White
              );
 
             _spriteBatch.DrawString(
-                DrawingHelper.GetFont, $"x {weapon.AmmoInClip + weapon.Ammo}", new Vector2(avatar.Position.X + 64, avatar.Position.Y - 56), Color.White
+                DrawingHelper.GetFont, $"x {hudFrame.Ammo}", new Vector2(hudFrame.AvatarX + 64, hudFrame.AvatarY - 56), Color.White
             );
 
 

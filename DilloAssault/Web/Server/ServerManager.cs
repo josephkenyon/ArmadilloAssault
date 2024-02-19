@@ -1,11 +1,12 @@
 ﻿using DilloAssault.Controls;
-using DilloAssault.GameState.Battle;
 using DilloAssault.GameState;
+using DilloAssault.GameState.Battle;
+using DilloAssault.GameState.Menu;
+using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using DilloAssault.GameState.Menu;
 
 namespace DilloAssault.Web.Server
 {
@@ -23,11 +24,6 @@ namespace DilloAssault.Web.Server
             }
 
             return [];
-        }
-
-        public static void ClearPlayerControlsDown(int playerIndex)
-        {
-            Server.Players[playerIndex].AreControlsDown = [];
         }
 
         public static Vector2 GetPlayerAimPosition(int playerIndex)
@@ -84,9 +80,9 @@ namespace DilloAssault.Web.Server
             Server = null;
         }
 
-        public static void SendBattleUpdates()
+        public static void SendBattleFrame(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
         {
-            Server.SendBattleUpdates();
+            Server.SendBattleUpdates(battleFrame, hudFrames);
         }
 
         public static bool IsServing => Server != null;

@@ -1,21 +1,14 @@
-﻿using DilloAssault.Configuration.Textures;
-using DilloAssault.Graphics.Drawing;
+﻿using DilloAssault.Configuration.Weapons;
 using Microsoft.Xna.Framework;
 using System;
 
 namespace DilloAssault.GameState.Battle.Bullets
 {
-    public class Bullet : IDrawableObject
+    public class Bullet
     {
-        public TextureName TextureName { get; set; }
-        public Point Size { get; set; }
+        public WeaponType WeaponType { get; set; }
         public Vector2 Position { get; set; }
         public float Angle { get; set; }
-        public int Damage { get; set; }
-
-        public float GetRotation() => Angle;
-
-        public Rectangle GetDestinationRectangle() => new(Position.ToPoint(), Size);
 
         public void Update()
         {

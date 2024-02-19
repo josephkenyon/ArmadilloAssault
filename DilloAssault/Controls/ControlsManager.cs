@@ -75,7 +75,6 @@ namespace DilloAssault.Controls
                 for (var i = 0; i < ServerManager.PlayerCount; i++)
                 {
                     UpdateControlState(i + 1, ServerManager.GetPlayerControlsDown(i), ServerManager.GetPlayerAimPosition(i));
-                    ServerManager.ClearPlayerControlsDown(i);
                 }
             }
         }

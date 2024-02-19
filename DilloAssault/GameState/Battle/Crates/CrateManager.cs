@@ -1,10 +1,14 @@
-﻿using DilloAssault.Configuration.Weapons;
+﻿using DilloAssault.Configuration.Avatars;
+using DilloAssault.Configuration.Weapons;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Physics;
-using DilloAssault.Web.Communication.Updates;
+using DilloAssault.Graphics.Drawing;
+using DilloAssault.Sound;
+using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Crates
@@ -112,36 +116,51 @@ namespace DilloAssault.GameState.Battle.Crates
             {
                 avatar.GiveWeapon((WeaponType)crate.WeaponType);
             }
+
+            SoundManager.PlayBattleSound(BattleSound.ammo);
         }
 
-        public static CratesUpdate GetCratesUpdate()
+        public static CrateFrame GetCrateFrame()
         {
-            var crates = new CratesUpdate();
+            var crateFrame = new CrateFrame();
 
             foreach (var crate in Crates)
             {
-                crates.Types.Add(crate.Type);
-                crates.Xs.Add((int)crate.Position.X);
-                crates.Ys.Add((int)crate.Position.Y);
-                crates.Groundeds.Add(crate.Grounded);
+                crateFrame.Types.Add(crate.Type);
+                crateFrame.PositionXs.Add(crate.Position.X);
+                crateFrame.PositionYs.Add(crate.Position.Y);
+                crateFrame.Groundeds.Add(crate.Grounded);
             }
 
-            return crates;
+            return crateFrame;
         }
 
-        public static void UpdateCrates(CratesUpdate cratesUpdate)
+        public static ICollection<DrawableCrate> GetDrawableCrates(CrateFrame crateFrame)
         {
-            Crates = [];
+            var drawableCrates = new List<DrawableCrate>();
 
-            for (int i = 0; i < cratesUpdate.Types.Count; i++)
+            var index = 0;
+            foreach (var type in crateFrame.Types)
             {
-                var crate = new Crate(cratesUpdate.Types[i]);
+                try
+                {
+                    var drawableCrate = new DrawableCrate(
+                        type,
+                        new Vector2(crateFrame.PositionXs[index], crateFrame.PositionYs[index]),
+                        crateFrame.Groundeds[index]
+                    );
 
-                crate.Grounded = cratesUpdate.Groundeds[i];
-                crate.SetPosition(cratesUpdate.GetPosition(i));
+                    drawableCrates.Add(drawableCrate);
+                }
+                catch (Exception ex)
+                {
+                    Trace.Write(ex);
+                }
 
-                Crates.Add(crate);
+                index++;
             }
+
+            return drawableCrates;
         }
     }
 }
