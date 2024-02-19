@@ -21,10 +21,9 @@ namespace DilloAssault.Graphics
             _graphicsDeviceManager = new(engine)
             {
                 PreferredBackBufferWidth = 1920,
-                PreferredBackBufferHeight = 1080
+                PreferredBackBufferHeight = 1080,
+                IsFullScreen = true
             };
-
-            //_graphicsDeviceManager.IsFullScreen = true;
 
             _graphicsDeviceManager.ApplyChanges();
         }
@@ -55,15 +54,9 @@ namespace DilloAssault.Graphics
             Mouse.SetCursor(MouseCursor.FromTexture2D(TextureManager.GetTexture(TextureName.crosshair), 0, 0));
         }
 
-        public static void SetFullScreen()
+        public static void ToggleFullscreen()
         {
-            _graphicsDeviceManager.IsFullScreen = true;
-            _graphicsDeviceManager.ApplyChanges();
-        }
-
-        public static void SetWindowed()
-        {
-            _graphicsDeviceManager.IsFullScreen = false;
+            _graphicsDeviceManager.IsFullScreen = !_graphicsDeviceManager.IsFullScreen;
             _graphicsDeviceManager.ApplyChanges();
         }
 

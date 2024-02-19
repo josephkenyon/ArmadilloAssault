@@ -1,15 +1,17 @@
-﻿using DilloAssault.Web.Server;
+﻿using DilloAssault.Graphics;
+using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace DilloAssault.Controls
 {
     public static class ControlsManager
     {
         private static Dictionary<int, ControlsState> PlayerControlsStates { get; set; }
+
+        private static bool JustToggledFullscreen { get; set; }
 
         public static void Initialize()
         {
@@ -76,6 +78,16 @@ namespace DilloAssault.Controls
                 {
                     UpdateControlState(i + 1, ServerManager.GetPlayerControlsDown(i), ServerManager.GetPlayerAimPosition(i));
                 }
+            }
+
+            var keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.LeftAlt) && keyboardState.IsKeyDown(Keys.Enter) && !JustToggledFullscreen)
+            {
+                GraphicsManager.ToggleFullscreen();
+                JustToggledFullscreen = true;
+            }
+            else if (keyboardState.IsKeyUp(Keys.LeftAlt) && keyboardState.IsKeyUp(Keys.Enter) && JustToggledFullscreen) {
+                JustToggledFullscreen = false;
             }
         }
 

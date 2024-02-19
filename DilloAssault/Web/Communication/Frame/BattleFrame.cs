@@ -7,5 +7,6 @@
         public CrateFrame CrateFrame { get; set; } = new();
         public EffectFrame EffectFrame { get; set; } = new();
         public HudFrame HudFrame { get; set; } = new();
+        public SoundFrame SoundFrame { get; set; } = new();
     }
 }

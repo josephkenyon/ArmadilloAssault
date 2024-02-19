@@ -1,11 +1,13 @@
-﻿using System;
+﻿using DilloAssault.Configuration.Avatars;
+using DilloAssault.Configuration.Weapons;
+using DilloAssault.Web.Communication.Frame;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Weapons;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
+using System.Linq;
 
 namespace DilloAssault.Sound
 {
@@ -15,6 +17,10 @@ namespace DilloAssault.Sound
         private static Dictionary<BattleSound, SoundEffect> _battleSounds;
         private static Dictionary<WeaponType, SoundEffect> _weaponSounds;
         private static Dictionary<AvatarType, Dictionary<AvatarSound, SoundEffect>> _avatarSounds;
+
+        private static readonly float SoundScaler = 0.5f;
+
+        private static SoundFrame _soundFrame;
 
         public static void LoadContent(ContentManager contentManager)
         {
@@ -108,19 +114,49 @@ namespace DilloAssault.Sound
             _menuSounds[menuSound].Play();
         }
 
-        public static void PlayBattleSound(BattleSound battleSound)
+        public static void QueueBattleSound(BattleSound battleSound)
         {
-            _battleSounds[battleSound].Play();
+            _soundFrame ??= new SoundFrame();
+            _soundFrame.BattleSounds.Add(battleSound);
         }
 
-        public static void PlayWeaponSound(WeaponType weaponType)
+        public static void QueueWeaponSound(WeaponType weaponType)
         {
-            _weaponSounds[weaponType].Play(0.5f, 0f, 0f);
+            _soundFrame ??= new SoundFrame();
+            _soundFrame.WeaponSounds.Add(weaponType);
         }
 
-        public static void PlayAvatarSound(AvatarType avatarType, AvatarSound avatarSound)
+        public static void QueueAvatarSound(AvatarType avatarType, AvatarSound avatarSound)
         {
-            _avatarSounds[avatarType][avatarSound].Play(0.65f, 0f, 0f);
+            _soundFrame ??= new SoundFrame();
+            _soundFrame.AvatarSounds.Add(new(avatarType, avatarSound));
+        }
+
+        public static void PlaySounds(SoundFrame soundFrame)
+        {
+            if (soundFrame != null)
+            {
+                foreach (var battleSound in soundFrame.BattleSounds.Distinct())
+                {
+                    _battleSounds[battleSound].Play(SoundScaler, 0f, 0f);
+                }
+
+                foreach (var weaponSound in soundFrame.WeaponSounds.Distinct())
+                {
+                    _weaponSounds[weaponSound].Play(0.5f * SoundScaler, 0f, 0f);
+                }
+
+                foreach (var avatarSound in soundFrame.AvatarSounds.Distinct())
+                {
+                    _avatarSounds[avatarSound.Key][avatarSound.Value].Play(0.5f * SoundScaler, 0f, 0f);
+                }
+            }
+        }
+
+        public static void AddSounds(BattleFrame battleFrame)
+        {
+            battleFrame.SoundFrame = _soundFrame;
+            _soundFrame = null;
         }
     }
 }

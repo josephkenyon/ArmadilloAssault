@@ -117,7 +117,7 @@ namespace DilloAssault.GameState.Battle.Crates
                 avatar.GiveWeapon((WeaponType)crate.WeaponType);
             }
 
-            SoundManager.PlayBattleSound(BattleSound.ammo);
+            SoundManager.QueueBattleSound(BattleSound.ammo);
         }
 
         public static CrateFrame GetCrateFrame()

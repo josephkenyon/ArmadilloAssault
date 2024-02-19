@@ -79,7 +79,6 @@ namespace DilloAssault.Web.Server
             });
         }
 
-
         public void TerminateGame()
         {
             GameStateManager.State = State.Menu;
@@ -87,7 +86,8 @@ namespace DilloAssault.Web.Server
 
         public void Broadcast(ServerMessage serverMessage)
         {
-            WebSocketServer.WebSocketServices["/game"].Sessions.Broadcast(JsonConvert.SerializeObject(serverMessage));
+            var message = JsonConvert.SerializeObject(serverMessage);
+            WebSocketServer.WebSocketServices["/game"].Sessions.Broadcast(message);
         }
 
         public void OnNext(string value)

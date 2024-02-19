@@ -112,7 +112,7 @@ namespace DilloAssault.GameState.Battle.Avatars
             FramesSinceLastHurtSound++;
             if (Jumped)
             {
-                SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Jump);
+                SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Jump);
                 Jumped = false;
             }
         }
@@ -251,7 +251,7 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Reload();
             }
 
-            SoundManager.PlayWeaponSound(currentWeapon.Type);
+            SoundManager.QueueWeaponSound(currentWeapon.Type);
 
             BufferedShotFrameCounter = 0;
         }
@@ -390,14 +390,14 @@ namespace DilloAssault.GameState.Battle.Avatars
                 if (FramesSinceLastHurtSound > 15 || wasAlive)
                 {
                     FramesSinceLastHurtSound = 0;
-                    SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Dead);
+                    SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Dead);
                 }
                 Animation = Animation.Dead;
             }
             else if (FramesSinceLastHurtSound > 15)
             {
                 FramesSinceLastHurtSound = 0;
-                SoundManager.PlayAvatarSound(avatarJson.Type, AvatarSound.Hurt);
+                SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Hurt);
             }
         }
         

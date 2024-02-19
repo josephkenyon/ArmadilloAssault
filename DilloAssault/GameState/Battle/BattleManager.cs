@@ -11,6 +11,7 @@ using DilloAssault.GameState.Battle.Input;
 using DilloAssault.GameState.Battle.Physics;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
+using DilloAssault.Sound;
 using DilloAssault.Web.Communication.Frame;
 using DilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
@@ -92,27 +93,27 @@ namespace DilloAssault.GameState.Battle
             {
                 ServerManager.EndGame();
                 GameStateManager.State = State.Menu;
+                return;
             }
-            else
+
+            BattleFrame = CreateBattleFrame();
+            var hudFrames = Avatars.Values.Select(avatar =>
             {
-                BattleFrame = CreateBattleFrame();
-
-                var hudFrames = Avatars.Values.Select(avatar =>
+                var weapon = avatar.SelectedWeapon;
+                return new HudFrame
                 {
-                    var weapon = avatar.SelectedWeapon;
-                    return new HudFrame
-                    {
-                        AvatarX = (int)avatar.Position.X,
-                        AvatarY = (int)avatar.Position.Y,
-                        Health = avatar.Health,
-                        Ammo = weapon.AmmoInClip + weapon.Ammo
-                    };
-                });
+                    AvatarX = (int)avatar.Position.X,
+                    AvatarY = (int)avatar.Position.Y,
+                    Health = avatar.Health,
+                    Ammo = weapon.AmmoInClip + weapon.Ammo
+                };
+            });
 
-                ServerManager.SendBattleFrame(BattleFrame, hudFrames);
+            SoundManager.AddSounds(BattleFrame);
 
-                BattleFrame.HudFrame = hudFrames.First();
-            }
+            ServerManager.SendBattleFrame(BattleFrame, hudFrames);
+
+            BattleFrame.HudFrame = hudFrames.First();
         }
 
         public static void UpdateClient()
@@ -122,6 +123,8 @@ namespace DilloAssault.GameState.Battle
 
         public static void Draw()
         {
+            SoundManager.PlaySounds(BattleFrame.SoundFrame);
+
             DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f);
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => !cloud.Foreground));
