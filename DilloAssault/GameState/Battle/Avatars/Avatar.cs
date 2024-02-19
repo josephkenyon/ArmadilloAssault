@@ -263,6 +263,7 @@ namespace DilloAssault.GameState.Battle.Avatars
                 ReloadingFrames = CurrentWeaponConfiguration.ReloadRate;
                 Reloading = true;
                 Recoil = (float)(Math.PI / 2);
+                SwitchingWeapons = false;
                 FramesUntilRecoil = -1;
             }
 

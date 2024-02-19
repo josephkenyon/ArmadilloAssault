@@ -77,7 +77,6 @@ namespace DilloAssault.GameState.Battle
 
                 PhysicsManager.Update(avatar, Scene.CollisionBoxes);
 
-
                 avatar.Update();
 
                 index++;
