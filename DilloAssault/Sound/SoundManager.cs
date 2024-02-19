@@ -22,6 +22,9 @@ namespace DilloAssault.Sound
 
         private static SoundFrame _soundFrame;
 
+        private static SoundEffectInstance _reloadInstance;
+        private static SoundEffectInstance _reloadEndInstance;
+
         public static void LoadContent(ContentManager contentManager)
         {
             LoadMenuSounds(contentManager);
@@ -132,13 +135,41 @@ namespace DilloAssault.Sound
             _soundFrame.AvatarSounds.Add(new(avatarType, avatarSound));
         }
 
+        public static void CancelReloadSoundEffects()
+        {
+            _soundFrame ??= new SoundFrame();
+            _soundFrame.CancelReloadSound = true;
+        }
+
         public static void PlaySounds(SoundFrame soundFrame)
         {
             if (soundFrame != null)
             {
+                if (soundFrame.CancelReloadSound)
+                {
+                    CancelReloadInstances();
+                }
+
                 foreach (var battleSound in soundFrame.BattleSounds.Distinct())
                 {
-                    _battleSounds[battleSound].Play(SoundScaler, 0f, 0f);
+                    if (battleSound == BattleSound.reload)
+                    {
+                        _reloadInstance = _battleSounds[battleSound].CreateInstance();
+                        _reloadInstance.Volume = SoundScaler;
+                        _reloadInstance.Play();
+                    }
+                    else if (battleSound == BattleSound.reload_end)
+                    {
+                        _reloadEndInstance = _battleSounds[battleSound].CreateInstance();
+                        _reloadEndInstance.Volume = SoundScaler;
+                        _reloadEndInstance.Play();
+
+                        CancelReloadInstance();
+                    }
+                    else
+                    {
+                        _battleSounds[battleSound].Play(SoundScaler, 0f, 0f);
+                    }
                 }
 
                 foreach (var weaponSound in soundFrame.WeaponSounds.Distinct())
@@ -150,6 +181,26 @@ namespace DilloAssault.Sound
                 {
                     _avatarSounds[avatarSound.Key][avatarSound.Value].Play(0.5f * SoundScaler, 0f, 0f);
                 }
+            }
+        }
+
+        private static void CancelReloadInstances()
+        {
+            if (_reloadEndInstance != null && _reloadEndInstance.State == SoundState.Playing)
+            {
+                _reloadEndInstance.Stop();
+                _reloadEndInstance = null;
+            }
+
+            CancelReloadInstance();
+        }
+
+        private static void CancelReloadInstance()
+        {
+            if (_reloadInstance != null && _reloadInstance.State == SoundState.Playing)
+            {
+                _reloadInstance.Stop();
+                _reloadInstance = null;
             }
         }
 

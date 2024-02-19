@@ -193,6 +193,11 @@ namespace DilloAssault.GameState.Battle.Avatars
                 if (ReloadingFrames > 0)
                 {
                     ReloadingFrames--;
+
+                    if (ReloadingFrames == 35)
+                    {
+                        SoundManager.QueueBattleSound(BattleSound.reload_end);
+                    }
                 }
                 else
                 {
@@ -265,6 +270,7 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Recoil = (float)(Math.PI / 2);
                 SwitchingWeapons = false;
                 FramesUntilRecoil = -1;
+                SoundManager.QueueBattleSound(BattleSound.reload);
             }
 
             BufferedShotFrameCounter = 0;
@@ -296,6 +302,8 @@ namespace DilloAssault.GameState.Battle.Avatars
             SwitchingWeaponFrames = WeaponSwitchFrames;
             Recoil = (float)(Math.PI / 2);
             FramesUntilRecoil = -1;
+            Reloading = false;
+            SoundManager.CancelReloadSoundEffects();
             ReloadingFrames = 0;
             SwitchingWeapons = true;    
 

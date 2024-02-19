@@ -2,6 +2,8 @@
 {
     public enum BattleSound
     {
-        ammo
+        ammo,
+        reload,
+        reload_end
     }
 }
