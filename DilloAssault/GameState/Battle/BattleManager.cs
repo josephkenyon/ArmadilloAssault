@@ -37,7 +37,7 @@ namespace DilloAssault.GameState.Battle
             Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
             Avatars.Values.First().SetPosition(new Vector2(150, 0));
 
-            if (playerCount == 2)
+            if (playerCount == 1)
             {
                 Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
                 Avatars.Values.Last().SetPosition(new Vector2(1650, 0));

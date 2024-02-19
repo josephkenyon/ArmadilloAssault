@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Configuration.Avatars
+﻿namespace DilloAssault.Sound
 {
     public enum MenuSound
     {

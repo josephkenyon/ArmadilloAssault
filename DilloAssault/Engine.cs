@@ -30,8 +30,6 @@ namespace DilloAssault
         {
             ControlsManager.Initialize();
 
-            GameStateManager.State = State.Menu;
-
             ExitAction = Exit;
 
             base.Initialize();
@@ -42,6 +40,8 @@ namespace DilloAssault
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             ConfigurationManager.LoadContent(Content);
             SoundManager.LoadContent(Content);
+
+            GameStateManager.State = State.Menu;
         }
 
         protected override void Update(GameTime gameTime)

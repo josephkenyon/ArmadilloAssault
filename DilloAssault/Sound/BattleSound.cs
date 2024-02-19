@@ -1,9 +1,10 @@
-﻿namespace DilloAssault.Configuration.Avatars
+﻿namespace DilloAssault.Sound
 {
     public enum BattleSound
     {
         ammo,
         reload,
-        reload_end
+        reload_end,
+        ricochet,
     }
 }

@@ -3,6 +3,7 @@ using DilloAssault.Configuration.Weapons;
 using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,12 +14,13 @@ namespace DilloAssault.Sound
 {
     public static class SoundManager
     {
+        private static Dictionary<MusicSong, Song> _musicSongs;
         private static Dictionary<MenuSound, SoundEffect> _menuSounds;
         private static Dictionary<BattleSound, SoundEffect> _battleSounds;
         private static Dictionary<WeaponType, SoundEffect> _weaponSounds;
         private static Dictionary<AvatarType, Dictionary<AvatarSound, SoundEffect>> _avatarSounds;
 
-        private static readonly float SoundScaler = 0.5f;
+        private static readonly float SoundScaler = 0.6f;
 
         private static SoundFrame _soundFrame;
 
@@ -27,10 +29,31 @@ namespace DilloAssault.Sound
 
         public static void LoadContent(ContentManager contentManager)
         {
+            MediaPlayer.Volume = SoundScaler * 0.65f;
+
+            LoadMusicSongs(contentManager);
             LoadMenuSounds(contentManager);
             LoadBattleSounds(contentManager);
             LoadWeaponSounds(contentManager);
             LoadAvatarSounds(contentManager);
+        }
+
+        private static void LoadMusicSongs(ContentManager contentManager)
+        {
+            _musicSongs = [];
+
+            foreach (var song in Enum.GetValues<MusicSong>())
+            {
+                try
+                {
+                    var path = Path.Combine("Sound", "Music", song.ToString());
+                    _musicSongs.Add(song, contentManager.Load<Song>(path));
+                }
+                catch (Exception ex)
+                {
+                    Trace.Write(ex);
+                }
+            }
         }
 
         private static void LoadMenuSounds(ContentManager contentManager)
@@ -112,6 +135,12 @@ namespace DilloAssault.Sound
             }
         }
 
+        public static void PlayMusic(MusicSong musicSong)
+        {
+            MediaPlayer.Play(_musicSongs[musicSong]);
+            MediaPlayer.IsRepeating = true;
+        }
+
         public static void PlayMenuSound(MenuSound menuSound)
         {
             _menuSounds[menuSound].Play();
@@ -120,19 +149,30 @@ namespace DilloAssault.Sound
         public static void QueueBattleSound(BattleSound battleSound)
         {
             _soundFrame ??= new SoundFrame();
-            _soundFrame.BattleSounds.Add(battleSound);
+
+            if (!_soundFrame.BattleSounds.Contains(battleSound))
+            {
+                _soundFrame.BattleSounds.Add(battleSound);
+            }
         }
 
         public static void QueueWeaponSound(WeaponType weaponType)
         {
             _soundFrame ??= new SoundFrame();
-            _soundFrame.WeaponSounds.Add(weaponType);
+
+            if (!_soundFrame.WeaponSounds.Contains(weaponType))
+            {
+                _soundFrame.WeaponSounds.Add(weaponType);
+            }
         }
 
         public static void QueueAvatarSound(AvatarType avatarType, AvatarSound avatarSound)
         {
             _soundFrame ??= new SoundFrame();
-            _soundFrame.AvatarSounds.Add(new(avatarType, avatarSound));
+            if (!_soundFrame.AvatarSounds.Any(sound => sound.Key == avatarType && sound.Value == avatarSound))
+            {
+                _soundFrame.AvatarSounds.Add(new(avatarType, avatarSound));
+            }
         }
 
         public static void CancelReloadSoundEffects()
@@ -150,7 +190,7 @@ namespace DilloAssault.Sound
                     CancelReloadInstances();
                 }
 
-                foreach (var battleSound in soundFrame.BattleSounds.Distinct())
+                foreach (var battleSound in soundFrame.BattleSounds)
                 {
                     if (battleSound == BattleSound.reload)
                     {

@@ -4,6 +4,7 @@ using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.GameState.Battle.Effects;
 using DilloAssault.Generics;
 using DilloAssault.Graphics.Drawing;
+using DilloAssault.Sound;
 using DilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
@@ -107,6 +108,7 @@ namespace DilloAssault.GameState.Battle.Bullets
                                 {
                                     RichochetBullet(bullet);
                                     EffectManager.CreateEffect(pair.Value, EffectType.ricochet);
+                                    SoundManager.QueueBattleSound(BattleSound.ricochet);
                                 }
                                 else
                                 {

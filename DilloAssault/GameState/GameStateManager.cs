@@ -1,5 +1,7 @@
-﻿using DilloAssault.GameState.Editor;
+﻿using DilloAssault.Configuration.Avatars;
+using DilloAssault.GameState.Editor;
 using DilloAssault.Graphics;
+using DilloAssault.Sound;
 
 namespace DilloAssault.GameState
 {
@@ -15,6 +17,11 @@ namespace DilloAssault.GameState
             if (_state == State.Battle)
             {
                 GraphicsManager.SetBattleCursor();
+                SoundManager.PlayMusic(MusicSong.battle_music);
+            }
+            else if (_state == State.Menu)
+            {
+                SoundManager.PlayMusic(MusicSong.menu_music);
             }
             else
             {

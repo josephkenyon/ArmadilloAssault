@@ -86,7 +86,6 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         public bool SwitchingWeapons { get; set; } = false;
         public int SwitchingWeaponFrames { get; set; } = 0;
-        public int FramesSinceLastHurtSound { get; set; } = 15;
 
         private static readonly int WeaponSwitchFrames = 10;
 
@@ -102,19 +101,8 @@ namespace DilloAssault.GameState.Battle.Avatars
             UpdateReloading();
             UpdateSwitchingWeapons();
             UpdatePhysics();
-            UpdateSound();
 
             Weapons.ForEach(weapon => weapon.Update());
-        }
-
-        private void UpdateSound()
-        {
-            FramesSinceLastHurtSound++;
-            if (Jumped)
-            {
-                SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Jump);
-                Jumped = false;
-            }
         }
 
         private void UpdatePhysics()
@@ -396,16 +384,14 @@ namespace DilloAssault.GameState.Battle.Avatars
             
             if (IsDead)
             {
-                if (FramesSinceLastHurtSound > 15 || wasAlive)
+                if (wasAlive)
                 {
-                    FramesSinceLastHurtSound = 0;
                     SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Dead);
                 }
                 Animation = Animation.Dead;
             }
-            else if (FramesSinceLastHurtSound > 15)
+            else
             {
-                FramesSinceLastHurtSound = 0;
                 SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Hurt);
             }
         }
@@ -608,6 +594,9 @@ namespace DilloAssault.GameState.Battle.Avatars
         {
             var configuration = ConfigurationManager.GetWeaponConfiguration(weaponType);
             var weapon = Weapons.SingleOrDefault(weapon => weapon.Type == weaponType);
+
+            var weaponChange = weaponType != CurrentWeaponConfiguration.Type;
+
             if (weapon != null)
             {
                 weapon.Ammo += configuration.ClipsGiven * configuration.ClipSize;
@@ -619,6 +608,11 @@ namespace DilloAssault.GameState.Battle.Avatars
                 Weapons.Add(newWeapon);
 
                 WeaponSelectionIndex = Weapons.IndexOf(newWeapon);
+            }
+
+            if (weaponChange)
+            {
+                HandleWeaponChange();
             }
         }
     }

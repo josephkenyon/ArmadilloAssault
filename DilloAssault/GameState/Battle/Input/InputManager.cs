@@ -2,6 +2,7 @@
 using DilloAssault.Controls;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
+using DilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 
@@ -271,6 +272,7 @@ namespace DilloAssault.GameState.Battle.Input
                 avatar.Jumped = true;
                 avatar.Acceleration = new Vector2(avatar.Acceleration.X, 0);
                 avatar.Velocity = new Vector2(avatar.Velocity.X, -18f);
+                SoundManager.QueueAvatarSound(avatar.Type, AvatarSound.Jump);
             }
 
             if (ControlsManager.IsControlDownStart(playerIndex, Control.Down))

@@ -326,6 +326,9 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Tilesets/test_tileset.png
 
+#begin Misc/credits.json
+/copy:Misc/credits.json
+
 #begin Sound/Arthur/arthur_dead.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
@@ -392,6 +395,12 @@
 /processorParam:Quality=Best
 /build:Sound/Battle/reload.mp3
 
+#begin Sound/Battle/ricochet.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Battle/ricochet.mp3
+
 #begin Sound/Menu/cancel.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
@@ -403,6 +412,18 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Menu/confirm.mp3
+
+#begin Sound/Music/battle_music.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/Music/battle_music.mp3
+
+#begin Sound/Music/menu_music.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/Music/menu_music.mp3
 
 #begin Sound/Titan/titan_dead.mp3
 /importer:Mp3Importer
