@@ -52,6 +52,11 @@ namespace ArmadilloAssault.GameState.Battle.Weapons
                 Ammo -= clipSize - AmmoInClip;
                 AmmoInClip = clipSize;
             }
+            else if (Ammo > 0)
+            {
+                AmmoInClip += Ammo;
+                Ammo = 0;
+            }
         }
 
         public bool HasFullClip()
@@ -61,8 +66,7 @@ namespace ArmadilloAssault.GameState.Battle.Weapons
 
         public bool CanReload()
         {
-            var clipSize = WeaponJson.ClipSize;
-            return Ammo >= clipSize - AmmoInClip;
+            return Ammo > 0;
         }
 
         public bool CanFire()
