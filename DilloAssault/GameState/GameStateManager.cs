@@ -12,25 +12,29 @@ namespace DilloAssault.GameState
 
         private static void SetState(State newState)
         {
+            var oldState = _state;
             _state = newState;
 
             if (_state == State.Battle)
             {
                 GraphicsManager.SetBattleCursor();
+
                 SoundManager.PlayMusic(MusicSong.battle_music);
             }
             else if (_state == State.Menu)
             {
-                SoundManager.PlayMusic(MusicSong.menu_music);
-            }
-            else
-            {
-                if (_state == State.Editor)
-                {
-                    EditorManager.Initialize();
-                }
-
                 GraphicsManager.SetMenuCursor();
+
+                if (oldState == State.Battle || oldState == State.None)
+                {
+                    SoundManager.PlayMusic(MusicSong.menu_music);
+                }
+            }
+            else if (_state == State.Editor)
+            {
+                GraphicsManager.SetMenuCursor();
+
+                EditorManager.Initialize();
             }
         }
     }

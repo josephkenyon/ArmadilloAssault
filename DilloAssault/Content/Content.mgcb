@@ -383,6 +383,12 @@
 /processorParam:Quality=Best
 /build:Sound/Battle/ammo.mp3
 
+#begin Sound/Battle/footstep_grass.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Battle/footstep_grass.mp3
+
 #begin Sound/Battle/reload_end.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
@@ -400,6 +406,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Battle/ricochet.mp3
+
+#begin Sound/Battle/rolling_grass.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Battle/rolling_grass.mp3
 
 #begin Sound/Menu/cancel.mp3
 /importer:Mp3Importer

@@ -83,7 +83,7 @@
     "ClipSize": 5,
     "MaxRange": 2000,
     "BulletsFired": 1,
-    "BulletDamage": 40,
+    "BulletDamage": 36,
     "AccuracyConeDegrees": 0,
     "FireRate": 90,
     "ReloadRate": 240,

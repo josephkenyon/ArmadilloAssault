@@ -5,6 +5,8 @@
         ammo,
         reload,
         reload_end,
+        footstep_grass,
+        rolling_grass,
         ricochet,
     }
 }

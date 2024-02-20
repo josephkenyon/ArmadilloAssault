@@ -29,7 +29,7 @@ namespace DilloAssault.Sound
 
         public static void LoadContent(ContentManager contentManager)
         {
-            MediaPlayer.Volume = SoundScaler * 0.65f;
+            MediaPlayer.Volume = SoundScaler * 0.5f;
 
             LoadMusicSongs(contentManager);
             LoadMenuSounds(contentManager);

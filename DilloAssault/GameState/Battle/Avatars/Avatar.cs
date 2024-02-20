@@ -10,6 +10,7 @@ using DilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DilloAssault.GameState.Battle.Avatars
@@ -47,8 +48,12 @@ namespace DilloAssault.GameState.Battle.Avatars
 
         // Physics
         public int AvailableJumps { get; set; }
-        public bool RunningBackwards { get; set; }
+
+        private bool runningBackwards = false;
+        public bool RunningBackwards { get { return runningBackwards; } set { RunningFrameCount = runningBackwards != value && RunningFrameCount / 5 > 2 ? 0 : RunningFrameCount; runningBackwards = value; } }
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
+        public int RunningFrameCount { get; set; }
+        public int RollingFrameCount { get; set; }
 
         // Rotation
         public double ArmAngle { get; set; }
@@ -120,6 +125,12 @@ namespace DilloAssault.GameState.Battle.Avatars
                 {
                     BufferAnimation(Animation.Resting);
                 }
+
+                if (Animation == Animation.Rolling && RollingFrameCount == 33)
+                {
+                    SoundManager.QueueBattleSound(BattleSound.rolling_grass);
+                    RollingFrameCount = 0;
+                }
             }
             else if (Falling)
             {
@@ -156,6 +167,11 @@ namespace DilloAssault.GameState.Battle.Avatars
                         SetAnimation(Animation.Spinning);
                     }
                 }
+            }
+
+            if (!Grounded || Animation != Animation.Rolling)
+            {
+                RollingFrameCount = 0;
             }
         }
 
@@ -327,6 +343,20 @@ namespace DilloAssault.GameState.Battle.Avatars
                         AnimationFrame++;
                     }
 
+                    if (Animation == Animation.Running)
+                    {
+                        RunningFrameCount++;
+                        if (RunningFrameCount == 5)
+                        {
+                            SoundManager.QueueBattleSound(BattleSound.footstep_grass);
+                            RunningFrameCount = 0;
+                        }
+                    }
+                    else
+                    {
+                        RunningFrameCount = 0;
+                    }
+
                     if (AnimationFrame == animation.FrameCount)
                     {
                         if (Animation == Animation.Running)
@@ -485,6 +515,11 @@ namespace DilloAssault.GameState.Battle.Avatars
             }
 
             SpinningAngle += velocityY;
+
+            if (Grounded && (!MathUtils.FloatsAreEqual(0f, Velocity.X) || !MathUtils.FloatsAreEqual(0f, Velocity.Y)))
+            {
+                RollingFrameCount++;
+            }
         }
 
         public override Rectangle GetCollisionBox()

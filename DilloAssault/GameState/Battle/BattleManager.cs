@@ -34,19 +34,19 @@ namespace DilloAssault.GameState.Battle
 
             AvatarIndex = avatarIndex;
 
-            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
+            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
             Avatars.Values.First().SetPosition(new Vector2(150, 0));
 
             if (playerCount == 1)
             {
-                Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
+                Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
                 Avatars.Values.Last().SetPosition(new Vector2(1650, 0));
                 Avatars.Values.Last().SetDirection(Direction.Left);
             }
 
-            if (playerCount == 3)
+            if (playerCount == 1)
             {
-                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
+                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
                 Avatars.Values.Last().SetPosition(new Vector2(420, 750));
                 Avatars.Values.Last().SetDirection(Direction.Right);
             }

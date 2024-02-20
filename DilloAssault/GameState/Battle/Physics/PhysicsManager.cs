@@ -1,6 +1,7 @@
 ﻿using DilloAssault.Configuration.Avatars;
 using DilloAssault.GameState.Battle.Avatars;
 using DilloAssault.Generics;
+using DilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -203,6 +204,18 @@ namespace DilloAssault.GameState.Battle.Physics
             {
                 physicsObject.Velocity = new Vector2(physicsObject.Velocity.X, 0);
                 physicsObject.Grounded = true;
+                if (physicsObject is Avatar)
+                {
+                    var avatar = physicsObject as Avatar;
+                    if (avatar.Animation == Animation.Rolling)
+                    {
+                        SoundManager.QueueBattleSound(BattleSound.rolling_grass);
+                    }
+                    else
+                    {
+                        SoundManager.QueueBattleSound(BattleSound.footstep_grass);
+                    }
+                }
                 physicsObject.SetY((int)physicsObject.Position.Y + (floorY - collisionBox.Bottom));
             }
             else
