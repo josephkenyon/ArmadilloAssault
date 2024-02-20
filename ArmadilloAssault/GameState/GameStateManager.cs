@@ -1,5 +1,4 @@
-﻿using ArmadilloAssault.Configuration.Avatars;
-using ArmadilloAssault.GameState.Editor;
+﻿using ArmadilloAssault.GameState.Editor;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Sound;
 

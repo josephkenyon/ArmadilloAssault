@@ -34,19 +34,19 @@ namespace ArmadilloAssault.GameState.Battle
 
             AvatarIndex = avatarIndex;
 
-            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
+            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
             Avatars.Values.First().SetPosition(new Vector2(150, 0));
 
-            if (playerCount == 1)
+            if (playerCount == 2)
             {
-                Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
+                Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
                 Avatars.Values.Last().SetPosition(new Vector2(1650, 0));
                 Avatars.Values.Last().SetDirection(Direction.Left);
             }
 
-            if (playerCount == 1)
+            if (playerCount == 3)
             {
-                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
+                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
                 Avatars.Values.Last().SetPosition(new Vector2(420, 750));
                 Avatars.Values.Last().SetDirection(Direction.Right);
             }

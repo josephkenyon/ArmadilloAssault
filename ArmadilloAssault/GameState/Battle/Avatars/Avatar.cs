@@ -10,7 +10,6 @@ using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Avatars
@@ -418,7 +417,10 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
                 {
                     SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Dead);
                 }
+
                 Animation = Animation.Dead;
+                Acceleration = Vector2.Zero;
+                InfluenceVelocity = 0;
             }
             else
             {

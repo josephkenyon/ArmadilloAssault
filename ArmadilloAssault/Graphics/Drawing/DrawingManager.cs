@@ -1,14 +1,12 @@
 ﻿using ArmadilloAssault.Configuration.Menu;
 using ArmadilloAssault.Configuration.Textures;
-using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing.Textures;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
+using System;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -125,7 +123,7 @@ namespace ArmadilloAssault.Graphics.Drawing
 
             _spriteBatch.Draw(
                texture: TextureManager.GetTexture(TextureName.white_pixel),
-               destinationRectangle: new Rectangle(hudFrame.AvatarX + 16, hudFrame.AvatarY - 24, 96 * (hudFrame.Health / 100), 8),
+               destinationRectangle: new Rectangle(hudFrame.AvatarX + 16, hudFrame.AvatarY - 24, Math.Clamp((int)(96f * (hudFrame.Health / 100f)), 2, 100), 8),
                sourceRectangle: new Rectangle(0, 0, 1, 1),
                color: Color.Red * 0.5f
             );

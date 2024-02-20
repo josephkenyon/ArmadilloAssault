@@ -11,12 +11,16 @@ using ArmadilloAssault.Web.Client;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ArmadilloAssault
 {
     public class Engine : Game
     {
         private static Action ExitAction { get; set; }
+
+        private static Queue<Action> Actions { get; set; } = [];
 
         public Engine()
         {
@@ -46,6 +50,19 @@ namespace ArmadilloAssault
 
         protected override void Update(GameTime gameTime)
         {
+            while (Actions.Count > 0)
+            {
+                var action = Actions.Dequeue();
+                try
+                {
+                    action.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    Trace.Write(ex);
+                }
+            }
+
             ControlsManager.Update();
 
             if (ClientManager.IsActive)
@@ -94,6 +111,11 @@ namespace ArmadilloAssault
             }
 
             base.Draw(gameTime);
+        }
+
+        public static void QueueAction(Action action)
+        {
+            Actions.Enqueue(action);
         }
 
         public static void Quit()
