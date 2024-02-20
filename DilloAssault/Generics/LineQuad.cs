@@ -3,7 +3,7 @@ using System;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection.Metadata;
 
-namespace DilloAssault.Generics
+namespace ArmadilloAssault.Generics
 {
     public class LineQuad()
     {

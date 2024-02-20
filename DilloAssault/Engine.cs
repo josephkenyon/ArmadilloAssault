@@ -1,18 +1,18 @@
-﻿using DilloAssault.Assets;
-using DilloAssault.Configuration;
-using DilloAssault.Controls;
-using DilloAssault.GameState;
-using DilloAssault.GameState.Battle;
-using DilloAssault.GameState.Editor;
-using DilloAssault.GameState.Menu;
-using DilloAssault.Graphics;
-using DilloAssault.Sound;
-using DilloAssault.Web.Client;
-using DilloAssault.Web.Server;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Editor;
+using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.Graphics;
+using ArmadilloAssault.Sound;
+using ArmadilloAssault.Web.Client;
+using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace DilloAssault
+namespace ArmadilloAssault
 {
     public class Engine : Game
     {

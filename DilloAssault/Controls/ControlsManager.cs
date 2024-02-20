@@ -1,11 +1,11 @@
-﻿using DilloAssault.Graphics;
-using DilloAssault.Web.Server;
+﻿using ArmadilloAssault.Graphics;
+using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
-namespace DilloAssault.Controls
+namespace ArmadilloAssault.Controls
 {
     public static class ControlsManager
     {

@@ -1,7 +1,7 @@
-﻿using DilloAssault.Controls;
+﻿using ArmadilloAssault.Controls;
 using System.Collections.Generic;
 
-namespace DilloAssault.Web.Communication
+namespace ArmadilloAssault.Web.Communication
 {
     public class ClientMessage
     {

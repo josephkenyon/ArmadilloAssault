@@ -1,6 +1,6 @@
-﻿using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Web.Communication.Frame;
 
-namespace DilloAssault.Web.Communication
+namespace ArmadilloAssault.Web.Communication
 {
     public class ServerMessage
     {

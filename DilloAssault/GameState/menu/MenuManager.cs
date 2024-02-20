@@ -1,15 +1,15 @@
-﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Menu;
-using DilloAssault.Controls;
-using DilloAssault.Graphics.Drawing;
-using DilloAssault.Sound;
-using DilloAssault.Web.Client;
-using DilloAssault.Web.Server;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Menu;
+using ArmadilloAssault.Controls;
+using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Sound;
+using ArmadilloAssault.Web.Client;
+using ArmadilloAssault.Web.Server;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DilloAssault.GameState.Menu
+namespace ArmadilloAssault.GameState.Menu
 {
     public static class MenuManager
     {

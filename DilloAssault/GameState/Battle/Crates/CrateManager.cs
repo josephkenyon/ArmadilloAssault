@@ -1,17 +1,17 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.GameState.Battle.Physics;
-using DilloAssault.Graphics.Drawing;
-using DilloAssault.Sound;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Avatars;
+using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Sound;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DilloAssault.GameState.Battle.Crates
+namespace ArmadilloAssault.GameState.Battle.Crates
 {
     public static class CrateManager
     {

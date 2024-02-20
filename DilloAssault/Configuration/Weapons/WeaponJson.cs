@@ -1,7 +1,7 @@
-﻿using DilloAssault.Configuration.Generics;
-using DilloAssault.Configuration.Textures;
+﻿using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.Configuration.Textures;
 
-namespace DilloAssault.Configuration.Weapons
+namespace ArmadilloAssault.Configuration.Weapons
 {
     public class WeaponJson
     {

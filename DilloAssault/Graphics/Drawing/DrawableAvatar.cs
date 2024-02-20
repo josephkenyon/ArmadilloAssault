@@ -1,9 +1,9 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.Generics;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Graphics.Drawing
+namespace ArmadilloAssault.Graphics.Drawing
 {
     public class DrawableAvatar : IDrawableAvatar
     {

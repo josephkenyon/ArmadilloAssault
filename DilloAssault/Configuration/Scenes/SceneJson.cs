@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Generics;
-using DilloAssault.Graphics.Drawing.Textures;
+﻿using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.Graphics.Drawing.Textures;
 using System.Collections.Generic;
 
-namespace DilloAssault.Configuration.Scenes
+namespace ArmadilloAssault.Configuration.Scenes
 {
     public class SceneJson
     {

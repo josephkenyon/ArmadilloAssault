@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace DilloAssault.Configuration.Scenes
+namespace ArmadilloAssault.Configuration.Scenes
 {
     public static class SceneManager
     {

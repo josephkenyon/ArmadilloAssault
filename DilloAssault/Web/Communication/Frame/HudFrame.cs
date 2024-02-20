@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Web.Communication.Frame
+﻿namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class HudFrame
     {

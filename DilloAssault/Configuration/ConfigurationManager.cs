@@ -5,13 +5,13 @@ using System.Diagnostics;
 using System.IO;
 using System;
 using System.Linq;
-using DilloAssault.Configuration.Scenes;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.Configuration.Effects;
-using DilloAssault.Configuration.Menu;
+using ArmadilloAssault.Configuration.Scenes;
+using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.Configuration.Effects;
+using ArmadilloAssault.Configuration.Menu;
 
-namespace DilloAssault.Configuration
+namespace ArmadilloAssault.Configuration
 {
     public static class ConfigurationManager
     {

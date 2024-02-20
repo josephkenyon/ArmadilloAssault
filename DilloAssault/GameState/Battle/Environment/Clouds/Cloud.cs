@@ -1,9 +1,9 @@
-﻿using DilloAssault.Configuration.Textures;
-using DilloAssault.Graphics.Drawing;
+﻿using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace DilloAssault.GameState.Battle.Environment.Clouds
+namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 {
     public class Cloud : IDrawableObject
     {

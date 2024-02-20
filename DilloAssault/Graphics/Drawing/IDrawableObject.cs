@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Textures;
-using DilloAssault.Generics;
+﻿using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Graphics.Drawing
+namespace ArmadilloAssault.Graphics.Drawing
 {
     public interface IDrawableObject
     {

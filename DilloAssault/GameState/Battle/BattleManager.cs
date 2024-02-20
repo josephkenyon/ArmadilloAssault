@@ -1,24 +1,24 @@
-﻿using DilloAssault.Assets;
-using DilloAssault.Configuration;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Controls;
-using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.GameState.Battle.Bullets;
-using DilloAssault.GameState.Battle.Crates;
-using DilloAssault.GameState.Battle.Effects;
-using DilloAssault.GameState.Battle.Environment.Clouds;
-using DilloAssault.GameState.Battle.Input;
-using DilloAssault.GameState.Battle.Physics;
-using DilloAssault.Generics;
-using DilloAssault.Graphics.Drawing;
-using DilloAssault.Sound;
-using DilloAssault.Web.Communication.Frame;
-using DilloAssault.Web.Server;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState.Battle.Avatars;
+using ArmadilloAssault.GameState.Battle.Bullets;
+using ArmadilloAssault.GameState.Battle.Crates;
+using ArmadilloAssault.GameState.Battle.Effects;
+using ArmadilloAssault.GameState.Battle.Environment.Clouds;
+using ArmadilloAssault.GameState.Battle.Input;
+using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Sound;
+using ArmadilloAssault.Web.Communication.Frame;
+using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DilloAssault.GameState.Battle
+namespace ArmadilloAssault.GameState.Battle
 {
     public static class BattleManager
     {

@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.GameState
+﻿namespace ArmadilloAssault.GameState
 {
     public enum State
     {

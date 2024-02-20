@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Generics;
+﻿using ArmadilloAssault.Configuration.Generics;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace DilloAssault.Configuration.Menu
+namespace ArmadilloAssault.Configuration.Menu
 {
     public class ButtonJson
     {

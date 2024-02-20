@@ -1,14 +1,14 @@
-﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Effects;
-using DilloAssault.Generics;
-using DilloAssault.Graphics.Drawing;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Effects;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace DilloAssault.GameState.Battle.Effects
+namespace ArmadilloAssault.GameState.Battle.Effects
 {
     public static class EffectManager
     {

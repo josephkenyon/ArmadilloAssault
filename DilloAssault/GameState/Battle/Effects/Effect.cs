@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Effects;
-using DilloAssault.Generics;
+﻿using ArmadilloAssault.Configuration.Effects;
+using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.GameState.Battle.Effects
+namespace ArmadilloAssault.GameState.Battle.Effects
 {
     public class Effect(EffectType type, Vector2 position, Direction? direction = null)
     {

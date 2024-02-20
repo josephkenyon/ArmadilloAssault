@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Configuration.Effects
+﻿namespace ArmadilloAssault.Configuration.Effects
 {
     public enum EffectType
     {

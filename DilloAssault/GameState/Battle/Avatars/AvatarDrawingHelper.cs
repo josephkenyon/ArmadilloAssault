@@ -1,16 +1,16 @@
-﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.Generics;
-using DilloAssault.Graphics.Drawing;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DilloAssault.GameState.Battle.Avatars
+namespace ArmadilloAssault.GameState.Battle.Avatars
 {
     public static class AvatarDrawingHelper
     {

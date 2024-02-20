@@ -1,16 +1,16 @@
-﻿using DilloAssault.Configuration.Menu;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.Generics;
-using DilloAssault.Graphics.Drawing.Textures;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Configuration.Menu;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.Avatars;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Graphics.Drawing.Textures;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace DilloAssault.Graphics.Drawing
+namespace ArmadilloAssault.Graphics.Drawing
 {
     static class DrawingManager
     {

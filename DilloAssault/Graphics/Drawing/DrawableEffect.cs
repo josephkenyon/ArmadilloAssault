@@ -1,10 +1,10 @@
-﻿using DilloAssault.Configuration.Effects;
-using DilloAssault.Configuration;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.Generics;
+﻿using ArmadilloAssault.Configuration.Effects;
+using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Graphics.Drawing
+namespace ArmadilloAssault.Graphics.Drawing
 {
     public class DrawableEffect(EffectType type, Vector2 position, Direction? direction, int frame) : IDrawableObject
     {

@@ -1,7 +1,7 @@
-﻿using DilloAssault.Configuration.Weapons;
+﻿using ArmadilloAssault.Configuration.Weapons;
 using System.Collections.Generic;
 
-namespace DilloAssault.Web.Communication.Frame
+namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class BulletFrame
     {

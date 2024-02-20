@@ -1,18 +1,18 @@
-﻿using DilloAssault.Configuration.Effects;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.GameState.Battle.Effects;
-using DilloAssault.Generics;
-using DilloAssault.Graphics.Drawing;
-using DilloAssault.Sound;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Configuration.Effects;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Avatars;
+using ArmadilloAssault.GameState.Battle.Effects;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Sound;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DilloAssault.GameState.Battle.Bullets
+namespace ArmadilloAssault.GameState.Battle.Bullets
 {
     public static class BulletManager
     {

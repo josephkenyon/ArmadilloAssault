@@ -1,9 +1,9 @@
-﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.Configuration.Weapons;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Configuration.Weapons;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Graphics.Drawing
+namespace ArmadilloAssault.Graphics.Drawing
 {
     public class DrawableBullet(WeaponType type, Vector2 position, float rotation) : IDrawableObject
     {

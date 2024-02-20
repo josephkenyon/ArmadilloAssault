@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Configuration.Menu
+﻿namespace ArmadilloAssault.Configuration.Menu
 {
     public enum MenuAction
     {

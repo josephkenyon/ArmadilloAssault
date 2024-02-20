@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.GameState.Battle.Crates
+﻿namespace ArmadilloAssault.GameState.Battle.Crates
 {
     public enum CrateType
     {

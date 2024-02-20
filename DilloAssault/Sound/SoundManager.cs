@@ -1,6 +1,6 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace DilloAssault.Sound
+namespace ArmadilloAssault.Sound
 {
     public static class SoundManager
     {

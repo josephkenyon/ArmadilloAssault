@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DilloAssault.Configuration.Scenes
+namespace ArmadilloAssault.Configuration.Scenes
 {
     public class TileListJson
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Configuration.Generics
+namespace ArmadilloAssault.Configuration.Generics
 {
     public class PointJson
     {

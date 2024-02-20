@@ -1,19 +1,19 @@
-﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.GameState.Battle.Bullets;
-using DilloAssault.GameState.Battle.Physics;
-using DilloAssault.GameState.Battle.Weapons;
-using DilloAssault.Generics;
-using DilloAssault.Sound;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Bullets;
+using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.GameState.Battle.Weapons;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DilloAssault.GameState.Battle.Avatars
+namespace ArmadilloAssault.GameState.Battle.Avatars
 {
     public class Avatar(AvatarJson avatarJson) : PhysicsObject
     {

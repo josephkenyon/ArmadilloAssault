@@ -1,7 +1,7 @@
-﻿using DilloAssault.Configuration.Generics;
-using DilloAssault.Configuration.Textures;
+﻿using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.Configuration.Textures;
 
-namespace DilloAssault.Configuration.Avatars
+namespace ArmadilloAssault.Configuration.Avatars
 {
     public class AvatarJson
     {

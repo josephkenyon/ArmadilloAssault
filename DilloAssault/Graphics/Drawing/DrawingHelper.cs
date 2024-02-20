@@ -1,11 +1,11 @@
 ﻿
-using DilloAssault.GameState;
+using ArmadilloAssault.GameState;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 
-namespace DilloAssault.Graphics.Drawing
+namespace ArmadilloAssault.Graphics.Drawing
 {
     public static class DrawingHelper
     {

@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.GameState.Battle.Avatars
+﻿namespace ArmadilloAssault.GameState.Battle.Avatars
 {
     public static class AvatarConstants
     {

@@ -1,7 +1,7 @@
-﻿using DilloAssault.GameState.Battle.Crates;
+﻿using ArmadilloAssault.GameState.Battle.Crates;
 using System.Collections.Generic;
 
-namespace DilloAssault.Web.Communication.Frame
+namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class CrateFrame
     {

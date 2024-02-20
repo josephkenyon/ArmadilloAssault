@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Web.Communication
+﻿namespace ArmadilloAssault.Web.Communication
 {
     public enum ServerMessageType
     {

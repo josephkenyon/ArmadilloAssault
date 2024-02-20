@@ -1,10 +1,10 @@
-﻿using DilloAssault.Web.Communication;
+﻿using ArmadilloAssault.Web.Communication;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using WebSocketSharp;
 
-namespace DilloAssault.Web.Client
+namespace ArmadilloAssault.Web.Client
 {
     public class Client
     {

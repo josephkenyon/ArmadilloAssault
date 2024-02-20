@@ -1,12 +1,12 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.Controls;
-using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.Generics;
-using DilloAssault.Sound;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState.Battle.Avatars;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace DilloAssault.GameState.Battle.Input
+namespace ArmadilloAssault.GameState.Battle.Input
 {
     public static class InputManager
     {

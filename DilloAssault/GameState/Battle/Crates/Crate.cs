@@ -1,11 +1,11 @@
-﻿using DilloAssault.Configuration.Textures;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.GameState.Battle.Physics;
+﻿using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Physics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace DilloAssault.GameState.Battle.Crates
+namespace ArmadilloAssault.GameState.Battle.Crates
 {
     public class Crate(CrateType type) : PhysicsObject
     {

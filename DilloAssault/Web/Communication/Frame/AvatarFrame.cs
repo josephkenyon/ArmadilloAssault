@@ -1,10 +1,10 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.Generics;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace DilloAssault.Web.Communication.Frame
+namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class AvatarFrame
     {

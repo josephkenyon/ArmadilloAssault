@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.GameState.Battle.Physics
+namespace ArmadilloAssault.GameState.Battle.Physics
 {
     public static class CollisionHelper
     {

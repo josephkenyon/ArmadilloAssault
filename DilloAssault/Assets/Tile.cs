@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Textures;
-using DilloAssault.Graphics.Drawing;
+﻿using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Assets
+namespace ArmadilloAssault.Assets
 {
     public class Tile : IDrawableObject
     {

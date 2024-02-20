@@ -1,13 +1,13 @@
-﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Scenes;
-using DilloAssault.Configuration.Textures;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Scenes;
+using ArmadilloAssault.Configuration.Textures;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace DilloAssault.Assets
+namespace ArmadilloAssault.Assets
 {
     public class Scene(SceneJson json)
     {

@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Configuration.Textures
+﻿namespace ArmadilloAssault.Configuration.Textures
 {
     public enum TextureName
     {

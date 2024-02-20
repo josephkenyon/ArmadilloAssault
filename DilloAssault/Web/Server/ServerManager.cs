@@ -1,14 +1,14 @@
-﻿using DilloAssault.Controls;
-using DilloAssault.GameState;
-using DilloAssault.GameState.Battle;
-using DilloAssault.GameState.Menu;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace DilloAssault.Web.Server
+namespace ArmadilloAssault.Web.Server
 {
     public static class ServerManager
     {

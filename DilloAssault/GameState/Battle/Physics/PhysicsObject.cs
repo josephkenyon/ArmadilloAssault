@@ -1,7 +1,7 @@
-﻿using DilloAssault.Generics;
+﻿using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.GameState.Battle.Physics
+namespace ArmadilloAssault.GameState.Battle.Physics
 {
     public abstract class PhysicsObject
     {

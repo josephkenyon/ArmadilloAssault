@@ -1,13 +1,13 @@
-﻿using DilloAssault.Assets;
-using DilloAssault.Configuration;
-using DilloAssault.Configuration.Textures;
-using DilloAssault.Controls;
-using DilloAssault.Graphics.Drawing;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Controls;
+using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System.IO;
 using System.Text.Json;
 
-namespace DilloAssault.GameState.Editor
+namespace ArmadilloAssault.GameState.Editor
 {
     public static class EditorManager
     {

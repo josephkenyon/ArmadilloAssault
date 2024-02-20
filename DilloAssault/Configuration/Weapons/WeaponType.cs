@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DilloAssault.Configuration.Weapons
+namespace ArmadilloAssault.Configuration.Weapons
 {
     public enum WeaponType
     {

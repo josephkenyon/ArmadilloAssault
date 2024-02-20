@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Effects;
-using DilloAssault.Generics;
+﻿using ArmadilloAssault.Configuration.Effects;
+using ArmadilloAssault.Generics;
 using System.Collections.Generic;
 
-namespace DilloAssault.Web.Communication.Frame
+namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class EffectFrame
     {

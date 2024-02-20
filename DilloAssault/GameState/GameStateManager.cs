@@ -1,9 +1,9 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.GameState.Editor;
-using DilloAssault.Graphics;
-using DilloAssault.Sound;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.GameState.Editor;
+using ArmadilloAssault.Graphics;
+using ArmadilloAssault.Sound;
 
-namespace DilloAssault.GameState
+namespace ArmadilloAssault.GameState
 {
     public static class GameStateManager
     {

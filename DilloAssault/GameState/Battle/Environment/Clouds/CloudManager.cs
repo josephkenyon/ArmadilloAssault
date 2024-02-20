@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace DilloAssault.GameState.Battle.Environment.Clouds
+namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 {
     public static class CloudManager
     {

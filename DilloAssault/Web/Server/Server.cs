@@ -1,8 +1,8 @@
-﻿using DilloAssault.GameState;
-using DilloAssault.GameState.Battle;
-using DilloAssault.GameState.Battle.Players;
-using DilloAssault.Web.Communication;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Players;
+using ArmadilloAssault.Web.Communication;
+using ArmadilloAssault.Web.Communication.Frame;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Net.Sockets;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace DilloAssault.Web.Server
+namespace ArmadilloAssault.Web.Server
 {
     public class Server : IObserver<string>
     {

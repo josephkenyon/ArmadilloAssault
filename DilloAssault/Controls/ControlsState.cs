@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace DilloAssault.Controls
+namespace ArmadilloAssault.Controls
 {
     public class ControlsState
     {

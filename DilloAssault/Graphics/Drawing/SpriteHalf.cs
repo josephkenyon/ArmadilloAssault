@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Graphics.Drawing
+﻿namespace ArmadilloAssault.Graphics.Drawing
 {
     public enum SpriteHalf
     {

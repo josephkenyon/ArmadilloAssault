@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Weapons;
+﻿using ArmadilloAssault.Configuration.Weapons;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace DilloAssault.GameState.Battle.Bullets
+namespace ArmadilloAssault.GameState.Battle.Bullets
 {
     public class Bullet
     {

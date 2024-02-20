@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.Configuration.Avatars
+﻿namespace ArmadilloAssault.Configuration.Avatars
 {
     public class AnimationJson
     {

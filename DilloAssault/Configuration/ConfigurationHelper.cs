@@ -1,14 +1,14 @@
-﻿using DilloAssault.Assets;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Generics;
-using DilloAssault.Configuration.Scenes;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.Configuration.Scenes;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace DilloAssault.Configuration
+namespace ArmadilloAssault.Configuration
 {
     public static class ConfigurationHelper
     {

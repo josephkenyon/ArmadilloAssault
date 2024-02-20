@@ -1,9 +1,9 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.Sound;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.Sound;
 using System.Collections.Generic;
 
-namespace DilloAssault.Web.Communication.Frame
+namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class SoundFrame
     {

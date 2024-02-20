@@ -1,8 +1,8 @@
-﻿using DilloAssault.Configuration.Textures;
-using DilloAssault.GameState.Battle.Crates;
+﻿using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.Crates;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Graphics.Drawing
+namespace ArmadilloAssault.Graphics.Drawing
 {
     public class DrawableCrate(CrateType type, Vector2 position, bool grounded) : IDrawableObject
     {

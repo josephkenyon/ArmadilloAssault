@@ -1,14 +1,14 @@
-﻿using DilloAssault.Configuration;
-using DilloAssault.Configuration.Avatars;
-using DilloAssault.Configuration.Effects;
-using DilloAssault.Configuration.Weapons;
-using DilloAssault.GameState.Battle.Bullets;
-using DilloAssault.GameState.Battle.Effects;
-using DilloAssault.Generics;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Effects;
+using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Bullets;
+using ArmadilloAssault.GameState.Battle.Effects;
+using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace DilloAssault.GameState.Battle.Weapons
+namespace ArmadilloAssault.GameState.Battle.Weapons
 {
     public class Weapon
     {

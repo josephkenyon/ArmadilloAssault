@@ -1,9 +1,9 @@
-﻿using DilloAssault.Graphics.Drawing;
-using DilloAssault.Graphics.Drawing.Textures;
+﻿using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace DilloAssault.Assets
+namespace ArmadilloAssault.Assets
 {
     public class TileList
     {

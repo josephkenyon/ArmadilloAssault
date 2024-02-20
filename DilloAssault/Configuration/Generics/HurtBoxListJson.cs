@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace DilloAssault.Configuration.Generics
+namespace ArmadilloAssault.Configuration.Generics
 {
     public class HurtBoxListJson
     {

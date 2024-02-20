@@ -1,13 +1,13 @@
-﻿using DilloAssault.Controls;
-using DilloAssault.GameState;
-using DilloAssault.GameState.Battle;
-using DilloAssault.GameState.Menu;
-using DilloAssault.Generics;
-using DilloAssault.Web.Communication;
-using DilloAssault.Web.Communication.Frame;
+﻿using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Web.Communication;
+using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 
-namespace DilloAssault.Web.Client
+namespace ArmadilloAssault.Web.Client
 {
     public static class ClientManager
     {

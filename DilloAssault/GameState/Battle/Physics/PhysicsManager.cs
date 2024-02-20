@@ -1,13 +1,13 @@
-﻿using DilloAssault.Configuration.Avatars;
-using DilloAssault.GameState.Battle.Avatars;
-using DilloAssault.Generics;
-using DilloAssault.Sound;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.GameState.Battle.Avatars;
+using ArmadilloAssault.Generics;
+using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DilloAssault.GameState.Battle.Physics
+namespace ArmadilloAssault.GameState.Battle.Physics
 {
     public static class PhysicsManager
     {

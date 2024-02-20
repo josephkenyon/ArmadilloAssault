@@ -1,10 +1,10 @@
-﻿using DilloAssault.Configuration.Textures;
+﻿using ArmadilloAssault.Configuration.Textures;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
 
-namespace DilloAssault.Graphics.Drawing.Textures
+namespace ArmadilloAssault.Graphics.Drawing.Textures
 {
     public static class TextureManager
     {

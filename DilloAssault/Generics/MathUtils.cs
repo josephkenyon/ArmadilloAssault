@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace DilloAssault.Generics
+namespace ArmadilloAssault.Generics
 {
     public static class MathUtils
     {

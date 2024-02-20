@@ -1,8 +1,8 @@
-﻿using DilloAssault.Controls;
+﻿using ArmadilloAssault.Controls;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace DilloAssault.GameState.Battle.Players
+namespace ArmadilloAssault.GameState.Battle.Players
 {
     public class Player
     {

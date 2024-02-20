@@ -1,4 +1,4 @@
-﻿namespace DilloAssault.GameState.Battle.Bullets
+﻿namespace ArmadilloAssault.GameState.Battle.Bullets
 {
     public enum HurtBoxType
     {

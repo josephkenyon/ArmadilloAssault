@@ -1,14 +1,14 @@
-﻿using DilloAssault.Configuration.Textures;
-using DilloAssault.GameState;
-using DilloAssault.Graphics.Drawing;
-using DilloAssault.Graphics.Drawing.Textures;
-using DilloAssault.Web.Server;
+﻿using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState;
+using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Graphics.Drawing.Textures;
+using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace DilloAssault.Graphics
+namespace ArmadilloAssault.Graphics
 {
     public static class GraphicsManager
     {
