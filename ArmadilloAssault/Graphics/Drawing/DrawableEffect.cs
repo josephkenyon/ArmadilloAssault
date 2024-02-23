@@ -9,7 +9,7 @@ namespace ArmadilloAssault.Graphics.Drawing
     public class DrawableEffect(EffectType type, Vector2 position, Direction? direction, int frame) : IDrawableObject
     {
         private readonly EffectJson Configuration = ConfigurationManager.GetEffectConfiguration(type);
-        public TextureName TextureName => Configuration.TextureName;
+        public TextureName Texture => Configuration.TextureName;
 
         public Rectangle GetDestinationRectangle() => new(position.ToPoint(), Configuration.Size.ToPoint());
         public Rectangle? GetSourceRectangle() => new Rectangle(

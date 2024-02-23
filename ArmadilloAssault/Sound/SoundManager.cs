@@ -20,7 +20,7 @@ namespace ArmadilloAssault.Sound
         private static Dictionary<WeaponType, SoundEffect> _weaponSounds;
         private static Dictionary<AvatarType, Dictionary<AvatarSound, SoundEffect>> _avatarSounds;
 
-        private static readonly float SoundScaler = 0.6f;
+        private static readonly float SoundScaler = 0.16f;
 
         private static SoundFrame _soundFrame;
 
@@ -143,7 +143,7 @@ namespace ArmadilloAssault.Sound
 
         public static void PlayMenuSound(MenuSound menuSound)
         {
-            _menuSounds[menuSound].Play();
+            _menuSounds[menuSound].Play(SoundScaler, 0f, 0f);
         }
 
         public static void QueueBattleSound(BattleSound battleSound)

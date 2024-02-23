@@ -74,7 +74,7 @@ namespace ArmadilloAssault.Web.Client
             {
                 var clientMessage = JsonConvert.DeserializeObject<ServerMessage>(messageString);
 
-                if (clientMessage.Type == ServerMessageType.Initiate && clientMessage.Name == Name)
+                if (clientMessage.Type == ServerMessageType.Initiate && clientMessage.Name == Name && ClientId == null)
                 {
                     ClientId = clientMessage.ClientId;
                 }

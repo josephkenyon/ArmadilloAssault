@@ -6,6 +6,5 @@ namespace ArmadilloAssault.Configuration.Menu
     {
         public string Name { get; set; }
         public List<ButtonJson> Buttons { get; set; }
-        public List<SpinnerJson> Spinners { get; set; }
     }
 }

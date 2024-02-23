@@ -2,18 +2,18 @@
 using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Textures;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace ArmadilloAssault.Assets
 {
     public class Scene(SceneJson json)
     {
-        public TextureName BackgroundTexture { get; set; } = Enum.Parse<TextureName>(json.BackgroundTexture);
+        public TextureName BackgroundTexture { get; set; } = json.BackgroundTexture;
+        public TextureName TilesetTexture { get; set; } = json.TilesetTexture;
+        public Color BackgroundColor { get; private set; } = json.BackgroundColor != null ? new Color(json.BackgroundColor.R, json.BackgroundColor.G, json.BackgroundColor.B) : Color.CornflowerBlue;
         public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetHurtBoxes(json.CollisionBoxes);
-        public List<TileList> TileLists { get; set; } = GetTileLists(json.TileLists);
+        public List<TileList> TileLists { get; set; } = GetTileLists(json);
 
         public void UpdateTile(int z, Point position, Point spriteLocation, TextureName textureName)
         {
@@ -41,7 +41,7 @@ namespace ArmadilloAssault.Assets
             tileList.Tiles.Add(tile);
 
             tile.SpriteLocation = spriteLocation;
-            tile.TextureName = textureName;
+            tile.Texture = textureName;
             tile.Z = z;
         }
 
@@ -85,11 +85,11 @@ namespace ArmadilloAssault.Assets
             CollisionBoxes.Add(collisionBox);
         }
 
-        private static List<TileList> GetTileLists(List<TileListJson> tileListJsons)
+        private static List<TileList> GetTileLists(SceneJson json)
         {
-            Collection<TileList> tileLists = [];
+            var tileLists = new List<TileList>();
 
-            foreach (var jsonTileList in tileListJsons)
+            foreach (var jsonTileList in json.TileLists)
             {
                 var tileList = new TileList
                 {
@@ -102,7 +102,7 @@ namespace ArmadilloAssault.Assets
                     {
                         Position = new Point(jsonTileList.X[i], jsonTileList.Y[i]),
                         SpriteLocation = new Point(jsonTileList.SpriteX[i], jsonTileList.SpriteY[i]),
-                        TextureName = Enum.Parse<TextureName>(jsonTileList.Texture),
+                        Texture = json.TilesetTexture,
                         Z = tileList.Z
                     };
 

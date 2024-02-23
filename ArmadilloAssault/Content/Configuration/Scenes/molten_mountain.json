@@ -1,0 +1,35 @@
+{
+  "BackgroundTexture": "volcano_background",
+  "TilesetTexture": "test_tileset",
+  "BackgroundColor": {
+    "R": 13,
+    "G": 13,
+    "B": 13
+  },
+  "HighCloudsOnly": true,
+  "Flow": {
+    "TextureName": "lava_flow",
+    "Size": {
+      "X": 480,
+      "Y": 56
+    },
+    "Y": 808
+  },
+  "EnvironmentalEffects": {
+    "EffectType": "smoke",
+    "StartingCount": 30,
+    "SpawnRate": 1,
+    "YRange": {
+      "Start": 808,
+      "End": 940
+    }
+  },
+  "CollisionBoxes": {
+    "X": [ 0 ],
+    "Y": [ 1032 ],
+    "Width": [ 1920 ],
+    "Height": [ 48 ]
+  },
+  "TileLists": [
+  ]
+}

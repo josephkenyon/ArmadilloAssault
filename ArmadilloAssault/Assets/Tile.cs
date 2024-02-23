@@ -9,7 +9,7 @@ namespace ArmadilloAssault.Assets
         public int Z { get; set; }
         public Point Position { get; set; }
         public Point SpriteLocation { get; set; }
-        public TextureName TextureName { get; set; }
+        public TextureName Texture { get; set; }
         public Rectangle GetDestinationRectangle() => DrawingHelper.GetDestinationRectangle(Position);
         public Rectangle? GetSourceRectangle() => DrawingHelper.GetSourceRectangle(SpriteLocation);
     }

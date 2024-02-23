@@ -2,7 +2,6 @@
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Graphics.Drawing.Textures;
-using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,6 +46,11 @@ namespace ArmadilloAssault.Graphics
             {
                 _graphicsDevice.Clear(Color.CornflowerBlue);
             }
+        }
+
+        public static void Clear(Color color)
+        {
+            _graphicsDevice.Clear(color);
         }
 
         public static void SetBattleCursor()

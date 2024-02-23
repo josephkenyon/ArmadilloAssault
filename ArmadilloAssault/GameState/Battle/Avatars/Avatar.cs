@@ -96,6 +96,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
         public override bool LowDrag => IsSpinning;
 
         public bool Jumped { get; set; }
+        public bool DropThrough { get; set; }
 
         public void Update()
         {

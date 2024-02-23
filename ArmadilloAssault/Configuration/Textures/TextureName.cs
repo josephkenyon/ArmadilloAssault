@@ -3,6 +3,7 @@
     public enum TextureName
     {
         nothing,
+        logo,
         crosshair,
         test_tileset,
         white_pixel,
@@ -27,6 +28,11 @@
         crates,
         crates_parachuting,
         bullet_box,
-        titan
+        titan,
+        desert_background,
+        desert_tileset,
+        smoke,
+        volcano_background,
+        lava_flow
     }
 }

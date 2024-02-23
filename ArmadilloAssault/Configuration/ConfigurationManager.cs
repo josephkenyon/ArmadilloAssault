@@ -184,14 +184,14 @@ namespace ArmadilloAssault.Configuration
             }
         }
 
-        public static MenuJson GetScreenConfiguration(string name)
+        public static MenuJson GetMenuConfiguration(string name)
         {
             return _menuConfigurations.Values.Single(screen => screen.Name == name);
         }
 
-        public static SceneJson GetSceneConfiguration()
+        public static SceneJson GetSceneConfiguration(string name)
         {
-            return _sceneConfigurations.Values.First();
+            return _sceneConfigurations[name];
         }
 
         public static AvatarJson GetAvatarConfiguration(AvatarType type)

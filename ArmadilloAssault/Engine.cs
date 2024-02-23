@@ -95,8 +95,6 @@ namespace ArmadilloAssault
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsManager.Clear();
-
             switch (GameStateManager.State)
             {
                 case State.Menu:
@@ -106,6 +104,7 @@ namespace ArmadilloAssault
                     BattleManager.Draw();
                     break;
                 case State.Editor:
+                    GraphicsManager.Clear();
                     EditorManager.Draw();
                     break;
             }

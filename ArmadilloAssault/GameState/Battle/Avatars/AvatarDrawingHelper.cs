@@ -125,7 +125,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
             private float SpriteOffset => GetSpriteOffsetX(avatar);
 
-            public TextureName TextureName => avatar.TextureName;
+            public TextureName Texture => avatar.TextureName;
 
             public Rectangle GetDestinationRectangle()
             {
@@ -157,7 +157,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
             private float SpriteOffset => GetSpriteOffsetX(avatar);
 
-            public TextureName TextureName => avatar.TextureName;
+            public TextureName Texture => avatar.TextureName;
 
             public Rectangle GetDestinationRectangle()
             {
@@ -287,7 +287,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
             public Vector2 GetOrigin() => origin;
 
-            public TextureName TextureName => textureName != null ? (TextureName)textureName : avatar.TextureName;
+            public TextureName Texture => textureName != null ? (TextureName)textureName : avatar.TextureName;
 
             public Rectangle GetDestinationRectangle()
             {

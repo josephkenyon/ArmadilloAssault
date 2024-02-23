@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 {
     public static class CloudManager
     {
-        private static readonly int CloudSpawnRate = 300;
+        private static int CloudSpawnRate => HighCloudsOnly ? 750 : 300;
         public static readonly int CloudSpriteSize = 256;
         public static readonly float CloudSpeed = 1.5f;
 
@@ -21,9 +20,11 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
         private static int LastY { get; set; }
         private static int LastSprite { get; set; }
         private static int FramesSinceLastCloud { get; set; }
+        private static bool HighCloudsOnly { get; set; }
 
-        public static void Initialize()
+        public static void Initialize(bool highCloudsOnly)
         {
+            HighCloudsOnly = highCloudsOnly;
             AllowedXs = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
             AllowedXsSize = AllowedXs.Count;
 
@@ -36,7 +37,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 
             Random = new();
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < (HighCloudsOnly ? 4 : 9); i++)
             {
                 CreateNewCloud(true, false);
                 CreateNewCloud(true, true);
@@ -127,7 +128,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
             // Y
             int y = LastY + 1;
 
-            if (y > 12)
+            if (y > (HighCloudsOnly ? 5 : 12))
             {
                 y = 0;
             }

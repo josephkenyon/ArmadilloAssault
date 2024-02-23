@@ -1,4 +1,5 @@
 ﻿using ArmadilloAssault.GameState.Editor;
+using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Sound;
 
@@ -23,6 +24,8 @@ namespace ArmadilloAssault.GameState
             else if (_state == State.Menu)
             {
                 GraphicsManager.SetMenuCursor();
+
+                MenuManager.Initialize();
 
                 if (oldState == State.Battle || oldState == State.None)
                 {

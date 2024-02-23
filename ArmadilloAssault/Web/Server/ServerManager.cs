@@ -54,12 +54,12 @@ namespace ArmadilloAssault.Web.Server
             }
         }
 
-        public static void StartGame()
+        public static void StartGame(string data)
         {
-            BattleManager.Initialize(PlayerCount + 1);
+            BattleManager.Initialize(PlayerCount + 1, data);
             GameStateManager.State = State.Battle;
 
-            Server.MessageIntialization();
+            Server.MessageIntialization(data);
         }
 
         public static void EndGame()

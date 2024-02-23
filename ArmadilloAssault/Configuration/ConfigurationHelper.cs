@@ -58,7 +58,6 @@ namespace ArmadilloAssault.Configuration
                 var tileListJson = new TileListJson
                 {
                     Z = tileList.Z,
-                    Texture = tileList.Tiles.First().TextureName.ToString(),
                     X = [],
                     Y = [],
                     SpriteX = [],
@@ -94,7 +93,8 @@ namespace ArmadilloAssault.Configuration
 
             json.CollisionBoxes = collisionBoxListJson;
 
-            json.BackgroundTexture = scene.BackgroundTexture.ToString();
+            json.BackgroundTexture = scene.BackgroundTexture;
+            json.TilesetTexture = scene.TilesetTexture;
 
             return json;
         }

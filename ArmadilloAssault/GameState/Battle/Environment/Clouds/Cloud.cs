@@ -9,7 +9,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
     {
         public Vector2 Position { get; set; }
         public Point Size { get; set; }
-        public TextureName TextureName => TextureName.clouds;
+        public TextureName Texture => TextureName.clouds;
         public Point SpriteLocation { get; set; }
         public float Speed { get; set; }
         public bool Foreground { get; set; }

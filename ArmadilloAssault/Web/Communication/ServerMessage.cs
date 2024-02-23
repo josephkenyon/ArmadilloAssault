@@ -7,6 +7,7 @@ namespace ArmadilloAssault.Web.Communication
         public string ClientId { get; set; }
         public ServerMessageType Type { get; set; }
         public string Name { get; set; }
+        public string SceneName { get; set; }
         public BattleFrame BattleFrame { get; set; }
         public int AvatarIndex { get; set; }
         public int Hp { get; set; }

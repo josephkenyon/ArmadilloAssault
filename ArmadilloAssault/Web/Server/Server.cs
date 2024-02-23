@@ -29,7 +29,7 @@ namespace ArmadilloAssault.Web.Server
             WebSocketServer.Start();
         }
 
-        public void MessageIntialization()
+        public void MessageIntialization(string data)
         {
             var index = 1;
             Players.ForEach(player =>
@@ -39,6 +39,7 @@ namespace ArmadilloAssault.Web.Server
                     ClientId = player.ConnectionId,
                     PlayerCount = Players.Count + 1,
                     AvatarIndex = index++,
+                    SceneName = data,
                     BattleFrame = BattleManager.BattleFrame
                 };
 
@@ -126,24 +127,21 @@ namespace ArmadilloAssault.Web.Server
 
         private void OnJoinGame(string name)
         {
-            if (!Players.Any(player => player.Name == name))
+            Guid g = Guid.NewGuid();
+            string GuidString = Convert.ToBase64String(g.ToByteArray());
+            GuidString = GuidString.Replace("=", "");
+            GuidString = GuidString.Replace("+", "");
+
+            Players.Add(new Player
             {
-                Guid g = Guid.NewGuid();
-                string GuidString = Convert.ToBase64String(g.ToByteArray());
-                GuidString = GuidString.Replace("=", "");
-                GuidString = GuidString.Replace("+", "");
+                Name = name,
+                ConnectionId = GuidString,
+                PlayerIndex = Players.Count
+            });
 
-                Players.Add(new Player
-                {
-                    Name = name,
-                    ConnectionId = GuidString,
-                    PlayerIndex = Players.Count
-                });
+            var initiation = new ServerMessage { Type = ServerMessageType.Initiate, ClientId = GuidString, Name = name };
 
-                var initiation = new ServerMessage { Type = ServerMessageType.Initiate, ClientId = GuidString, Name = name };
-
-                Broadcast(initiation);
-            }
+            Broadcast(initiation);
         }
 
         private void UpdateInput(ClientMessage message)

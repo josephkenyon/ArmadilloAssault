@@ -56,6 +56,21 @@
     "SpriteRowLength": 8
   },
   {
+    "Type": "smoke",
+    "TextureName": "smoke",
+    "FrameSkip": 2,
+    "Size": {
+      "X": 128,
+      "Y": 128
+    },
+    "SpriteSize": {
+      "X": 128,
+      "Y": 128
+    },
+    "FrameLife": 60,
+    "SpriteRowLength": 8
+  },
+  {
     "Type": "ricochet",
     "TextureName": "ricochet",
     "Size": {

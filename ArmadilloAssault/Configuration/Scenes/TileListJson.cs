@@ -9,6 +9,5 @@ namespace ArmadilloAssault.Configuration.Scenes
         public List<int> Y { get; set; }
         public List<int> SpriteX { get; set; }
         public List<int> SpriteY { get; set; }
-        public string Texture { get; set; }
     }
 }

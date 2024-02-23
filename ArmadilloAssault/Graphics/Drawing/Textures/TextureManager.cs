@@ -14,6 +14,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
         {
             _textures = [];
 
+            _textures.Add(TextureName.logo, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "logo")));
+
             _textures.Add(TextureName.crosshair, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "crosshair")));
             _textures.Add(TextureName.white_pixel, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "white_pixel")));
 
@@ -24,19 +26,25 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.clouds, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "clouds")));
             _textures.Add(TextureName.crates, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates")));
             _textures.Add(TextureName.crates_parachuting, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates_parachuting")));
+            _textures.Add(TextureName.smoke, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "smoke")));
 
             _textures.Add(TextureName.pistol, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "pistol")));
             _textures.Add(TextureName.assault, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "assault")));
             _textures.Add(TextureName.shotgun, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "shotgun")));
             _textures.Add(TextureName.sniper, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "sniper")));
 
+            _textures.Add(TextureName.desert_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "desert_background")));
             _textures.Add(TextureName.mountain_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "mountain_background")));
+            _textures.Add(TextureName.volcano_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "volcano_background")));
+
+            _textures.Add(TextureName.lava_flow, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "lava_flow")));
 
             _textures.Add(TextureName.bullet_box, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "bullet_box")));
             _textures.Add(TextureName.bullet, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "bullet")));
             _textures.Add(TextureName.shotgun_bullet, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "shotgun_bullet")));
 
             _textures.Add(TextureName.test_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "test_tileset")));
+            _textures.Add(TextureName.desert_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "desert_tileset")));
 
             _textures.Add(TextureName.muzzle_flash_small, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_small")));
             _textures.Add(TextureName.muzzle_flash_large, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_large")));

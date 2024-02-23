@@ -36,7 +36,6 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             Position = position;
         }
 
-
         public abstract Rectangle GetCollisionBox();
     }
 }

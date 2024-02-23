@@ -124,6 +124,11 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
                 if (!endOfLife)
                 {
                     bullet.Position = GetNewBulletPosition(bullet.Position, bullet.Angle);
+
+                    if (bullet.Position.X > 1920 || bullet.Position.X < 0 || bullet.Position.Y > 1080 || bullet.Position.Y < 0)
+                    {
+                        endOfLife = true;
+                    } 
                 }
 
                 return endOfLife;

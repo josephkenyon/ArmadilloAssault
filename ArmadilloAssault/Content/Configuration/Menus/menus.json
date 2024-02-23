@@ -5,52 +5,20 @@
       {
         "Text": "Join Game",
         "Actions": [ "navigate_to", "start_client" ],
-        "Data": "ClientLobby",
-        "Position": {
-          "X": 780,
-          "Y": 160
-        },
-        "Size": {
-          "X": 360,
-          "Y": 100
-        }
+        "Data": "ClientLobby"
       },
       {
         "Text": "Host Game",
         "Actions": [ "navigate_to", "start_server" ],
-        "Data": "ServerLobby",
-        "Position": {
-          "X": 780,
-          "Y": 360
-        },
-        "Size": {
-          "X": 360,
-          "Y": 100
-        }
+        "Data": "ServerLobby"
       },
       {
         "Text": "Editor",
-        "Actions": [ "open_editor" ],
-        "Position": {
-          "X": 780,
-          "Y": 560
-        },
-        "Size": {
-          "X": 360,
-          "Y": 100
-        }
+        "Actions": [ "open_editor" ]
       },
       {
         "Text": "Exit Game",
-        "Actions": [ "back" ],
-        "Position": {
-          "X": 780,
-          "Y": 760
-        },
-        "Size": {
-          "X": 360,
-          "Y": 100
-        }
+        "Actions": [ "back" ]
       }
     ]
   },
@@ -58,28 +26,18 @@
     "Name": "ServerLobby",
     "Buttons": [
       {
-        "Text": "Start Game",
+        "Text": "Gusty Gorge",
         "Actions": [ "start_game" ],
-        "Position": {
-          "X": 760,
-          "Y": 240
-        },
-        "Size": {
-          "X": 400,
-          "Y": 150
-        }
+        "Data": "molten_mountain"
+      },
+      {
+        "Text": "Sunken Sands",
+        "Actions": [ "start_game" ],
+        "Data":  "sunken_sands"
       },
       {
         "Text": "Cancel",
-        "Actions": [ "stop_server", "back" ],
-        "Position": {
-          "X": 760,
-          "Y": 600
-        },
-        "Size": {
-          "X": 400,
-          "Y": 150
-        }
+        "Actions": [ "stop_server", "back" ]
       }
     ]
   },
@@ -88,15 +46,7 @@
     "Buttons": [
       {
         "Text": "Leave",
-        "Actions": [ "stop_client" ],
-        "Position": {
-          "X": 760,
-          "Y": 600
-        },
-        "Size": {
-          "X": 400,
-          "Y": 150
-        }
+        "Actions": [ "stop_client" ]
       }
     ]
   }

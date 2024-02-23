@@ -7,9 +7,12 @@ using ArmadilloAssault.GameState.Battle.Bullets;
 using ArmadilloAssault.GameState.Battle.Crates;
 using ArmadilloAssault.GameState.Battle.Effects;
 using ArmadilloAssault.GameState.Battle.Environment.Clouds;
+using ArmadilloAssault.GameState.Battle.Environment.Effects;
+using ArmadilloAssault.GameState.Battle.Environment.Flows;
 using ArmadilloAssault.GameState.Battle.Input;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Generics;
+using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
@@ -27,24 +30,25 @@ namespace ArmadilloAssault.GameState.Battle
         public static BattleFrame BattleFrame { get; set; }
         public static int AvatarIndex { get; private set; }
 
-        public static void Initialize(int playerCount, int avatarIndex = 0)
+        public static void Initialize(int playerCount, string data, int avatarIndex = 0)
         {
-            Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
+            var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
+            Scene = new Scene(sceneConfiguration);
             Avatars = [];
 
             AvatarIndex = avatarIndex;
 
-            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Arthur)));
+            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
             Avatars.Values.First().SetPosition(new Vector2(150, 0));
 
-            if (playerCount == 2)
+            if (playerCount >= 2)
             {
                 Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
                 Avatars.Values.Last().SetPosition(new Vector2(1650, 0));
                 Avatars.Values.Last().SetDirection(Direction.Left);
             }
 
-            if (playerCount == 3)
+            if (playerCount >= 3)
             {
                 Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
                 Avatars.Values.Last().SetPosition(new Vector2(420, 750));
@@ -54,7 +58,9 @@ namespace ArmadilloAssault.GameState.Battle
             BulletManager.Initialize(Scene.CollisionBoxes);
             CrateManager.Initialize(Scene.CollisionBoxes);
             EffectManager.Initialize();
-            CloudManager.Initialize();
+            EnvironmentalEffectsManager.Initialize(sceneConfiguration.EnvironmentalEffects);
+            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
+            FlowManager.Initialize(sceneConfiguration.Flow);
             AvatarDrawingHelper.Initialize();
 
             BattleFrame = CreateBattleFrame();
@@ -84,7 +90,9 @@ namespace ArmadilloAssault.GameState.Battle
 
             BulletManager.UpdateBullets([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
 
+            EnvironmentalEffectsManager.UpdateEffects();
             CloudManager.UpdateClouds();
+            FlowManager.UpdateFlows();
 
             CrateManager.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
 
@@ -117,14 +125,22 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static void UpdateClient()
         {
+            EnvironmentalEffectsManager.UpdateEffects();
             CloudManager.UpdateClouds();
+            FlowManager.UpdateFlows();
         }
 
         public static void Draw()
         {
+            GraphicsManager.Clear(Scene.BackgroundColor);
+
             SoundManager.PlaySounds(BattleFrame.SoundFrame);
 
+            DrawingManager.DrawCollection(FlowManager.Flows);
+
             DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f);
+
+            DrawingManager.DrawCollection(EnvironmentalEffectsManager.Effects);
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => !cloud.Foreground));
 

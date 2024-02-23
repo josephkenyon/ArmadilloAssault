@@ -1,5 +1,4 @@
-﻿using ArmadilloAssault.Configuration.Menu;
-using ArmadilloAssault.Configuration.Textures;
+﻿using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing.Textures;
 using ArmadilloAssault.Web.Communication.Frame;
@@ -7,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
+using ArmadilloAssault.GameState.Menu.Assets;
+using ArmadilloAssault.GameState.Menu;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -33,7 +34,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         private static void DrawObject(IDrawableObject drawableObject)
         {
             _spriteBatch.Draw(
-                texture: TextureManager.GetTexture(drawableObject.TextureName),
+                texture: TextureManager.GetTexture(drawableObject.Texture),
                 destinationRectangle: drawableObject.GetDestinationRectangle(),
                 sourceRectangle: drawableObject.GetSourceRectangle(),
                 color: DrawingHelper.GetColor(drawableObject.Z) * drawableObject.Opacity,
@@ -82,7 +83,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
-        public static void DrawMenuButtons(IEnumerable<ButtonJson> buttons)
+        public static void DrawMenuButtons(IEnumerable<Button> buttons)
         {
             _spriteBatch.Begin();
 
@@ -91,10 +92,17 @@ namespace ArmadilloAssault.Graphics.Drawing
                 var destinationRectangle = button.GetRectangle();
 
                 _spriteBatch.Draw(
+                     texture: TextureManager.GetTexture(TextureName.white_pixel),
+                     destinationRectangle: new Rectangle(destinationRectangle.X - 2, destinationRectangle.Y - 2, destinationRectangle.Width + 4, destinationRectangle.Height + 4),
+                     sourceRectangle: new Rectangle(0, 0, 1, 1),
+                     color: Color.White
+                 );
+
+                _spriteBatch.Draw(
                     texture: TextureManager.GetTexture(TextureName.white_pixel),
                     destinationRectangle: destinationRectangle,
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
-                    color: Color.Red * 0.5f
+                    color: (button.Selected ? MenuManager.ForegroundColor : MenuManager.BackgroundColor)
                 );
 
                 var font = DrawingHelper.GetFont;

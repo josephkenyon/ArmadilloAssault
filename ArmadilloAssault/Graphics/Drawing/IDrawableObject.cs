@@ -8,7 +8,7 @@ namespace ArmadilloAssault.Graphics.Drawing
     {
         int Z => 0;
         Point SpriteLocation => Point.Zero;
-        TextureName TextureName { get; }
+        TextureName Texture { get; }
         Rectangle GetDestinationRectangle();
         Rectangle? GetSourceRectangle() => null;
         Vector2 GetOrigin() => Vector2.Zero;

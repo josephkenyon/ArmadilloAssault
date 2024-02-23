@@ -17,6 +17,25 @@ namespace ArmadilloAssault.GameState.Battle.Physics
         {
             ApplyHorizontalMotion(physicsObject, sceneCollisionBoxes);
             ApplyVerticalMotion(physicsObject, sceneCollisionBoxes);
+
+            var collisionBox = physicsObject.GetCollisionBox();
+            if (collisionBox.Left > 1920)
+            {
+                physicsObject.SetX(physicsObject.Position.X - 1920);
+            }
+            else if (collisionBox.Right < 0)
+            {
+                physicsObject.SetX(physicsObject.Position.X + 1920);
+            }
+
+            if (collisionBox.Bottom < 0)
+            {
+                physicsObject.SetY(physicsObject.Position.Y + 1080);
+            }
+            else if (collisionBox.Top > 1080)
+            {
+                physicsObject.SetY(physicsObject.Position.Y - 1080);
+            }
         }
 
         public static void Update(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
@@ -186,10 +205,25 @@ namespace ArmadilloAssault.GameState.Battle.Physics
         private static void ApplyDownwardMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
         {
             var collisionBox = physicsObject.GetCollisionBox();
-            var floorY = GetFloor(collisionBox, sceneCollisionBoxes);
+            var floor = GetFloor(collisionBox, sceneCollisionBoxes);
+            var floorY = floor.Value;
 
             if (collisionBox.Bottom == floorY)
             {
+                if (physicsObject is Avatar)
+                {
+                    var avatar = physicsObject as Avatar;
+
+                    if (avatar.DropThrough && floor.Passable)
+                    {
+                        avatar.SetY(avatar.Position.Y + 1);
+                        avatar.DropThrough = false;
+                        return;
+                    }
+
+                    avatar.DropThrough = false;
+                }
+
                 physicsObject.SetY((int)physicsObject.Position.Y);
                 physicsObject.Grounded = true;
 
@@ -271,7 +305,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             }
         }
 
-        public static float GetLeftWall(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
+        private static float GetLeftWall(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
         {
             var avatarLeftX = avatarCollisionBox.Left;
 
@@ -287,10 +321,10 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 return boxCandidates.First().Right;
             }
 
-            return 0;
+            return -9999;
         }
 
-        public static float GetRightWall(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
+        private static float GetRightWall(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
         {
             var avatarRightX = avatarCollisionBox.Right;
 
@@ -306,10 +340,10 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 return boxCandidates.First().Left;
             }
 
-            return 1920;
+            return 9999;
         }
 
-        public static float GetCeiling(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
+        private static float GetCeiling(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
         {
             var avatarTopY = avatarCollisionBox.Top;
 
@@ -325,10 +359,10 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 return boxCandidates.First().Bottom;
             }
 
-            return 0;
+            return -9999;
         }
 
-        public static float GetFloor(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
+        private static Floor GetFloor(Rectangle avatarCollisionBox, ICollection<Rectangle> sceneCollisionBoxes)
         {
             var avatarBottomY = avatarCollisionBox.Bottom;
             var boxCandidates = sceneCollisionBoxes
@@ -337,12 +371,29 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 .OrderBy(box => box.Top)
                 .ToList();
 
-            if (boxCandidates.Count > 0)
+            if (boxCandidates.Count > 1)
             {
-                return boxCandidates.First().Top;
+                var passable = boxCandidates.First().Height < CollisionHelper.PassableYThreshold;
+
+                if (boxCandidates[1].Top - boxCandidates[0].Top <= CollisionHelper.PassableYThreshold)
+                {
+                    passable = false;
+                }
+
+                return new Floor { Value = boxCandidates.First().Top, Passable = passable };
+            }
+            else if (boxCandidates.Count > 0)
+            {
+                return new Floor { Value = boxCandidates.First().Top, Passable = boxCandidates.First().Height < CollisionHelper.PassableYThreshold };
             }
 
-            return 1080;
+            return new Floor{Value = 9999, Passable = false };
+        }
+
+        private class Floor
+        {
+            public bool Passable { get; set; }
+            public float Value { get; set; }
         }
     }
 }

@@ -20,9 +20,9 @@ namespace ArmadilloAssault.GameState.Editor
 
         public static void Initialize()
         {
-            Scene = new Scene(ConfigurationManager.GetSceneConfiguration());
+            Scene = new Scene(ConfigurationManager.GetSceneConfiguration("sunken_sands"));
             Z = -1;
-            SelectedTextureName = TextureName.test_tileset;
+            SelectedTextureName = Scene.TilesetTexture;
             SpriteSelectionIndex = new Point(0, 0);
         }
 
@@ -112,7 +112,7 @@ namespace ArmadilloAssault.GameState.Editor
 
             Scene.TileLists.ForEach(list => DrawingManager.DrawCollection([.. list.Tiles]));
 
-            DrawingManager.DrawTexture(TextureName.test_tileset, new Vector2((SceneSize.X + 1) * scaledTileSize, 1 * scaledTileSize));
+            DrawingManager.DrawTexture(Scene.TilesetTexture, new Vector2((SceneSize.X + 1) * scaledTileSize, 1 * scaledTileSize));
 
             DrawingManager.DrawString($"Z: {Z}", new Point(SceneSize.X, 0), DrawingHelper.GetFont);
 

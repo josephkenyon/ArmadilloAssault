@@ -32,11 +32,11 @@
 #begin Configuration/Scenes/gusty_gorge.json
 /copy:Configuration/Scenes/gusty_gorge.json
 
-#begin Configuration/Scenes/jungle_scene.json
-/copy:Configuration/Scenes/jungle_scene.json
+#begin Configuration/Scenes/molten_mountain.json
+/copy:Configuration/Scenes/molten_mountain.json
 
-#begin Configuration/Scenes/test_scene.json
-/copy:Configuration/Scenes/test_scene.json
+#begin Configuration/Scenes/sunken_sands.json
+/copy:Configuration/Scenes/sunken_sands.json
 
 #begin Configuration/Weapons/weapons.json
 /copy:Configuration/Weapons/weapons.json
@@ -122,6 +122,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Graphics/Fonts/menu_font.spritefont
 
+#begin Graphics/Fonts/test_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Graphics/Fonts/test_font.spritefont
+
 #begin Graphics/Sprites/arthur.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -182,6 +189,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Sprites/crates.png
 
+#begin Graphics/Sprites/smoke.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Sprites/smoke.png
+
 #begin Graphics/Sprites/titan.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -230,6 +249,42 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/crosshair.png
 
+#begin Graphics/Textures/desert_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/desert_background.png
+
+#begin Graphics/Textures/lava_flow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/lava_flow.png
+
+#begin Graphics/Textures/logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/logo.png
+
 #begin Graphics/Textures/mountain_background.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -253,6 +308,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/shotgun_bullet.png
+
+#begin Graphics/Textures/volcano_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/volcano_background.png
 
 #begin Graphics/Textures/Weapons/assault.png
 /importer:TextureImporter
@@ -313,6 +380,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/white_pixel.png
+
+#begin Graphics/Tilesets/desert_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Tilesets/desert_tileset.png
 
 #begin Graphics/Tilesets/test_tileset.png
 /importer:TextureImporter

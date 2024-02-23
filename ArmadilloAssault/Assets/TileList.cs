@@ -1,7 +1,4 @@
-﻿using ArmadilloAssault.Graphics.Drawing;
-using ArmadilloAssault.Graphics.Drawing.Textures;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ArmadilloAssault.Assets
 {

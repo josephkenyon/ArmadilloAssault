@@ -6,6 +6,7 @@
         muzzle_flash_large,
         dust_cloud,
         blood_splatter,
-        ricochet
+        ricochet,
+        smoke
     }
 }
