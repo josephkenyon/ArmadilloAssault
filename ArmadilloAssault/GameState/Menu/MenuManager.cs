@@ -12,6 +12,7 @@ using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ArmadilloAssault.GameState.Menu
 {
@@ -56,7 +57,7 @@ namespace ArmadilloAssault.GameState.Menu
                 if (button != null)
                 {
                     SoundManager.PlayMenuSound(MenuSound.confirm);
-                    button.Actions.ForEach(action => InvokeAction(action, button.Data));
+                    button.Actions.ForEach(async action => await InvokeAction(action, button.Data));
                 }
             }
             else if (ControlsManager.IsControlDownStart(0, Control.Start))
@@ -67,7 +68,7 @@ namespace ArmadilloAssault.GameState.Menu
 
                 if (cancelButton != null)
                 {
-                    cancelButton.Actions.ForEach(action => InvokeAction(action, cancelButton.Data));
+                    cancelButton.Actions.ForEach(async action => await InvokeAction(action, cancelButton.Data));
                 }
                 else
                 {
@@ -76,7 +77,7 @@ namespace ArmadilloAssault.GameState.Menu
             }
         }
 
-        private static void InvokeAction(MenuAction action, string data)
+        private static async Task InvokeAction(MenuAction action, string data)
         {
             switch (action)
             {

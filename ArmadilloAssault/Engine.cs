@@ -67,7 +67,7 @@ namespace ArmadilloAssault
 
             if (ClientManager.IsActive)
             {
-                ClientManager.BroadcastUpdate();
+                _ = ClientManager.BroadcastUpdate();
             }
 
             switch (GameStateManager.State)

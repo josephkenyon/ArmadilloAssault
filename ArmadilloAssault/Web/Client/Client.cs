@@ -2,77 +2,100 @@
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
-using WebSocketSharp;
+using System.Net.WebSockets;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Text;
 
 namespace ArmadilloAssault.Web.Client
 {
     public class Client
     {
-        private WebSocket WebSocket { get; set; }
-        private string Name { get; set; }
-        public bool Connected => WebSocket != null && WebSocket.ReadyState == WebSocketState.Open;
+        private ClientWebSocket WebSocket { get; set; }
+        private CancellationTokenSource CancellationTokenSource { get; set; }
+        public bool Connected => WebSocket != null && WebSocket.State == WebSocketState.Open;
 
-        public void JoinGame(string ipAddress, string name)
+        public async Task JoinGame(string ipAddress, string name, CancellationTokenSource cts)
         {
+            var serverAddress = $"ws://{ipAddress}:25565/game";
+
+            WebSocket = new();
+
+            CancellationTokenSource = cts;
+
             try
             {
-                Name = name;
+                await WebSocket.ConnectAsync(new Uri(serverAddress), CancellationTokenSource.Token);
 
-                WebSocket = new WebSocket($"ws://{ipAddress}:25565/game");
+                Trace.WriteLine("Connected to server.");
 
-                WebSocket.OnMessage += (sender, e) => MessageReceived(e.Data);
+                Task receivingTask = ReceiveMessages();
 
-                WebSocket.OnError += (sender, e) => ClientManager.ConnectionTerminated();
-
-                WebSocket.OnOpen += (sender, e) => {
-
-                    var joinGameMessage = new ClientMessage
-                    {
-                        Type = ClientMessageType.JoinGame,
-                        Name = name
-                    };
-
-                    MessageServer(joinGameMessage);
+                var joinGameMessage = new ClientMessage
+                {
+                    Type = ClientMessageType.JoinGame,
+                    Name = name
                 };
 
-                WebSocket.Connect();
+                await MessageServer(joinGameMessage);
 
-                Trace.WriteLine("Connection finish");
+                ClientManager.ConnectionEstablished();
 
-                if (WebSocket.ReadyState == WebSocketState.Open)
-                {
-                    Trace.WriteLine("Open");
-                    ClientManager.ConnectionEstablished();
-                }
-                else
-                {
-                    Trace.WriteLine("Close");
-                    ClientManager.ConnectionTerminated();
-                }
+                await Task.WhenAny(receivingTask);
+
+                cts.Cancel();
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message);
-                ClientManager.Stop();
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                ClientManager.ConnectionTerminated();
             }
         }
 
-        public void MessageServer(ClientMessage message)
+        private async Task ReceiveMessages()
+        {
+            byte[] buffer = new byte[4096];
+
+            while (!CancellationTokenSource.Token.IsCancellationRequested)
+            {
+                WebSocketReceiveResult result;
+                var message = new StringBuilder();
+
+                do
+                {
+                    result = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationTokenSource.Token);
+
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        Trace.WriteLine("Server closed the connection.");
+                        return;
+                    }
+
+                    message.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
+                }
+                while (!result.EndOfMessage);
+
+                MessageReceived(message.ToString());
+            }
+        }
+
+        public async Task MessageServer(ClientMessage message)
         {
             try
             {
                 var value = JsonConvert.SerializeObject(message);
 
-                WebSocket.Send(value);
+                byte[] buffer = Encoding.UTF8.GetBytes(value);
+
+                await WebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationTokenSource.Token);
+
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex.Message);
-
-                if (!WebSocket.IsAlive)
-                {
-                    ClientManager.Stop();
-                }
             }
         }
 
@@ -90,28 +113,14 @@ namespace ArmadilloAssault.Web.Client
             }
         }
 
-
-        public void Stop()
-        {
-            try
-            {
-                WebSocket.Close();
-                WebSocket = null;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex.Message);
-            }
-        }
-
-        public void MessageEnd()
+        public async Task MessageEnd()
         {
             var message = new ClientMessage
             {
                 Type = ClientMessageType.LeaveGame
             };
 
-            MessageServer(message);
+            await MessageServer(message);
         }
     }
 }

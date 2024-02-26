@@ -25,35 +25,17 @@ namespace ArmadilloAssault.Web.Client
 
         public static void AttemptConnection()
         {
-            Client = new Client();
-
-            CancellationTokenSource = new();
-
-            var task = Task.Run(() =>
+            if (CancellationTokenSource == null)
             {
-                CancellationTokenSource.Token.ThrowIfCancellationRequested();
-                Client.JoinGame("73.216.200.18", "Test");
-            }, CancellationTokenSource.Token);
+                Client = new Client();
+                CancellationTokenSource = new();
+                _ = Client.JoinGame("73.216.200.18", "Test", CancellationTokenSource);
+            }
         }
 
         public static void TerminateConnection()
         {
-            if (IsActive)
-            {
-                Client.MessageEnd();
-            }
-            else
-            {
-                CancellationTokenSource.Cancel();
-            }
-
-            ConnectionTerminated();
-        }
-
-        public static void Stop()
-        {
-            Client.Stop();
-            Client = null;
+            CancellationTokenSource.Cancel();
         }
 
         public static void ConnectionTerminated() {
@@ -61,6 +43,8 @@ namespace ArmadilloAssault.Web.Client
 
             GameStateManager.State = State.Menu;
             MenuManager.Back();
+
+            CancellationTokenSource = null;
         }
 
         public static void ConnectionEstablished()
@@ -68,7 +52,7 @@ namespace ArmadilloAssault.Web.Client
             MenuManager.EnterClientLobby();
         }
 
-        public static void BroadcastUpdate()
+        public static async Task BroadcastUpdate()
         {
             var controlsDown = ControlsManager.AreControlsDown(0);
             var aim = ControlsManager.GetAimPosition(0);
@@ -87,7 +71,7 @@ namespace ArmadilloAssault.Web.Client
                     AimY = aim.Y
                 };
 
-                Client.MessageServer(clientMessage);
+                await Client.MessageServer(clientMessage);
             }
 
             LastUpdateWasEmpty = hasUpdates;
@@ -104,6 +88,10 @@ namespace ArmadilloAssault.Web.Client
             else if (serverMessage.Type == ServerMessageType.BattleUpdate)
             {
                 BattleManager.BattleFrame = serverMessage.BattleFrame;
+            }
+            else if (serverMessage.Type == ServerMessageType.BattleTermination)
+            {
+                GameStateManager.State = State.Menu;
             }
         }
 

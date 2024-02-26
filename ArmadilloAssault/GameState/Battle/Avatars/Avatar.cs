@@ -422,6 +422,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
                 Animation = Animation.Dead;
                 Acceleration = Vector2.Zero;
                 InfluenceVelocity = 0;
+                RunningVelocity = 0;
             }
             else
             {

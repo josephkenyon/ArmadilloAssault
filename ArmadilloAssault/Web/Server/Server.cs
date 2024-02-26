@@ -78,11 +78,6 @@ namespace ArmadilloAssault.Web.Server
             });
         }
 
-        public void TerminateGame()
-        {
-            GameStateManager.State = State.Menu;
-        }
-
         public void Broadcast(ServerMessage serverMessage, string id)
         {
             var message = JsonConvert.SerializeObject(serverMessage);

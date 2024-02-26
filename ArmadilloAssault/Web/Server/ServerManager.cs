@@ -66,11 +66,6 @@ namespace ArmadilloAssault.Web.Server
             Server.MessageGameEnd();
         }
 
-        public static void TerminateGame()
-        {
-            Server.TerminateGame();
-        }
-
         public static void TerminateServer()
         {
             Server.Stop();
