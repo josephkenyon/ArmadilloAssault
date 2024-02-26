@@ -4,7 +4,6 @@ namespace ArmadilloAssault.Web.Communication
 {
     public class ServerMessage
     {
-        public string ClientId { get; set; }
         public ServerMessageType Type { get; set; }
         public string Name { get; set; }
         public string SceneName { get; set; }

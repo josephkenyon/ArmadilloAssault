@@ -13,30 +13,33 @@ namespace ArmadilloAssault.GameState
         private static void SetState(State newState)
         {
             var oldState = _state;
-            _state = newState;
-
-            if (_state == State.Battle)
+            if (oldState != newState)
             {
-                GraphicsManager.SetBattleCursor();
+                _state = newState;
 
-                SoundManager.PlayMusic(MusicSong.battle_music);
-            }
-            else if (_state == State.Menu)
-            {
-                GraphicsManager.SetMenuCursor();
-
-                MenuManager.Initialize();
-
-                if (oldState == State.Battle || oldState == State.None)
+                if (_state == State.Battle)
                 {
-                    SoundManager.PlayMusic(MusicSong.menu_music);
-                }
-            }
-            else if (_state == State.Editor)
-            {
-                GraphicsManager.SetMenuCursor();
+                    GraphicsManager.SetBattleCursor();
 
-                EditorManager.Initialize();
+                    SoundManager.PlayMusic(MusicSong.battle_music);
+                }
+                else if (_state == State.Menu)
+                {
+                    GraphicsManager.SetMenuCursor();
+
+                    MenuManager.Initialize();
+
+                    if (oldState == State.Battle || oldState == State.None)
+                    {
+                        SoundManager.PlayMusic(MusicSong.menu_music);
+                    }
+                }
+                else if (_state == State.Editor)
+                {
+                    GraphicsManager.SetMenuCursor();
+
+                    EditorManager.Initialize();
+                }
             }
         }
     }

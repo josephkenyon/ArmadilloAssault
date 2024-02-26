@@ -39,6 +39,8 @@ namespace ArmadilloAssault.GameState.Menu
 
         public static void Update()
         {
+            CurrentMenu.Update();
+
             CloudManager.UpdateClouds();
 
             foreach (var button in CurrentMenu.Buttons)
@@ -86,14 +88,7 @@ namespace ArmadilloAssault.GameState.Menu
                     ClientManager.AttemptConnection();
                     break;
                 case MenuAction.stop_client:
-                    if (ClientManager.IsActive)
-                    {
-                        ClientManager.MessageConnectionEnd();
-                    }
-                    else
-                    {
-                        Back();
-                    }
+                    ClientManager.TerminateConnection();
                     break;
                 case MenuAction.start_server:
                     ServerManager.StartServer();
@@ -115,6 +110,13 @@ namespace ArmadilloAssault.GameState.Menu
             }
         }
 
+        public static void EnterClientLobby()
+        {
+            MenuStack.Pop();
+            MenuStack.Push("ClientLobby");
+            UpdateCurrentMenu();
+        }
+
         public static void Draw()
         {
             GraphicsManager.Clear(Scene.BackgroundColor);
@@ -126,6 +128,11 @@ namespace ArmadilloAssault.GameState.Menu
             if (MenuStack.Peek() == "Root")
             {
                 DrawingManager.DrawTexture(Configuration.Textures.TextureName.logo, new Rectangle(690, 128, 540, 256));
+            }
+
+            if (CurrentMenu.LoadingSpinner != null)
+            {
+                DrawingManager.DrawCollection([CurrentMenu.LoadingSpinner]);
             }
 
             DrawingManager.DrawMenuButtons(CurrentMenu.Buttons);

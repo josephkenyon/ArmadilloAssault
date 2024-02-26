@@ -122,13 +122,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Graphics/Fonts/menu_font.spritefont
 
-#begin Graphics/Fonts/test_font.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Graphics/Fonts/test_font.spritefont
-
 #begin Graphics/Sprites/arthur.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -188,6 +181,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Sprites/crates.png
+
+#begin Graphics/Sprites/loading_spinner.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Sprites/loading_spinner.png
 
 #begin Graphics/Sprites/smoke.png
 /importer:TextureImporter

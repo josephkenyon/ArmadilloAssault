@@ -13,7 +13,6 @@ namespace ArmadilloAssault.Web.Server
     public static class ServerManager
     {
         private static Server Server { get; set; }
-        public static IObserver<string> Observer { get; private set; }
         public static int PlayerCount => Server != null && Server.Players != null ? Server.Players.Count : 0;
 
         public static List<Control> GetPlayerControlsDown(int playerIndex)
@@ -39,8 +38,6 @@ namespace ArmadilloAssault.Web.Server
         public static void StartServer()
         {
             Server = new Server();
-
-            Observer = Server;
 
             try
             {
@@ -83,6 +80,16 @@ namespace ArmadilloAssault.Web.Server
         public static void SendBattleFrame(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
         {
             Server.SendBattleUpdates(battleFrame, hudFrames);
+        }
+
+        public static void ClientDisconnected(string id)
+        {
+            Server.ClientDisconnected(id);
+        }
+
+        public static void ClientMessage(string data, string id)
+        {
+            Server.OnNext(data, id);
         }
 
         public static bool IsServing => Server != null;

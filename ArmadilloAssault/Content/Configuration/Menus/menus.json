@@ -3,9 +3,32 @@
     "Name": "Root",
     "Buttons": [
       {
+        "Text": "Multiplayer",
+        "Actions": [ "navigate_to" ],
+        "Data": "Multiplayer"
+      },
+      {
+        "Text": "Editor",
+        "Actions": [ "open_editor" ]
+      },
+      {
+        "Text": "Options",
+        "Actions": [ "navigate_to" ],
+        "Data": "Options"
+      },
+      {
+        "Text": "Exit Game",
+        "Actions": [ "back" ]
+      }
+    ]
+  },
+  {
+    "Name": "Multiplayer",
+    "Buttons": [
+      {
         "Text": "Join Game",
         "Actions": [ "navigate_to", "start_client" ],
-        "Data": "ClientLobby"
+        "Data": "ClientConnection"
       },
       {
         "Text": "Host Game",
@@ -13,11 +36,7 @@
         "Data": "ServerLobby"
       },
       {
-        "Text": "Editor",
-        "Actions": [ "open_editor" ]
-      },
-      {
-        "Text": "Exit Game",
+        "Text": "Back",
         "Actions": [ "back" ]
       }
     ]
@@ -33,11 +52,30 @@
       {
         "Text": "Sunken Sands",
         "Actions": [ "start_game" ],
-        "Data":  "sunken_sands"
+        "Data": "sunken_sands"
       },
       {
         "Text": "Cancel",
         "Actions": [ "stop_server", "back" ]
+      }
+    ]
+  },
+  {
+    "Name": "Options",
+    "Buttons": [
+      {
+        "Text": "Back",
+        "Actions": [ "back" ]
+      }
+    ]
+  },
+  {
+    "Name": "ClientConnection",
+    "HasLoadingSpinner": true,
+    "Buttons": [
+      {
+        "Text": "Cancel",
+        "Actions": [ "stop_client" ]
       }
     ]
   },

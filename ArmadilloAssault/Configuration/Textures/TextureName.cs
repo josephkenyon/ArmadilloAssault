@@ -33,6 +33,7 @@
         desert_tileset,
         smoke,
         volcano_background,
-        lava_flow
+        lava_flow,
+        loading_spinner
     }
 }

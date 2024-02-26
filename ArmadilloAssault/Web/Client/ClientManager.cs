@@ -6,6 +6,10 @@ using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
 
 namespace ArmadilloAssault.Web.Client
 {
@@ -17,22 +21,33 @@ namespace ArmadilloAssault.Web.Client
 
         private static bool LastUpdateWasEmpty = false;
         public static BattleFrame BattleFrame { get; set; }
+        private static CancellationTokenSource CancellationTokenSource { get; set; }
 
         public static void AttemptConnection()
         {
             Client = new Client();
-            Client.JoinGame("73.216.200.18", "Test");
+
+            CancellationTokenSource = new();
+
+            var task = Task.Run(() =>
+            {
+                CancellationTokenSource.Token.ThrowIfCancellationRequested();
+                Client.JoinGame("73.216.200.18", "Test");
+            }, CancellationTokenSource.Token);
         }
 
-        public static void MessageConnectionEnd()
+        public static void TerminateConnection()
         {
-            Client?.MessageEnd();
-        }
+            if (IsActive)
+            {
+                Client.MessageEnd();
+            }
+            else
+            {
+                CancellationTokenSource.Cancel();
+            }
 
-        public static void ConnectionEnded()
-        {
-            GameStateManager.State = State.Menu;
-            MenuManager.Back();
+            ConnectionTerminated();
         }
 
         public static void Stop()
@@ -42,37 +57,41 @@ namespace ArmadilloAssault.Web.Client
         }
 
         public static void ConnectionTerminated() {
-            GameStateManager.State = State.Menu;
             Client = null;
+
+            GameStateManager.State = State.Menu;
+            MenuManager.Back();
+        }
+
+        public static void ConnectionEstablished()
+        {
+            MenuManager.EnterClientLobby();
         }
 
         public static void BroadcastUpdate()
         {
-            if (Client.ClientId != null)
+            var controlsDown = ControlsManager.AreControlsDown(0);
+            var aim = ControlsManager.GetAimPosition(0);
+
+            var hasUpdates = controlsDown.Count > 0
+                && !MathUtils.FloatsAreEqual(aim.X, LastAim.X)
+                && !MathUtils.FloatsAreEqual(aim.Y, LastAim.Y);
+
+            if (hasUpdates || !LastUpdateWasEmpty)
             {
-                var controlsDown = ControlsManager.AreControlsDown(0);
-                var aim = ControlsManager.GetAimPosition(0);
-
-                var hasUpdates = controlsDown.Count > 0
-                    && !MathUtils.FloatsAreEqual(aim.X, LastAim.X)
-                    && !MathUtils.FloatsAreEqual(aim.Y, LastAim.Y);
-
-                if (hasUpdates || !LastUpdateWasEmpty)
+                var clientMessage = new ClientMessage
                 {
-                    var clientMessage = new ClientMessage
-                    {
-                        Type = ClientMessageType.InputUpdate,
-                        AreControlsDown = controlsDown,
-                        AimX = aim.X,
-                        AimY = aim.Y
-                    };
+                    Type = ClientMessageType.InputUpdate,
+                    AreControlsDown = controlsDown,
+                    AimX = aim.X,
+                    AimY = aim.Y
+                };
 
-                    Client.MessageServer(clientMessage);
-                }
-
-                LastUpdateWasEmpty = hasUpdates;
-                LastAim = aim;
+                Client.MessageServer(clientMessage);
             }
+
+            LastUpdateWasEmpty = hasUpdates;
+            LastAim = aim;
         }
 
         public static void OnServerUpdate(ServerMessage serverMessage)
@@ -86,17 +105,8 @@ namespace ArmadilloAssault.Web.Client
             {
                 BattleManager.BattleFrame = serverMessage.BattleFrame;
             }
-            else if (serverMessage.Type == ServerMessageType.BattleTermination)
-            {
-                GameStateManager.State = State.Menu;
-            }
-            else if (serverMessage.Type == ServerMessageType.EndConnection)
-            {
-                Stop();
-                ConnectionEnded();
-            }
         }
 
-        public static bool IsActive => Client != null;
+        public static bool IsActive => Client != null && Client.Connected;
     }
 }

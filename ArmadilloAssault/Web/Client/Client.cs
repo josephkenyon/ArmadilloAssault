@@ -10,7 +10,7 @@ namespace ArmadilloAssault.Web.Client
     {
         private WebSocket WebSocket { get; set; }
         private string Name { get; set; }
-        public string ClientId { get; private set; } = null;
+        public bool Connected => WebSocket != null && WebSocket.ReadyState == WebSocketState.Open;
 
         public void JoinGame(string ipAddress, string name)
         {
@@ -36,6 +36,19 @@ namespace ArmadilloAssault.Web.Client
                 };
 
                 WebSocket.Connect();
+
+                Trace.WriteLine("Connection finish");
+
+                if (WebSocket.ReadyState == WebSocketState.Open)
+                {
+                    Trace.WriteLine("Open");
+                    ClientManager.ConnectionEstablished();
+                }
+                else
+                {
+                    Trace.WriteLine("Close");
+                    ClientManager.ConnectionTerminated();
+                }
             }
             catch (Exception ex)
             {
@@ -48,11 +61,6 @@ namespace ArmadilloAssault.Web.Client
         {
             try
             {
-                if (ClientId != null)
-                {
-                    message.Id = ClientId;
-                }
-
                 var value = JsonConvert.SerializeObject(message);
 
                 WebSocket.Send(value);
@@ -74,14 +82,7 @@ namespace ArmadilloAssault.Web.Client
             {
                 var clientMessage = JsonConvert.DeserializeObject<ServerMessage>(messageString);
 
-                if (clientMessage.Type == ServerMessageType.Initiate && clientMessage.Name == Name && ClientId == null)
-                {
-                    ClientId = clientMessage.ClientId;
-                }
-                else if (clientMessage.ClientId == ClientId)
-                {
-                    ClientManager.OnServerUpdate(clientMessage);
-                }
+                ClientManager.OnServerUpdate(clientMessage);
             }
             catch (Exception ex)
             {
@@ -107,8 +108,7 @@ namespace ArmadilloAssault.Web.Client
         {
             var message = new ClientMessage
             {
-                Type = ClientMessageType.LeaveGame,
-                Id = ClientId
+                Type = ClientMessageType.LeaveGame
             };
 
             MessageServer(message);
