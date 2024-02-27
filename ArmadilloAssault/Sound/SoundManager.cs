@@ -244,9 +244,9 @@ namespace ArmadilloAssault.Sound
             }
         }
 
-        public static void AddSounds(BattleFrame battleFrame)
+        public static void PushSounds(ISoundFrameContainer soundFrameContainer)
         {
-            battleFrame.SoundFrame = _soundFrame;
+            soundFrameContainer.SoundFrame = _soundFrame;
             _soundFrame = null;
         }
     }

@@ -206,10 +206,15 @@ namespace ArmadilloAssault.GameState.Menu
 
             DrawingManager.DrawMenuButtons(CurrentMenu.Buttons.Where(button => button.Visible));
 
-            if (MenuStack.Peek() == "Lobby" && LobbyFrame != null && !LobbyFrame.LevelSelect)
+            if (MenuStack.Peek() == "Lobby" && LobbyFrame != null)
             {
-                DrawingManager.DrawLobbyPlayerBackgrounds(LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle), LobbyFrame.PlayerBackgroundIds);
-                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
+                if (!LobbyFrame.LevelSelect)
+                {
+                    DrawingManager.DrawLobbyPlayerBackgrounds(LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle), LobbyFrame.PlayerBackgroundIds);
+                    DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
+                }
+
+                SoundManager.PlaySounds(LobbyFrame.SoundFrame);
             }
         }
 

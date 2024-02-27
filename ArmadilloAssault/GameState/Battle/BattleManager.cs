@@ -119,7 +119,7 @@ namespace ArmadilloAssault.GameState.Battle
                 };
             });
 
-            SoundManager.AddSounds(BattleFrame);
+            SoundManager.PushSounds(BattleFrame);
 
             ServerManager.SendBattleFrame(BattleFrame, hudFrames);
 

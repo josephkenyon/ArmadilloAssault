@@ -1,6 +1,8 @@
-﻿namespace ArmadilloAssault.Web.Communication.Frame
+﻿using ArmadilloAssault.Sound;
+
+namespace ArmadilloAssault.Web.Communication.Frame
 {
-    public class BattleFrame
+    public class BattleFrame : ISoundFrameContainer
     {
         public AvatarFrame AvatarFrame { get; set; } = new();
         public BulletFrame BulletFrame { get; set; } = new();

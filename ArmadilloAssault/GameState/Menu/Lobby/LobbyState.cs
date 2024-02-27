@@ -3,6 +3,7 @@ using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
@@ -43,6 +44,8 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
             }
 
             var rectangle = GetPlayerBackgroundRectangles()[index];
+
+            SoundManager.QueueAvatarSound(avatarType, AvatarSound.Ready);
 
             Avatars[index].SetX(rectangle.X);
             Avatars[index].SetY(rectangle.Y + 16);
@@ -87,8 +90,10 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(RectangleJson.CreateFrom).ToList(),
                 PlayerBackgroundIds = ServerManager.PlayerIndices,
                 LevelSelect = LevelSelect,
-                SelectedLevel = SelectedLevel
+                SelectedLevel = SelectedLevel,
             };
+
+            SoundManager.PushSounds(frame);
 
             return frame;
         }
