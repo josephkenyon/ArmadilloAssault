@@ -23,6 +23,10 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.axel, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "axel")));
             _textures.Add(TextureName.titan, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "titan")));
 
+            _textures.Add(TextureName.arthur_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "arthur_select")));
+            _textures.Add(TextureName.axel_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "axel_select")));
+            _textures.Add(TextureName.titan_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "titan_select")));
+
             _textures.Add(TextureName.loading_spinner, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "loading_spinner")));
             _textures.Add(TextureName.clouds, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "clouds")));
             _textures.Add(TextureName.crates, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates")));

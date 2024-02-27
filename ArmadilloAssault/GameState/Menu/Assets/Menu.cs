@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Configuration.Menu;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ArmadilloAssault.GameState.Menu.Assets
 {
@@ -29,10 +30,20 @@ namespace ArmadilloAssault.GameState.Menu.Assets
 
             var buttonLocation = new Point((1920 / 2) - (MenuManager.ButtonSize.X / 2), start);
 
-            foreach (var buttonJson in buttonJsons)
+            foreach (var buttonJson in buttonJsons.Where(buttonJson => MenuManager.ConditionFulfilled(buttonJson.Condition)))
             {
-                buttons.Add(new Button(buttonJson, buttonLocation));
-                buttonLocation = new Point(buttonLocation.X, buttonLocation.Y + ButtonsSpace + MenuManager.ButtonSize.Y);
+                var size = buttonJson.Size != null ? buttonJson.Size.ToPoint() : MenuManager.ButtonSize;
+
+                if (buttonJson.Location == null)
+                {
+                    buttons.Add(new Button(buttonJson, buttonLocation, size));
+                    buttonLocation = new Point(buttonLocation.X, buttonLocation.Y + ButtonsSpace + MenuManager.ButtonSize.Y);
+                }
+                else
+                {
+                    buttons.Add(new Button(buttonJson, buttonJson.Location.ToPoint(), size));
+                }
+
             }
 
             return buttons;

@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.Controls;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Menu;
@@ -6,7 +7,6 @@ using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,7 +49,7 @@ namespace ArmadilloAssault.Web.Client
 
         public static void ConnectionEstablished()
         {
-            MenuManager.EnterClientLobby();
+            MenuManager.EnterLobby();
         }
 
         public static async Task BroadcastUpdate()
@@ -82,17 +82,32 @@ namespace ArmadilloAssault.Web.Client
         {
             if (serverMessage.Type == ServerMessageType.BattleInitialization)
             {
-                BattleManager.Initialize(serverMessage.PlayerCount, serverMessage.SceneName, serverMessage.AvatarIndex);
+                BattleManager.Initialize(serverMessage.AvatarTypes, serverMessage.SceneName, serverMessage.AvatarIndex);
                 Engine.QueueAction(() => GameStateManager.State = State.Battle);
             }
             else if (serverMessage.Type == ServerMessageType.BattleUpdate)
             {
                 BattleManager.BattleFrame = serverMessage.BattleFrame;
             }
+            else if (serverMessage.Type == ServerMessageType.LobbyUpdate)
+            {
+                MenuManager.LobbyFrame = serverMessage.LobbyFrame;
+            }
             else if (serverMessage.Type == ServerMessageType.BattleTermination)
             {
                 GameStateManager.State = State.Menu;
             }
+        }
+
+        public static async Task BroadcastAvatarSelection(AvatarType avatarType)
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.AvatarSelection,
+                AvatarType = avatarType
+            };
+
+            await Client.MessageServer(message);
         }
 
         public static bool IsActive => Client != null && Client.Connected;

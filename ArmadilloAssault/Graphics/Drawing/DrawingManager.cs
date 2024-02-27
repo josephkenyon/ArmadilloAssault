@@ -83,6 +83,61 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
+        private static Color GetPlayerColor(int index)
+        {
+            if (index == 2)
+            {
+                return new Color(255, 80, 80);
+            }
+            else if (index == 3)
+            {
+                return new Color(80, 180, 80);
+            }
+            else if (index == 4)
+            {
+                return new Color(180, 120, 80);
+            }
+
+            return new Color(80, 80, 255);
+        }
+
+        public static void DrawLobbyPlayerBackgrounds(IEnumerable<Rectangle> lobbyPlayerRectangles)
+        {
+            _spriteBatch.Begin();
+
+            var index = 0;
+            foreach (var rectangle in lobbyPlayerRectangles)
+            {
+                index++;
+
+                _spriteBatch.Draw(
+                     texture: TextureManager.GetTexture(TextureName.white_pixel),
+                     destinationRectangle: new Rectangle(rectangle.X - 2, rectangle.Y - 2, rectangle.Width + 4, rectangle.Height + 4),
+                     sourceRectangle: new Rectangle(0, 0, 1, 1),
+                     color: Color.White
+                 );
+
+                _spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.white_pixel),
+                    destinationRectangle: rectangle,
+                    sourceRectangle: new Rectangle(0, 0, 1, 1),
+                    color: GetPlayerColor(index)
+                );
+
+                var text = $"P{index}";
+                var font = DrawingHelper.GetFont;
+                var size = font.MeasureString(text);
+
+                var textPosition = new Point(rectangle.Center.X - (int)(size.X / 2), rectangle.Bottom - 32 - (int)(size.Y / 2));
+
+                _spriteBatch.DrawString(
+                    font, text, textPosition.ToVector2(), Color.White
+                );
+            }
+
+            _spriteBatch.End();
+        }
+
         public static void DrawMenuButtons(IEnumerable<Button> buttons)
         {
             _spriteBatch.Begin();
@@ -105,14 +160,36 @@ namespace ArmadilloAssault.Graphics.Drawing
                     color: (button.Selected ? MenuManager.ForegroundColor : MenuManager.BackgroundColor)
                 );
 
-                var font = DrawingHelper.GetFont;
-                var size = font.MeasureString(button.Text);
+                if (button.TextureName != TextureName.nothing)
+                {
+                    _spriteBatch.Draw(
+                        texture: TextureManager.GetTexture(button.TextureName),
+                        destinationRectangle: destinationRectangle,
+                        color: Color.White
+                    );
+                }
+                
+                if (button.Text != null)
+                {
+                    var font = DrawingHelper.GetFont;
+                    var size = font.MeasureString(button.Text);
 
-                var textPosition = destinationRectangle.Center - (size / 2).ToPoint();
+                    var textPosition = destinationRectangle.Center - (size / 2).ToPoint();
 
-                _spriteBatch.DrawString(
-                    font, button.Text, textPosition.ToVector2(), Color.White
-                );
+                    _spriteBatch.DrawString(
+                        font, button.Text, textPosition.ToVector2(), Color.White
+                    );
+                }
+
+                if (!button.Enabled)
+                {
+                    _spriteBatch.Draw(
+                        texture: TextureManager.GetTexture(TextureName.white_pixel),
+                        destinationRectangle: destinationRectangle,
+                        sourceRectangle: new Rectangle(0, 0, 1, 1),
+                        color: Color.Black * 0.5f
+                    );
+                }
             }
 
             _spriteBatch.End();

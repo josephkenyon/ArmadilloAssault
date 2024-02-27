@@ -1,6 +1,6 @@
-﻿using ArmadilloAssault.Configuration.Avatars;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Weapons;
-using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;

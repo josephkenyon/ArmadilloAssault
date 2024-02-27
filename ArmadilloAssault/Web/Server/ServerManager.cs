@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ArmadilloAssault.Web.Server
 {
@@ -53,7 +54,7 @@ namespace ArmadilloAssault.Web.Server
 
         public static void StartGame(string data)
         {
-            BattleManager.Initialize(PlayerCount + 1, data);
+            BattleManager.Initialize(MenuManager.LobbyState.Avatars.Values.Select(avatar => avatar.Type).ToList(), data);
             GameStateManager.State = State.Battle;
 
             Server.MessageIntialization(data);
@@ -74,7 +75,17 @@ namespace ArmadilloAssault.Web.Server
 
         public static void SendBattleFrame(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
         {
-            Server.SendBattleUpdates(battleFrame, hudFrames);
+            Server.SendBattleFrame(battleFrame, hudFrames);
+        }
+
+        public static void SendLobbyFrame(LobbyFrame lobbyFrame)
+        {
+            Server.SendLobbyFrame(lobbyFrame);
+        }
+
+        public static void PlayerDisconnected(int index)
+        {
+            MenuManager.PlayerDisconnected(index);
         }
 
         public static void ClientDisconnected(string id)

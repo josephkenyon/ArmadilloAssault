@@ -33,30 +33,11 @@
       {
         "Text": "Host Game",
         "Actions": [ "navigate_to", "start_server" ],
-        "Data": "ServerLobby"
+        "Data": "Lobby"
       },
       {
         "Text": "Back",
         "Actions": [ "back" ]
-      }
-    ]
-  },
-  {
-    "Name": "ServerLobby",
-    "Buttons": [
-      {
-        "Text": "Gusty Gorge",
-        "Actions": [ "start_game" ],
-        "Data": "molten_mountain"
-      },
-      {
-        "Text": "Sunken Sands",
-        "Actions": [ "start_game" ],
-        "Data": "sunken_sands"
-      },
-      {
-        "Text": "Cancel",
-        "Actions": [ "stop_server", "back" ]
       }
     ]
   },
@@ -80,11 +61,78 @@
     ]
   },
   {
-    "Name": "ClientLobby",
+    "Name": "Lobby",
     "Buttons": [
       {
+        "TextureName": "arthur_select",
+        "Text": "Arthur",
+        "Size": {
+          "X": 256,
+          "Y": 256
+        },
+        "Location": {
+          "X": 352,
+          "Y": 128
+        },
+        "Actions": [ "select_avatar" ],
+        "Data": "Arthur"
+      },
+      {
+        "TextureName": "axel_select",
+        "Text": "Axel",
+        "Size": {
+          "X": 256,
+          "Y": 256
+        },
+        "Location": {
+          "X": 672,
+          "Y": 128
+        },
+        "Actions": [ "select_avatar" ],
+        "Data": "Axel"
+      },
+      {
+        "TextureName": "titan_select",
+        "Text": "Titan",
+        "Size": {
+          "X": 256,
+          "Y": 256
+        },
+        "Location": {
+          "X": 992,
+          "Y": 128
+        },
+        "Actions": [ "select_avatar" ],
+        "Data": "Titan"
+      },
+      {
         "Text": "Leave",
-        "Actions": [ "stop_client" ]
+        "Condition": "not_hosting",
+        "Actions": [ "stop_client" ],
+        "Location": {
+          "X": 768,
+          "Y": 856
+        }
+      },
+      {
+        "Text": "Cancel",
+        "Condition": "hosting",
+        "Actions": [ "stop_server", "back" ],
+        "Location": {
+          "X": 544,
+          "Y": 856
+        }
+      },
+      {
+        "Text": "Play",
+        "Condition": "hosting",
+        "EnabledCondition": "selection_complete",
+        "Actions": [ "start_game" ],
+        "Data": "sunken_sands",
+        "Location": {
+          "X": 992,
+          "Y": 856
+        }
       }
     ]
   }

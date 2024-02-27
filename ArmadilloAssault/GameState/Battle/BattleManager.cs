@@ -2,7 +2,6 @@
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Controls;
-using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Bullets;
 using ArmadilloAssault.GameState.Battle.Crates;
 using ArmadilloAssault.GameState.Battle.Effects;
@@ -11,9 +10,9 @@ using ArmadilloAssault.GameState.Battle.Environment.Effects;
 using ArmadilloAssault.GameState.Battle.Environment.Flows;
 using ArmadilloAssault.GameState.Battle.Input;
 using ArmadilloAssault.GameState.Battle.Physics;
-using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Graphics.Drawing.Avatars;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
@@ -30,7 +29,7 @@ namespace ArmadilloAssault.GameState.Battle
         public static BattleFrame BattleFrame { get; set; }
         public static int AvatarIndex { get; private set; }
 
-        public static void Initialize(int playerCount, string data, int avatarIndex = 0)
+        public static void Initialize(List<AvatarType> avatars, string data, int avatarIndex = 0)
         {
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
             Scene = new Scene(sceneConfiguration);
@@ -38,21 +37,21 @@ namespace ArmadilloAssault.GameState.Battle
 
             AvatarIndex = avatarIndex;
 
-            Avatars.Add(PlayerIndex.One, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
-            Avatars.Values.First().SetPosition(new Vector2(150, 0));
-
-            if (playerCount >= 2)
+            for (int i = 0; i < avatars.Count; i++)
             {
-                Avatars.Add(PlayerIndex.Two, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Axel)));
-                Avatars.Values.Last().SetPosition(new Vector2(1650, 0));
-                Avatars.Values.Last().SetDirection(Direction.Left);
+                Avatars.Add((PlayerIndex)i, new Avatar(ConfigurationManager.GetAvatarConfiguration(avatars[i])));
             }
 
-            if (playerCount >= 3)
+            Avatars.Values.First().SetPosition(new Vector2(150, 0));
+
+            if (Avatars.Values.Count >= 2)
             {
-                Avatars.Add(PlayerIndex.Three, new Avatar(ConfigurationManager.GetAvatarConfiguration(AvatarType.Titan)));
-                Avatars.Values.Last().SetPosition(new Vector2(420, 750));
-                Avatars.Values.Last().SetDirection(Direction.Right);
+                Avatars.Values.ElementAt(1).SetPosition(new Vector2(1650, 0));
+            }
+
+            if (Avatars.Values.Count >= 3)
+            {
+                Avatars.Values.ElementAt(1).SetPosition(new Vector2(420, 750));
             }
 
             BulletManager.Initialize(Scene.CollisionBoxes);
@@ -61,7 +60,6 @@ namespace ArmadilloAssault.GameState.Battle
             EnvironmentalEffectsManager.Initialize(sceneConfiguration.EnvironmentalEffects);
             CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
             FlowManager.Initialize(sceneConfiguration.Flow);
-            AvatarDrawingHelper.Initialize();
 
             BattleFrame = CreateBattleFrame();
         }
@@ -185,28 +183,13 @@ namespace ArmadilloAssault.GameState.Battle
 
         private static BattleFrame CreateBattleFrame()
         {
-            var battleFrame = new BattleFrame();
-
-            foreach (var avatar in Avatars.Values)
+            var battleFrame = new BattleFrame
             {
-                battleFrame.AvatarFrame.Animations.Add(avatar.Animation);
-                battleFrame.AvatarFrame.ArmAngles.Add((float)avatar.ArmAngle);
-                battleFrame.AvatarFrame.AnimationFrames.Add(avatar.AnimationFrame);
-                battleFrame.AvatarFrame.BreathingYOffsets.Add(avatar.GetBreathingYOffset());
-                battleFrame.AvatarFrame.Deads.Add(avatar.IsDead);
-                battleFrame.AvatarFrame.Directions.Add(avatar.Direction);
-                battleFrame.AvatarFrame.Positions.Add(avatar.Position);
-                battleFrame.AvatarFrame.Recoils.Add(avatar.GetRecoil);
-                battleFrame.AvatarFrame.Rotations.Add(avatar.Rotation);
-                battleFrame.AvatarFrame.Spinnings.Add(avatar.IsSpinning);
-                battleFrame.AvatarFrame.TextureNames.Add(avatar.TextureName);
-                battleFrame.AvatarFrame.Types.Add(avatar.Type);
-                battleFrame.AvatarFrame.WeaponTextures.Add(avatar.CurrentWeaponConfiguration.TextureName);
-            }
-
-            battleFrame.BulletFrame = BulletManager.GetBulletFrame();
-            battleFrame.CrateFrame = CrateManager.GetCrateFrame();
-            battleFrame.EffectFrame = EffectManager.GetEffectFrame();
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars.Values),
+                BulletFrame = BulletManager.GetBulletFrame(),
+                CrateFrame = CrateManager.GetCrateFrame(),
+                EffectFrame = EffectManager.GetEffectFrame()
+            };
 
             return battleFrame;
         }

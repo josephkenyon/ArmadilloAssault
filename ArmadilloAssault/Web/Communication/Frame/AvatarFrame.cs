@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.Configuration.Avatars;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
@@ -21,5 +22,28 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<TextureName> TextureNames { get; set; } = [];
         public List<AvatarType> Types { get; set; } = [];
         public List<TextureName> WeaponTextures { get; set; } = [];
+
+        public static AvatarFrame CreateFrom(IEnumerable<Avatar> avatars)
+        {
+            var avatarFrame = new AvatarFrame();
+            foreach (var avatar in avatars)
+            {
+                avatarFrame.Animations.Add(avatar.Animation);
+                avatarFrame.ArmAngles.Add((float)avatar.ArmAngle);
+                avatarFrame.AnimationFrames.Add(avatar.AnimationFrame);
+                avatarFrame.BreathingYOffsets.Add(avatar.GetBreathingYOffset());
+                avatarFrame.Deads.Add(avatar.IsDead);
+                avatarFrame.Directions.Add(avatar.Direction);
+                avatarFrame.Positions.Add(avatar.Position);
+                avatarFrame.Recoils.Add(avatar.GetRecoil);
+                avatarFrame.Rotations.Add(avatar.Rotation);
+                avatarFrame.Spinnings.Add(avatar.IsSpinning);
+                avatarFrame.TextureNames.Add(avatar.TextureName);
+                avatarFrame.Types.Add(avatar.Type);
+                avatarFrame.WeaponTextures.Add(avatar.CurrentWeaponConfiguration.TextureName);
+            }
+
+            return avatarFrame;
+        }
     }
 }

@@ -99,7 +99,7 @@ namespace ArmadilloAssault.Web.Client
             }
         }
 
-        private void MessageReceived(string messageString)
+        private static void MessageReceived(string messageString)
         {
             try
             {
@@ -111,16 +111,6 @@ namespace ArmadilloAssault.Web.Client
             {
                 Trace.WriteLine(ex.Message);
             }
-        }
-
-        public async Task MessageEnd()
-        {
-            var message = new ClientMessage
-            {
-                Type = ClientMessageType.LeaveGame
-            };
-
-            await MessageServer(message);
         }
     }
 }

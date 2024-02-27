@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace ArmadilloAssault.Configuration.Generics
 {
@@ -9,5 +8,8 @@ namespace ArmadilloAssault.Configuration.Generics
         public int Y { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+
+        public Rectangle ToRectangle => new(X, Y, Width, Height);
+        public static RectangleJson CreateFrom(Rectangle rectangle) => new() { X = rectangle.X, Y = rectangle.Y, Width = rectangle.Width, Height = rectangle.Height };
     }
 }

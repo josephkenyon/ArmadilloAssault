@@ -12,10 +12,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ArmadilloAssault.GameState.Battle.Avatars
+namespace ArmadilloAssault.Assets
 {
     public class Avatar(AvatarJson avatarJson) : PhysicsObject
     {
+        // Constants
+        public static readonly int spriteWidth = 128;
+        public static readonly int spriteHeight = 128;
+
+        public static readonly float RunningAcceleration = 0.65f;
+        public static readonly float JumpingAcceleration = 0.5f;
+        public static readonly float MaxRunningVelocity = 6.5f;
+
+        public static readonly int BreathingCycleFrameLength = 80;
+
         // Collision
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);
         private readonly Rectangle SpinningCollisionBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningCollisionBox);
@@ -80,7 +90,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
         public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire() && !Reloading && !SwitchingWeapons;
         public int BufferedShotFrameCounter { get; set; } = 0;
 
-        public float GetRecoil => (SelectedWeapon.AmmoInClip == 0 && SelectedWeapon.Ammo == 0) ? (float)(Math.PI / 4) : Recoil;
+        public float GetRecoil => SelectedWeapon.AmmoInClip == 0 && SelectedWeapon.Ammo == 0 ? (float)(Math.PI / 4) : Recoil;
         private float Recoil { get; set; }
         public bool HasRecoil { get; set; } = false;
         public int FramesUntilRecoil { get; set; } = -1;
@@ -215,7 +225,8 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
         {
             if (FramesUntilRecoil >= 0)
             {
-                if (FramesUntilRecoil == 0) {
+                if (FramesUntilRecoil == 0)
+                {
                     Recoil = (float)(CurrentWeaponConfiguration.RecoilStrength * 45 * Math.PI / 180);
                 }
 
@@ -309,7 +320,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
             Reloading = false;
             SoundManager.CancelReloadSoundEffects();
             ReloadingFrames = 0;
-            SwitchingWeapons = true;    
+            SwitchingWeapons = true;
 
             var newWeapon = Weapons[WeaponSelectionIndex];
             if (newWeapon.AmmoInClip == 0)
@@ -382,7 +393,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
         private void UpdateBreathingFrameCounter()
         {
-            if (BreathingFrameCounter == AvatarConstants.BreathingCycleFrameLength * 2)
+            if (BreathingFrameCounter == BreathingCycleFrameLength * 2)
             {
                 BreathingIn = false;
             }
@@ -403,7 +414,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
         public Vector2 GetCenter()
         {
-            return new Vector2(Position.X + (Size.X / 2), Position.Y + (Size.Y / 2));
+            return new Vector2(Position.X + Size.X / 2, Position.Y + Size.Y / 2);
         }
 
         public void HitByBullet(Bullet bullet, bool headShot)
@@ -411,7 +422,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
             var wasAlive = Health > 1;
             var damage = ConfigurationManager.GetWeaponConfiguration(bullet.WeaponType).BulletDamage;
             Health -= headShot ? (int)(damage * 1.5f) : damage;
-            
+
             if (IsDead)
             {
                 if (wasAlive)
@@ -429,7 +440,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
                 SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Hurt);
             }
         }
-        
+
         private Vector2 GetWeaponTip()
         {
             var weaponOffset = CurrentWeaponConfiguration.SpriteOffset;
@@ -470,8 +481,8 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
         public float GetBreathingYOffset()
         {
             var A = 5f;
-            var B = AvatarConstants.BreathingCycleFrameLength * 2;
-            var X = Math.Clamp(BreathingFrameCounter, 0, AvatarConstants.BreathingCycleFrameLength);
+            var B = BreathingCycleFrameLength * 2;
+            var X = Math.Clamp(BreathingFrameCounter, 0, BreathingCycleFrameLength);
             return (float)(A * Math.Sin(X * Math.PI / B)) - 3;
         }
 
@@ -551,10 +562,10 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
             {
                 if (IsSpinning)
                 {
-                    return [CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(SpinningHurtBox, AvatarConstants.spriteWidth), Position + SpriteOffsetVector)];
+                    return [CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(SpinningHurtBox, spriteWidth), Position + SpriteOffsetVector)];
                 }
 
-                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, AvatarConstants.spriteWidth), Position + SpriteOffsetVector));
+                return HurtBoxes.Select(box => CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, spriteWidth), Position + SpriteOffsetVector));
             }
         }
 
@@ -568,7 +579,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
             }
             else
             {
-                return CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, AvatarConstants.spriteWidth), Position + SpriteOffsetVector);
+                return CollisionHelper.OffsetRectangle(CollisionHelper.FlipRectangle(box, spriteWidth), Position + SpriteOffsetVector);
             }
         }
 

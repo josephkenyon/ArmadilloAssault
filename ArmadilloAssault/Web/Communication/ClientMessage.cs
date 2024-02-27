@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.Controls;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Controls;
 using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Communication
@@ -10,5 +11,6 @@ namespace ArmadilloAssault.Web.Communication
         public float AimX { get; set; }
         public float AimY { get; set; }
         public List<Control> AreControlsDown { get; set; }
+        public AvatarType AvatarType { get; set; }
     }
 }

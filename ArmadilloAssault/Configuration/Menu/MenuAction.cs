@@ -11,6 +11,7 @@
         stop_server,
         start_game,
         open_editor,
+        select_avatar,
         exit
     }
 }

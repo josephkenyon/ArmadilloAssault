@@ -14,7 +14,7 @@
     public enum ClientMessageType
     {
         JoinGame,
-        LeaveGame,
-        InputUpdate
+        InputUpdate,
+        AvatarSelection,
     }
 }

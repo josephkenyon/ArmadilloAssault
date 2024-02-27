@@ -2,7 +2,6 @@
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Generics;
-using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
@@ -10,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace ArmadilloAssault.GameState.Battle.Avatars
+namespace ArmadilloAssault.Graphics.Drawing.Avatars
 {
     public static class AvatarDrawingHelper
     {
@@ -132,8 +131,8 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
                 var size = GetSize(avatar);
 
                 return new(
-                    (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? (size.X / 2) : 0)),
-                    (int)avatar.Position.Y + (avatar.Spinning ? (size.Y / 2) : 0),
+                    (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? size.X / 2 : 0)),
+                    (int)avatar.Position.Y + (avatar.Spinning ? size.Y / 2 : 0),
                     size.X,
                     size.Y
                 );
@@ -207,7 +206,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
             if (avatar.Direction == Direction.Left)
             {
-                armOriginX += ((avatarJson.Size.X / 2) - armOriginX) * 2;
+                armOriginX += (avatarJson.Size.X / 2 - armOriginX) * 2;
             }
 
             return new Vector2(armOriginX, armOriginY);
@@ -221,7 +220,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
             if (avatar.Direction == Direction.Left)
             {
-                headOriginX += ((avatarJson.Size.X / 2) - headOriginX) * 2;
+                headOriginX += (avatarJson.Size.X / 2 - headOriginX) * 2;
             }
 
             return new Vector2(headOriginX, avatarJson.HeadOrigin.Y);
@@ -277,7 +276,7 @@ namespace ArmadilloAssault.GameState.Battle.Avatars
 
                 if (applyRecoil)
                 {
-                    rotation += (avatar.Direction == Direction.Left) ? avatar.Recoil : -avatar.Recoil;
+                    rotation += avatar.Direction == Direction.Left ? avatar.Recoil : -avatar.Recoil;
                 }
 
                 return rotation;

@@ -1,5 +1,5 @@
-﻿using ArmadilloAssault.Configuration.Avatars;
-using ArmadilloAssault.GameState.Battle.Avatars;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
@@ -19,23 +19,23 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             ApplyVerticalMotion(physicsObject, sceneCollisionBoxes);
 
             var collisionBox = physicsObject.GetCollisionBox();
-            if (collisionBox.Left > 1920)
+            if (collisionBox.Left >= 1920 - 1)
             {
-                physicsObject.SetX(physicsObject.Position.X - 1920);
+                physicsObject.SetX(physicsObject.Position.X - 1920 - collisionBox.Width + 1);
             }
-            else if (collisionBox.Right < 0)
+            else if (collisionBox.Right <= 1)
             {
-                physicsObject.SetX(physicsObject.Position.X + 1920);
+                physicsObject.SetX(physicsObject.Position.X + 1920 + collisionBox.Width - 1);
             }
 
-            if (collisionBox.Bottom < 0)
-            {
-                physicsObject.SetY(physicsObject.Position.Y + 1080);
-            }
-            else if (collisionBox.Top > 1080)
-            {
-                physicsObject.SetY(physicsObject.Position.Y - 1080);
-            }
+            //if (collisionBox.Bottom < 0)
+            //{
+            //    physicsObject.SetY(physicsObject.Position.Y + 1080);
+            //}
+            //else if (collisionBox.Top > 1080)
+            //{
+            //    physicsObject.SetY(physicsObject.Position.Y - 1080);
+            //}
         }
 
         public static void Update(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
@@ -272,7 +272,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             {
                 physicsObject.Acceleration = new Vector2(0, physicsObject.Acceleration.Y);
 
-                var decelerationConstant = physicsObject.Grounded ? AvatarConstants.RunningAcceleration : 4f;
+                var decelerationConstant = physicsObject.Grounded ? Avatar.RunningAcceleration : 4f;
 
                 if (physicsObject.LowDrag && !physicsObject.Grounded)
                 {

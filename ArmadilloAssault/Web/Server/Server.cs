@@ -1,6 +1,6 @@
-﻿using ArmadilloAssault.GameState;
-using ArmadilloAssault.GameState.Battle;
+﻿using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
+using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
 using Newtonsoft.Json;
@@ -20,9 +20,16 @@ namespace ArmadilloAssault.Web.Server
         public List<Player> Players { get; set; }
         private WebSocketServer WebSocketServer { get; set; }
 
+        private IEnumerable<Player> ClientPlayers => Players.Where(player => player.ConnectionId != null);
+
         public void Start()
         {
-            Players = [];
+            Players = [
+                new Player
+                {
+                    PlayerIndex = 0
+                }
+            ];
 
             WebSocketServer = new WebSocketServer(25565);
             WebSocketServer.AddWebSocketService<Game>("/game");
@@ -32,23 +39,24 @@ namespace ArmadilloAssault.Web.Server
         public void MessageIntialization(string data)
         {
             var index = 1;
-            Players.ForEach(player =>
+            foreach (var player in ClientPlayers)
             {
-                var message = new ServerMessage {
+                var message = new ServerMessage
+                {
                     Type = ServerMessageType.BattleInitialization,
-                    PlayerCount = Players.Count + 1,
+                    AvatarTypes = MenuManager.LobbyState.Avatars.Values.Select(avatar => avatar.Type).ToList(),
                     AvatarIndex = index++,
                     SceneName = data,
                     BattleFrame = BattleManager.BattleFrame
                 };
 
                 Broadcast(message, player.ConnectionId);
-            });
+            }
         }
 
         public void MessageGameEnd()
         {
-            Players.ForEach(player =>
+            foreach (var player in ClientPlayers)
             {
                 var message = new ServerMessage
                 {
@@ -56,13 +64,13 @@ namespace ArmadilloAssault.Web.Server
                 };
 
                 Broadcast(message, player.ConnectionId);
-            });
+            }
         }
 
-        public void SendBattleUpdates(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
+        public void SendBattleFrame(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
         {
             var index = 1;
-            Players.ForEach(player =>
+            foreach (var player in ClientPlayers)
             {
                 battleFrame.HudFrame = hudFrames.ElementAt(index);
 
@@ -75,7 +83,24 @@ namespace ArmadilloAssault.Web.Server
                 Broadcast(message, player.ConnectionId);
 
                 index++;
-            });
+            }
+        }
+
+        public void SendLobbyFrame(LobbyFrame lobbyFrame)
+        {
+            var index = 1;
+            foreach (var player in ClientPlayers)
+            {
+                var message = new ServerMessage
+                {
+                    Type = ServerMessageType.LobbyUpdate,
+                    LobbyFrame = lobbyFrame
+                };
+
+                Broadcast(message, player.ConnectionId);
+
+                index++;
+            }
         }
 
         public void Broadcast(ServerMessage serverMessage, string id)
@@ -96,14 +121,11 @@ namespace ArmadilloAssault.Web.Server
                 }
                 else if (clientMessage.Type == ClientMessageType.InputUpdate)
                 {
-                    //Trace.WriteLine($"Received input at frame {BattleManager.BattleFrameCounter}");
                     UpdateInput(clientMessage, id);
                 }
-                else if (clientMessage.Type == ClientMessageType.LeaveGame)
+                else if (clientMessage.Type == ClientMessageType.AvatarSelection)
                 {
-                    Players.RemoveAll(player => player.ConnectionId == id);
-
-                    WebSocketServer.WebSocketServices["/game"].Sessions.CloseSession(id);
+                    UpdateAvatarSelection(clientMessage, id);
                 }
             }
             catch (Exception ex)
@@ -132,6 +154,15 @@ namespace ArmadilloAssault.Web.Server
             }
         }
 
+        private void UpdateAvatarSelection(ClientMessage message, string id)
+        {
+            var index = Players.FindIndex(player => player.ConnectionId == id);
+            if (index != -1)
+            {
+                MenuManager.UpdateAvatarSelection(index, message.AvatarType);
+            }
+        }
+
         private static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -151,19 +182,15 @@ namespace ArmadilloAssault.Web.Server
             WebSocketServer = null;
         }
 
-        public void OnCompleted()
-        {
-
-        }
-
-        public void OnError(Exception error)
-        {
-
-        }
-
         public void ClientDisconnected(string id)
         {
-            Players.RemoveAll(player => player.ConnectionId == id);
+            var player = Players.FirstOrDefault(player => player.ConnectionId == id);
+
+            if (player != null)
+            {
+                Players.Remove(player);
+                ServerManager.PlayerDisconnected(player.PlayerIndex);
+            }
         }
 
         public class Game : WebSocketBehavior

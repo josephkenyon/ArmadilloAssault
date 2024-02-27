@@ -1,6 +1,6 @@
-﻿using ArmadilloAssault.Configuration.Effects;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Weapons;
-using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Effects;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;
