@@ -2,9 +2,11 @@
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +14,11 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
 {
     public class LobbyState
     {
+        private static IEnumerable<string> SelectableLevelKeys => ConfigurationManager.SceneConfigurations.Keys.Where(key => ConfigurationManager.SceneConfigurations[key].PreviewTexture != TextureName.nothing);
+
         public Dictionary<PlayerIndex, Avatar> Avatars { get; private set; } = [];
+        public string SelectedLevel { get; private set; } = SelectableLevelKeys.First();
+        public bool LevelSelect { get; private set; } = false;
 
         public void AvatarSelected(PlayerIndex index, AvatarType avatarType)
         {
@@ -80,6 +86,8 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars.Values),
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(RectangleJson.CreateFrom).ToList(),
                 PlayerBackgroundIds = ServerManager.PlayerIndices,
+                LevelSelect = LevelSelect,
+                SelectedLevel = SelectedLevel
             };
 
             return frame;
@@ -96,6 +104,37 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
         public void AvatarDisconnected(PlayerIndex index)
         {
             Avatars.Remove(index);
+        }
+
+        public void SetLevelSelect(bool levelSelect)
+        {
+            LevelSelect = levelSelect;
+        }
+
+        public void NextLevel()
+        {
+            var keys = SelectableLevelKeys.ToList();
+            var index = keys.IndexOf(SelectedLevel) + 1;
+
+            if (index == keys.Count)
+            {
+                index = 0;
+            }
+
+            SelectedLevel = keys[index];
+        }
+
+        public void PreviousLevel()
+        {
+            var keys = SelectableLevelKeys.ToList();
+            var index = keys.IndexOf(SelectedLevel) - 1;
+
+            if (index == -1)
+            {
+                index = keys.Count - 1;
+            }
+
+            SelectedLevel = keys[index];
         }
     }
 }

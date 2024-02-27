@@ -60,7 +60,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             if (Avatars.Values.Count >= 3)
             {
-                Avatars.Values.ElementAt(1).SetPosition(new Vector2(420, 750));
+                Avatars.Values.ElementAt(2).SetPosition(new Vector2(420, 750));
             }
 
             BulletManager.Initialize(Scene.CollisionBoxes);
@@ -123,7 +123,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             ServerManager.SendBattleFrame(BattleFrame, hudFrames);
 
-            BattleFrame.HudFrame = hudFrames.First();
+            BattleFrame.HudFrame = hudFrames.FirstOrDefault();
         }
 
         public static void UpdateClient()

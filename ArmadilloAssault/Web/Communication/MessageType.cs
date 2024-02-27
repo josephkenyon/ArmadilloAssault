@@ -16,5 +16,7 @@
         JoinGame,
         InputUpdate,
         AvatarSelection,
+        NextLevel,
+        PreviousLevel,
     }
 }

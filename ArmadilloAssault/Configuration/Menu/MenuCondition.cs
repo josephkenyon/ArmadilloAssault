@@ -5,6 +5,8 @@
         nothing,
         hosting,
         selection_complete,
-        not_hosting
+        avatar_select,
+        level_select,
+        being_served
     }
 }

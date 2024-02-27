@@ -13,7 +13,11 @@ namespace ArmadilloAssault.GameState.Menu.Assets
         public string Data { get; set; } = json.Data;
 
         public bool Selected { get; set; }
+        public List<MenuCondition> Conditions { get; set; } = json.Conditions;
         public MenuCondition EnabledCondition { get; set; } = json.EnabledCondition;
+        public MenuKey TextKey { get; set; } = json.TextKey;
+        public MenuKey TextureKey { get; set; } = json.TextureKey;
+        public bool Visible { get; set; }
         public bool Enabled { get; set; }
 
         public Rectangle GetRectangle() => new(position, size);

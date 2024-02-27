@@ -3,6 +3,7 @@ using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Menu;
 using ArmadilloAssault.Configuration.Scenes;
+using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState.Battle.Environment.Clouds;
 using ArmadilloAssault.GameState.Menu.Lobby;
@@ -55,8 +56,20 @@ namespace ArmadilloAssault.GameState.Menu
             foreach (var button in CurrentMenu.Buttons)
             {
                 var rectangle = button.GetRectangle();
+                button.Visible = ConditionsFulfilled(button.Conditions);
                 button.Enabled = ConditionFulfilled(button.EnabledCondition);
-                button.Selected = button.Enabled && rectangle.Contains(ControlsManager.GetAimPosition(0));
+
+                if (button.Visible && button.TextKey != MenuKey.nothing)
+                {
+                    button.Text = GetValue(button.TextKey);
+                }
+
+                if (button.Visible && button.TextureKey != MenuKey.nothing)
+                {
+                    button.TextureName = Enum.Parse<TextureName>(GetValue(button.TextureKey));
+                }
+
+                button.Selected = button.Visible && button.Enabled && rectangle.Contains(ControlsManager.GetAimPosition(0));
             }
 
             if (ControlsManager.IsControlDownStart(0, Control.Confirm))
@@ -72,8 +85,8 @@ namespace ArmadilloAssault.GameState.Menu
             else if (ControlsManager.IsControlDownStart(0, Control.Start))
             {
                 var cancelButton = CurrentMenu.Buttons.SingleOrDefault(button =>
-                    button.Actions.Contains(MenuAction.back)
-                    || button.Actions.Contains(MenuAction.stop_client)
+                    (button.Actions.Contains(MenuAction.back)
+                    || button.Actions.Contains(MenuAction.stop_client)) && button.Visible && button.Enabled
                 );
 
                 SoundManager.PlayMenuSound(MenuSound.cancel);
@@ -81,6 +94,9 @@ namespace ArmadilloAssault.GameState.Menu
                 if (cancelButton != null)
                 {
                     cancelButton.Actions.ForEach(async action => await InvokeAction(action, cancelButton.Data));
+                }
+                else if (CurrentMenu.Buttons.Any(button => button.Visible && button.Enabled && button.Actions.Contains(MenuAction.avatar_select))) {
+                    InvokeAction(MenuAction.avatar_select);
                 }
                 else
                 {
@@ -99,7 +115,7 @@ namespace ArmadilloAssault.GameState.Menu
             }
         }
 
-        private static Task InvokeAction(MenuAction action, string data)
+        private static Task InvokeAction(MenuAction action, string data = "")
         {
             switch (action)
             {
@@ -120,13 +136,25 @@ namespace ArmadilloAssault.GameState.Menu
                     ServerManager.TerminateServer();
                     break;
                 case MenuAction.start_game:
-                    ServerManager.StartGame(data);
+                    ServerManager.StartGame(LobbyState.SelectedLevel);
                     break;
                 case MenuAction.open_editor:
                     GameStateManager.State = State.Editor;
                     break;
                 case MenuAction.select_avatar:
                     _ = SelectAvatar(data);
+                    break;
+                case MenuAction.avatar_select:
+                    LobbyState?.SetLevelSelect(false);
+                    break;
+                case MenuAction.level_select:
+                    LobbyState?.SetLevelSelect(true);
+                    break;
+                case MenuAction.next_level:
+                    _ = NextLevel();
+                    break;
+                case MenuAction.prev_level:
+                    _ = PreviousLevel();
                     break;
                 case MenuAction.back:
                     Back();
@@ -176,9 +204,9 @@ namespace ArmadilloAssault.GameState.Menu
                 DrawingManager.DrawCollection([CurrentMenu.LoadingSpinner]);
             }
 
-            DrawingManager.DrawMenuButtons(CurrentMenu.Buttons);
+            DrawingManager.DrawMenuButtons(CurrentMenu.Buttons.Where(button => button.Visible));
 
-            if (MenuStack.Peek() == "Lobby" && LobbyFrame != null)
+            if (MenuStack.Peek() == "Lobby" && LobbyFrame != null && !LobbyFrame.LevelSelect)
             {
                 DrawingManager.DrawLobbyPlayerBackgrounds(LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle), LobbyFrame.PlayerBackgroundIds);
                 DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
@@ -188,9 +216,9 @@ namespace ArmadilloAssault.GameState.Menu
         private static void UpdateCurrentMenu() {
             CurrentMenu = new Assets.Menu(ConfigurationManager.GetMenuConfiguration(MenuStack.Peek()));
 
-            if (CurrentMenu.Name == "Lobby" && !ClientManager.IsActive)
+            if (CurrentMenu.Name == "Lobby" && ServerManager.IsServing)
             {
-                LobbyState = new LobbyState();
+                LobbyState ??= new LobbyState();
             }
             else
             {
@@ -210,15 +238,56 @@ namespace ArmadilloAssault.GameState.Menu
             UpdateCurrentMenu();
         }
 
+        public static async Task NextLevel()
+        {
+            if (ServerManager.IsServing)
+            {
+                LobbyState?.NextLevel();
+            }
+            else if (ClientManager.IsActive)
+            {
+                await ClientManager.BroadcastNextLevel();
+            }
+        }
+
+        public static async Task PreviousLevel()
+        {
+            if (ServerManager.IsServing)
+            {
+                LobbyState?.PreviousLevel();
+            }
+            else if (ClientManager.IsActive)
+            {
+                await ClientManager.BroadcastPreviousLevel();
+            }
+        }
+
+        public static bool ConditionsFulfilled(List<MenuCondition> menuConditions)
+        {
+            return menuConditions.All(ConditionFulfilled);
+        }
+
         public static bool ConditionFulfilled(MenuCondition menuCondition)
         {
             return menuCondition switch
             {
-                MenuCondition.hosting => !ClientManager.IsActive,
-                MenuCondition.not_hosting => ClientManager.IsActive,
+                MenuCondition.hosting => ServerManager.IsServing,
+                MenuCondition.being_served => ClientManager.IsActive,
+                MenuCondition.avatar_select => LobbyFrame != null && !LobbyFrame.LevelSelect,
+                MenuCondition.level_select => LobbyFrame != null && LobbyFrame.LevelSelect,
                 MenuCondition.selection_complete => LobbyState != null && LobbyState.Avatars.Count == ServerManager.PlayerCount,
                 _ => true
             };
+        }
+
+        private static string UppercaseFirst(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return str;
+
+            char[] chars = str.ToCharArray();
+            chars[0] = char.ToUpper(chars[0]);
+            return new string(chars);
         }
 
         public static void UpdateAvatarSelection(int index, AvatarType avatarType)
@@ -229,6 +298,22 @@ namespace ArmadilloAssault.GameState.Menu
         public static void PlayerDisconnected(int index)
         {
             LobbyState?.AvatarDisconnected((PlayerIndex)index);
+        }
+
+        public static string GetValue(MenuKey menuKey)
+        {
+            return menuKey switch
+            {
+                MenuKey.level_name => LobbyFrame != null ? GetFormattedLevelName(LobbyFrame.SelectedLevel) : null,
+                MenuKey.level_texture => LobbyFrame != null ? ConfigurationManager.GetSceneConfiguration(LobbyFrame.SelectedLevel).PreviewTexture.ToString() : null,
+                _ => null
+            };
+        }
+
+        private static string GetFormattedLevelName(string value)
+        {
+            var strings = value.Split("_");
+            return string.Join(' ', strings.Select(UppercaseFirst));
         }
     }
 }

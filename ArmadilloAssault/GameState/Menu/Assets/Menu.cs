@@ -30,7 +30,7 @@ namespace ArmadilloAssault.GameState.Menu.Assets
 
             var buttonLocation = new Point((1920 / 2) - (MenuManager.ButtonSize.X / 2), start);
 
-            foreach (var buttonJson in buttonJsons.Where(buttonJson => MenuManager.ConditionFulfilled(buttonJson.Condition)))
+            foreach (var buttonJson in buttonJsons)
             {
                 var size = buttonJson.Size != null ? buttonJson.Size.ToPoint() : MenuManager.ButtonSize;
 

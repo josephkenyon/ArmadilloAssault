@@ -42,6 +42,9 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.mountain_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "mountain_background")));
             _textures.Add(TextureName.volcano_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "volcano_background")));
 
+            _textures.Add(TextureName.gusty_gorge_preview, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Level_Preview", "gusty_gorge")));
+            _textures.Add(TextureName.sunken_sands_preview, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Level_Preview", "sunken_sands")));
+
             _textures.Add(TextureName.lava_flow, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "lava_flow")));
 
             _textures.Add(TextureName.bullet_box, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "bullet_box")));

@@ -32,7 +32,7 @@
       },
       {
         "Text": "Host Game",
-        "Actions": [ "navigate_to", "start_server" ],
+        "Actions": [ "start_server", "navigate_to" ],
         "Data": "Lobby"
       },
       {
@@ -65,6 +65,7 @@
     "Buttons": [
       {
         "TextureName": "arthur_select",
+        "Conditions": [ "avatar_select" ],
         "Text": "Arthur",
         "Size": {
           "X": 256,
@@ -79,6 +80,7 @@
       },
       {
         "TextureName": "axel_select",
+        "Conditions": [ "avatar_select" ],
         "Text": "Axel",
         "Size": {
           "X": 256,
@@ -93,6 +95,7 @@
       },
       {
         "TextureName": "titan_select",
+        "Conditions": [ "avatar_select" ],
         "Text": "Titan",
         "Size": {
           "X": 256,
@@ -106,8 +109,39 @@
         "Data": "Titan"
       },
       {
+        "TextKey": "level_name",
+        "TextureKey": "level_texture",
+        "Conditions": [ "level_select" ],
+        "Location": {
+          "X": 480,
+          "Y": 128
+        },
+        "Size": {
+          "X": 960,
+          "Y": 540
+        }
+      },
+      {
+        "Text": "Previous",
+        "Conditions": [ "level_select" ],
+        "Actions": [ "prev_level" ],
+        "Location": {
+          "X": 64,
+          "Y": 350
+        }
+      },
+      {
+        "Text": "Next",
+        "Conditions": [ "level_select" ],
+        "Actions": [ "next_level" ],
+        "Location": {
+          "X": 1472,
+          "Y": 350
+        }
+      },
+      {
         "Text": "Leave",
-        "Condition": "not_hosting",
+        "Conditions": [ "being_served" ],
         "Actions": [ "stop_client" ],
         "Location": {
           "X": 768,
@@ -115,8 +149,18 @@
         }
       },
       {
+        "Text": "Next",
+        "Conditions": [ "hosting", "avatar_select" ],
+        "EnabledCondition": "selection_complete",
+        "Actions": [ "level_select" ],
+        "Location": {
+          "X": 992,
+          "Y": 856
+        }
+      },
+      {
         "Text": "Cancel",
-        "Condition": "hosting",
+        "Conditions": [ "hosting", "avatar_select" ],
         "Actions": [ "stop_server", "back" ],
         "Location": {
           "X": 544,
@@ -125,12 +169,20 @@
       },
       {
         "Text": "Play",
-        "Condition": "hosting",
+        "Conditions": [ "hosting", "level_select" ],
         "EnabledCondition": "selection_complete",
         "Actions": [ "start_game" ],
-        "Data": "sunken_sands",
         "Location": {
           "X": 992,
+          "Y": 856
+        }
+      },
+      {
+        "Text": "Back",
+        "Conditions": [ "hosting", "level_select" ],
+        "Actions": [ "avatar_select" ],
+        "Location": {
+          "X": 544,
           "Y": 856
         }
       }

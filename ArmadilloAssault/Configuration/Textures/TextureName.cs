@@ -37,6 +37,8 @@
         smoke,
         volcano_background,
         lava_flow,
-        loading_spinner
+        loading_spinner,
+        gusty_gorge_preview,
+        sunken_sands_preview
     }
 }

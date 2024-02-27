@@ -23,6 +23,8 @@ namespace ArmadilloAssault.Configuration
         private static Dictionary<WeaponType, WeaponJson> _weaponConfigurations;
         private static Dictionary<EffectType, EffectJson> _effectConfigurations;
 
+        public static Dictionary<string, SceneJson> SceneConfigurations => _sceneConfigurations;
+
         public static void LoadContent(ContentManager contentManager)
         {
             ContentManager = contentManager;

@@ -125,7 +125,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                     color: GetPlayerColor(id)
                 );
 
-                var text = $"P{id}";
+                var text = $"P{id + 1}";
                 var font = DrawingHelper.GetFont;
                 var size = font.MeasureString(text);
 

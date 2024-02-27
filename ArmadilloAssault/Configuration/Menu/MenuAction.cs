@@ -12,6 +12,10 @@
         start_game,
         open_editor,
         select_avatar,
+        avatar_select,
+        level_select,
+        prev_level,
+        next_level,
         exit
     }
 }

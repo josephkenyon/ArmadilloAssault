@@ -136,7 +136,7 @@ namespace ArmadilloAssault.Assets
                     BufferAnimation(Animation.Resting);
                 }
 
-                if (Animation == Animation.Rolling && RollingFrameCount == 33)
+                if (Animation == Animation.Rolling && RollingFrameCount == 26)
                 {
                     SoundManager.QueueBattleSound(BattleSound.rolling_grass);
                     RollingFrameCount = 0;

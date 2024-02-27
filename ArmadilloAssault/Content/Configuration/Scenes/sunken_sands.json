@@ -1,5 +1,6 @@
 {
   "BackgroundTexture": "desert_background",
+  "PreviewTexture": "sunken_sands_preview",
   "TilesetTexture": "desert_tileset",
   "CollisionBoxes": {
     "X": [ 0, 133, 900, 1669, 661, 1093, 1141, 708, 57, 1092, 0, 1138, 1860, 0 ],

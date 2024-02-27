@@ -125,6 +125,14 @@ namespace ArmadilloAssault.Web.Server
                 {
                     UpdateAvatarSelection(clientMessage, id);
                 }
+                else if (clientMessage.Type == ClientMessageType.NextLevel)
+                {
+                    _ = MenuManager.NextLevel();
+                }
+                else if (clientMessage.Type == ClientMessageType.PreviousLevel)
+                {
+                    _ = MenuManager.PreviousLevel();
+                }
             }
             catch (Exception ex)
             {

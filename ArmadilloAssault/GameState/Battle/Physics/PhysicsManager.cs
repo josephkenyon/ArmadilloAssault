@@ -214,14 +214,20 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 {
                     var avatar = physicsObject as Avatar;
 
-                    if (avatar.DropThrough && floor.Passable)
+                    if (avatar.DropThrough)
                     {
-                        avatar.SetY(avatar.Position.Y + 1);
+                        if (floor.Passable)
+                        {
+                            avatar.SetY(avatar.Position.Y + 1);
+                        }
+                        else
+                        {
+                            avatar.SetAnimation(Animation.Rolling);
+                        }
+
                         avatar.DropThrough = false;
                         return;
                     }
-
-                    avatar.DropThrough = false;
                 }
 
                 physicsObject.SetY((int)physicsObject.Position.Y);

@@ -110,6 +110,26 @@ namespace ArmadilloAssault.Web.Client
             await Client.MessageServer(message);
         }
 
+        public static async Task BroadcastNextLevel()
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.NextLevel,
+            };
+
+            await Client.MessageServer(message);
+        }
+
+        public static async Task BroadcastPreviousLevel()
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.PreviousLevel,
+            };
+
+            await Client.MessageServer(message);
+        }
+
         public static bool IsActive => Client != null && Client.Connected;
     }
 }

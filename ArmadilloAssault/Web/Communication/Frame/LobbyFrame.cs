@@ -9,5 +9,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<RectangleJson> PlayerBackgrounds { get; set; } = [];
         public List<int> PlayerBackgroundIds { get; set; } = [];
         public List<string> PlayerNames { get; set; } = [];
+        public bool LevelSelect { get; set; } = false;
+        public string SelectedLevel { get; set; } = "";
     }
 }
