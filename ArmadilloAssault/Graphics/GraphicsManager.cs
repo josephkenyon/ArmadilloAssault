@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Graphics.Drawing.Avatars;
 using ArmadilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -34,6 +35,8 @@ namespace ArmadilloAssault.Graphics
             DrawingManager.LoadContent(graphicsDevice);
             DrawingHelper.LoadContent(content);
             TextureManager.LoadContent(content);
+
+            AvatarDrawingHelper.Initialize();
         }
 
         public static void Clear()

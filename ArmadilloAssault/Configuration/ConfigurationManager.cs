@@ -10,7 +10,6 @@ using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Menu;
-using ArmadilloAssault.Graphics.Drawing.Avatars;
 
 namespace ArmadilloAssault.Configuration
 {
@@ -123,8 +122,6 @@ namespace ArmadilloAssault.Configuration
                     Trace.TraceError(e.Message, e);
                 }
             }
-
-            AvatarDrawingHelper.Initialize();
         }
         private static void LoadWeapons()
         {

@@ -41,8 +41,8 @@ namespace ArmadilloAssault
 
         protected override void LoadContent()
         {
-            GraphicsManager.LoadContent(GraphicsDevice, Content);
             ConfigurationManager.LoadContent(Content);
+            GraphicsManager.LoadContent(GraphicsDevice, Content);
             SoundManager.LoadContent(Content);
 
             GameStateManager.State = State.Menu;
