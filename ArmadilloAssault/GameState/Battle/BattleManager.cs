@@ -27,19 +27,28 @@ namespace ArmadilloAssault.GameState.Battle
         public static Scene Scene { get; set; }
         public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; }
         public static BattleFrame BattleFrame { get; set; }
-        public static int AvatarIndex { get; private set; }
 
-        public static void Initialize(List<AvatarType> avatars, string data, int avatarIndex = 0)
+        public static void Initialize(string data)
+        {
+            var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
+
+            Scene = new Scene(sceneConfiguration);
+
+            EffectManager.Initialize();
+            EnvironmentalEffectsManager.Initialize(sceneConfiguration.EnvironmentalEffects);
+            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
+            FlowManager.Initialize(sceneConfiguration.Flow);
+        }
+
+        public static void Initialize(Dictionary<PlayerIndex, AvatarType> avatars, string data)
         {
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
             Scene = new Scene(sceneConfiguration);
             Avatars = [];
 
-            AvatarIndex = avatarIndex;
-
-            for (int i = 0; i < avatars.Count; i++)
+            foreach (var index in avatars.Keys)
             {
-                Avatars.Add((PlayerIndex)i, new Avatar(ConfigurationManager.GetAvatarConfiguration(avatars[i])));
+                Avatars.Add(index, new Avatar(ConfigurationManager.GetAvatarConfiguration(avatars[index])));
             }
 
             Avatars.Values.First().SetPosition(new Vector2(150, 0));
@@ -68,22 +77,18 @@ namespace ArmadilloAssault.GameState.Battle
         {
             EffectManager.UpdateEffects();
 
-            var index = 0;
-
             foreach (var avatarPair in Avatars)
             {
                 var avatar = avatarPair.Value;
 
                 if (!avatar.IsDead)
                 {
-                    InputManager.UpdateAvatar(index, avatar);
+                    InputManager.UpdateAvatar((int)avatarPair.Key, avatar);
                 }
 
                 PhysicsManager.Update(avatar, Scene.CollisionBoxes);
 
                 avatar.Update();
-
-                index++;
             }
 
             BulletManager.UpdateBullets([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
@@ -131,8 +136,7 @@ namespace ArmadilloAssault.GameState.Battle
         public static void Draw()
         {
             GraphicsManager.Clear(Scene.BackgroundColor);
-
-            SoundManager.PlaySounds(BattleFrame.SoundFrame);
+        
 
             DrawingManager.DrawCollection(FlowManager.Flows);
 
@@ -147,18 +151,24 @@ namespace ArmadilloAssault.GameState.Battle
                 DrawingManager.DrawCollection([.. list.Tiles]);
             }
 
-            DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(BattleFrame.AvatarFrame));
+            if (BattleFrame != null)
+            {
+                SoundManager.PlaySounds(BattleFrame.SoundFrame);
 
-            DrawingManager.DrawCollection(CrateManager.GetDrawableCrates(BattleFrame.CrateFrame));
+                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(BattleFrame.AvatarFrame));
+                DrawingManager.DrawCollection(CrateManager.GetDrawableCrates(BattleFrame.CrateFrame));
+            }
 
             foreach (var list in Scene.TileLists.Where(list => list.Z > 0))
             {
                 DrawingManager.DrawCollection([.. list.Tiles]);
             }
 
-            DrawingManager.DrawCollection(BulletManager.GetDrawableBullets(BattleFrame.BulletFrame));
-
-            DrawingManager.DrawCollection(EffectManager.GetDrawableEffects(BattleFrame.EffectFrame));
+            if (BattleFrame != null)
+            {
+                DrawingManager.DrawCollection(BulletManager.GetDrawableBullets(BattleFrame.BulletFrame));
+                DrawingManager.DrawCollection(EffectManager.GetDrawableEffects(BattleFrame.EffectFrame));
+            }
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
 
@@ -175,7 +185,7 @@ namespace ArmadilloAssault.GameState.Battle
             DrawingManager.DrawCollisionBoxes(boxList);
             **/
 
-            if (BattleFrame.HudFrame != null)
+            if (BattleFrame != null && BattleFrame.HudFrame != null)
             {
                 DrawingManager.DrawHud(BattleFrame.HudFrame);
             }

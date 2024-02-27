@@ -180,7 +180,7 @@ namespace ArmadilloAssault.GameState.Menu
 
             if (MenuStack.Peek() == "Lobby" && LobbyFrame != null)
             {
-                DrawingManager.DrawLobbyPlayerBackgrounds(LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle));
+                DrawingManager.DrawLobbyPlayerBackgrounds(LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle), LobbyFrame.PlayerBackgroundIds);
                 DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
             }
         }

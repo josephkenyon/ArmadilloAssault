@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using ArmadilloAssault.GameState.Menu.Assets;
 using ArmadilloAssault.GameState.Menu;
+using System.Linq;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -85,15 +86,15 @@ namespace ArmadilloAssault.Graphics.Drawing
 
         private static Color GetPlayerColor(int index)
         {
-            if (index == 2)
+            if (index == 1)
             {
                 return new Color(255, 80, 80);
             }
-            else if (index == 3)
+            else if (index == 2)
             {
                 return new Color(80, 180, 80);
             }
-            else if (index == 4)
+            else if (index == 3)
             {
                 return new Color(180, 120, 80);
             }
@@ -101,14 +102,14 @@ namespace ArmadilloAssault.Graphics.Drawing
             return new Color(80, 80, 255);
         }
 
-        public static void DrawLobbyPlayerBackgrounds(IEnumerable<Rectangle> lobbyPlayerRectangles)
+        public static void DrawLobbyPlayerBackgrounds(IEnumerable<Rectangle> lobbyPlayerRectangles, IEnumerable<int> lobbyPlayerIds)
         {
             _spriteBatch.Begin();
 
             var index = 0;
             foreach (var rectangle in lobbyPlayerRectangles)
             {
-                index++;
+                var id = lobbyPlayerIds.ElementAt(index);
 
                 _spriteBatch.Draw(
                      texture: TextureManager.GetTexture(TextureName.white_pixel),
@@ -121,10 +122,10 @@ namespace ArmadilloAssault.Graphics.Drawing
                     texture: TextureManager.GetTexture(TextureName.white_pixel),
                     destinationRectangle: rectangle,
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
-                    color: GetPlayerColor(index)
+                    color: GetPlayerColor(id)
                 );
 
-                var text = $"P{index}";
+                var text = $"P{id}";
                 var font = DrawingHelper.GetFont;
                 var size = font.MeasureString(text);
 
@@ -133,6 +134,8 @@ namespace ArmadilloAssault.Graphics.Drawing
                 _spriteBatch.DrawString(
                     font, text, textPosition.ToVector2(), Color.White
                 );
+
+                index++;
             }
 
             _spriteBatch.End();

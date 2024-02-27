@@ -38,14 +38,12 @@ namespace ArmadilloAssault.Web.Server
 
         public void MessageIntialization(string data)
         {
-            var index = 1;
             foreach (var player in ClientPlayers)
             {
                 var message = new ServerMessage
                 {
                     Type = ServerMessageType.BattleInitialization,
                     AvatarTypes = MenuManager.LobbyState.Avatars.Values.Select(avatar => avatar.Type).ToList(),
-                    AvatarIndex = index++,
                     SceneName = data,
                     BattleFrame = BattleManager.BattleFrame
                 };
@@ -136,12 +134,20 @@ namespace ArmadilloAssault.Web.Server
 
         private void OnJoinGame(string name, string id)
         {
+            var newIndex = 0;
+            while (Players.Any(player => player.PlayerIndex == newIndex))
+            {
+                newIndex++;
+            }
+
             Players.Add(new Player
             {
                 Name = name,
                 ConnectionId = id,
-                PlayerIndex = Players.Count
+                PlayerIndex = newIndex
             });
+
+            Players = [.. Players.OrderBy(player => player.PlayerIndex)];
         }
 
         private void UpdateInput(ClientMessage message, string id)
@@ -156,10 +162,10 @@ namespace ArmadilloAssault.Web.Server
 
         private void UpdateAvatarSelection(ClientMessage message, string id)
         {
-            var index = Players.FindIndex(player => player.ConnectionId == id);
-            if (index != -1)
+            var player = Players.Find(player => player.ConnectionId == id);
+            if (player != null)
             {
-                MenuManager.UpdateAvatarSelection(index, message.AvatarType);
+                MenuManager.UpdateAvatarSelection(player.PlayerIndex, message.AvatarType);
             }
         }
 
@@ -173,6 +179,7 @@ namespace ArmadilloAssault.Web.Server
                     return ip.ToString();
                 }
             }
+
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 

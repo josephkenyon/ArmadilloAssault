@@ -146,8 +146,6 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
                 Speed = speed,
                 Foreground = foreground
             });
-
-            //Trace.WriteLine($"{x}, {y}, {size.X}, {size.Y}");
         }
     }
 }

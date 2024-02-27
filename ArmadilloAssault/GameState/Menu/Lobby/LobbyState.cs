@@ -5,7 +5,6 @@ using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,41 +36,41 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
                 Avatars.Add(index, new Avatar(ConfigurationManager.GetAvatarConfiguration(avatarType)));
             }
 
-            var rectangle = GetPlayerBackgroundRectangles().ElementAt((int)index);
+            var rectangle = GetPlayerBackgroundRectangles()[index];
 
             Avatars[index].SetX(rectangle.X);
             Avatars[index].SetY(rectangle.Y + 16);
         }
 
-        public static IEnumerable<Rectangle> GetPlayerBackgroundRectangles()
+        public static Dictionary<PlayerIndex, Rectangle> GetPlayerBackgroundRectangles()
         {
-            var rectangleList = new List<Rectangle>();
+            var rectangleDictionary = new Dictionary<PlayerIndex, Rectangle>();
 
-            for (int i = 0; i < ServerManager.PlayerCount; i++)
+            foreach (var playerIndex in ServerManager.PlayerIndices)
             {
                 var middle = 1920 / 2;
                 var x = middle;
-                if (i == 0)
+                if (playerIndex == 0)
                 {
                     x -= 288 + 96;
                 }
-                else if (i == 1)
+                else if (playerIndex == 1)
                 {
                     x -= 144 + 32;
                 }
-                else if (i == 2)
+                else if (playerIndex == 2)
                 {
                     x += 32;
                 }
-                else if (i == 3)
+                else if (playerIndex == 3)
                 {
                     x += 144 + 96;
                 }
 
-                rectangleList.Add(new Rectangle(x, 448, 144, 256));
+                rectangleDictionary.Add((PlayerIndex)playerIndex, new Rectangle(x, 448, 144, 256));
             }
 
-            return rectangleList;
+            return rectangleDictionary;
         }
 
         public LobbyFrame CreateFrame()
@@ -79,7 +78,8 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
             var frame = new LobbyFrame
             {
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars.Values),
-                PlayerBackgrounds = GetPlayerBackgroundRectangles().Select(RectangleJson.CreateFrom).ToList()
+                PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(RectangleJson.CreateFrom).ToList(),
+                PlayerBackgroundIds = ServerManager.PlayerIndices,
             };
 
             return frame;

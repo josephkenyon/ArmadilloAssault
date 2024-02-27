@@ -82,7 +82,7 @@ namespace ArmadilloAssault.Web.Client
         {
             if (serverMessage.Type == ServerMessageType.BattleInitialization)
             {
-                BattleManager.Initialize(serverMessage.AvatarTypes, serverMessage.SceneName, serverMessage.AvatarIndex);
+                BattleManager.Initialize(serverMessage.SceneName);
                 Engine.QueueAction(() => GameStateManager.State = State.Battle);
             }
             else if (serverMessage.Type == ServerMessageType.BattleUpdate)

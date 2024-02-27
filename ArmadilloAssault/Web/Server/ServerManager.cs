@@ -1,6 +1,8 @@
-﻿using ArmadilloAssault.Controls;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
@@ -15,12 +17,16 @@ namespace ArmadilloAssault.Web.Server
     {
         private static Server Server { get; set; }
         public static int PlayerCount => Server != null && Server.Players != null ? Server.Players.Count : 0;
+        public static List<int> PlayerIndices => Server != null && Server.Players != null ? Server.Players.Select(player => player.PlayerIndex).ToList() : [];
+
+        private static Player GetPlayer(int playerIndex) => Server != null && Server.Players != null ? Server.Players.Find(player => player.PlayerIndex == playerIndex) : null;
 
         public static List<Control> GetPlayerControlsDown(int playerIndex)
         {
-            if (Server.Players.Count > playerIndex)
+            var player = GetPlayer(playerIndex);
+            if (player != null)
             {
-                return Server.Players[playerIndex].AreControlsDown;
+                return player.AreControlsDown;
             }
 
             return [];
@@ -28,9 +34,10 @@ namespace ArmadilloAssault.Web.Server
 
         public static Vector2 GetPlayerAimPosition(int playerIndex)
         {
-            if (Server.Players.Count > playerIndex)
+            var player = GetPlayer(playerIndex);
+            if (player != null)
             {
-                return Server.Players[playerIndex].AimPosition;
+                return player.AimPosition;
             }
 
             return Vector2.Zero;
@@ -54,7 +61,13 @@ namespace ArmadilloAssault.Web.Server
 
         public static void StartGame(string data)
         {
-            BattleManager.Initialize(MenuManager.LobbyState.Avatars.Values.Select(avatar => avatar.Type).ToList(), data);
+            var avatarTypeDictionary = new Dictionary<PlayerIndex, AvatarType>();
+
+            foreach (var playerIndex in MenuManager.LobbyState.Avatars.Keys) {
+                avatarTypeDictionary.Add(playerIndex, MenuManager.LobbyState.Avatars[playerIndex].Type);
+            }
+
+            BattleManager.Initialize(avatarTypeDictionary, data);
             GameStateManager.State = State.Battle;
 
             Server.MessageIntialization(data);

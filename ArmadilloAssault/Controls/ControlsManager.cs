@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ArmadilloAssault.Controls
 {
@@ -74,9 +75,12 @@ namespace ArmadilloAssault.Controls
 
             if (ServerManager.IsServing)
             {
-                for (var i = 0; i < ServerManager.PlayerCount; i++)
+                foreach (var index in ServerManager.PlayerIndices)
                 {
-                    UpdateControlState(i + 1, ServerManager.GetPlayerControlsDown(i), ServerManager.GetPlayerAimPosition(i));
+                    if (index > 0)
+                    {
+                        UpdateControlState(index, ServerManager.GetPlayerControlsDown(index), ServerManager.GetPlayerAimPosition(index));
+                    }
                 }
             }
 
@@ -121,7 +125,6 @@ namespace ArmadilloAssault.Controls
             {
                 controlsState = value;
             }
-
 
             foreach (var control in Enum.GetValues<Control>())
             {
