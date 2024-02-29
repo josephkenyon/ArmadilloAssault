@@ -20,7 +20,7 @@ namespace ArmadilloAssault.GameState.Editor
 
         public static void Initialize()
         {
-            Scene = new Scene(ConfigurationManager.GetSceneConfiguration("sunken_sands"));
+            Scene = new Scene(ConfigurationManager.GetSceneConfiguration("molten_mountain"));
             Z = -1;
             SelectedTextureName = Scene.TilesetTexture;
             SpriteSelectionIndex = new Point(0, 0);

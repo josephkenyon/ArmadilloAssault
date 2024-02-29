@@ -28,14 +28,14 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 physicsObject.SetX(physicsObject.Position.X + 1920 + collisionBox.Width - 1);
             }
 
-            //if (collisionBox.Bottom < 0)
-            //{
-            //    physicsObject.SetY(physicsObject.Position.Y + 1080);
-            //}
-            //else if (collisionBox.Top > 1080)
-            //{
-            //    physicsObject.SetY(physicsObject.Position.Y - 1080);
-            //}
+            if (collisionBox.Bottom < 0)
+            {
+                physicsObject.SetY(physicsObject.Position.Y + 1080 + collisionBox.Height - 1);
+            }
+            else if (collisionBox.Top > 1080)
+            {
+                physicsObject.SetY(physicsObject.Position.Y - 1080 - collisionBox.Height + 1);
+            }
         }
 
         public static void Update(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
