@@ -74,7 +74,7 @@ namespace ArmadilloAssault.GameState.Battle.Weapons
             return (FramesSinceFired < 0 || FramesSinceFired > FireRate) && AmmoInClip > 0;
         }
 
-        public void Fire(Vector2 weaponTip, double weaponAngle, Direction direction)
+        public void Fire(Vector2 weaponTip, double weaponAngle, Direction direction, float damageModifier)
         {
             if (!CanFire())
             {
@@ -91,7 +91,7 @@ namespace ArmadilloAssault.GameState.Battle.Weapons
                 Random r = new();
                 double rDouble = r.NextDouble() * configuration.AccuracyConeDegrees - configuration.AccuracyConeDegrees / 2;
 
-                BulletManager.CreateBullet(configuration, weaponTip, (float)(newAngle + rDouble * Math.PI / 180));
+                BulletManager.CreateBullet(configuration, weaponTip, (float)(newAngle + rDouble * Math.PI / 180), damageModifier);
             }
 
             AmmoInClip--;

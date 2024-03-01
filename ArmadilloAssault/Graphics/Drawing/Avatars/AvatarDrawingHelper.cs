@@ -48,7 +48,9 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                         Spinning = avatarFrame.Spinnings[index],
                         TextureName = avatarFrame.TextureNames[index],
                         Type = avatarFrame.Types[index],
-                        WeaponTexture = avatarFrame.WeaponTextures[index]
+                        WeaponTexture = avatarFrame.WeaponTextures[index],
+                        Color = avatarFrame.Colors[index].ToColor(),
+                        Opacity = avatarFrame.Colors[index].A / 255f
                     };
 
                     drawableAvatars.Add(drawableAvatar);
@@ -88,7 +90,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             return avatarCollection;
         }
 
-        private static Body GetBody(IDrawableAvatar avatar) => new Body(avatar);
+        private static Body GetBody(IDrawableAvatar avatar) => new(avatar);
 
         private static float GetSpriteOffsetX(IDrawableAvatar avatar)
         {
@@ -143,6 +145,10 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             public float GetRotation() => avatar.Spinning ? avatar.Rotation : 0f;
 
             public Rectangle? GetSourceRectangle() => avatar.Spinning || avatar.Dead ? AvatarDrawingHelper.GetSourceRectangle(avatar) : new Rectangle(Point.Zero, GetSize(avatar));
+
+            public Color Color => avatar.Color;
+
+            public float Opacity => avatar.Opacity;
         }
 
         private static LegPart GetLeg(IDrawableAvatar avatar, Direction whichLeg)
@@ -182,6 +188,10 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                 return sourceRectangle;
             }
+
+            public Color Color => avatar.Color;
+
+            public float Opacity => avatar.Opacity;
         }
 
         private static Limb GetArm(IDrawableAvatar avatar, Direction direction)
@@ -287,6 +297,10 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             public Vector2 GetOrigin() => origin;
 
             public TextureName Texture => textureName != null ? (TextureName)textureName : avatar.TextureName;
+
+            public Color Color => avatar.Color;
+
+            public float Opacity => avatar.Opacity;
 
             public Rectangle GetDestinationRectangle()
             {

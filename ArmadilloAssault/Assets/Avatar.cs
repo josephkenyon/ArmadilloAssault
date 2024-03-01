@@ -1,9 +1,11 @@
 ﻿using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.Bullets;
 using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.GameState.Battle.Weapons;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Sound;
@@ -20,9 +22,7 @@ namespace ArmadilloAssault.Assets
         public static readonly int spriteWidth = 128;
         public static readonly int spriteHeight = 128;
 
-        public static readonly float RunningAcceleration = 0.65f;
         public static readonly float JumpingAcceleration = 0.5f;
-        public static readonly float MaxRunningVelocity = 6.5f;
 
         public static readonly int BreathingCycleFrameLength = 80;
 
@@ -63,6 +63,10 @@ namespace ArmadilloAssault.Assets
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
         public int RunningFrameCount { get; set; }
         public int RollingFrameCount { get; set; }
+        public override Vector2 MaxVelocity => SuperSpeed ? new(14f, 15f) : new(8f, 11f);
+
+        public override float RunningAcceleration => SuperSpeed ? 1.2f : 0.65f;
+        public float MaxRunningVelocity => SuperSpeed ? 13f : 6.5f;
 
         // Rotation
         public double ArmAngle { get; set; }
@@ -98,12 +102,17 @@ namespace ArmadilloAssault.Assets
         public bool Reloading { get; set; } = false;
         public int ReloadingFrames { get; set; } = 0;
 
+        // Power Ups
+        public PowerUpType? CurrentPowerUp { get; set; } = null;
+        public bool SuperSpeed => PowerUpType.Super_Speed == CurrentPowerUp;
+        public int PowerUpFramesLeft { get; set; } = 0;
+
         public bool SwitchingWeapons { get; set; } = false;
         public int SwitchingWeaponFrames { get; set; } = 0;
 
         private static readonly int WeaponSwitchFrames = 10;
 
-        public override bool LowDrag => IsSpinning;
+        public override float DragModifier => 1f * ((!Grounded && IsSpinning) ? 0.1f : 1f) * (SuperSpeed ? 1f : 1f);
 
         public bool Jumped { get; set; }
         public bool DropThrough { get; set; }
@@ -115,6 +124,7 @@ namespace ArmadilloAssault.Assets
             UpdateRecoil();
             UpdateReloading();
             UpdateSwitchingWeapons();
+            UpdatePowerUp();
             UpdatePhysics();
 
             Weapons.ForEach(weapon => weapon.Update());
@@ -136,7 +146,7 @@ namespace ArmadilloAssault.Assets
                     BufferAnimation(Animation.Resting);
                 }
 
-                if (Animation == Animation.Rolling && RollingFrameCount == 26)
+                if (Animation == Animation.Rolling && RollingFrameCount == (SuperSpeed ? 20 : 35))
                 {
                     SoundManager.QueueBattleSound(BattleSound.rolling_grass);
                     RollingFrameCount = 0;
@@ -221,6 +231,18 @@ namespace ArmadilloAssault.Assets
             }
         }
 
+        private void UpdatePowerUp()
+        {
+            if (CurrentPowerUp != null)
+            {
+                PowerUpFramesLeft--;
+                if (PowerUpFramesLeft == 0)
+                {
+                    CurrentPowerUp = null;
+                }
+            }
+        }
+
         private void UpdateRecoil()
         {
             if (FramesUntilRecoil >= 0)
@@ -264,7 +286,7 @@ namespace ArmadilloAssault.Assets
             HasRecoil = true;
 
             var currentWeapon = Weapons[WeaponSelectionIndex];
-            currentWeapon.Fire(weaponTip, AimAngle, Direction);
+            currentWeapon.Fire(weaponTip, AimAngle, Direction, PowerUpType.Damage_Up == CurrentPowerUp ? 1.5f : 1.0f);
 
             if (currentWeapon.AmmoInClip == 0 && currentWeapon.CanReload())
             {
@@ -341,7 +363,7 @@ namespace ArmadilloAssault.Assets
             }
             else
             {
-                if (FrameCounter >= 3)
+                if (FrameCounter >= (SuperSpeed ? 2 : 3))
                 {
                     FrameCounter = 0;
 
@@ -420,8 +442,14 @@ namespace ArmadilloAssault.Assets
         public void HitByBullet(Bullet bullet, bool headShot)
         {
             var wasAlive = Health > 1;
-            var damage = ConfigurationManager.GetWeaponConfiguration(bullet.WeaponType).BulletDamage;
-            Health -= headShot ? (int)(damage * 1.5f) : damage;
+            var damage = ConfigurationManager.GetWeaponConfiguration(bullet.WeaponType).BulletDamage * bullet.DamageModifier;
+
+            if (headShot)
+            {
+                damage *= 1.5f;
+            }
+
+            Health -= (int)damage;
 
             if (IsDead)
             {
@@ -664,6 +692,51 @@ namespace ArmadilloAssault.Assets
             {
                 HandleWeaponChange();
             }
+        }
+
+        public void GivePowerUp(PowerUpType powerUpType)
+        {
+            CurrentPowerUp = powerUpType;
+
+            var seconds = powerUpType switch
+            {
+                PowerUpType.Invincibility => 8,
+                PowerUpType.Damage_Up => 8,
+                PowerUpType.Super_Speed => 12,
+                PowerUpType.Invisibility => 10,
+                _ => 10
+            };
+
+            PowerUpFramesLeft = seconds * 60;
+        }
+
+        public ColorJson GetColor()
+        {
+            var color = ColorJson.White;
+
+            if (CurrentPowerUp != null)
+            {
+                var blinkFrame = PowerUpFramesLeft - ((PowerUpFramesLeft / 60) * 60);
+
+                blinkFrame = (int)(255f - (blinkFrame * 255f / 60f));
+
+                switch ((PowerUpType)CurrentPowerUp)
+                {
+                    case PowerUpType.Damage_Up:
+                        return new ColorJson(255, blinkFrame, blinkFrame);
+                    case PowerUpType.Super_Speed:
+                        return new ColorJson(blinkFrame, 255, blinkFrame);
+                    case PowerUpType.Invincibility:
+                        return new ColorJson(blinkFrame, blinkFrame, 255);
+                    case PowerUpType.Invisibility:
+                        return new ColorJson(255, 255, 255)
+                        {
+                            A = 50
+                        };
+                }
+            }
+
+            return color;
         }
     }
 }

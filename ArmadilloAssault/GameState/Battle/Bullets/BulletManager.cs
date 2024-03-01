@@ -2,6 +2,7 @@
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.Effects;
+using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
@@ -27,13 +28,14 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             CollisionLinePairs = collisionBoxes.Select(box => new KeyValuePair<Rectangle, LineQuad>(box, LineQuad.CreateFrom(box))).ToList();
         }
              
-        public static void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory)
+        public static void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory, float damageModifier)
         {
             var bullet = new Bullet
             {
                 Position = position,
                 Angle = angleTrajectory,
-                WeaponType = weaponConfiguration.Type
+                WeaponType = weaponConfiguration.Type,
+                DamageModifier = damageModifier
             };
 
             Bullets.Add(bullet);
@@ -44,13 +46,14 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             var boxLists = avatars.Select(avatar => {
                 var avatarHurtBoxes = avatar.GetHurtBoxes().OrderBy(rec => rec.Top);
 
+                var invicible = PowerUpType.Invincibility == avatar.CurrentPowerUp;
 
                 var headBox = true && !avatar.IsSpinning;
 
                 var hurtBoxes = avatarHurtBoxes.Select(box =>
                 {
                     var keyValuePair = new KeyValuePair<HurtBoxType, LineQuad>(
-                        headBox ? HurtBoxType.Head : HurtBoxType.Standard,
+                        invicible ? HurtBoxType.Shell : (headBox ? HurtBoxType.Head : HurtBoxType.Standard),
                         avatar.IsSpinning ? LineQuad.CreateFrom(box, avatar.OffsetOrigin, avatar.Rotation) : LineQuad.CreateFrom(box)
                     );
 

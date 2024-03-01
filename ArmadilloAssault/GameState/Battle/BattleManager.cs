@@ -10,6 +10,7 @@ using ArmadilloAssault.GameState.Battle.Environment.Effects;
 using ArmadilloAssault.GameState.Battle.Environment.Flows;
 using ArmadilloAssault.GameState.Battle.Input;
 using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Graphics.Drawing.Avatars;
@@ -131,7 +132,14 @@ namespace ArmadilloAssault.GameState.Battle
 
             ServerManager.SendBattleFrame(BattleFrame, hudFrames);
 
-            BattleFrame.HudFrame = hudFrames.FirstOrDefault();
+            var myIndex = BattleFrame.AvatarFrame.PlayerIndices.FindIndex(index => index == 0);
+            BattleFrame.HudFrame = hudFrames.ElementAt(myIndex);
+
+            var index = 0;
+            BattleFrame.AvatarFrame.Colors.ForEach(color =>
+            {
+                color.A = MathUtils.GetAlpha(color, index++, myIndex);
+            });
         }
 
         public static void UpdateClient()
@@ -203,7 +211,7 @@ namespace ArmadilloAssault.GameState.Battle
         {
             var battleFrame = new BattleFrame
             {
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars.Values),
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars),
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
                 EffectFrame = EffectManager.GetEffectFrame()

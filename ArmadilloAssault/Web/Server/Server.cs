@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
 using Newtonsoft.Json;
@@ -67,10 +68,17 @@ namespace ArmadilloAssault.Web.Server
 
         public void SendBattleFrame(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
         {
-            var index = 1;
             foreach (var player in ClientPlayers)
             {
+                var index = battleFrame.AvatarFrame.PlayerIndices.FindIndex(pIndex => pIndex == player.PlayerIndex);
+
                 battleFrame.HudFrame = hudFrames.ElementAt(index);
+
+                var colorIndex = 0;
+                battleFrame.AvatarFrame.Colors.ForEach(color =>
+                {
+                    color.A = MathUtils.GetAlpha(color, colorIndex++, index);
+                });
 
                 var message = new ServerMessage
                 {
@@ -79,8 +87,6 @@ namespace ArmadilloAssault.Web.Server
                 };
 
                 Broadcast(message, player.ConnectionId);
-
-                index++;
             }
         }
 

@@ -38,7 +38,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                 texture: TextureManager.GetTexture(drawableObject.Texture),
                 destinationRectangle: drawableObject.GetDestinationRectangle(),
                 sourceRectangle: drawableObject.GetSourceRectangle(),
-                color: DrawingHelper.GetColor(drawableObject.Z) * drawableObject.Opacity,
+                color: DrawingHelper.GetColor(drawableObject.Color, drawableObject.Z) * drawableObject.Opacity,
                 rotation: drawableObject.GetRotation(),
                 origin: drawableObject.GetOrigin(),
                 effects: drawableObject.GetDirection() == Direction.Right ? SpriteEffects.None : SpriteEffects.FlipHorizontally,

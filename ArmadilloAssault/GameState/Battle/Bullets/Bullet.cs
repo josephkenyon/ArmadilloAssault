@@ -9,6 +9,7 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
         public WeaponType WeaponType { get; set; }
         public Vector2 Position { get; set; }
         public float Angle { get; set; }
+        public float DamageModifier { get; set; }
 
         public void Update()
         {

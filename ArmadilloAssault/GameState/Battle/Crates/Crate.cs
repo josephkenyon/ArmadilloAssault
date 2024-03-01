@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.GameState.Battle.PowerUps;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         public readonly int HealthGiven = type == CrateType.Health ? 35 : 0;
         public readonly WeaponType? WeaponType = type == CrateType.Weapon ? GetRandomWeaponType() : null;
+        public readonly PowerUpType? PowerUpType = type == CrateType.Power_Up ? GetRandomPowerUpType() : null;
 
         public Point Size => Grounded ? new Point(96, 96) : new Point(128, 204);
         public TextureName TextureName => Grounded ? TextureName.crates : TextureName.crates_parachuting;
@@ -27,6 +29,16 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             var index = Random.NextInt64(1, weaponTypes.Length);
 
             return weaponTypes[index];
+        }
+
+        private static PowerUpType GetRandomPowerUpType()
+        {
+            var types = Enum.GetValues<PowerUpType>();
+            var index = Random.NextInt64(0, types.Length);
+
+            return PowerUps.PowerUpType.Super_Speed;
+
+            return types[index];
         }
     }
 }

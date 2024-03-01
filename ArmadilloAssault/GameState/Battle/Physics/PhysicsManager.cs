@@ -5,6 +5,7 @@ using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Physics
@@ -278,12 +279,13 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             {
                 physicsObject.Acceleration = new Vector2(0, physicsObject.Acceleration.Y);
 
-                var decelerationConstant = physicsObject.Grounded ? Avatar.RunningAcceleration : 4f;
+                var decelerationConstant = physicsObject.Grounded ? (physicsObject.RunningAcceleration * 2f) : 4f;
 
-                if (physicsObject.LowDrag && !physicsObject.Grounded)
-                {
-                    decelerationConstant = 0.25f;
-                }
+                Trace.WriteLine(physicsObject.DragModifier);
+
+                decelerationConstant *= physicsObject.DragModifier;
+
+                Trace.WriteLine(decelerationConstant);
 
                 if (physicsObject.Velocity.X > 0)
                 {

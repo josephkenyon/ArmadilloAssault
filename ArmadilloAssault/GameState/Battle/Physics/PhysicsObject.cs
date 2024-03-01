@@ -11,6 +11,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
         public Vector2 Acceleration { get; set; } = Vector2.Zero;
         public virtual Vector2 MaxVelocity => new(8f, 11);
 
+        public virtual float RunningAcceleration => 0.65f;
         public float RunningVelocity { get; set; }
         public int InfluenceVelocity { get; set; }
 
@@ -19,7 +20,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
         public bool Falling { get; set; }
         public bool Rising { get; set; }
-        public virtual bool LowDrag => false;
+        public virtual float DragModifier => 1f;
 
         public void SetX(float x)
         {

@@ -13,6 +13,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         Rectangle? GetSourceRectangle() => null;
         Vector2 GetOrigin() => Vector2.Zero;
         float GetRotation() => 0f;
+        Color Color => Color.White;
         float Opacity => 1f;
         float LayerDepth => 1f;
         Direction GetDirection() => Direction.Right;

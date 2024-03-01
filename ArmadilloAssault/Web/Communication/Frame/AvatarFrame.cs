@@ -1,5 +1,6 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
@@ -9,6 +10,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class AvatarFrame
     {
+        public List<int> PlayerIndices { get; set; } = [];
         public List<Animation> Animations { get; set; } = [];
         public List<float> ArmAngles { get; set; } = [];
         public List<int> AnimationFrames { get; set; } = [];
@@ -22,12 +24,16 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<TextureName> TextureNames { get; set; } = [];
         public List<AvatarType> Types { get; set; } = [];
         public List<TextureName> WeaponTextures { get; set; } = [];
+        public List<ColorJson> Colors { get; set; } = [];
 
-        public static AvatarFrame CreateFrom(IEnumerable<Avatar> avatars)
+        public static AvatarFrame CreateFrom(Dictionary<PlayerIndex, Avatar> avatars)
         {
             var avatarFrame = new AvatarFrame();
-            foreach (var avatar in avatars)
+            foreach (var playerIndex in avatars.Keys)
             {
+                var avatar = avatars[playerIndex];
+
+                avatarFrame.PlayerIndices.Add((int)playerIndex);
                 avatarFrame.Animations.Add(avatar.Animation);
                 avatarFrame.ArmAngles.Add((float)avatar.ArmAngle);
                 avatarFrame.AnimationFrames.Add(avatar.AnimationFrame);
@@ -41,6 +47,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 avatarFrame.TextureNames.Add(avatar.TextureName);
                 avatarFrame.Types.Add(avatar.Type);
                 avatarFrame.WeaponTextures.Add(avatar.CurrentWeaponConfiguration.TextureName);
+                avatarFrame.Colors.Add(avatar.GetColor());
             }
 
             return avatarFrame;

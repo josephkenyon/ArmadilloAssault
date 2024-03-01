@@ -15,16 +15,16 @@ namespace ArmadilloAssault.Graphics.Drawing
 
         public static readonly int FullTileSize = 48;
 
-        public static Color GetColor(int z)
+        public static Color GetColor(Color color, int z)
         {
             if (z >= 0)
             {
-                return Color.White;
+                return color;
             }
             else
             {
                 var constant = (1f + (z / 5f));
-                return Color.White * constant;
+                return color * constant;
             }
         }
 

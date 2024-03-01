@@ -168,20 +168,20 @@ namespace ArmadilloAssault.GameState.Battle.Input
                         avatar.BufferAnimation(Animation.Running);
 
                         avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - Avatar.RunningAcceleration, -Avatar.MaxRunningVelocity, Avatar.MaxRunningVelocity);
+                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - avatar.RunningAcceleration, -avatar.MaxRunningVelocity, avatar.MaxRunningVelocity);
                     }
                     else
                     {
                         avatar.SetDirection(Direction.Left);
                         avatar.IncrementSpin();
 
-                        avatar.Acceleration = new Vector2(-Avatar.RunningAcceleration, avatar.Acceleration.Y);
+                        avatar.Acceleration = new Vector2(-avatar.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else
                 {
                     avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                    avatar.InfluenceVelocity = -4;
+                    avatar.InfluenceVelocity = avatar.SuperSpeed && avatar.IsSpinning ? -7 : -4;
                 }
             }
             else if (ControlsManager.IsControlDown(playerIndex, Control.Right) || ControlsManager.IsControlDownStart(playerIndex, Control.Right))
@@ -195,20 +195,20 @@ namespace ArmadilloAssault.GameState.Battle.Input
                         avatar.BufferAnimation(Animation.Running);
 
                         avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + Avatar.RunningAcceleration, -Avatar.MaxRunningVelocity, Avatar.MaxRunningVelocity);
+                        avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + avatar.RunningAcceleration, -avatar.MaxRunningVelocity, avatar.MaxRunningVelocity);
                     }
                     else
                     {
                         avatar.SetDirection(Direction.Right);
                         avatar.IncrementSpin();
 
-                        avatar.Acceleration = new Vector2(Avatar.RunningAcceleration, avatar.Acceleration.Y);
+                        avatar.Acceleration = new Vector2(avatar.RunningAcceleration, avatar.Acceleration.Y);
                     }
                 }
                 else
                 {
                     avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                    avatar.InfluenceVelocity = 4;
+                    avatar.InfluenceVelocity = avatar.SuperSpeed && avatar.IsSpinning ? 7 : 4;
                 }
             }
             else
@@ -233,11 +233,11 @@ namespace ArmadilloAssault.GameState.Battle.Input
             {
                 if (avatar.RunningVelocity > 0)
                 {
-                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - Avatar.RunningAcceleration, 0, avatar.RunningVelocity);
+                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity - avatar.RunningAcceleration, 0, avatar.RunningVelocity);
                 }
                 else if (avatar.RunningVelocity < 0)
                 {
-                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + Avatar.RunningAcceleration, avatar.RunningVelocity, 0);
+                    avatar.RunningVelocity = Math.Clamp(avatar.RunningVelocity + avatar.RunningAcceleration, avatar.RunningVelocity, 0);
                 }
             }
 

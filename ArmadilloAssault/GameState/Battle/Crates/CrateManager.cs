@@ -1,7 +1,7 @@
 ﻿using ArmadilloAssault.Assets;
-using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
@@ -19,11 +19,12 @@ namespace ArmadilloAssault.GameState.Battle.Crates
         public static List<Crate> Crates { get; private set; }
 
         private static int TimeSinceLastCrate { get; set; }
+        private static int LastX { get; set; } = -1;
         private static Random Random { get; set; }
 
         private static bool InitialDrop { get; set; }
 
-        private static int CrateSpawnRate(int avatarCount) => 100 - (avatarCount * 50);
+        private static int CrateSpawnRate(int avatarCount) => 400 - (avatarCount * 70);
 
         public static void Initialize(ICollection<Rectangle> collisionBoxes)
         {
@@ -60,6 +61,11 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                     CreateNewCrate(CrateType.Weapon);
                     CreateNewCrate(CrateType.Weapon);
                 }
+
+                for (var i = 0; i < avatars.Count; i++)
+                {
+                    CreateNewCrate(CrateType.Power_Up);
+                }
             }
             else if (TimeSinceLastCrate >= CrateSpawnRate(avatars.Count) && Crates.Count <= 10)
             {
@@ -77,7 +83,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             {
                 Crates.RemoveAll(crate =>
                 {
-                    if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox())) {
+                    if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox()) && (avatar.CurrentPowerUp == null || crate.Type != CrateType.Power_Up)) {
                         GiveCrate(avatar, crate);
                         return true;
                     }
@@ -89,17 +95,42 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         private static void CreateNewCrate(CrateType? crateType = null)
         {
-            var collisionBoxIndex = Random.Next(0, CollisionBoxes.Count);
-            var type = (crateType != null) ? (int)crateType : Math.Clamp(Random.Next(-1, 3), 0, 2);
+            var typeIndex = Random.NextInt64(0, 4);
+            var type = crateType != null ? (CrateType)crateType : CrateType.Weapon;
 
-            var relevantCollisionBox = CollisionBoxes[collisionBoxIndex];
+            if (crateType == null)
+            {
+                if (typeIndex < 2)
+                {
+                    type = CrateType.Weapon;
+                }
+                else if (typeIndex < 3)
+                {
+                    type = CrateType.Health;
+                }
+                else
+                {
+                    type = CrateType.Power_Up;
+                }
+            }
 
-            var crate = new Crate((CrateType)type)
+            int collisionBoxIndex;
+            int x;
+            Rectangle relevantCollisionBox;
+            do
+            {
+                collisionBoxIndex = Random.Next(0, CollisionBoxes.Count);
+                relevantCollisionBox = CollisionBoxes[collisionBoxIndex];
+                x = Random.Next(relevantCollisionBox.Left + 24, relevantCollisionBox.Right - 24);
+            }
+            while (Math.Abs(x - LastX) < 500 && LastX != -1);
+
+            var crate = new Crate(type)
             {
                 RelevantCollisionBoxes = [relevantCollisionBox]
             };
 
-            var x = Random.Next(relevantCollisionBox.Left + 24, relevantCollisionBox.Right - 24);
+            LastX = x;
 
             crate.SetX(x - (crate.Size.X / 2));
 
@@ -115,6 +146,10 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             else if (crate.Type == CrateType.Weapon)
             {
                 avatar.GiveWeapon((WeaponType)crate.WeaponType);
+            }
+            else if (crate.Type == CrateType.Power_Up)
+            {
+                avatar.GivePowerUp((PowerUpType)crate.PowerUpType);
             }
 
             SoundManager.QueueBattleSound(BattleSound.ammo);

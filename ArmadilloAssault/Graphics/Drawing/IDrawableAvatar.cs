@@ -20,5 +20,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         TextureName TextureName { get; }
         AvatarType Type { get; }
         TextureName WeaponTexture { get; }
+        Color Color { get; set; }
+        float Opacity { get; set; }
     }
 }
