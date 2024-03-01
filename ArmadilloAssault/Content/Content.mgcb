@@ -23,6 +23,9 @@
 #begin Configuration/Avatars/titan.json
 /copy:Configuration/Avatars/titan.json
 
+#begin Configuration/Avatars/turbo.json
+/copy:Configuration/Avatars/turbo.json
+
 #begin Configuration/Effects/effects.json
 /copy:Configuration/Effects/effects.json
 
@@ -218,6 +221,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Sprites/titan.png
 
+#begin Graphics/Sprites/turbo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Sprites/turbo.png
+
 #begin Graphics/Textures/Avatar_Selection/arthur_select.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -253,6 +268,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/Avatar_Selection/titan_select.png
+
+#begin Graphics/Textures/Avatar_Selection/turbo_select.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/Avatar_Selection/turbo_select.png
 
 #begin Graphics/Textures/bullet_box.png
 /importer:TextureImporter
@@ -628,6 +655,30 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Titan/titan_ready.mp3
+
+#begin Sound/Turbo/turbo_dead.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Turbo/turbo_dead.mp3
+
+#begin Sound/Turbo/turbo_hurt.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Turbo/turbo_hurt.mp3
+
+#begin Sound/Turbo/turbo_jump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Turbo/turbo_jump.mp3
+
+#begin Sound/Turbo/turbo_ready.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Turbo/turbo_ready.mp3
 
 #begin Sound/Weapon/assault.mp3
 /importer:Mp3Importer

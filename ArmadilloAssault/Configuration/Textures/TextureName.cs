@@ -39,6 +39,8 @@
         test_tileset,
         titan,
         titan_select,
+        turbo,
+        turbo_select,
         volcano_background,
         volcano_tileset,
         white_pixel,

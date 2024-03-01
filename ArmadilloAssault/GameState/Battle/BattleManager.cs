@@ -51,22 +51,30 @@ namespace ArmadilloAssault.GameState.Battle
                 Avatars.Add(index, new Avatar(ConfigurationManager.GetAvatarConfiguration(avatars[index])));
             }
 
-            Avatars.Values.First().SetPosition(new Vector2(150, 0));
+            Avatars.Values.First().SetPosition(sceneConfiguration.StartingPositions.First.ToVector2());
 
             if (Avatars.Values.Count >= 2)
             {
-                Avatars.Values.ElementAt(1).SetPosition(new Vector2(1650, 0));
+                Avatars.Values.ElementAt(1).SetPosition(sceneConfiguration.StartingPositions.Second.ToVector2());
             }
 
             if (Avatars.Values.Count >= 3)
             {
-                Avatars.Values.ElementAt(2).SetPosition(new Vector2(420, 750));
+                Avatars.Values.ElementAt(2).SetPosition(sceneConfiguration.StartingPositions.Third.ToVector2());
+            }
+
+            if (Avatars.Values.Count >= 4)
+            {
+                Avatars.Values.ElementAt(3).SetPosition(sceneConfiguration.StartingPositions.Fourth.ToVector2());
             }
 
             BulletManager.Initialize(Scene.CollisionBoxes);
             CrateManager.Initialize(Scene.CollisionBoxes);
+
             EffectManager.Initialize();
+
             EnvironmentalEffectsManager.Initialize(sceneConfiguration.EnvironmentalEffects);
+
             CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
             FlowManager.Initialize(sceneConfiguration.Flow);
 

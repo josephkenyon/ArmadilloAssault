@@ -2,6 +2,12 @@
   "BackgroundTexture": "desert_background",
   "PreviewTexture": "sunken_sands_preview",
   "TilesetTexture": "desert_tileset",
+  "StartingPositions": {
+  "First": { "X": 310, "Y": 120 },
+    "Second": { "X": 1600, "Y": 120 },
+    "Third": { "X": 500, "Y": 740 },
+    "Fourth": { "X": 1300, "Y": 740 }
+  },
   "CollisionBoxes": {
     "X": [ 133, 900, 1669, 661, 1093, 1141, 708, 57, 1092, 0, 1138, 1860, 0, 0 ],
     "Y": [ 900, 900, 900, 273, 562, 273, 561, 550, 550, 264, 264, 273, 274, 892 ],

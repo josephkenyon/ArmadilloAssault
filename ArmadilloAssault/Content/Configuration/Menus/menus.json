@@ -109,6 +109,21 @@
         "Data": "Titan"
       },
       {
+        "TextureName": "turbo_select",
+        "Conditions": [ "avatar_select" ],
+        "Text": "Turbo",
+        "Size": {
+          "X": 256,
+          "Y": 256
+        },
+        "Location": {
+          "X": 1312,
+          "Y": 128
+        },
+        "Actions": [ "select_avatar" ],
+        "Data": "Turbo"
+      },
+      {
         "TextKey": "level_name",
         "TextureKey": "level_texture",
         "Conditions": [ "level_select" ],
