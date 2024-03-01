@@ -23,7 +23,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         private static bool InitialDrop { get; set; }
 
-        private static int CrateSpawnRate(int avatarCount) => 500 - (avatarCount * 50);
+        private static int CrateSpawnRate(int avatarCount) => 100 - (avatarCount * 50);
 
         public static void Initialize(ICollection<Rectangle> collisionBoxes)
         {
@@ -90,7 +90,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
         private static void CreateNewCrate(CrateType? crateType = null)
         {
             var collisionBoxIndex = Random.Next(0, CollisionBoxes.Count);
-            var type = (crateType != null) ? (int)crateType : Math.Clamp(Random.Next(-1, 2), 0, 1);
+            var type = (crateType != null) ? (int)crateType : Math.Clamp(Random.Next(-1, 3), 0, 2);
 
             var relevantCollisionBox = CollisionBoxes[collisionBoxIndex];
 

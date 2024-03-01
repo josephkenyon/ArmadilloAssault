@@ -9,9 +9,9 @@
     "Fourth": { "X": 1596, "Y": 912 }
   },
   "BackgroundColor": {
-    "R": 13,
-    "G": 13,
-    "B": 13
+    "R": 42,
+    "G": 0,
+    "B": 0
   },
   "HighCloudsOnly": true,
   "Flow": {

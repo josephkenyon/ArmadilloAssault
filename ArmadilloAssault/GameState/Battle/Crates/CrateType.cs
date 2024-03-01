@@ -3,6 +3,7 @@
     public enum CrateType
     {
         Weapon,
-        Health
+        Health,
+        Power_Up,
     }
 }

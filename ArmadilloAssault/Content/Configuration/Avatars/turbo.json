@@ -51,27 +51,27 @@
     "Height": 32
   },
   "HurtBoxes": {
-    "X": [ 64, 60, 52 ],
-    "Y": [ 12, 38, 96 ],
+    "X": [ 58, 48, 46 ],
+    "Y": [ 9, 33, 96 ],
     "Width": [ 26, 24, 24 ],
-    "Height": [ 24, 58, 30 ]
+    "Height": [ 24, 64, 30 ]
   },
   "ShellBox": {
-    "X": 35,
-    "Y": 26,
-    "Width": 24,
-    "Height": 64
+    "X": 28,
+    "Y": 28,
+    "Width": 20,
+    "Height": 62
   },
   "SpinningShellBox": {
-    "X": 34,
-    "Y": 34,
-    "Width": 63,
-    "Height": 27
+    "X": 40,
+    "Y": 31,
+    "Width": 52,
+    "Height": 22
   },
   "SpinningHurtBox": {
     "X": 34,
-    "Y": 60,
+    "Y": 54,
     "Width": 62,
-    "Height": 27
+    "Height": 28
   }
 }
