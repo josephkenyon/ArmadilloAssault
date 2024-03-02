@@ -701,7 +701,7 @@ namespace ArmadilloAssault.Assets
             var seconds = powerUpType switch
             {
                 PowerUpType.Invincibility => 8,
-                PowerUpType.Damage_Up => 8,
+                PowerUpType.Damage_Up => 10,
                 PowerUpType.Super_Speed => 12,
                 PowerUpType.Invisibility => 10,
                 _ => 10

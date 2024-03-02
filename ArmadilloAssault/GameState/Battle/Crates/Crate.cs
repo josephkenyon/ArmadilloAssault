@@ -36,8 +36,6 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             var types = Enum.GetValues<PowerUpType>();
             var index = Random.NextInt64(0, types.Length);
 
-            return PowerUps.PowerUpType.Super_Speed;
-
             return types[index];
         }
     }
