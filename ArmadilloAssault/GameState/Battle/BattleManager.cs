@@ -11,14 +11,17 @@ using ArmadilloAssault.GameState.Battle.Environment.Flows;
 using ArmadilloAssault.GameState.Battle.Input;
 using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Graphics.Drawing.Avatars;
 using ArmadilloAssault.Sound;
+using ArmadilloAssault.Web.Client;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,9 +32,15 @@ namespace ArmadilloAssault.GameState.Battle
         public static Scene Scene { get; set; }
         public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; } = [];
         public static BattleFrame BattleFrame { get; set; }
+        private static Menu.Assets.Menu PauseMenu { get; set; }
+        private static bool Paused { get; set; }
+        public static bool ServerPaused { get; set; }
 
         public static void Initialize(string data)
         {
+            ServerPaused = false;
+            Paused = ServerPaused;
+
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
 
             Scene = new Scene(sceneConfiguration);
@@ -44,6 +53,8 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static void Initialize(Dictionary<PlayerIndex, AvatarType> avatars, string data)
         {
+            Paused = false;
+
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
             Scene = new Scene(sceneConfiguration);
             Avatars.Clear();
@@ -87,6 +98,29 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static void UpdateServer()
         {
+            if (ControlsManager.IsControlDownStart(0, Control.Start))
+            {
+                SetPaused(!Paused);
+            }
+
+            if (Paused)
+            {
+                PauseMenu.Update();
+
+                if (ControlsManager.IsControlDownStart(0, Control.Confirm))
+                {
+                    var button = PauseMenu.Buttons.FirstOrDefault(button => button.Selected);
+
+                    if (button != null)
+                    {
+                        SoundManager.PlayMenuSound(MenuSound.confirm);
+                        button.Actions.ForEach(action => MenuManager.InvokeAction(action, button.Data));
+                    }
+                }
+
+                return;
+            }
+ 
             EffectManager.UpdateEffects();
 
             foreach (var avatarPair in Avatars)
@@ -110,13 +144,6 @@ namespace ArmadilloAssault.GameState.Battle
             FlowManager.UpdateFlows();
 
             CrateManager.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
-
-            if (ControlsManager.IsControlDown(0, Control.Start))
-            {
-                ServerManager.EndGame();
-                GameStateManager.State = State.Menu;
-                return;
-            }
 
             BattleFrame = CreateBattleFrame();
             var hudFrames = Avatars.Values.Select(avatar =>
@@ -147,9 +174,40 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static void UpdateClient()
         {
-            EnvironmentalEffectsManager.UpdateEffects();
-            CloudManager.UpdateClouds();
-            FlowManager.UpdateFlows();
+            if (ControlsManager.IsControlDownStart(0, Control.Start))
+            {
+                SetPaused(!Paused);
+            }
+
+            if (Paused)
+            {
+                PauseMenu.Update();
+
+                if (ControlsManager.IsControlDownStart(0, Control.Confirm))
+                {
+                    var button = PauseMenu.Buttons.FirstOrDefault(button => button.Selected);
+
+                    if (button != null)
+                    {
+                        SoundManager.PlayMenuSound(MenuSound.confirm);
+                        button.Actions.ForEach(action => MenuManager.InvokeAction(action, button.Data));
+                    }
+                }
+
+                return;
+            }
+
+            if (Paused)
+            {
+                PauseMenu.Update();
+            }
+
+            if (!ServerPaused)
+            {
+                EnvironmentalEffectsManager.UpdateEffects();
+                CloudManager.UpdateClouds();
+                FlowManager.UpdateFlows();
+            }
         }
 
         public static void Draw()
@@ -214,6 +272,12 @@ namespace ArmadilloAssault.GameState.Battle
                     DrawingManager.DrawHud(BattleFrame.HudFrame);
                 }
             }
+
+            if (Paused)
+            {
+                DrawingManager.DrawMenuButtons(PauseMenu.Buttons.Where(button => button.Visible));
+                return;
+            }
         }
 
         private static BattleFrame CreateBattleFrame()
@@ -232,6 +296,29 @@ namespace ArmadilloAssault.GameState.Battle
         public static void SetRespawnTimer(int avatarIndex, int frames)
         {
             Avatars[(PlayerIndex)avatarIndex].RespawnTimerFrames = frames;
+        }
+
+        public static void SetPaused(bool paused, bool enforcedByServer = false)
+        {
+            Paused = paused;
+            if (Paused)
+            {
+                PauseMenu = new Menu.Assets.Menu(ConfigurationManager.GetMenuConfiguration("Pause"), true);
+            }
+
+            if (ServerManager.IsServing)
+            {
+                ServerManager.BroadcastPause(paused);
+            }
+            else if (ClientManager.IsActive && !enforcedByServer)
+            {
+                _ = ClientManager.BroadcastPausedChange(paused);
+            }
+        }
+
+        public static void PlayerDisconnected(int index)
+        {
+            Avatars.Remove((PlayerIndex)index);
         }
     }
 }

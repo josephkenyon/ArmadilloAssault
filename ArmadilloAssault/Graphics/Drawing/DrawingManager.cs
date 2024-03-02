@@ -189,7 +189,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                 
                 if (button.Text != null)
                 {
-                    var font = DrawingHelper.GetFont;
+                    var font = DrawingHelper.MenuFont;
                     var size = font.MeasureString(button.Text);
 
                     var textPosition = destinationRectangle.Center - (size / 2).ToPoint();

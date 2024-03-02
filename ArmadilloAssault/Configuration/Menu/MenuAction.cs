@@ -16,6 +16,8 @@
         level_select,
         prev_level,
         next_level,
-        exit
+        exit,
+        end_game,
+        end_pause
     }
 }

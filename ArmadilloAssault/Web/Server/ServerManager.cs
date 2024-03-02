@@ -99,6 +99,7 @@ namespace ArmadilloAssault.Web.Server
         public static void PlayerDisconnected(int index)
         {
             MenuManager.PlayerDisconnected(index);
+            BattleManager.PlayerDisconnected(index);
         }
 
         public static void ClientDisconnected(string id)
@@ -109,6 +110,11 @@ namespace ArmadilloAssault.Web.Server
         public static void ClientMessage(string data, string id)
         {
             Server.OnNext(data, id);
+        }
+
+        public static void BroadcastPause(bool paused)
+        {
+            Server.BroadcastPause(paused);
         }
 
         public static bool IsServing => Server != null;

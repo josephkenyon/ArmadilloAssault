@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,12 +10,14 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         public static Mode Mode { get; private set; }
 
         private static Dictionary<int, BattleStat> BattleStats { get; set; } = [];
+        private static Dictionary<int, bool> Disconnecteds { get; set; } = [];
 
         private static bool GameOver => IsGameOver();
 
         public static void Initialize(IEnumerable<PlayerIndex> playerIndices)
         {
             BattleStats.Clear();
+            Disconnecteds.Clear();
 
             foreach (var playerIndex in playerIndices)
             {
@@ -33,7 +36,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             BattleStats[deadIndex].Deaths += 1;
             BattleStats[killIndex].Kills += 1;
 
-            BattleManager.SetRespawnTimer(deadIndex, (60 * (BattleStats.Count > 2 ? 8 : 4)) + 59);
+            BattleManager.SetRespawnTimer(deadIndex, (60 * (BattleStats.Count > 2 ? 10 : 5)));
         }
 
         private static bool IsGameOver()

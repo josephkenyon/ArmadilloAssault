@@ -97,6 +97,9 @@ namespace ArmadilloAssault.Web.Client
             {
                 GameStateManager.State = State.Menu;
             }
+            else if (serverMessage.Type == ServerMessageType.Pause) {
+                BattleManager.SetPaused(serverMessage.Paused, true);
+            }
         }
 
         public static async Task BroadcastAvatarSelection(AvatarType avatarType)
@@ -125,6 +128,17 @@ namespace ArmadilloAssault.Web.Client
             var message = new ClientMessage
             {
                 Type = ClientMessageType.PreviousLevel,
+            };
+
+            await Client.MessageServer(message);
+        }
+
+        public static async Task BroadcastPausedChange(bool paused)
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.Pause,
+                Paused = paused
             };
 
             await Client.MessageServer(message);

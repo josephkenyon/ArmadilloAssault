@@ -9,6 +9,7 @@
         BattleInitialization,
         BattleUpdate,
         BattleTermination,
+        Pause
     }
 
     public enum ClientMessageType
@@ -18,5 +19,6 @@
         AvatarSelection,
         NextLevel,
         PreviousLevel,
+        Pause
     }
 }

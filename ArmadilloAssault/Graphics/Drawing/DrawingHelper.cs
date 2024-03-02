@@ -10,7 +10,7 @@ namespace ArmadilloAssault.Graphics.Drawing
     public static class DrawingHelper
     {
         private static SpriteFont EditorFont { get; set; }
-        private static SpriteFont MenuFont { get; set; }
+        public static SpriteFont MenuFont { get; private set; }
         private static SpriteFont GameFont { get; set; }
 
         public static readonly int FullTileSize = 48;

@@ -202,5 +202,24 @@
         }
       }
     ]
+  },
+  {
+    "Name": "Pause",
+    "Buttons": [
+      {
+        "Text": "Resume",
+        "Actions": [ "end_pause" ]
+      },
+      {
+        "Text": "Leave Game",
+        "Actions": [ "stop_client" ],
+        "Conditions": [ "being_served" ]
+      },
+      {
+        "Text": "End Game",
+        "Actions": [ "end_game" ],
+        "Conditions": [ "hosting", "level_select" ]
+      }
+    ]
   }
 ]

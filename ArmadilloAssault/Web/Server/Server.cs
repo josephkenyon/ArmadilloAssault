@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.GameState.Battle;
+﻿using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Generics;
@@ -139,6 +140,10 @@ namespace ArmadilloAssault.Web.Server
                 {
                     _ = MenuManager.PreviousLevel();
                 }
+                else if (clientMessage.Type == ClientMessageType.Pause)
+                {
+                    BattleManager.SetPaused(clientMessage.Paused);
+                }
             }
             catch (Exception ex)
             {
@@ -148,20 +153,34 @@ namespace ArmadilloAssault.Web.Server
 
         private void OnJoinGame(string name, string id)
         {
-            var newIndex = 0;
-            while (Players.Any(player => player.PlayerIndex == newIndex))
+            if (GameStateManager.State == State.Menu)
             {
-                newIndex++;
+                var newIndex = 0;
+                while (Players.Any(player => player.PlayerIndex == newIndex))
+                {
+                    newIndex++;
+                }
+
+                Players.Add(new Player
+                {
+                    Name = name,
+                    ConnectionId = id,
+                    PlayerIndex = newIndex
+                });
+
+                Players = [.. Players.OrderBy(player => player.PlayerIndex)];
             }
-
-            Players.Add(new Player
+            else
             {
-                Name = name,
-                ConnectionId = id,
-                PlayerIndex = newIndex
-            });
-
-            Players = [.. Players.OrderBy(player => player.PlayerIndex)];
+                try
+                {
+                    WebSocketServer.WebSocketServices["/game"].Sessions.CloseSession(id);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message);
+                }
+            }
         }
 
         private void UpdateInput(ClientMessage message, string id)
@@ -211,6 +230,20 @@ namespace ArmadilloAssault.Web.Server
             {
                 Players.Remove(player);
                 ServerManager.PlayerDisconnected(player.PlayerIndex);
+            }
+        }
+
+        public void BroadcastPause(bool paused)
+        {
+            foreach (var player in ClientPlayers)
+            {
+                var message = new ServerMessage
+                {
+                    Type = ServerMessageType.Pause,
+                    Paused = paused
+                };
+
+                Broadcast(message, player.ConnectionId);
             }
         }
 
