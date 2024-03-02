@@ -183,8 +183,10 @@ namespace ArmadilloAssault.Sound
 
         public static void PlaySounds(SoundFrame soundFrame)
         {
-            if (soundFrame != null)
+            if (soundFrame != null && !soundFrame.Played)
             {
+                soundFrame.Played = true;
+
                 if (soundFrame.CancelReloadSound)
                 {
                     CancelReloadInstances();

@@ -38,6 +38,8 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static void Initialize(string data)
         {
+            ModeManager.Clear();
+
             ServerPaused = false;
             Paused = ServerPaused;
 
@@ -98,7 +100,7 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static void UpdateServer()
         {
-            if (ControlsManager.IsControlDownStart(0, Control.Start))
+            if (ControlsManager.IsControlDownStart(0, Control.Start) && (!ModeManager.GameOver))
             {
                 SetPaused(!Paused);
             }
@@ -118,16 +120,24 @@ namespace ArmadilloAssault.GameState.Battle
                     }
                 }
 
-                return;
+                if (!ModeManager.GameOver)
+                {
+                    return;
+                }
             }
- 
+
+            if (ModeManager.GameOver && !Paused)
+            {
+                SetPaused(true);
+            }
+            
             EffectManager.UpdateEffects();
 
             foreach (var avatarPair in Avatars)
             {
                 var avatar = avatarPair.Value;
 
-                if (!avatar.IsDead)
+                if (!avatar.IsDead && !ModeManager.GameOver)
                 {
                     InputManager.UpdateAvatar((int)avatarPair.Key, avatar);
                 }
@@ -303,16 +313,24 @@ namespace ArmadilloAssault.GameState.Battle
             Paused = paused;
             if (Paused)
             {
-                PauseMenu = new Menu.Assets.Menu(ConfigurationManager.GetMenuConfiguration("Pause"), true);
+                var menuName = ModeManager.GameOver ? "Game_Over" : "Pause";
+                PauseMenu = new Menu.Assets.Menu(ConfigurationManager.GetMenuConfiguration(menuName), true);
             }
 
             if (ServerManager.IsServing)
             {
                 ServerManager.BroadcastPause(paused);
             }
-            else if (ClientManager.IsActive && !enforcedByServer)
+            else if (ClientManager.IsActive)
             {
-                _ = ClientManager.BroadcastPausedChange(paused);
+                if (!enforcedByServer)
+                {
+                    _ = ClientManager.BroadcastPausedChange(paused);
+                }
+                else if (!ModeManager.GameOver)
+                {
+                    ServerPaused = paused;
+                }
             }
         }
 

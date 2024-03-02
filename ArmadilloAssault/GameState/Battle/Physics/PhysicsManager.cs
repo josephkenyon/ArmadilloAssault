@@ -281,11 +281,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
                 var decelerationConstant = physicsObject.Grounded ? (physicsObject.RunningAcceleration * 2f) : 4f;
 
-                Trace.WriteLine(physicsObject.DragModifier);
-
                 decelerationConstant *= physicsObject.DragModifier;
-
-                Trace.WriteLine(decelerationConstant);
 
                 if (physicsObject.Velocity.X > 0)
                 {

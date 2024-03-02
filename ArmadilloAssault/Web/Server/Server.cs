@@ -1,5 +1,6 @@
 ﻿using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Generics;
@@ -142,6 +143,7 @@ namespace ArmadilloAssault.Web.Server
                 }
                 else if (clientMessage.Type == ClientMessageType.Pause)
                 {
+                    ModeManager.OverrideGameOver();
                     BattleManager.SetPaused(clientMessage.Paused);
                 }
             }
@@ -240,6 +242,7 @@ namespace ArmadilloAssault.Web.Server
                 var message = new ServerMessage
                 {
                     Type = ServerMessageType.Pause,
+                    Game_Over = ModeManager.GameOver,
                     Paused = paused
                 };
 

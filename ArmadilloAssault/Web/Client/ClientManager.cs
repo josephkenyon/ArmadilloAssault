@@ -2,6 +2,7 @@
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
@@ -98,7 +99,12 @@ namespace ArmadilloAssault.Web.Client
                 GameStateManager.State = State.Menu;
             }
             else if (serverMessage.Type == ServerMessageType.Pause) {
-                BattleManager.SetPaused(serverMessage.Paused, true);
+                if (serverMessage.Game_Over)
+                {
+                    ModeManager.OverrideGameOver();
+                }
+
+                BattleManager.SetPaused(serverMessage.Paused, enforcedByServer: true);
             }
         }
 
@@ -138,7 +144,7 @@ namespace ArmadilloAssault.Web.Client
             var message = new ClientMessage
             {
                 Type = ClientMessageType.Pause,
-                Paused = paused
+                Paused = paused,
             };
 
             await Client.MessageServer(message);

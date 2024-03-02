@@ -8,6 +8,7 @@ namespace ArmadilloAssault.Web.Communication
     {
         public ServerMessageType Type { get; set; }
         public bool Paused { get; set; }
+        public bool Game_Over { get; set; }
         public string SceneName { get; set; }
         public BattleFrame BattleFrame { get; set; }
         public LobbyFrame LobbyFrame { get; set; }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,17 +11,26 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         private static Dictionary<int, BattleStat> BattleStats { get; set; } = [];
         private static Dictionary<int, bool> Disconnecteds { get; set; } = [];
 
-        private static bool GameOver => IsGameOver();
+        private static bool GameOverOverride { get; set; }
+
+        public static bool GameOver => GameOverOverride || IsGameOver();
 
         public static void Initialize(IEnumerable<PlayerIndex> playerIndices)
         {
-            BattleStats.Clear();
-            Disconnecteds.Clear();
+            Clear();
 
             foreach (var playerIndex in playerIndices)
             {
                 BattleStats.Add((int)playerIndex, new BattleStat());
             }
+        }
+
+        public static void Clear()
+        {
+            GameOverOverride = false;
+
+            BattleStats.Clear();
+            Disconnecteds.Clear();
         }
 
         public static void AvatarHit(int hitIndex, int firedIndex, int damage)
@@ -36,7 +44,10 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             BattleStats[deadIndex].Deaths += 1;
             BattleStats[killIndex].Kills += 1;
 
-            BattleManager.SetRespawnTimer(deadIndex, (60 * (BattleStats.Count > 2 ? 10 : 5)));
+            if (!GameOver)
+            {
+                BattleManager.SetRespawnTimer(deadIndex, (60 * (BattleStats.Count > 2 ? 10 : 5)));
+            }
         }
 
         private static bool IsGameOver()
@@ -50,6 +61,11 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             }
 
             return false;
+        }
+
+        public static void OverrideGameOver()
+        {
+            GameOverOverride = true;
         }
     }
 }
