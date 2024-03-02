@@ -84,6 +84,21 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
+        public static void DrawStrings(IEnumerable<string> texts, IEnumerable<Vector2> positions)
+        {
+            _spriteBatch.Begin();
+
+            var index = 0;
+            var font = DrawingHelper.GetFont;
+            foreach (var text in texts)
+            {
+                var measureString = font.MeasureString(text);
+                _spriteBatch.DrawString(DrawingHelper.GetFont, text, positions.ElementAt(index++) - (measureString / 2), Color.White);
+            }
+
+            _spriteBatch.End();
+        }
+
         private static Color GetPlayerColor(int index)
         {
             if (index == 1)

@@ -4,6 +4,7 @@ using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.Bullets;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.GameState.Battle.Weapons;
@@ -16,7 +17,7 @@ using System.Linq;
 
 namespace ArmadilloAssault.Assets
 {
-    public class Avatar(AvatarJson avatarJson) : PhysicsObject
+    public class Avatar(int playerIndex, AvatarJson avatarJson) : PhysicsObject
     {
         // Constants
         public static readonly int spriteWidth = 128;
@@ -54,6 +55,7 @@ namespace ArmadilloAssault.Assets
         // Health
         private int health = 100;
         public int Health { get { return health; } set { health = Math.Clamp(value, 0, 100); } }
+        public int RespawnTimerFrames { get; internal set; } = -1;
 
         // Physics
         public int AvailableJumps { get; set; }
@@ -119,6 +121,7 @@ namespace ArmadilloAssault.Assets
 
         public void Update()
         {
+            UpdateRespawnTimer();
             UpdateFrameCounter();
             UpdateBreathingFrameCounter();
             UpdateRecoil();
@@ -128,6 +131,19 @@ namespace ArmadilloAssault.Assets
             UpdatePhysics();
 
             Weapons.ForEach(weapon => weapon.Update());
+        }
+
+        private void UpdateRespawnTimer()
+        {
+            if (RespawnTimerFrames >= 0)
+            {
+                if (RespawnTimerFrames == 0)
+                {
+                    Respawn();
+                }
+
+                RespawnTimerFrames--;
+            }
         }
 
         private void UpdatePhysics()
@@ -286,7 +302,7 @@ namespace ArmadilloAssault.Assets
             HasRecoil = true;
 
             var currentWeapon = Weapons[WeaponSelectionIndex];
-            currentWeapon.Fire(weaponTip, AimAngle, Direction, PowerUpType.Damage_Up == CurrentPowerUp ? 1.5f : 1.0f);
+            currentWeapon.Fire(weaponTip, AimAngle, Direction, PowerUpType.Damage_Up == CurrentPowerUp ? 1.5f : 1.0f, playerIndex);
 
             if (currentWeapon.AmmoInClip == 0 && currentWeapon.CanReload())
             {
@@ -449,6 +465,8 @@ namespace ArmadilloAssault.Assets
                 damage *= 1.5f;
             }
 
+            ModeManager.AvatarHit(playerIndex, bullet.PlayerIndex, (int)damage);
+
             Health -= (int)damage;
 
             if (IsDead)
@@ -460,13 +478,34 @@ namespace ArmadilloAssault.Assets
 
                 Animation = Animation.Dead;
                 Acceleration = Vector2.Zero;
+                Recoil = 0f;
                 InfluenceVelocity = 0;
                 RunningVelocity = 0;
+
+                ModeManager.AvatarKilled(playerIndex, bullet.PlayerIndex);
             }
             else
             {
                 SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Hurt);
             }
+        }
+
+        private void Respawn()
+        {
+            Health = 100;
+            Animation = Animation.Resting;
+            Position = StartingPosition;
+            PowerUpFramesLeft = 3 * 60;
+            CurrentPowerUp = PowerUpType.Invincibility;
+
+            WeaponSelectionIndex = 0;
+            FramesUntilRecoil = -1;
+            Reloading = false;
+            SoundManager.CancelReloadSoundEffects();
+            ReloadingFrames = 0;
+            Recoil = 0;
+            Weapons.Clear();
+            Weapons.Add(new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol)));
         }
 
         private Vector2 GetWeaponTip()
@@ -737,6 +776,18 @@ namespace ArmadilloAssault.Assets
             }
 
             return color;
+        }
+
+        public string GetRespawnMessage()
+        {
+            if (RespawnTimerFrames <= 0)
+            {
+                return "";
+            }
+
+            var seconds = RespawnTimerFrames / 60;
+
+            return "" + (seconds + 1);
         }
     }
 }

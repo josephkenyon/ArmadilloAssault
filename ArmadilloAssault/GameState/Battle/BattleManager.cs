@@ -9,6 +9,7 @@ using ArmadilloAssault.GameState.Battle.Environment.Clouds;
 using ArmadilloAssault.GameState.Battle.Environment.Effects;
 using ArmadilloAssault.GameState.Battle.Environment.Flows;
 using ArmadilloAssault.GameState.Battle.Input;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics;
@@ -26,7 +27,7 @@ namespace ArmadilloAssault.GameState.Battle
     public static class BattleManager
     {
         public static Scene Scene { get; set; }
-        public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; }
+        public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; } = [];
         public static BattleFrame BattleFrame { get; set; }
 
         public static void Initialize(string data)
@@ -45,28 +46,28 @@ namespace ArmadilloAssault.GameState.Battle
         {
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
             Scene = new Scene(sceneConfiguration);
-            Avatars = [];
+            Avatars.Clear();
 
             foreach (var index in avatars.Keys)
             {
-                Avatars.Add(index, new Avatar(ConfigurationManager.GetAvatarConfiguration(avatars[index])));
+                Avatars.Add(index, new Avatar((int)index, ConfigurationManager.GetAvatarConfiguration(avatars[index])));
             }
 
-            Avatars.Values.First().SetPosition(sceneConfiguration.StartingPositions.First.ToVector2());
+            Avatars.Values.First().SetStartingPosition(Scene.StartingPositions.First.ToVector2());
 
             if (Avatars.Values.Count >= 2)
             {
-                Avatars.Values.ElementAt(1).SetPosition(sceneConfiguration.StartingPositions.Second.ToVector2());
+                Avatars.Values.ElementAt(1).SetStartingPosition(Scene.StartingPositions.Second.ToVector2());
             }
 
             if (Avatars.Values.Count >= 3)
             {
-                Avatars.Values.ElementAt(2).SetPosition(sceneConfiguration.StartingPositions.Third.ToVector2());
+                Avatars.Values.ElementAt(2).SetStartingPosition(Scene.StartingPositions.Third.ToVector2());
             }
 
             if (Avatars.Values.Count >= 4)
             {
-                Avatars.Values.ElementAt(3).SetPosition(sceneConfiguration.StartingPositions.Fourth.ToVector2());
+                Avatars.Values.ElementAt(3).SetStartingPosition(Scene.StartingPositions.Fourth.ToVector2());
             }
 
             BulletManager.Initialize(Scene.CollisionBoxes);
@@ -78,6 +79,8 @@ namespace ArmadilloAssault.GameState.Battle
 
             CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
             FlowManager.Initialize(sceneConfiguration.Flow);
+
+            ModeManager.Initialize(avatars.Keys);
 
             BattleFrame = CreateBattleFrame();
         }
@@ -152,7 +155,6 @@ namespace ArmadilloAssault.GameState.Battle
         public static void Draw()
         {
             GraphicsManager.Clear(Scene.BackgroundColor);
-        
 
             DrawingManager.DrawCollection(FlowManager.Flows);
 
@@ -201,9 +203,16 @@ namespace ArmadilloAssault.GameState.Battle
             DrawingManager.DrawCollisionBoxes(boxList);
             **/
 
-            if (BattleFrame != null && BattleFrame.HudFrame != null)
+
+            if (BattleFrame != null)
             {
-                DrawingManager.DrawHud(BattleFrame.HudFrame);
+                var vector = new Vector2(64, 64 - 16);
+                DrawingManager.DrawStrings(BattleFrame.AvatarFrame.RespawnTimers, BattleFrame.AvatarFrame.Positions.Select(position => position + vector));
+
+                if (BattleFrame.HudFrame != null)
+                {
+                    DrawingManager.DrawHud(BattleFrame.HudFrame);
+                }
             }
         }
 
@@ -214,10 +223,15 @@ namespace ArmadilloAssault.GameState.Battle
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars),
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
-                EffectFrame = EffectManager.GetEffectFrame()
+                EffectFrame = EffectManager.GetEffectFrame(),
             };
 
             return battleFrame;
+        }
+
+        public static void SetRespawnTimer(int avatarIndex, int frames)
+        {
+            Avatars[(PlayerIndex)avatarIndex].RespawnTimerFrames = frames;
         }
     }
 }

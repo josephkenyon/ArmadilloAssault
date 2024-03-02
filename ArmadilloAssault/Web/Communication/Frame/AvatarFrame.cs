@@ -14,6 +14,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<Animation> Animations { get; set; } = [];
         public List<float> ArmAngles { get; set; } = [];
         public List<int> AnimationFrames { get; set; } = [];
+        public List<string> RespawnTimers { get; set; } = [];
         public List<float> BreathingYOffsets { get; set; } = [];
         public List<bool> Deads { get; set; } = [];
         public List<Direction> Directions { get; set; } = [];
@@ -37,6 +38,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 avatarFrame.Animations.Add(avatar.Animation);
                 avatarFrame.ArmAngles.Add((float)avatar.ArmAngle);
                 avatarFrame.AnimationFrames.Add(avatar.AnimationFrame);
+                avatarFrame.RespawnTimers.Add(avatar.GetRespawnMessage());
                 avatarFrame.BreathingYOffsets.Add(avatar.GetBreathingYOffset());
                 avatarFrame.Deads.Add(avatar.IsDead);
                 avatarFrame.Directions.Add(avatar.Direction);

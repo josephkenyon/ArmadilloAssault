@@ -7,7 +7,6 @@ using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,12 +34,12 @@ namespace ArmadilloAssault.GameState.Menu.Lobby
             {
                 if (value.Type != avatarType)
                 {
-                    Avatars[index] = new Avatar(ConfigurationManager.GetAvatarConfiguration(avatarType));
+                    Avatars[index] = new Avatar((int)index, ConfigurationManager.GetAvatarConfiguration(avatarType));
                 }
             }
             else
             {
-                Avatars.Add(index, new Avatar(ConfigurationManager.GetAvatarConfiguration(avatarType)));
+                Avatars.Add(index, new Avatar((int)index, ConfigurationManager.GetAvatarConfiguration(avatarType)));
             }
 
             var rectangle = GetPlayerBackgroundRectangles()[index];

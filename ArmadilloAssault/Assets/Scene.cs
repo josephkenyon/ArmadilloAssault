@@ -15,6 +15,8 @@ namespace ArmadilloAssault.Assets
         public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetHurtBoxes(json.CollisionBoxes);
         public List<TileList> TileLists { get; set; } = GetTileLists(json);
 
+        public readonly StartingPositions StartingPositions = json.StartingPositions;
+
         public void UpdateTile(int z, Point position, Point spriteLocation, TextureName textureName)
         {
             var tileList = TileLists.SingleOrDefault(list => list.Z == z);

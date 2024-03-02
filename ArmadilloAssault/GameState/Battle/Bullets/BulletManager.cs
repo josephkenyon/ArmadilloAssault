@@ -28,10 +28,11 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             CollisionLinePairs = collisionBoxes.Select(box => new KeyValuePair<Rectangle, LineQuad>(box, LineQuad.CreateFrom(box))).ToList();
         }
              
-        public static void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory, float damageModifier)
+        public static void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory, float damageModifier, int playerIndex)
         {
             var bullet = new Bullet
             {
+                PlayerIndex = playerIndex,
                 Position = position,
                 Angle = angleTrajectory,
                 WeaponType = weaponConfiguration.Type,
