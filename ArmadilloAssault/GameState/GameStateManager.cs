@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.GameState.Editor;
+﻿using ArmadilloAssault.GameState.Battle.Camera;
+using ArmadilloAssault.GameState.Editor;
 using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Sound;
@@ -19,14 +20,11 @@ namespace ArmadilloAssault.GameState
 
                 if (_state == State.Battle)
                 {
-                    GraphicsManager.SetBattleCursor();
-
                     SoundManager.PlayMusic(MusicSong.battle_music);
                 }
                 else if (_state == State.Menu)
                 {
-                    GraphicsManager.SetMenuCursor();
-
+                    CameraManager.Disable();
                     MenuManager.Initialize();
 
                     if (oldState == State.Battle || oldState == State.None)
@@ -36,8 +34,7 @@ namespace ArmadilloAssault.GameState
                 }
                 else if (_state == State.Editor)
                 {
-                    GraphicsManager.SetMenuCursor();
-
+                    CameraManager.Disable();
                     EditorManager.Initialize();
                 }
             }

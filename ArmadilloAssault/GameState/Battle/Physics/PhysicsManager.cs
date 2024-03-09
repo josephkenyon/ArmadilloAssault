@@ -18,28 +18,9 @@ namespace ArmadilloAssault.GameState.Battle.Physics
         {
             ApplyHorizontalMotion(physicsObject, sceneCollisionBoxes);
             ApplyVerticalMotion(physicsObject, sceneCollisionBoxes);
-
-            var collisionBox = physicsObject.GetCollisionBox();
-            if (collisionBox.Left >= 1920 - 1)
-            {
-                physicsObject.SetX(physicsObject.Position.X - 1920 - collisionBox.Width + 1);
-            }
-            else if (collisionBox.Right <= 1)
-            {
-                physicsObject.SetX(physicsObject.Position.X + 1920 + collisionBox.Width - 1);
-            }
-
-            if (collisionBox.Bottom < 0)
-            {
-                physicsObject.SetY(physicsObject.Position.Y + 1080 + collisionBox.Height - 1);
-            }
-            else if (collisionBox.Top > 1080)
-            {
-                physicsObject.SetY(physicsObject.Position.Y - 1080 - collisionBox.Height + 1);
-            }
         }
 
-        public static void Update(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
+        public static void Update(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes, Point sceneSize)
         {
             avatar.Grounded = false;
             avatar.CloseToGround = false;
@@ -71,9 +52,27 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 }
             }
 
-            Update(avatar as PhysicsObject, sceneCollisionBoxes);
-        }
+            Update(avatar, sceneCollisionBoxes);
 
+            var collisionBox = avatar.GetCollisionBox();
+            if (collisionBox.Left >= sceneSize.X - 1)
+            {
+                avatar.SetX(avatar.Position.X - sceneSize.X - collisionBox.Width + 1);
+            }
+            else if (collisionBox.Right <= 1)
+            {
+                avatar.SetX(avatar.Position.X + sceneSize.X + collisionBox.Width - 1);
+            }
+
+            if (collisionBox.Bottom < 0)
+            {
+                avatar.SetY(avatar.Position.Y + sceneSize.Y + collisionBox.Height - 1);
+            }
+            else if (collisionBox.Top > sceneSize.Y)
+            {
+                avatar.SetY(avatar.Position.Y - sceneSize.Y - collisionBox.Height + 1);
+            }
+        }
 
         private static bool CanExitSpinning(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes)
         {
@@ -206,10 +205,22 @@ namespace ArmadilloAssault.GameState.Battle.Physics
         private static void ApplyDownwardMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
         {
             var collisionBox = physicsObject.GetCollisionBox();
-            var floor = GetFloor(collisionBox, sceneCollisionBoxes);
-            var floorY = floor.Value;
+            var secondCollisionBox = physicsObject.GetCollisionBox();
+            if (physicsObject is Avatar)
+            {
+                var avatar = physicsObject as Avatar;
+                if (avatar.Animation == Animation.Spinning)
+                {
+                    secondCollisionBox = avatar.GetFullCollisionBox();
+                }
+            }
 
-            if (collisionBox.Bottom == floorY)
+            var floor = GetFloor(collisionBox, sceneCollisionBoxes);
+            var secondFloor = GetFloor(secondCollisionBox, sceneCollisionBoxes);
+
+            var floorY = Math.Min(floor.Value, secondFloor.Value);
+
+            if (collisionBox.Bottom == floorY || secondCollisionBox.Bottom == floorY)
             {
                 if (physicsObject is Avatar)
                 {
@@ -241,8 +252,10 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
             var yDelta = Math.Min(physicsObject.Velocity.Y, physicsObject.MaxVelocity.Y);
 
-            if (collisionBox.Bottom + yDelta >= floorY)
+            if (collisionBox.Bottom + yDelta >= floorY || secondCollisionBox.Bottom + yDelta >= floorY)
             {
+                var secondCollisionBoxTouches = secondCollisionBox.Bottom + yDelta >= floorY;
+
                 physicsObject.Velocity = new Vector2(physicsObject.Velocity.X, 0);
                 physicsObject.Grounded = true;
                 if (physicsObject is Avatar)
@@ -257,7 +270,15 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                         SoundManager.QueueBattleSound(BattleSound.footstep_grass);
                     }
                 }
-                physicsObject.SetY((int)physicsObject.Position.Y + (floorY - collisionBox.Bottom));
+
+                if (secondCollisionBoxTouches)
+                {
+                    physicsObject.SetY((int)physicsObject.Position.Y + (floorY - secondCollisionBox.Bottom));
+                }
+                else
+                {
+                    physicsObject.SetY((int)physicsObject.Position.Y + (floorY - collisionBox.Bottom));
+                }
             }
             else
             {

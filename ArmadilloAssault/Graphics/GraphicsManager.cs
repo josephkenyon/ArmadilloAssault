@@ -16,6 +16,8 @@ namespace ArmadilloAssault.Graphics
 
         private static GraphicsDevice _graphicsDevice;
 
+        public static Point ScreenCenter => new(_graphicsDevice.Viewport.Width / 2, _graphicsDevice.Viewport.Height / 2);
+
         public static void Initialize(Engine engine)
         {
             _graphicsDeviceManager = new(engine)
@@ -56,20 +58,10 @@ namespace ArmadilloAssault.Graphics
             _graphicsDevice.Clear(color);
         }
 
-        public static void SetBattleCursor()
-        {
-            Mouse.SetCursor(MouseCursor.FromTexture2D(TextureManager.GetTexture(TextureName.crosshair), 0, 0));
-        }
-
         public static void ToggleFullscreen()
         {
             _graphicsDeviceManager.IsFullScreen = !_graphicsDeviceManager.IsFullScreen;
             _graphicsDeviceManager.ApplyChanges();
-        }
-
-        public static void SetMenuCursor()
-        {
-            Mouse.SetCursor(MouseCursor.Arrow);
         }
     }
 }

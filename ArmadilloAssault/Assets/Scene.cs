@@ -1,4 +1,5 @@
 ﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Textures;
 using Microsoft.Xna.Framework;
@@ -10,7 +11,10 @@ namespace ArmadilloAssault.Assets
     public class Scene(SceneJson json)
     {
         public TextureName BackgroundTexture { get; set; } = json.BackgroundTexture;
+        public TextureName PreviewTexture { get; set; } = json.PreviewTexture;
         public TextureName TilesetTexture { get; set; } = json.TilesetTexture;
+        public Point Size { get; private set; } = json.Size != null ? json.Size.ToPoint() : new Point(1920, 1080);
+        public ColorJson BackgroundColorJson { get; private set; } = json.BackgroundColor;
         public Color BackgroundColor { get; private set; } = json.BackgroundColor != null ? new Color(json.BackgroundColor.R, json.BackgroundColor.G, json.BackgroundColor.B) : Color.CornflowerBlue;
         public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetHurtBoxes(json.CollisionBoxes);
         public List<TileList> TileLists { get; set; } = GetTileLists(json);

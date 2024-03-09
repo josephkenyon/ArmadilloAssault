@@ -9,6 +9,7 @@ using System;
 using ArmadilloAssault.GameState.Menu.Assets;
 using ArmadilloAssault.GameState.Menu;
 using System.Linq;
+using ArmadilloAssault.GameState.Battle.Camera;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -46,14 +47,14 @@ namespace ArmadilloAssault.Graphics.Drawing
             );
         }
 
-        public static void DrawTexture(TextureName textureName, Rectangle destinationRectangle, float opacity = 1f)
+        public static void DrawTexture(TextureName textureName, Rectangle destinationRectangle, float opacity = 1f, Rectangle? sourceRectangle = null)
         {
             _spriteBatch.Begin();
 
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(textureName),
                 destinationRectangle: destinationRectangle,
-                sourceRectangle: null,
+                sourceRectangle: sourceRectangle,
                 rotation: 0f,
                 effects: SpriteEffects.None,
                 origin: Vector2.Zero,
@@ -219,26 +220,39 @@ namespace ArmadilloAssault.Graphics.Drawing
 
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(TextureName.white_pixel),
-                destinationRectangle: new Rectangle(hudFrame.AvatarX + 16, hudFrame.AvatarY - 24, 96, 8),
+                destinationRectangle: new Rectangle(hudFrame.AvatarX + 16 - CameraManager.CameraOffset.X, hudFrame.AvatarY - 24 - CameraManager.CameraOffset.Y, 96, 8),
                 sourceRectangle: new Rectangle(0, 0, 1, 1),
                 color: Color.Black * 0.5f
             );
 
             _spriteBatch.Draw(
                texture: TextureManager.GetTexture(TextureName.white_pixel),
-               destinationRectangle: new Rectangle(hudFrame.AvatarX + 16, hudFrame.AvatarY - 24, Math.Clamp((int)(96f * (hudFrame.Health / 100f)), 2, 100), 8),
+               destinationRectangle: new Rectangle(
+                   hudFrame.AvatarX + 16 - CameraManager.CameraOffset.X,
+                   hudFrame.AvatarY - 24 - CameraManager.CameraOffset.Y,
+                   Math.Clamp((int)(96f * (hudFrame.Health / 100f)), 2, 100), 8
+                ),
                sourceRectangle: new Rectangle(0, 0, 1, 1),
                color: Color.Red * 0.5f
             );
 
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(TextureName.bullet_box),
-                destinationRectangle: new Rectangle(hudFrame.AvatarX + 24, hudFrame.AvatarY - 64, 32, 32),
+                destinationRectangle: new Rectangle(
+                    hudFrame.AvatarX + 24 - CameraManager.CameraOffset.X,
+                    hudFrame.AvatarY - 64 - CameraManager.CameraOffset.Y,
+                    32, 32
+                ),
                 color: Color.White
              );
 
             _spriteBatch.DrawString(
-                DrawingHelper.GetFont, $"x {hudFrame.Ammo}", new Vector2(hudFrame.AvatarX + 64, hudFrame.AvatarY - 56), Color.White
+                DrawingHelper.GetFont, $"x {hudFrame.Ammo}",
+                new Vector2(
+                    hudFrame.AvatarX + 64 - CameraManager.CameraOffset.X,
+                    hudFrame.AvatarY - 56 - CameraManager.CameraOffset.Y
+                ),
+                Color.White
             );
 
 

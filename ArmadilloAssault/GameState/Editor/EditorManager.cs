@@ -4,6 +4,7 @@ using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using System.Text.Json;
 
@@ -11,7 +12,7 @@ namespace ArmadilloAssault.GameState.Editor
 {
     public static class EditorManager
     {
-        private static readonly Point SceneSize = new(40, 23);
+        private static Point SceneSize = new(40, 23);
         public static Scene Scene { get; set; }
 
         public static int Z { get; set; }
@@ -20,8 +21,10 @@ namespace ArmadilloAssault.GameState.Editor
 
         public static void Initialize()
         {
-            Scene = new Scene(ConfigurationManager.GetSceneConfiguration("molten_mountain"));
-            Z = -1;
+            Scene = new Scene(ConfigurationManager.GetSceneConfiguration("editor"));
+            SceneSize = new Point(Scene.Size.X / 48, (int)Math.Round(Scene.Size.Y / 48d, MidpointRounding.AwayFromZero));
+            DrawingHelper.SceneSize = Scene.Size;
+            Z = 1;
             SelectedTextureName = Scene.TilesetTexture;
             SpriteSelectionIndex = new Point(0, 0);
         }
@@ -99,6 +102,9 @@ namespace ArmadilloAssault.GameState.Editor
             {
                 var json = JsonSerializer.Serialize(ConfigurationHelper.GetSceneJson(Scene));
                 File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "editor.json"), json);
+
+                ConfigurationManager.LoadScenes();
+
                 GameStateManager.State = State.Menu;
             }
         }
@@ -108,7 +114,7 @@ namespace ArmadilloAssault.GameState.Editor
             var scaleConstant = DrawingHelper.ScaleConstant;
             var scaledTileSize = DrawingHelper.TileSize;
 
-            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, (int)(1920 * DrawingHelper.ScaleConstant), (int)(1080 * DrawingHelper.ScaleConstant)));
+            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, (int)(Scene.Size.X * DrawingHelper.ScaleConstant), (int)(Scene.Size.Y * DrawingHelper.ScaleConstant)));
 
             Scene.TileLists.ForEach(list => DrawingManager.DrawCollection([.. list.Tiles]));
 

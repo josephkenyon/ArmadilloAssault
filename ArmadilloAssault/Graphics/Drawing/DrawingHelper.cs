@@ -1,8 +1,10 @@
 ﻿
 using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle.Camera;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 
 namespace ArmadilloAssault.Graphics.Drawing
@@ -28,7 +30,15 @@ namespace ArmadilloAssault.Graphics.Drawing
             }
         }
 
-        public static int TileSize => GameStateManager.State == State.Editor ? 32 : 48;
+        public static Point SceneSize { get; set; }
+        private static int SolveLinearFunction(double x)
+        {
+            double slope = -1.0 / 96.0; // Slope
+            double intercept = 60.0; // Y-intercept
+            double result = slope * x + intercept;
+            return (int)Math.Round(result, MidpointRounding.AwayFromZero);
+        }
+        public static int TileSize => GameStateManager.State == State.Editor ? SolveLinearFunction(SceneSize.X) : 48;
 
         public static float ScaleConstant => (float) TileSize / FullTileSize;
         public static float ReverseScaleConstant => (float)FullTileSize / TileSize;
@@ -45,7 +55,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         public static Rectangle GetDestinationRectangle(Point point, Point? size = null)
         {
             var newSize = size ?? new Point(1, 1);
-            return new Rectangle(point.X * TileSize, point.Y * TileSize, newSize.X * TileSize, newSize.Y * TileSize);
+            return new Rectangle(point.X * TileSize - CameraManager.CameraOffset.X, point.Y * TileSize - CameraManager.CameraOffset.Y, newSize.X * TileSize, newSize.Y * TileSize);
         }
 
         public static Rectangle GetDestinationRectangle(Vector2 point, Point? size = null)

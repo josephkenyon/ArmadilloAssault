@@ -65,7 +65,7 @@ namespace ArmadilloAssault.Configuration
             }
         }
 
-        private static void LoadScenes()
+        public static void LoadScenes()
         {
             _sceneConfigurations = [];
 

@@ -35,6 +35,9 @@
 #begin Configuration/Menus/menus.json
 /copy:Configuration/Menus/menus.json
 
+#begin Configuration/Scenes/editor.json
+/copy:Configuration/Scenes/editor.json
+
 #begin Configuration/Scenes/gusty_gorge.json
 /copy:Configuration/Scenes/gusty_gorge.json
 

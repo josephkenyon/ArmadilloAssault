@@ -43,7 +43,7 @@ namespace ArmadilloAssault.GameState.Menu
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(SceneName.gusty_gorge.ToString());
             Scene = new Scene(sceneConfiguration);
 
-            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
+            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly, new Point(1920, 1080));
 
             UpdateCurrentMenu();
         }

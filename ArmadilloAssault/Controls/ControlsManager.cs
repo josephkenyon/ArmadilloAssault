@@ -1,4 +1,7 @@
-﻿using ArmadilloAssault.Graphics;
+﻿using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Camera;
+using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -172,9 +175,19 @@ namespace ArmadilloAssault.Controls
 
             updateMouseControl(mouseState.LeftButton, Control.Fire_Primary);
             updateMouseControl(mouseState.RightButton, Control.Fire_Secondary);
+            updateMouseControl(mouseState.MiddleButton, Control.Toggle_Scope);
             updateMouseControl(mouseState.LeftButton, Control.Confirm);
 
-            controlsState.AimPosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
+            if (GameStateManager.State == State.Battle && !BattleManager.Paused)
+            {
+                CameraManager.UpdateFocusOffset(mouseState.Position.ToVector2());
+
+                controlsState.AimPosition = CameraManager.CursorPosition;
+            }
+            else
+            {
+                controlsState.AimPosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
+            }
         }
 
         private static void UpdateGamePadControlState(ControlsState controlsState, PlayerIndex playerIndex)

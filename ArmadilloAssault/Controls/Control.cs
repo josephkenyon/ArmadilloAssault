@@ -13,6 +13,7 @@ namespace ArmadilloAssault.Controls
         Up,
         Down,
         Jump,
+        Toggle_Scope,
         Fire_Primary,
         Fire_Secondary,
         Reload,

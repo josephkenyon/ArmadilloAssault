@@ -1,8 +1,10 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState.Battle.Bullets;
+using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState.Battle.Crates;
 using ArmadilloAssault.GameState.Battle.Effects;
 using ArmadilloAssault.GameState.Battle.Environment.Clouds;
@@ -33,8 +35,8 @@ namespace ArmadilloAssault.GameState.Battle
         public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; } = [];
         public static BattleFrame BattleFrame { get; set; }
         private static Menu.Assets.Menu PauseMenu { get; set; }
-        private static bool Paused { get; set; }
-        public static bool ServerPaused { get; set; }
+        public static bool Paused { get; private set; }
+        private static bool ServerPaused { get; set; }
 
         public static void Initialize(string data)
         {
@@ -49,7 +51,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             EffectManager.Initialize();
             EnvironmentalEffectsManager.Initialize(sceneConfiguration.EnvironmentalEffects);
-            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
+            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly, Scene.Size);
             FlowManager.Initialize(sceneConfiguration.Flow);
         }
 
@@ -59,6 +61,9 @@ namespace ArmadilloAssault.GameState.Battle
 
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
             Scene = new Scene(sceneConfiguration);
+
+            CameraManager.Initialize(Scene.Size);
+
             Avatars.Clear();
 
             foreach (var index in avatars.Keys)
@@ -90,7 +95,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             EnvironmentalEffectsManager.Initialize(sceneConfiguration.EnvironmentalEffects);
 
-            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly);
+            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly, Scene.Size);
             FlowManager.Initialize(sceneConfiguration.Flow);
 
             ModeManager.Initialize(avatars.Keys);
@@ -142,7 +147,7 @@ namespace ArmadilloAssault.GameState.Battle
                     InputManager.UpdateAvatar((int)avatarPair.Key, avatar);
                 }
 
-                PhysicsManager.Update(avatar, Scene.CollisionBoxes);
+                PhysicsManager.Update(avatar, Scene.CollisionBoxes, Scene.Size);
 
                 avatar.Update();
             }
@@ -154,6 +159,8 @@ namespace ArmadilloAssault.GameState.Battle
             FlowManager.UpdateFlows();
 
             CrateManager.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
+
+            CameraManager.UpdateFocusPoint(Avatars.Values.First().Position);
 
             BattleFrame = CreateBattleFrame();
             var hudFrames = Avatars.Values.Select(avatar =>
@@ -170,7 +177,10 @@ namespace ArmadilloAssault.GameState.Battle
 
             SoundManager.PushSounds(BattleFrame);
 
-            ServerManager.SendBattleFrame(BattleFrame, hudFrames);
+            if (ServerManager.IsServing)
+            {
+                ServerManager.SendBattleFrame(BattleFrame, hudFrames);
+            }
 
             var myIndex = BattleFrame.AvatarFrame.PlayerIndices.FindIndex(index => index == 0);
             BattleFrame.HudFrame = hudFrames.ElementAt(myIndex);
@@ -226,7 +236,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             DrawingManager.DrawCollection(FlowManager.Flows);
 
-            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f);
+            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f, CameraManager.GetBackgroundSourceRectangle());
 
             DrawingManager.DrawCollection(EnvironmentalEffectsManager.Effects);
 
@@ -288,6 +298,8 @@ namespace ArmadilloAssault.GameState.Battle
                 DrawingManager.DrawMenuButtons(PauseMenu.Buttons.Where(button => button.Visible));
                 return;
             }
+
+            DrawingManager.DrawTexture(TextureName.crosshair, CameraManager.CursorPosition - new Vector2(16, 16));
         }
 
         private static BattleFrame CreateBattleFrame()

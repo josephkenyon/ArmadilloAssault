@@ -1,5 +1,6 @@
 ﻿using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace ArmadilloAssault.GameState.Battle.Physics
 {

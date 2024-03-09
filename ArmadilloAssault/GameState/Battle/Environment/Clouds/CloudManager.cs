@@ -10,7 +10,6 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
         public static readonly int CloudSpriteSize = 256;
         public static readonly float CloudSpeed = 1.5f;
 
-
         public static List<Cloud> Clouds { get; private set; }
         private static Random Random { get; set; }
 
@@ -21,9 +20,11 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
         private static int LastSprite { get; set; }
         private static int FramesSinceLastCloud { get; set; }
         private static bool HighCloudsOnly { get; set; }
+        private static Point SceneSize { get; set; }
 
-        public static void Initialize(bool highCloudsOnly)
+        public static void Initialize(bool highCloudsOnly, Point sceneSize)
         {
+            SceneSize = sceneSize;
             HighCloudsOnly = highCloudsOnly;
             AllowedXs = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
             AllowedXsSize = AllowedXs.Count;
@@ -46,7 +47,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 
         public static void UpdateClouds()
         {
-            Clouds.RemoveAll(cloud => (cloud.Position.X > (1920 + (cloud.Size.X * 2))) || cloud.Position.X < (0 - (cloud.Size.X * 2)));
+            Clouds.RemoveAll(cloud => (cloud.Position.X > (SceneSize.X + (cloud.Size.X * 2))) || cloud.Position.X < (0 - (cloud.Size.X * 2)));
 
             foreach (var cloud in Clouds)
             {
@@ -104,7 +105,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
             if (anyX)
             {
                 var xGeneration = Random.Next(0, AllowedXs.Count);
-                x = AllowedXs[xGeneration] * (1920 / AllowedXsSize) - size.X;
+                x = AllowedXs[xGeneration] * (SceneSize.X / AllowedXsSize) - size.X;
 
                 if (AllowedXs.Count < 1)
                 {
@@ -113,13 +114,13 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
             }
             else
             {
-                x = speed < 0 ? 1920 : 0 - size.X;
+                x = speed < 0 ? SceneSize.X : 0 - size.X;
             }
 
             // Speed Sign
             if (anyX)
             {
-                if ((x + (size.X / 2)) > (1920 / 2))
+                if ((x + (size.X / 2)) > (SceneSize.X / 2))
                 {
                     speed = -speed;
                 }
@@ -135,12 +136,12 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 
             LastY = y;
 
-            y = (y * 64) - (size.Y / 2);
+            y = (int)((y * (SceneSize.Y / 16.875)) - (size.Y / 2));
 
             // Add Cloud
             Clouds.Add(new Cloud
             {
-                Position = new Vector2((float)x, (float)y),
+                Position = new Vector2((float)x, y),
                 Size = size,
                 SpriteLocation = new(spriteX, spriteY),
                 Speed = speed,

@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
@@ -17,7 +18,16 @@ namespace ArmadilloAssault.GameState.Battle.Input
                 return;
             }
 
-            HandleMovement(playerIndex, avatar);
+            if (!CameraManager.Scoped)
+            {
+                HandleMovement(playerIndex, avatar);
+            }
+            else
+            {
+                avatar.InfluenceVelocity = 0;
+                avatar.RunningVelocity = 0;
+            }
+
             UpdateAimDirection(playerIndex, avatar);
             HandleWeaponControls(playerIndex, avatar);
         }
@@ -58,18 +68,14 @@ namespace ArmadilloAssault.GameState.Battle.Input
 
         private static void UpdateAimDirection(int playerIndex, Avatar avatar)
         {
-            var nullableAimPosition = ControlsManager.GetNullableAimPosition(playerIndex);
-
-            if (nullableAimPosition == null)
+            if (ControlsManager.IsControlDownStart(playerIndex, Control.Toggle_Scope))
             {
-                return;
+                CameraManager.ToggleScoped();
             }
 
-            var aimPosition = (Vector2)nullableAimPosition;
+            var origin = CameraManager.FocusPoint + avatar.GetArmOrigin() - new Vector2(64, 64) - CameraManager.CameraOffset.ToVector2();
 
-            var origin = avatar.Position + avatar.GetArmOrigin();
-
-            avatar.AimDirection = aimPosition - origin;
+            avatar.AimDirection = CameraManager.CursorPosition - origin;
 
             var direction = avatar.PeekBufferedDirection() ?? avatar.Direction;
 

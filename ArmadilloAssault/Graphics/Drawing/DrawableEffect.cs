@@ -3,6 +3,7 @@ using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
+using ArmadilloAssault.GameState.Battle.Camera;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -11,7 +12,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         private readonly EffectJson Configuration = ConfigurationManager.GetEffectConfiguration(type);
         public TextureName Texture => Configuration.TextureName;
 
-        public Rectangle GetDestinationRectangle() => new(position.ToPoint(), Configuration.Size.ToPoint());
+        public Rectangle GetDestinationRectangle() => new(position.ToPoint() - CameraManager.CameraOffset, Configuration.Size.ToPoint());
         public Rectangle? GetSourceRectangle() => new Rectangle(
             (frame % Configuration.SpriteRowLength) * Configuration.SpriteSize.X,
             (frame / Configuration.SpriteRowLength) * Configuration.SpriteSize.Y,

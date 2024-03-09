@@ -159,7 +159,7 @@ namespace ArmadilloAssault.Assets
                 }
                 else if (Animation == Animation.Spinning)
                 {
-                    BufferAnimation(Animation.Resting);
+                    SetAnimation(Animation.Resting);
                 }
 
                 if (Animation == Animation.Rolling && RollingFrameCount == (SuperSpeed ? 20 : 35))
@@ -611,8 +611,14 @@ namespace ArmadilloAssault.Assets
                 return CollisionHelper.OffsetRectangle(SpinningCollisionBox, Position);
             }
 
+            return GetFullCollisionBox();
+        }
+
+        public Rectangle GetFullCollisionBox()
+        {
             return CollisionHelper.OffsetRectangle(CollisionBox, Position);
         }
+
 
         public IEnumerable<Rectangle> GetHurtBoxes()
         {
@@ -665,7 +671,10 @@ namespace ArmadilloAssault.Assets
 
         public void BufferAnimation(Animation bufferedAnimation)
         {
-            BufferedAnimation = bufferedAnimation;
+            if (Animation != bufferedAnimation)
+            {
+                BufferedAnimation = bufferedAnimation;
+            }
         }
 
         public Animation? PopBufferedAnimation()

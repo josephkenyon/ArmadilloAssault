@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
@@ -133,8 +134,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 var size = GetSize(avatar);
 
                 return new(
-                    (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? size.X / 2 : 0)),
-                    (int)avatar.Position.Y + (avatar.Spinning ? size.Y / 2 : 0),
+                    (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? size.X / 2 : 0)) - CameraManager.CameraOffset.X,
+                    (int)avatar.Position.Y + (avatar.Spinning ? size.Y / 2 : 0) - CameraManager.CameraOffset.Y,
                     size.X,
                     size.Y
                 );
@@ -169,8 +170,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 var size = GetSize(avatar);
 
                 return new(
-                    (int)(avatar.Position.X + SpriteOffset),
-                    (int)avatar.Position.Y,
+                    (int)(avatar.Position.X + SpriteOffset) - CameraManager.CameraOffset.X,
+                    (int)avatar.Position.Y - CameraManager.CameraOffset.Y,
                     size.X,
                     size.Y
                 );
@@ -307,8 +308,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 var size = GetSize(avatar);
 
                 return new(
-                    (int)(avatar.Position.X + origin.X + SpriteOffest + (offset != null ? ((Point)offset).X : 0)),
-                    (int)(avatar.Position.Y + origin.Y + (applyBreathing ? avatar.BreathingYOffset : 0) + (offset != null ? ((Point)offset).Y : 0)),
+                    (int)(avatar.Position.X + origin.X + SpriteOffest + (offset != null ? ((Point)offset).X : 0)) - CameraManager.CameraOffset.X,
+                    (int)(avatar.Position.Y + origin.Y + (applyBreathing ? avatar.BreathingYOffset : 0) + (offset != null ? ((Point)offset).Y : 0)) - CameraManager.CameraOffset.Y,
                     size.X,
                     size.Y
                 );

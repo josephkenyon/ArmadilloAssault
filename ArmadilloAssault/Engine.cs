@@ -1,8 +1,10 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Web;
 using ArmadilloAssault.GameState.Editor;
 using ArmadilloAssault.GameState.Menu;
 using ArmadilloAssault.Graphics;
@@ -45,6 +47,11 @@ namespace ArmadilloAssault
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             SoundManager.LoadContent(Content);
 
+            //BattleManager.Initialize(new Dictionary<PlayerIndex, AvatarType>
+            //{
+            //    { PlayerIndex.One, AvatarType.Arthur }
+            //}, "editor");
+
             GameStateManager.State = State.Menu;
         }
 
@@ -70,13 +77,15 @@ namespace ArmadilloAssault
                 _ = ClientManager.BroadcastUpdate();
             }
 
+            IsMouseVisible = GameStateManager.State != State.Battle || BattleManager.Paused;
+
             switch (GameStateManager.State)
             {
                 case State.Menu:
                     MenuManager.Update();
                     break;
                 case State.Battle:
-                    if (ServerManager.IsServing)
+                    if (ServerManager.IsServing || true)
                     {
                         BattleManager.UpdateServer();
                     }

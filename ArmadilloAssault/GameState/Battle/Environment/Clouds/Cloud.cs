@@ -1,4 +1,5 @@
 ﻿using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
@@ -23,6 +24,6 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 
         public float Opacity => Foreground ? Math.Clamp(0.25f * Math.Abs(Speed), 0.1f, 0.3f) : Math.Clamp(0.45f * Math.Abs(Speed), 0.2f, 1f);
 
-        public Rectangle GetDestinationRectangle() => new(Position.ToPoint(), Size);
+        public Rectangle GetDestinationRectangle() => new(Position.ToPoint() - CameraManager.CameraOffset, Size);
     }
 }
