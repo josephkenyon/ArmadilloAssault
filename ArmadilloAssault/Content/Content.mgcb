@@ -20,6 +20,9 @@
 #begin Configuration/Avatars/axel.json
 /copy:Configuration/Avatars/axel.json
 
+#begin Configuration/Avatars/claus.json
+/copy:Configuration/Avatars/claus.json
+
 #begin Configuration/Avatars/titan.json
 /copy:Configuration/Avatars/titan.json
 
@@ -149,6 +152,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Sprites/axel.png
 
+#begin Graphics/Sprites/claus.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Sprites/claus.png
+
 #begin Graphics/Sprites/clouds.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -256,6 +271,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/Avatar_Selection/axel_select.png
+
+#begin Graphics/Textures/Avatar_Selection/claus_select.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/Avatar_Selection/claus_select.png
 
 #begin Graphics/Textures/Avatar_Selection/titan_select.png
 /importer:TextureImporter
@@ -607,6 +634,30 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Battle/rolling_grass.mp3
+
+#begin Sound/Claus/claus_dead.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Claus/claus_dead.mp3
+
+#begin Sound/Claus/claus_hurt.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Claus/claus_hurt.mp3
+
+#begin Sound/Claus/claus_jump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Claus/claus_jump.mp3
+
+#begin Sound/Claus/claus_ready.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Claus/claus_ready.mp3
 
 #begin Sound/Menu/cancel.mp3
 /importer:Mp3Importer

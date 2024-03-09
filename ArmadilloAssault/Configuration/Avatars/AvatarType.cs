@@ -5,6 +5,7 @@
         Arthur,
         Axel,
         Titan,
-        Turbo
+        Turbo,
+        Claus,
     }
 }

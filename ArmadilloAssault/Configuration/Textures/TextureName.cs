@@ -11,6 +11,8 @@
         blood_splatter,
         bullet,
         bullet_box,
+        claus,
+        claus_select,
         clouds,
         crates,
         crates_parachuting,

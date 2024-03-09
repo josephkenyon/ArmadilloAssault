@@ -1,0 +1,77 @@
+{
+  "TextureName": "claus",
+  "ArmOrigin": {
+    "X": 52,
+    "Y": 55
+  },
+  "HeadOrigin": {
+    "X": 75,
+    "Y": 44
+  },
+  "Size": {
+    "X": 128,
+    "Y": 128
+  },
+  "SpriteOffset": {
+    "X": 10,
+    "Y": 0
+  },
+  "Animations": {
+    "Running": {
+      "FrameCount": 10,
+      "X": 0,
+      "Y": 1
+    },
+    "Jumping": {
+      "FrameCount": 4,
+      "X": 0,
+      "Y": 3
+    },
+    "Spinning": {
+      "FrameCount": 1,
+      "X": 4,
+      "Y": 0
+    },
+    "Falling": {
+      "FrameCount": 2,
+      "X": 4,
+      "Y": 3
+    }
+  },
+  "CollisionBox": {
+    "X": 48,
+    "Y": 16,
+    "Width": 32,
+    "Height": 112
+  },
+  "SpinningCollisionBox": {
+    "X": 48,
+    "Y": 52,
+    "Width": 32,
+    "Height": 32
+  },
+  "HurtBoxes": {
+    "X": [ 58, 48, 46 ],
+    "Y": [ 9, 33, 96 ],
+    "Width": [ 26, 24, 24 ],
+    "Height": [ 24, 64, 30 ]
+  },
+  "ShellBox": {
+    "X": 28,
+    "Y": 28,
+    "Width": 20,
+    "Height": 62
+  },
+  "SpinningShellBox": {
+    "X": 40,
+    "Y": 31,
+    "Width": 52,
+    "Height": 22
+  },
+  "SpinningHurtBox": {
+    "X": 34,
+    "Y": 54,
+    "Width": 62,
+    "Height": 28
+  }
+}

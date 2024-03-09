@@ -72,7 +72,7 @@
           "Y": 256
         },
         "Location": {
-          "X": 352,
+          "X": 112,
           "Y": 128
         },
         "Actions": [ "select_avatar" ],
@@ -87,7 +87,7 @@
           "Y": 256
         },
         "Location": {
-          "X": 672,
+          "X": 400,
           "Y": 128
         },
         "Actions": [ "select_avatar" ],
@@ -102,7 +102,7 @@
           "Y": 256
         },
         "Location": {
-          "X": 992,
+          "X": 976,
           "Y": 128
         },
         "Actions": [ "select_avatar" ],
@@ -117,11 +117,26 @@
           "Y": 256
         },
         "Location": {
-          "X": 1312,
+          "X": 1264,
           "Y": 128
         },
         "Actions": [ "select_avatar" ],
         "Data": "Turbo"
+      },
+      {
+        "TextureName": "claus_select",
+        "Conditions": [ "avatar_select" ],
+        "Text": "Claus",
+        "Size": {
+          "X": 256,
+          "Y": 256
+        },
+        "Location": {
+          "X": 1552,
+          "Y": 128
+        },
+        "Actions": [ "select_avatar" ],
+        "Data": "Claus"
       },
       {
         "TextKey": "level_name",
