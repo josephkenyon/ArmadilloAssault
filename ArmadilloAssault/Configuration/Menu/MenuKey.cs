@@ -1,4 +1,4 @@
-﻿namespace ArmadilloAssault.Configuration.Menu
+﻿namespace ArmadilloAssault.Configuration.Menus
 {
     public enum MenuKey
     {

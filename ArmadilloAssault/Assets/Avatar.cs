@@ -3,6 +3,7 @@ using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Bullets;
 using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.Physics;
@@ -17,7 +18,7 @@ using System.Linq;
 
 namespace ArmadilloAssault.Assets
 {
-    public class Avatar(int playerIndex, AvatarJson avatarJson) : PhysicsObject
+    public class Avatar(int playerIndex, AvatarJson avatarJson, IAvatarListener avatarListener = null) : PhysicsObject
     {
         // Constants
         public static readonly int spriteWidth = 128;
@@ -88,7 +89,7 @@ namespace ArmadilloAssault.Assets
         private Direction? BufferedDirection { get; set; }
 
         // Weapons
-        public List<Weapon> Weapons { get; private set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol))];
+        public List<Weapon> Weapons { get; private set; } = [new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol), avatarListener)];
         private int WeaponSelectionIndex { get; set; }
         public Weapon SelectedWeapon => Weapons[WeaponSelectionIndex];
         public WeaponJson CurrentWeaponConfiguration => ConfigurationManager.GetWeaponConfiguration(Weapons[WeaponSelectionIndex].Type);
@@ -465,7 +466,7 @@ namespace ArmadilloAssault.Assets
                 damage *= 1.5f;
             }
 
-            ModeManager.AvatarHit(playerIndex, bullet.PlayerIndex, (int)damage);
+            avatarListener?.AvatarHit(playerIndex, bullet.PlayerIndex, (int)damage);
 
             Health -= (int)damage;
 
@@ -482,7 +483,7 @@ namespace ArmadilloAssault.Assets
                 InfluenceVelocity = 0;
                 RunningVelocity = 0;
 
-                ModeManager.AvatarKilled(playerIndex, bullet.PlayerIndex);
+                avatarListener?.AvatarKilled(playerIndex, bullet.PlayerIndex);
             }
             else
             {
@@ -505,7 +506,7 @@ namespace ArmadilloAssault.Assets
             ReloadingFrames = 0;
             Recoil = 0;
             Weapons.Clear();
-            Weapons.Add(new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol)));
+            Weapons.Add(new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol), avatarListener));
         }
 
         private Vector2 GetWeaponTip()
@@ -730,7 +731,7 @@ namespace ArmadilloAssault.Assets
             }
             else
             {
-                var newWeapon = new Weapon(configuration);
+                var newWeapon = new Weapon(configuration, avatarListener);
                 Weapons.Add(newWeapon);
 
                 WeaponSelectionIndex = Weapons.IndexOf(newWeapon);

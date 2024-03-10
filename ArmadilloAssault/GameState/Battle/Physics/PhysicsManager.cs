@@ -5,7 +5,6 @@ using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Physics

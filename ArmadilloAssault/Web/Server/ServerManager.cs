@@ -3,7 +3,7 @@ using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
-using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;

@@ -6,8 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
-using ArmadilloAssault.GameState.Menu.Assets;
-using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.GameState.Menus.Assets;
+using ArmadilloAssault.GameState.Menus;
 using System.Linq;
 using ArmadilloAssault.GameState.Battle.Camera;
 

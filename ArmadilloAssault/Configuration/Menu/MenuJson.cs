@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ArmadilloAssault.Configuration.Menu
+namespace ArmadilloAssault.Configuration.Menus
 {
     public class MenuJson
     {

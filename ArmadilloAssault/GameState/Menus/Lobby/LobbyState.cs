@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ArmadilloAssault.GameState.Menu.Lobby
+namespace ArmadilloAssault.GameState.Menus.Lobby
 {
     public class LobbyState
     {

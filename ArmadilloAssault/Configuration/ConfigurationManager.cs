@@ -9,7 +9,7 @@ using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.Configuration.Effects;
-using ArmadilloAssault.Configuration.Menu;
+using ArmadilloAssault.Configuration.Menus;
 
 namespace ArmadilloAssault.Configuration
 {

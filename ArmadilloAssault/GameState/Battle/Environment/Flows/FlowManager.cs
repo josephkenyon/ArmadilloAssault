@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Environment.Flows
 {
-    public static class FlowManager
+    public class FlowManager
     {
-        public static FlowJson FlowConfiguration { get; private set; }
-        public static List<Flow> Flows { get; private set; }
+        public FlowJson FlowConfiguration { get; private set; }
+        public List<Flow> Flows { get; private set; }
 
-        public static void Initialize(FlowJson flowJson)
+        public FlowManager(FlowJson flowJson)
         {
             FlowConfiguration = flowJson;
             Flows = [];
@@ -21,7 +21,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Flows
             }
         }
 
-        public static void UpdateFlows()
+        public void UpdateFlows()
         {
             Flows.RemoveAll(flow => flow.X > 1920);
 
@@ -36,7 +36,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Flows
             }
         }
 
-        private static void AddNewFlow(int x)
+        private void AddNewFlow(int x)
         {
             Flows.Add(new Flow(FlowConfiguration, x));
         }

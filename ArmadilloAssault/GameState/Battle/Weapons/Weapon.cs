@@ -1,40 +1,23 @@
 ﻿using ArmadilloAssault.Configuration;
-using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.Bullets;
-using ArmadilloAssault.GameState.Battle.Effects;
 using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System;
 
 namespace ArmadilloAssault.GameState.Battle.Weapons
 {
-    public class Weapon
+    public class Weapon(WeaponJson weaponJson, IWeaponListener weaponListener)
     {
-        private readonly int FireRate;
+        private readonly int FireRate = weaponJson.FireRate;
 
-        public WeaponType Type { get; set; }
-        public int AmmoInClip { get; set; }
-        public int Ammo { get; set; }
+        public WeaponType Type { get; set; } = weaponJson.Type;
+        public int AmmoInClip { get; set; } = weaponJson.ClipSize;
+        public int Ammo { get; set; } = weaponJson.ClipSize * (weaponJson.ClipsGiven - 1);
         public int FramesSinceFired { get; set; } = -1;
 
-        private readonly WeaponJson WeaponJson;
-
-        public Weapon()
-        {
-
-        }
-
-        public Weapon(WeaponJson weaponJson)
-        {
-            FireRate = weaponJson.FireRate;
-            Type = weaponJson.Type;
-            AmmoInClip = weaponJson.ClipSize;
-            Ammo = weaponJson.ClipSize * (weaponJson.ClipsGiven - 1);
-
-            WeaponJson = weaponJson;
-        }
+        private readonly WeaponJson WeaponJson = weaponJson;
 
         public void Update()
         {
@@ -91,14 +74,14 @@ namespace ArmadilloAssault.GameState.Battle.Weapons
                 Random r = new();
                 double rDouble = r.NextDouble() * configuration.AccuracyConeDegrees - configuration.AccuracyConeDegrees / 2;
 
-                BulletManager.CreateBullet(configuration, weaponTip, (float)(newAngle + rDouble * Math.PI / 180), damageModifier, playerIndex);
+                weaponListener.CreateBullet(configuration, weaponTip, (float)(newAngle + rDouble * Math.PI / 180), damageModifier, playerIndex);
             }
 
             AmmoInClip--;
 
             var effectType = ConfigurationManager.GetWeaponConfiguration(Type).EffectType;
 
-            EffectManager.CreateEffect(weaponTip, Enum.Parse<EffectType>(effectType), direction, weaponAngle);
+            weaponListener.CreateEffect(weaponTip, Enum.Parse<EffectType>(effectType), direction, weaponAngle);
         }
     }
 }

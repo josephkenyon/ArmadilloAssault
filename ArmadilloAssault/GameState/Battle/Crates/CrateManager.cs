@@ -13,41 +13,30 @@ using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Crates
 {
-    public static class CrateManager
+    public class CrateManager(ICollection<Rectangle> collisionBoxes)
     {
-        private static List<Rectangle> CollisionBoxes { get; set; }
-        public static List<Crate> Crates { get; private set; }
-
-        private static int TimeSinceLastCrate { get; set; }
-        private static int LastX { get; set; } = -1;
-        private static Random Random { get; set; }
-
-        private static bool InitialDrop { get; set; }
-
-        private static int CrateSpawnRate(int avatarCount) => 400 - (avatarCount * 70);
-
-        public static void Initialize(ICollection<Rectangle> collisionBoxes)
-        {
-            InitialDrop = false;
-
-            TimeSinceLastCrate = 0;
-
-            CollisionBoxes = collisionBoxes.Where(box =>
+        private List<Rectangle> CollisionBoxes { get; set; } = collisionBoxes.Where(box =>
             {
                 var testRectangle = new Rectangle(box.Center.X, box.Top - 10, 48, 10);
-                if (collisionBoxes.Any(box => box.Intersects(testRectangle))) {
+                if (collisionBoxes.Any(box => box.Intersects(testRectangle)))
+                {
                     return false;
                 }
 
                 return box.Top > 48 && box.Width > 96;
             }).ToList();
 
-            Crates = [];
+        public List<Crate> Crates { get; private set; } = [];
 
-            Random = new();
-        }
+        private int TimeSinceLastCrate { get; set; } = 0;
+        private int LastX { get; set; } = -1;
+        private Random Random { get; set; } = new();
 
-        public static void UpdateCrates(ICollection<Avatar> avatars)
+        private bool InitialDrop { get; set; } = false;
+
+        private static int CrateSpawnRate(int avatarCount) => 400 - (avatarCount * 70);
+
+        public void UpdateCrates(ICollection<Avatar> avatars)
         {
             TimeSinceLastCrate++;
 
@@ -93,7 +82,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             }
         }
 
-        private static void CreateNewCrate(CrateType? crateType = null)
+        private void CreateNewCrate(CrateType? crateType = null)
         {
             var typeIndex = Random.NextInt64(0, 4);
             var type = crateType != null ? (CrateType)crateType : CrateType.Weapon;
@@ -137,7 +126,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             Crates.Add(crate);
         }
 
-        private static void GiveCrate(Avatar avatar, Crate crate)
+        private void GiveCrate(Avatar avatar, Crate crate)
         {
             if (crate.Type == CrateType.Health)
             {
@@ -155,7 +144,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             SoundManager.QueueBattleSound(BattleSound.ammo);
         }
 
-        public static CrateFrame GetCrateFrame()
+        public CrateFrame GetCrateFrame()
         {
             var crateFrame = new CrateFrame();
 
@@ -170,7 +159,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             return crateFrame;
         }
 
-        public static ICollection<DrawableCrate> GetDrawableCrates(CrateFrame crateFrame)
+        public ICollection<DrawableCrate> GetDrawableCrates(CrateFrame crateFrame)
         {
             var drawableCrates = new List<DrawableCrate>();
 

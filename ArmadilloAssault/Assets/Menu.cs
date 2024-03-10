@@ -1,12 +1,14 @@
-﻿using ArmadilloAssault.Configuration.Menu;
+﻿using ArmadilloAssault.Configuration.Menus;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState.Menus;
+using ArmadilloAssault.GameState.Menus.Assets;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ArmadilloAssault.GameState.Menu.Assets
+namespace ArmadilloAssault.Assets
 {
     public class Menu(MenuJson menu, bool applyConditionsImmediately = false)
     {
@@ -16,7 +18,9 @@ namespace ArmadilloAssault.GameState.Menu.Assets
 
         public string Name { get; set; } = menu.Name;
         public List<Button> Buttons { get; set; } = GetButtons(menu.Buttons, menu.HasLoadingSpinner, applyConditionsImmediately);
-        public LoadingSpinner LoadingSpinner { get; set; } = menu.HasLoadingSpinner ? new(new Point ((1920 / 2) - (LoadingSpinner.Size / 2), ButtonSpaceStart)) : null;
+        public LoadingSpinner LoadingSpinner { get; set; } = menu.HasLoadingSpinner ? new(new Point(1920 / 2 - LoadingSpinner.Size / 2, ButtonSpaceStart)) : null;
+
+        public IEnumerable<Button> VisibleButtons => Buttons.Where(button => button.Visible);
 
         private static List<Button> GetButtons(List<ButtonJson> buttonJsons, bool hasSpinner, bool applyConditionsImmediately = false)
         {
@@ -31,7 +35,7 @@ namespace ArmadilloAssault.GameState.Menu.Assets
                 start += LoadingSpinner.Size + ButtonsSpace;
             }
 
-            var buttonLocation = new Point((1920 / 2) - (MenuManager.ButtonSize.X / 2), start);
+            var buttonLocation = new Point(1920 / 2 - MenuManager.ButtonSize.X / 2, start);
 
             foreach (var buttonJson in buttonJsons.Where(buttonJson => !applyConditionsImmediately || MenuManager.ConditionsFulfilled(buttonJson.Conditions)))
             {

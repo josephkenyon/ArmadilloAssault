@@ -4,27 +4,27 @@ using System.Collections.Generic;
 
 namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
 {
-    public static class CloudManager
+    public class CloudManager
     {
-        private static int CloudSpawnRate => HighCloudsOnly ? 750 : 300;
+        private int CloudSpawnRate => HighCloudsOnly ? 750 : 300;
         public static readonly int CloudSpriteSize = 256;
         public static readonly float CloudSpeed = 1.5f;
 
-        public static List<Cloud> Clouds { get; private set; }
-        private static Random Random { get; set; }
+        public List<Cloud> Clouds { get; private set; }
+        private Random Random { get; set; }
 
-        private static List<int> AllowedXs { get; set; }
-        private static int AllowedXsSize { get; set; }
-        private static int SpeedSign { get; set; }
-        private static int LastY { get; set; }
-        private static int LastSprite { get; set; }
-        private static int FramesSinceLastCloud { get; set; }
-        private static bool HighCloudsOnly { get; set; }
-        private static Point SceneSize { get; set; }
+        private List<int> AllowedXs { get; set; }
+        private int AllowedXsSize { get; set; }
+        private int SpeedSign { get; set; }
+        private int LastY { get; set; }
+        private int LastSprite { get; set; }
+        private int FramesSinceLastCloud { get; set; }
+        private bool HighCloudsOnly { get; set; }
+        private Point SceneSize { get; set; }
 
-        public static void Initialize(bool highCloudsOnly, Point sceneSize)
+        public CloudManager(bool highCloudsOnly, Point? sceneSize = null)
         {
-            SceneSize = sceneSize;
+            SceneSize = sceneSize ?? new Point(1920, 1080);
             HighCloudsOnly = highCloudsOnly;
             AllowedXs = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
             AllowedXsSize = AllowedXs.Count;
@@ -45,7 +45,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
             }
         }
 
-        public static void UpdateClouds()
+        public void UpdateClouds()
         {
             Clouds.RemoveAll(cloud => (cloud.Position.X > (SceneSize.X + (cloud.Size.X * 2))) || cloud.Position.X < (0 - (cloud.Size.X * 2)));
 
@@ -66,7 +66,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Clouds
             }
         }
 
-        private static void CreateNewCloud(bool anyX, bool foreground)
+        private void CreateNewCloud(bool anyX, bool foreground)
         {
             // SpriteX
             var spriteX = LastSprite % 2;

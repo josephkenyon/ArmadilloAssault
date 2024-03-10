@@ -3,7 +3,7 @@ using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Mode;
-using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
@@ -101,7 +101,7 @@ namespace ArmadilloAssault.Web.Client
             else if (serverMessage.Type == ServerMessageType.Pause) {
                 if (serverMessage.Game_Over)
                 {
-                    ModeManager.OverrideGameOver();
+                    BattleManager.SetGameOver();
                 }
 
                 BattleManager.SetPaused(serverMessage.Paused, enforcedByServer: true);

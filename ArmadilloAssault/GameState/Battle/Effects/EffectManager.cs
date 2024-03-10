@@ -10,16 +10,11 @@ using System.Diagnostics;
 
 namespace ArmadilloAssault.GameState.Battle.Effects
 {
-    public static class EffectManager
+    public class EffectManager
     {
-        public static List<Effect> Effects { get; private set; }
+        public List<Effect> Effects { get; private set; } = [];
 
-        public static void Initialize()
-        {
-            Effects = [];
-        }
-
-        public static void CreateEffect(Vector2 position, EffectType effectType, Direction? direction = null, double? weaponAngle = null)
+        public void CreateEffect(Vector2 position, EffectType effectType, Direction? direction = null, double? weaponAngle = null)
         {
             var effectConfiguration = ConfigurationManager.GetEffectConfiguration(effectType);
 
@@ -39,7 +34,7 @@ namespace ArmadilloAssault.GameState.Battle.Effects
             Effects.Add(new Effect(effectType, effectPosition, direction));
         }
 
-        public static void UpdateEffects()
+        public void UpdateEffects()
         {
             Effects.RemoveAll(effect => effect.FrameCounter == ConfigurationManager.GetEffectConfiguration(effect.Type).FrameLife);
 
@@ -49,7 +44,7 @@ namespace ArmadilloAssault.GameState.Battle.Effects
             }
         }
 
-        public static EffectFrame GetEffectFrame()
+        public EffectFrame GetEffectFrame()
         {
             var effectFrame = new EffectFrame();
 

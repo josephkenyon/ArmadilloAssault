@@ -4,18 +4,20 @@ using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Mode
 {
-    public static class ModeManager
+    public class ModeManager
     {
-        public static Mode Mode { get; private set; }
+        public Mode Mode { get; private set; }
 
-        private static Dictionary<int, BattleStat> BattleStats { get; set; } = [];
-        private static Dictionary<int, bool> Disconnecteds { get; set; } = [];
+        private Dictionary<int, BattleStat> BattleStats { get; set; } = [];
+        private Dictionary<int, bool> Disconnecteds { get; set; } = [];
 
-        private static bool GameOverOverride { get; set; }
+        private bool GameOverOverride { get; set; }
 
-        public static bool GameOver => GameOverOverride || IsGameOver();
+        public bool GameOver => GameOverOverride || IsGameOver();
 
-        public static void Initialize(IEnumerable<PlayerIndex> playerIndices)
+        public int RespawnFrames => 60 * (BattleStats.Count > 2 ? 10 : 5);
+
+        public ModeManager(IEnumerable<PlayerIndex> playerIndices)
         {
             Clear();
 
@@ -25,7 +27,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             }
         }
 
-        public static void Clear()
+        public void Clear()
         {
             GameOverOverride = false;
 
@@ -33,24 +35,19 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             Disconnecteds.Clear();
         }
 
-        public static void AvatarHit(int hitIndex, int firedIndex, int damage)
+        public void AvatarHit(int hitIndex, int firedIndex, int damage)
         {
             BattleStats[hitIndex].DamageTaken += damage;
             BattleStats[firedIndex].DamageDealt += damage;
         }
 
-        public static void AvatarKilled(int deadIndex, int killIndex)
+        public void AvatarKilled(int deadIndex, int killIndex)
         {
             BattleStats[deadIndex].Deaths += 1;
             BattleStats[killIndex].Kills += 1;
-
-            if (!GameOver)
-            {
-                BattleManager.SetRespawnTimer(deadIndex, (60 * (BattleStats.Count > 2 ? 10 : 5)));
-            }
         }
 
-        private static bool IsGameOver()
+        private bool IsGameOver()
         {
             if (Mode == Mode.Death_Match)
             {
@@ -63,7 +60,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             return false;
         }
 
-        public static void OverrideGameOver()
+        public void OverrideGameOver()
         {
             GameOverOverride = true;
         }

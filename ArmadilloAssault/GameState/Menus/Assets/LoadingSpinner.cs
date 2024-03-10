@@ -3,7 +3,7 @@ using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace ArmadilloAssault.GameState.Menu.Assets
+namespace ArmadilloAssault.GameState.Menus.Assets
 {
     public class LoadingSpinner(Point position) : IDrawableObject
     {

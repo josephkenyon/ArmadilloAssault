@@ -15,20 +15,16 @@ using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Bullets
 {
-    public static class BulletManager
+    public class BulletManager(ICollection<Rectangle> collisionBoxes, Point sceneSize, IBulletListener bulletListener)
     {
         public static readonly float Bullet_Speed = 44f;
 
-        public static List<Bullet> Bullets { get; private set; }
-        private static List<KeyValuePair<Rectangle, LineQuad>> CollisionLinePairs { get; set; }
+        public List<Bullet> Bullets { get; private set; } = [];
+        private List<KeyValuePair<Rectangle, LineQuad>> CollisionLinePairs { get; set; } = collisionBoxes.Select(box => new KeyValuePair<Rectangle, LineQuad>(box, LineQuad.CreateFrom(box))).ToList();
 
-        public static void Initialize(ICollection<Rectangle> collisionBoxes)
-        {
-            Bullets = [];
-            CollisionLinePairs = collisionBoxes.Select(box => new KeyValuePair<Rectangle, LineQuad>(box, LineQuad.CreateFrom(box))).ToList();
-        }
-             
-        public static void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory, float damageModifier, int playerIndex)
+        private Point SceneSize { get; set; } = sceneSize;
+
+        public void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory, float damageModifier, int playerIndex)
         {
             var bullet = new Bullet
             {
@@ -42,7 +38,7 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             Bullets.Add(bullet);
         }
 
-        public static void UpdateBullets(List<Avatar> avatars)
+        public void UpdateBullets(List<Avatar> avatars)
         {
             var boxLists = avatars.Select(avatar => {
                 var avatarHurtBoxes = avatar.GetHurtBoxes().OrderBy(rec => rec.Top);
@@ -88,7 +84,7 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
                     var terrain = terrainIntersections.First();
                     var testBulletPosition = bullet.Position;
 
-                    EffectManager.CreateEffect(terrainIntersections.First(), EffectType.dust_cloud);
+                    bulletListener.CreateEffect(terrainIntersections.First(), EffectType.dust_cloud);
                     endOfLife = true;
                 }
 
@@ -111,13 +107,13 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
                                 if (pair.Key == HurtBoxType.Shell)
                                 {
                                     RichochetBullet(bullet);
-                                    EffectManager.CreateEffect(pair.Value, EffectType.ricochet);
+                                    bulletListener.CreateEffect(pair.Value, EffectType.ricochet);
                                     SoundManager.QueueBattleSound(BattleSound.ricochet);
                                 }
                                 else
                                 {
                                     avatars[i].HitByBullet(bullet, pair.Key == HurtBoxType.Head);
-                                    EffectManager.CreateEffect(pair.Value, EffectType.blood_splatter);
+                                    bulletListener.CreateEffect(pair.Value, EffectType.blood_splatter);
                                     endOfLife = true;
                                 }
                             }
@@ -129,7 +125,7 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
                 {
                     bullet.Position = GetNewBulletPosition(bullet.Position, bullet.Angle);
 
-                    if (bullet.Position.X > 1920 || bullet.Position.X < 0 || bullet.Position.Y > 1080 || bullet.Position.Y < 0)
+                    if (bullet.Position.X > SceneSize.X || bullet.Position.X < 0 || bullet.Position.Y > SceneSize.Y || bullet.Position.Y < 0)
                     {
                         endOfLife = true;
                     } 
@@ -187,7 +183,7 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             return (normalX, normalY);
         }
 
-        public static BulletFrame GetBulletFrame()
+        public BulletFrame GetBulletFrame()
         {
             var bulletFrame = new BulletFrame();
 

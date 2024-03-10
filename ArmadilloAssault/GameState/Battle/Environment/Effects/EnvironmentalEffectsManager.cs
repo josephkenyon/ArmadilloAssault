@@ -8,15 +8,15 @@ using Microsoft.Xna.Framework;
 
 namespace ArmadilloAssault.GameState.Battle.Environment.Effects
 {
-    public static class EnvironmentalEffectsManager {
-        public static List<EnvironmentalEffect> Effects { get; private set; }
-        private static int SpawnRate { get; set; } = -1;
-        private static RangeJson YRange { get; set; }
-        private static EffectType EffectType { get; set; }
-        private static Random Random { get; set; }
-        private static int FrameCounter { get; set; }
+    public class EnvironmentalEffectsManager {
+        public List<EnvironmentalEffect> Effects { get; private set; }
+        private int SpawnRate { get; set; } = -1;
+        private RangeJson YRange { get; set; }
+        private EffectType EffectType { get; set; }
+        private Random Random { get; set; }
+        private int FrameCounter { get; set; }
 
-        public static void Initialize(EnvironmentalEffectJson environmentalEffectJson)
+        public EnvironmentalEffectsManager(EnvironmentalEffectJson environmentalEffectJson)
         {
             Effects = [];
             SpawnRate = -1;
@@ -36,7 +36,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Effects
             }
         }
 
-        public static void CreateNewEffect()
+        public void CreateNewEffect()
         {
             var effectConfiguration = ConfigurationManager.GetEffectConfiguration(EffectType);
 
@@ -52,7 +52,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Effects
             });
         }
 
-        public static void UpdateEffects()
+        public void UpdateEffects()
         {
             if (SpawnRate != -1)
             {

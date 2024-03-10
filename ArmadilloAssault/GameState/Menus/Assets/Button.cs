@@ -1,9 +1,9 @@
-﻿using ArmadilloAssault.Configuration.Menu;
+﻿using ArmadilloAssault.Configuration.Menus;
 using ArmadilloAssault.Configuration.Textures;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace ArmadilloAssault.GameState.Menu.Assets
+namespace ArmadilloAssault.GameState.Menus.Assets
 {
     public class Button(ButtonJson json, Point position, Point size)
     {

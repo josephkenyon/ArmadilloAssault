@@ -1,13 +1,13 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
-using ArmadilloAssault.Configuration.Menu;
+using ArmadilloAssault.Configuration.Menus;
 using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Environment.Clouds;
-using ArmadilloAssault.GameState.Menu.Lobby;
+using ArmadilloAssault.GameState.Menus.Lobby;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Graphics.Drawing.Avatars;
@@ -21,14 +21,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ArmadilloAssault.GameState.Menu
+namespace ArmadilloAssault.GameState.Menus
 {
     public static class MenuManager
     {
         private static Stack<string> MenuStack { get; set; } = new Stack<string>(["Root"]);
         private static Scene Scene { get; set; }
+        private static CloudManager CloudManager { get; set; }
 
-        private static Assets.Menu CurrentMenu { get; set; }
+        private static Menu CurrentMenu { get; set; }
 
         public static Color BackgroundColor { get; private set; } = new Color(95, 77, 170);
         public static Color ForegroundColor { get; private set; } = new Color(209, 123, 20);
@@ -43,7 +44,7 @@ namespace ArmadilloAssault.GameState.Menu
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(SceneName.gusty_gorge.ToString());
             Scene = new Scene(sceneConfiguration);
 
-            CloudManager.Initialize(sceneConfiguration.HighCloudsOnly, new Point(1920, 1080));
+            CloudManager = new(sceneConfiguration.HighCloudsOnly);
 
             UpdateCurrentMenu();
         }
@@ -216,7 +217,7 @@ namespace ArmadilloAssault.GameState.Menu
                 LobbyState = null;
             }
 
-            CurrentMenu = new Assets.Menu(ConfigurationManager.GetMenuConfiguration(MenuStack.Peek()));
+            CurrentMenu = new Menu(ConfigurationManager.GetMenuConfiguration(MenuStack.Peek()));
         }
 
         public static void Back()

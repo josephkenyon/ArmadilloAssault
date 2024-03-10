@@ -6,7 +6,7 @@ using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Web;
 using ArmadilloAssault.GameState.Editor;
-using ArmadilloAssault.GameState.Menu;
+using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Client;
