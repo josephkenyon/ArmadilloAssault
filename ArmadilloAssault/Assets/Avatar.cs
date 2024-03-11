@@ -59,14 +59,15 @@ namespace ArmadilloAssault.Assets
         public int RespawnTimerFrames { get; internal set; } = -1;
 
         // Physics
-        public int AvailableJumps { get; set; }
+        public int AvailableJumps { get; set; } = 1;
 
         private bool runningBackwards = false;
+        public bool Scoped { get; set; }
         public bool RunningBackwards { get { return runningBackwards; } set { RunningFrameCount = runningBackwards != value && RunningFrameCount / 5 > 2 ? 0 : RunningFrameCount; runningBackwards = value; } }
         public bool IsSpinning => Animation == Animation.Spinning || Animation == Animation.Rolling;
         public int RunningFrameCount { get; set; }
         public int RollingFrameCount { get; set; }
-        public override Vector2 MaxVelocity => SuperSpeed ? new(14f, 15f) : new(8f, 11f);
+        public override Vector2 MaxVelocity => SuperSpeed ? new(15f, 16f) : new(9f, 12f);
 
         public override float RunningAcceleration => SuperSpeed ? 1.2f : 0.65f;
         public float MaxRunningVelocity => SuperSpeed ? 13f : 6.5f;
@@ -777,11 +778,8 @@ namespace ArmadilloAssault.Assets
                         return new ColorJson(blinkFrame, 255, blinkFrame);
                     case PowerUpType.Invincibility:
                         return new ColorJson(blinkFrame, blinkFrame, 255);
-                    case PowerUpType.Invisibility:
-                        return new ColorJson(255, 255, 255)
-                        {
-                            A = 50
-                        };
+                    default:
+                        return new ColorJson(255, 255, 255);
                 }
             }
 

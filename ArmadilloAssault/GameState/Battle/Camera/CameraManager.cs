@@ -10,7 +10,8 @@ namespace ArmadilloAssault.GameState.Battle.Camera
         public static Vector2 FocusPoint { get; private set; }
         private static Vector2 FocusOffset { get; set; }
 
-        public static Point CameraOffset { get; private set; }
+        public static Point Offset => GameStateManager.State == State.Battle ? CameraOffset : Point.Zero;
+        private static Point CameraOffset { get; set; }
 
         private static Point SceneSize { get; set; }
 
@@ -19,6 +20,7 @@ namespace ArmadilloAssault.GameState.Battle.Camera
 
         public static void Initialize(Point sceneSize)
         {
+            Scoped = false;
             SceneSize = sceneSize;
 
             FocusPoint = sceneSize.ToVector2() / 2;
@@ -60,7 +62,7 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             UpdateCameraOffset();
         }
 
-        public static Vector2 UpdateFocusOffset(Vector2 aimPosition)
+        public static void UpdateFocusOffset(Vector2 aimPosition)
         {
             if (Scoped)
             {
@@ -83,8 +85,6 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             }
 
             UpdateCameraOffset();
-
-            return aimPosition / 2;
         }
 
         private static void UpdateCameraOffset() {
@@ -111,13 +111,13 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             if (SceneSize.X != 1920)
             {
                 width -= (width / 4);
-                x = ScaleValue(CameraOffset.X + 960, 960, SceneSize.X - 960, 0, 960 - width);
+                x = ScaleValue(Offset.X + 960, 960, SceneSize.X - 960, 0, 960 - width);
             }
 
             if (SceneSize.Y != 1080)
             {
                 height -= (height / 4);
-                y = ScaleValue(CameraOffset.Y + 540, 540, SceneSize.X - 540, 0, 540  - height);
+                y = ScaleValue(Offset.Y + 540, 540, SceneSize.Y - 540, 0, 540 - height);
             }
 
             return new Rectangle(x, y, width, height);
@@ -130,6 +130,11 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             double scaledValue = ratio * (newMax - newMin) + newMin;
 
             return (int)scaledValue;
+        }
+
+        public static Vector2 GetAimAngle()
+        {
+            return CursorPosition - (FocusPoint - CameraOffset.ToVector2());
         }
     }
 }

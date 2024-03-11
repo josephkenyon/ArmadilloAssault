@@ -25,12 +25,14 @@ using ArmadilloAssault.Web.Server;
 using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.PowerUps;
+using Microsoft.Xna.Framework.Input;
 
 namespace ArmadilloAssault.GameState.Battle
 {
     public class Battle : IAvatarListener, IBulletListener, IWeaponListener
     {
-        public static Dictionary<PlayerIndex, Avatar> Avatars { get; set; } = [];
+        public Dictionary<PlayerIndex, Avatar> Avatars { get; set; } = [];
 
         public Scene Scene { get; set; }
         public BulletManager BulletManager { get; set; }
@@ -41,15 +43,21 @@ namespace ArmadilloAssault.GameState.Battle
         public FlowManager FlowManager { get; set; }
         public ModeManager ModeManager { get; set; }
         public BattleFrame Frame { get; set; }
-        public bool Paused { get; set; }
 
-        public Battle(string data)
+        public bool Paused { get; set; }
+        public bool GameOver { get; set; }
+
+        public readonly int PlayerIndex;
+
+        public Battle(string data, int playerIndex)
         {
-            ModeManager.Clear();
+            PlayerIndex = playerIndex;
 
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
 
             Scene = new Scene(sceneConfiguration);
+
+            CameraManager.Initialize(Scene.Size);
 
             EffectManager = new();
             EnvironmentalEffectsManager = new(sceneConfiguration.EnvironmentalEffects);
@@ -58,14 +66,12 @@ namespace ArmadilloAssault.GameState.Battle
         }
 
         public Battle(Dictionary<PlayerIndex, AvatarType> avatars, string data) {
-            Paused = false;
+            PlayerIndex = 0;
 
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
             Scene = new Scene(sceneConfiguration);
 
             CameraManager.Initialize(Scene.Size);
-
-            Avatars.Clear();
 
             foreach (var index in avatars.Keys)
             {
@@ -89,7 +95,7 @@ namespace ArmadilloAssault.GameState.Battle
                 Avatars.Values.ElementAt(3).SetStartingPosition(Scene.StartingPositions.Fourth.ToVector2());
             }
 
-            BulletManager = new(Scene.CollisionBoxes, Scene.Size, this);
+            BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);
             CrateManager = new(Scene.CollisionBoxes);
 
             EffectManager = new();
@@ -103,16 +109,17 @@ namespace ArmadilloAssault.GameState.Battle
 
             Frame = CreateFrame();
         }
-
         public void Update()
         {
+            CameraManager.UpdateFocusOffset(Mouse.GetState().Position.ToVector2());
+
             EffectManager?.UpdateEffects();
 
             foreach (var avatarPair in Avatars)
             {
                 var avatar = avatarPair.Value;
 
-                if (!avatar.IsDead && !ModeManager.GameOver)
+                if (!avatar.IsDead && !GameOver)
                 {
                     InputManager.UpdateAvatar((int)avatarPair.Key, avatar);
                 }
@@ -130,43 +137,32 @@ namespace ArmadilloAssault.GameState.Battle
 
             CrateManager?.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
 
-            CameraManager.UpdateFocusPoint(Avatars.Values.First().Position);
+            if (Avatars.Count > 0)
+            {
+                CameraManager.UpdateFocusPoint(Avatars[(PlayerIndex)PlayerIndex].Position);
+            }
 
             if (Avatars.Count > 0)
             {
                 Frame = CreateFrame();
-                var hudFrames = Avatars.Values.Select(avatar =>
-                {
-                    var weapon = avatar.SelectedWeapon;
-                    return new HudFrame
-                    {
-                        AvatarX = (int)avatar.Position.X,
-                        AvatarY = (int)avatar.Position.Y,
-                        Health = avatar.Health,
-                        Ammo = weapon.AmmoInClip + weapon.Ammo
-                    };
-                });
-
+                
                 SoundManager.PushSounds(Frame);
 
                 if (ServerManager.IsServing)
                 {
-                    ServerManager.SendBattleFrame(Frame, hudFrames);
+                    ServerManager.SendBattleFrame(Frame);
                 }
-
-                var myIndex = Frame.AvatarFrame.PlayerIndices.FindIndex(index => index == 0);
-                Frame.HudFrame = hudFrames.ElementAt(myIndex);
-
-                var index = 0;
-                Frame.AvatarFrame.Colors.ForEach(color =>
-                {
-                    color.A = MathUtils.GetAlpha(color, index++, myIndex);
-                });
             }
         }
 
         public void Draw()
         {
+            if (Frame != null)
+            {
+                var index = Frame.AvatarFrame.PlayerIndices.IndexOf(PlayerIndex);
+                CameraManager.UpdateFocusPoint(Frame.AvatarFrame.Positions[index]);
+            }
+
             GraphicsManager.Clear(Scene.BackgroundColor);
 
             DrawingManager.DrawCollection(FlowManager.Flows);
@@ -186,7 +182,7 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 SoundManager.PlaySounds(Frame.SoundFrame);
 
-                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame));
+                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame, PlayerIndex));
                 DrawingManager.DrawCollection(CrateManager.GetDrawableCrates(Frame.CrateFrame));
             }
 
@@ -219,15 +215,18 @@ namespace ArmadilloAssault.GameState.Battle
             if (Frame != null)
             {
                 var vector = new Vector2(64, 64 - 16);
-                DrawingManager.DrawStrings(Frame.AvatarFrame.RespawnTimers, Frame.AvatarFrame.Positions.Select(position => position + vector));
+                DrawingManager.DrawStrings(Frame.AvatarFrame.RespawnTimers, Frame.AvatarFrame.Positions.Select(position => position + vector - CameraManager.Offset.ToVector2()));
 
                 if (Frame.HudFrame != null)
                 {
-                    DrawingManager.DrawHud(Frame.HudFrame);
+                    DrawingManager.DrawHud(Frame.HudFrame, PlayerIndex);
                 }
             }
 
-            DrawingManager.DrawTexture(TextureName.crosshair, CameraManager.CursorPosition - new Vector2(16, 16));
+            if (!BattleManager.Paused && !GameOver)
+            {
+                DrawingManager.DrawTexture(TextureName.crosshair, CameraManager.CursorPosition - new Vector2(16, 16));
+            }
         }
 
         private BattleFrame CreateFrame()
@@ -238,12 +237,34 @@ namespace ArmadilloAssault.GameState.Battle
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
                 EffectFrame = EffectManager.GetEffectFrame(),
+                HudFrame = CreateHudFrame()
             };
 
             return battleFrame;
         }
 
-        public static void SetRespawnTimer(int avatarIndex, int frames)
+        private HudFrame CreateHudFrame()
+        {
+            var hudFrame = new HudFrame();
+
+            foreach (var avatarKey in Avatars.Keys)
+            {
+                var avatar = Avatars[avatarKey];
+
+                var weapon = avatar.SelectedWeapon;
+
+                hudFrame.PlayerIndices.Add((int)avatarKey);
+                hudFrame.Visibles.Add(PowerUpType.Invisibility != avatar.CurrentPowerUp);
+                hudFrame.AvatarXs.Add((int)avatar.Position.X);
+                hudFrame.AvatarYs.Add((int)avatar.Position.Y);
+                hudFrame.Healths.Add(avatar.Health);
+                hudFrame.Ammos.Add(weapon.AmmoInClip + weapon.Ammo);
+            }
+
+            return hudFrame;
+        }
+
+        public void SetRespawnTimer(int avatarIndex, int frames)
         {
             Avatars[(PlayerIndex)avatarIndex].RespawnTimerFrames = frames;
         }
@@ -257,7 +278,11 @@ namespace ArmadilloAssault.GameState.Battle
         {
             ModeManager.AvatarKilled(deadIndex, killIndex);
 
-            if (!ModeManager.GameOver)
+            if (ModeManager.GameOver)
+            {
+                BattleManager.SetGameOver();
+            }
+            else
             {
                 SetRespawnTimer(deadIndex, ModeManager.RespawnFrames);
             }

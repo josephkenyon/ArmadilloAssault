@@ -38,6 +38,10 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         public void UpdateCrates(ICollection<Avatar> avatars)
         {
+            if (CollisionBoxes.Count == 0) {
+                return;
+            }
+
             TimeSinceLastCrate++;
 
             if (!InitialDrop && TimeSinceLastCrate == CrateSpawnRate(avatars.Count))
@@ -126,7 +130,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             Crates.Add(crate);
         }
 
-        private void GiveCrate(Avatar avatar, Crate crate)
+        private static void GiveCrate(Avatar avatar, Crate crate)
         {
             if (crate.Type == CrateType.Health)
             {
@@ -159,7 +163,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             return crateFrame;
         }
 
-        public ICollection<DrawableCrate> GetDrawableCrates(CrateFrame crateFrame)
+        public static ICollection<DrawableCrate> GetDrawableCrates(CrateFrame crateFrame)
         {
             var drawableCrates = new List<DrawableCrate>();
 

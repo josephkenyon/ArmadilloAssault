@@ -9,6 +9,8 @@ namespace ArmadilloAssault.Configuration.Menus
         public string Text { get; set; }
         public MenuKey TextKey { get; set; }
 
+        public bool Unselectable { get; set; }
+
         public TextureName TextureName { get; set; }
         public MenuKey TextureKey { get; set; }
 

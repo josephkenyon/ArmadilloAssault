@@ -2,6 +2,7 @@
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
@@ -16,38 +17,43 @@ namespace ArmadilloAssault.GameState.Battle
 {
     public static class BattleManager
     {
-        public static BattleFrame BattleFrame { get; set; }
-        private static Menu PauseMenu { get; set; }
-        private static bool ServerPaused { get; set; }
+        private static Menu Menu { get; set; }
         private static Battle Battle { get; set; }
+        public static BattleFrame BattleFrame => Battle.Frame;
 
-        public static bool Paused => Battle == null || Battle.Paused;
-        public static bool GameOver => Battle == null || Battle.ModeManager.GameOver;
+        public static bool Paused { get; private set; }
+        public static bool ShowCursor => Paused || (Battle != null && Battle.GameOver);
 
-        public static void Initialize(string data)
+        public static void Initialize(string data, int playerIndex)
         {
-            Battle = new(data);
+            Paused = false;
+            Battle = new(data, playerIndex);
         }
 
         public static void Initialize(Dictionary<PlayerIndex, AvatarType> avatars, string data)
         {
+            Paused = false;
             Battle = new(avatars, data);
         }
 
-        public static void UpdateServer()
+        public static void Update()
         {
-            if (ControlsManager.IsControlDownStart(0, Control.Start) && (!Battle.ModeManager.GameOver))
+            if (ControlsManager.IsControlDownStart(0, Control.Start) && !Battle.GameOver)
             {
-                SetPaused(!Battle.Paused);
+                OnPause();
+            }
+            else if (ControlsManager.IsControlDownStart(0, Control.Toggle_Scope))
+            {
+                CameraManager.ToggleScoped();
             }
 
-            if (Battle.Paused)
+            if (Paused || Battle.GameOver)
             {
-                PauseMenu.Update();
+                Menu.Update();
 
                 if (ControlsManager.IsControlDownStart(0, Control.Confirm))
                 {
-                    var button = PauseMenu.Buttons.FirstOrDefault(button => button.Selected);
+                    var button = Menu.Buttons.FirstOrDefault(button => button.Selected);
 
                     if (button != null)
                     {
@@ -55,54 +61,11 @@ namespace ArmadilloAssault.GameState.Battle
                         button.Actions.ForEach(action => MenuManager.InvokeAction(action, button.Data));
                     }
                 }
-
-                if (!Battle.ModeManager.GameOver)
-                {
-                    return;
-                }
             }
 
-            if (Battle.ModeManager.GameOver && !Battle.Paused)
+            if (!Battle.Paused)
             {
-                SetPaused(true);
-            }
-
-            Battle?.Update();
-        }
-
-        public static void UpdateClient()
-        {
-            if (ControlsManager.IsControlDownStart(0, Control.Start))
-            {
-                SetPaused(!Battle.Paused);
-            }
-
-            if (Battle.Paused)
-            {
-                PauseMenu.Update();
-
-                if (ControlsManager.IsControlDownStart(0, Control.Confirm))
-                {
-                    var button = PauseMenu.Buttons.FirstOrDefault(button => button.Selected);
-
-                    if (button != null)
-                    {
-                        SoundManager.PlayMenuSound(MenuSound.confirm);
-                        button.Actions.ForEach(action => MenuManager.InvokeAction(action, button.Data));
-                    }
-                }
-
-                return;
-            }
-
-            if (Battle.Paused)
-            {
-                PauseMenu.Update();
-            }
-
-            if (!ServerPaused)
-            {
-                Battle.Update();
+                Battle?.Update();
             }
         }
 
@@ -110,42 +73,63 @@ namespace ArmadilloAssault.GameState.Battle
         {
             Battle?.Draw();
 
-            if (Battle.Paused)
+            if (Paused || (Battle != null && Battle.GameOver))
             {
-                DrawingManager.DrawMenuButtons(PauseMenu.VisibleButtons);
+                DrawingManager.DrawMenuButtons(Menu.VisibleButtons);
                 return;
             }
         }
 
-        public static void SetPaused(bool paused, bool enforcedByServer = false)
+        private static void OnPause(bool? pause = null)
         {
-            Battle.Paused = paused;
-            if (Battle.Paused)
-            {
-                var menuName = Battle.ModeManager.GameOver ? "Game_Over" : "Pause";
-                PauseMenu = new Menu(ConfigurationManager.GetMenuConfiguration(menuName), true);
-            }
+            Paused = pause ?? !Paused;
 
             if (ServerManager.IsServing)
             {
-                ServerManager.BroadcastPause(paused);
+                Battle.Paused = Paused;
+                ServerManager.BroadcastPause(Paused);
             }
-            else if (ClientManager.IsActive)
+            else
             {
-                if (!enforcedByServer)
-                {
-                    _ = ClientManager.BroadcastPausedChange(paused);
-                }
-                else if (!Battle.ModeManager.GameOver)
-                {
-                    ServerPaused = paused;
-                }
+                _ = ClientManager.BroadcastPausedChange(Paused);
+            }
+
+            if (Paused)
+            {
+                Menu = new Menu(ConfigurationManager.GetMenuConfiguration("Pause"), true);
+            }
+        }
+
+        public static void EndPause()
+        {
+            OnPause(false);
+        }
+
+        public static void SetPaused(bool paused)
+        {
+            Paused = paused;
+            Battle.Paused = Paused;
+
+            Menu = new Menu(ConfigurationManager.GetMenuConfiguration("Pause"), true);
+        }
+
+        public static void ClientPauseRequest(bool paused)
+        {
+            if (Paused != paused)
+            {
+                OnPause(paused);
             }
         }
 
         public static void SetGameOver()
         {
-            Battle?.ModeManager?.OverrideGameOver();
+            Battle.GameOver = true;
+            Menu = new Menu(ConfigurationManager.GetMenuConfiguration("Game_Over"), true);
+
+            if (ServerManager.IsServing)
+            {
+                ServerManager.BroadcastGameOver();
+            }
         }
 
         public static void PlayerDisconnected(int index)
@@ -154,6 +138,11 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 Battle.Avatars.Remove((PlayerIndex)index);
             }
+        }
+
+        public static void SetFrame(BattleFrame battleFrame)
+        {
+            Battle.Frame = battleFrame;
         }
     }
 }

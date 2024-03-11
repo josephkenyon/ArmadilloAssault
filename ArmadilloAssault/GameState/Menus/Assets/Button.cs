@@ -12,6 +12,7 @@ namespace ArmadilloAssault.GameState.Menus.Assets
         public List<MenuAction> Actions { get; set; } = json.Actions;
         public string Data { get; set; } = json.Data;
 
+        public bool Unselectable { get; set; } = json.Unselectable;
         public bool Selected { get; set; }
         public List<MenuCondition> Conditions { get; set; } = json.Conditions;
         public MenuCondition EnabledCondition { get; set; } = json.EnabledCondition;

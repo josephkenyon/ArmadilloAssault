@@ -31,13 +31,17 @@ namespace ArmadilloAssault.GameState.Menus
 
         private static Menu CurrentMenu { get; set; }
 
+        public static Color DarkBackgroundColor { get; private set; } = new Color(65, 58, 94);
         public static Color BackgroundColor { get; private set; } = new Color(95, 77, 170);
         public static Color ForegroundColor { get; private set; } = new Color(209, 123, 20);
 
         public static Point ButtonSize { get; private set; } = new Point(384, 96);
 
-        public static LobbyFrame LobbyFrame { get; set; }
+        private static LobbyFrame _lobbyFrame;
+        public static LobbyFrame LobbyFrame { get { return _lobbyFrame; } set { UpdateLobbyFrame(value); } }
+
         public static LobbyState LobbyState { get; set; }
+        public static Scene PreviewScene { get; set; }
 
         public static void Initialize()
         {
@@ -146,7 +150,7 @@ namespace ArmadilloAssault.GameState.Menus
                     ServerManager.EndGame();
                     break;
                 case MenuAction.end_pause:
-                    BattleManager.SetPaused(false);
+                    BattleManager.EndPause();
                     break;
                 default:
                     break;
@@ -205,6 +209,21 @@ namespace ArmadilloAssault.GameState.Menus
 
                 SoundManager.PlaySounds(LobbyFrame.SoundFrame);
             }
+
+            if (ConditionFulfilled(MenuCondition.level_select) && LobbyFrame != null)
+            {
+                var sceneJson = ConfigurationManager.GetSceneConfiguration(LobbyFrame.SelectedLevel);
+                DrawingManager.DrawTexture(TextureName.white_pixel, new Rectangle(480, 160, 960, 540), color: sceneJson.BackgroundColor != null ? sceneJson.BackgroundColor.ToColor() : Color.CornflowerBlue);
+                DrawingManager.DrawTexture(sceneJson.BackgroundTexture, new Rectangle(480, 160, 960, 540), color: Color.White * 0.75f);
+
+                if (PreviewScene != null)
+                {
+                    foreach (var list in PreviewScene.TileLists)
+                    {
+                        DrawingManager.DrawCollection([.. list.Tiles]);
+                    }
+                }
+            }
         }
 
         private static void UpdateCurrentMenu() {
@@ -218,6 +237,30 @@ namespace ArmadilloAssault.GameState.Menus
             }
 
             CurrentMenu = new Menu(ConfigurationManager.GetMenuConfiguration(MenuStack.Peek()));
+        }
+
+        public static void ClearLobbyFrame()
+        {
+            _lobbyFrame = null;
+        }
+
+        private static void UpdateLobbyFrame(LobbyFrame value)
+        {
+            var previousLevel = LobbyFrame?.SelectedLevel;
+
+            _lobbyFrame = value;
+
+            if (value.SelectedLevel != previousLevel)
+            {
+                UpdatePreviewScene();
+            }
+        }
+
+        private static void UpdatePreviewScene()
+        {
+            var sceneJson = ConfigurationManager.GetSceneConfiguration(LobbyFrame.SelectedLevel);
+
+            PreviewScene = new Scene(sceneJson);
         }
 
         public static void Back()
@@ -299,7 +342,6 @@ namespace ArmadilloAssault.GameState.Menus
             return menuKey switch
             {
                 MenuKey.level_name => LobbyFrame != null ? GetFormattedLevelName(LobbyFrame.SelectedLevel) : null,
-                MenuKey.level_texture => LobbyFrame != null ? ConfigurationManager.GetSceneConfiguration(LobbyFrame.SelectedLevel).PreviewTexture.ToString() : null,
                 _ => null
             };
         }

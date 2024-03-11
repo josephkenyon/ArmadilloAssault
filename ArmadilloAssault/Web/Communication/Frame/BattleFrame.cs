@@ -4,6 +4,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class BattleFrame : ISoundFrameContainer
     {
+        public bool GameOver { get; set; } = false;
         public AvatarFrame AvatarFrame { get; set; } = new();
         public BulletFrame BulletFrame { get; set; } = new();
         public CrateFrame CrateFrame { get; set; } = new();

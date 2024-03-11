@@ -139,12 +139,24 @@
         "Data": "Claus"
       },
       {
+        "Unselectable": true,
         "TextKey": "level_name",
-        "TextureKey": "level_texture",
+        "Conditions": [ "level_select" ],
+        "Location": {
+          "X": 640,
+          "Y": 32
+        },
+        "Size": {
+          "X": 640,
+          "Y": 96
+        }
+      },
+      {
+        "Unselectable": true,
         "Conditions": [ "level_select" ],
         "Location": {
           "X": 480,
-          "Y": 128
+          "Y": 160
         },
         "Size": {
           "X": 960,

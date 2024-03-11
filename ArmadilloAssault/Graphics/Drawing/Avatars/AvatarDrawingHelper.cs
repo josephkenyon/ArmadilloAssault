@@ -26,7 +26,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             }
         }
 
-        public static ICollection<IDrawableObject> GetDrawableAvatars(AvatarFrame avatarFrame)
+        public static ICollection<IDrawableObject> GetDrawableAvatars(AvatarFrame avatarFrame, int playerIndex = 0)
         {
             var drawableAvatars = new List<IDrawableAvatar>();
 
@@ -35,6 +35,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             {
                 try
                 {
+                    var avatarIndex = avatarFrame.PlayerIndices[index];
+
                     var drawableAvatar = new DrawableAvatar
                     {
                         Animation = avatarFrame.Animations[index],
@@ -51,7 +53,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                         Type = avatarFrame.Types[index],
                         WeaponTexture = avatarFrame.WeaponTextures[index],
                         Color = avatarFrame.Colors[index].ToColor(),
-                        Opacity = avatarFrame.Colors[index].A / 255f
+                        Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], avatarIndex, playerIndex)
                     };
 
                     drawableAvatars.Add(drawableAvatar);
@@ -134,8 +136,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 var size = GetSize(avatar);
 
                 return new(
-                    (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? size.X / 2 : 0)) - CameraManager.CameraOffset.X,
-                    (int)avatar.Position.Y + (avatar.Spinning ? size.Y / 2 : 0) - CameraManager.CameraOffset.Y,
+                    (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? size.X / 2 : 0)) - CameraManager.Offset.X,
+                    (int)avatar.Position.Y + (avatar.Spinning ? size.Y / 2 : 0) - CameraManager.Offset.Y,
                     size.X,
                     size.Y
                 );
@@ -170,8 +172,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 var size = GetSize(avatar);
 
                 return new(
-                    (int)(avatar.Position.X + SpriteOffset) - CameraManager.CameraOffset.X,
-                    (int)avatar.Position.Y - CameraManager.CameraOffset.Y,
+                    (int)(avatar.Position.X + SpriteOffset) - CameraManager.Offset.X,
+                    (int)avatar.Position.Y - CameraManager.Offset.Y,
                     size.X,
                     size.Y
                 );
@@ -308,8 +310,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 var size = GetSize(avatar);
 
                 return new(
-                    (int)(avatar.Position.X + origin.X + SpriteOffest + (offset != null ? ((Point)offset).X : 0)) - CameraManager.CameraOffset.X,
-                    (int)(avatar.Position.Y + origin.Y + (applyBreathing ? avatar.BreathingYOffset : 0) + (offset != null ? ((Point)offset).Y : 0)) - CameraManager.CameraOffset.Y,
+                    (int)(avatar.Position.X + origin.X + SpriteOffest + (offset != null ? ((Point)offset).X : 0)) - CameraManager.Offset.X,
+                    (int)(avatar.Position.Y + origin.Y + (applyBreathing ? avatar.BreathingYOffset : 0) + (offset != null ? ((Point)offset).Y : 0)) - CameraManager.Offset.Y,
                     size.X,
                     size.Y
                 );

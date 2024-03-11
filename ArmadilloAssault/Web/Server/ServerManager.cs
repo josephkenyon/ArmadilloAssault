@@ -86,9 +86,9 @@ namespace ArmadilloAssault.Web.Server
             Server = null;
         }
 
-        public static void SendBattleFrame(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
+        public static void SendBattleFrame(BattleFrame battleFrame)
         {
-            Server.SendBattleFrame(battleFrame, hudFrames);
+            Server.SendBattleFrame(battleFrame);
         }
 
         public static void SendLobbyFrame(LobbyFrame lobbyFrame)
@@ -115,6 +115,11 @@ namespace ArmadilloAssault.Web.Server
         public static void BroadcastPause(bool paused)
         {
             Server.BroadcastPause(paused);
+        }
+
+        public static void BroadcastGameOver()
+        {
+            Server.BroadcastGameOver();
         }
 
         public static bool IsServing => Server != null;

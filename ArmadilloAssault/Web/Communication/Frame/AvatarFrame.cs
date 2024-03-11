@@ -2,6 +2,7 @@
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<float> Recoils { get; set; } = [];
         public List<float> Rotations { get; } = [];
         public List<bool> Spinnings { get; set; } = [];
+        public List<bool> Invisibles { get; set; } = [];
         public List<TextureName> TextureNames { get; set; } = [];
         public List<AvatarType> Types { get; set; } = [];
         public List<TextureName> WeaponTextures { get; set; } = [];
@@ -46,6 +48,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 avatarFrame.Recoils.Add(avatar.GetRecoil);
                 avatarFrame.Rotations.Add(avatar.Rotation);
                 avatarFrame.Spinnings.Add(avatar.IsSpinning);
+                avatarFrame.Invisibles.Add(avatar.CurrentPowerUp == PowerUpType.Invisibility);
                 avatarFrame.TextureNames.Add(avatar.TextureName);
                 avatarFrame.Types.Add(avatar.Type);
                 avatarFrame.WeaponTextures.Add(avatar.CurrentWeaponConfiguration.TextureName);

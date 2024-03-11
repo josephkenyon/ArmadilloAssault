@@ -35,8 +35,8 @@
 #begin Configuration/Menus/menus.json
 /copy:Configuration/Menus/menus.json
 
-#begin Configuration/Scenes/editor.json
-/copy:Configuration/Scenes/editor.json
+#begin Configuration/Scenes/floating_fortress.json
+/copy:Configuration/Scenes/floating_fortress.json
 
 #begin Configuration/Scenes/gusty_gorge.json
 /copy:Configuration/Scenes/gusty_gorge.json
@@ -347,6 +347,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/crosshair.png
 
+#begin Graphics/Textures/cursor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/cursor.png
+
 #begin Graphics/Textures/desert_background.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -358,6 +370,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/desert_background.png
+
+#begin Graphics/Textures/floating_fortress_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/floating_fortress_background.png
 
 #begin Graphics/Textures/lava_flow.png
 /importer:TextureImporter
@@ -526,6 +550,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Tilesets/desert_tileset.png
+
+#begin Graphics/Tilesets/floating_island_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Tilesets/floating_island_tileset.png
 
 #begin Graphics/Tilesets/test_tileset.png
 /importer:TextureImporter

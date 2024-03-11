@@ -5,7 +5,7 @@ namespace ArmadilloAssault.Controls
 {
     public class ControlsState
     {
-        public Vector2? AimPosition { get; set; }
+        public Vector2? MousePosition { get; set; }
         private Dictionary<Control, int> ControlDownFrames { get; set; }
         private Dictionary<Control, bool> ControlDown { get; set; }
         private Dictionary<Control, bool> ControlPress { get; set; }

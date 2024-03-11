@@ -1,7 +1,6 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Weapons;
-using ArmadilloAssault.GameState.Battle.Effects;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;

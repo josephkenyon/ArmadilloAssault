@@ -11,7 +11,6 @@ namespace ArmadilloAssault.Assets
     public class Scene(SceneJson json)
     {
         public TextureName BackgroundTexture { get; set; } = json.BackgroundTexture;
-        public TextureName PreviewTexture { get; set; } = json.PreviewTexture;
         public TextureName TilesetTexture { get; set; } = json.TilesetTexture;
         public Point Size { get; private set; } = json.Size != null ? json.Size.ToPoint() : new Point(1920, 1080);
         public ColorJson BackgroundColorJson { get; private set; } = json.BackgroundColor;

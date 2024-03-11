@@ -1,17 +1,16 @@
-﻿using ArmadilloAssault.Assets;
-using ArmadilloAssault.Configuration;
-using ArmadilloAssault.Configuration.Avatars;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
-using ArmadilloAssault.GameState.Battle.Web;
 using ArmadilloAssault.GameState.Editor;
 using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Graphics;
+using ArmadilloAssault.Graphics.Drawing.Textures;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Client;
-using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,6 +22,8 @@ namespace ArmadilloAssault
         private static Action ExitAction { get; set; }
 
         private static Queue<Action> Actions { get; set; } = [];
+
+        public static bool Active = false;
 
         public Engine()
         {
@@ -47,16 +48,15 @@ namespace ArmadilloAssault
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             SoundManager.LoadContent(Content);
 
-            //BattleManager.Initialize(new Dictionary<PlayerIndex, AvatarType>
-            //{
-            //    { PlayerIndex.One, AvatarType.Arthur }
-            //}, "editor");
-
             GameStateManager.State = State.Menu;
+
+            Mouse.SetCursor(MouseCursor.FromTexture2D(TextureManager.GetTexture(TextureName.cursor), 0, 0));
         }
 
         protected override void Update(GameTime gameTime)
         {
+            Active = IsActive;
+
             while (Actions.Count > 0)
             {
                 var action = Actions.Dequeue();
@@ -70,14 +70,14 @@ namespace ArmadilloAssault
                 }
             }
 
-            ControlsManager.Update();
+            ControlsManager.Update(IsActive);
 
             if (ClientManager.IsActive)
             {
                 _ = ClientManager.BroadcastUpdate();
             }
 
-            IsMouseVisible = GameStateManager.State != State.Battle || BattleManager.Paused;
+            IsMouseVisible = GameStateManager.State != State.Battle || BattleManager.ShowCursor;
 
             switch (GameStateManager.State)
             {
@@ -85,14 +85,7 @@ namespace ArmadilloAssault
                     MenuManager.Update();
                     break;
                 case State.Battle:
-                    if (ServerManager.IsServing || true)
-                    {
-                        BattleManager.UpdateServer();
-                    }
-                    else
-                    {
-                        BattleManager.UpdateClient();
-                    }
+                    BattleManager.Update();
                     break;
                 case State.Editor:
                     EditorManager.Update();

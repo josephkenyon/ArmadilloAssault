@@ -9,7 +9,8 @@
         BattleInitialization,
         BattleUpdate,
         BattleTermination,
-        Pause
+        Pause,
+        GameOver
     }
 
     public enum ClientMessageType

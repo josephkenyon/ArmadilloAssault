@@ -1,11 +1,10 @@
 ﻿using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
-using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menus;
-using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
+using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -48,7 +47,8 @@ namespace ArmadilloAssault.Web.Server
                     Type = ServerMessageType.BattleInitialization,
                     AvatarTypes = MenuManager.LobbyState.Avatars.Values.Select(avatar => avatar.Type).ToList(),
                     SceneName = data,
-                    BattleFrame = BattleManager.BattleFrame
+                    BattleFrame = BattleManager.BattleFrame,
+                    PlayerIndex = player.PlayerIndex
                 };
 
                 Broadcast(message, player.ConnectionId);
@@ -68,20 +68,10 @@ namespace ArmadilloAssault.Web.Server
             }
         }
 
-        public void SendBattleFrame(BattleFrame battleFrame, IEnumerable<HudFrame> hudFrames)
+        public void SendBattleFrame(BattleFrame battleFrame)
         {
             foreach (var player in ClientPlayers)
             {
-                var index = battleFrame.AvatarFrame.PlayerIndices.FindIndex(pIndex => pIndex == player.PlayerIndex);
-
-                battleFrame.HudFrame = hudFrames.ElementAt(index);
-
-                var colorIndex = 0;
-                battleFrame.AvatarFrame.Colors.ForEach(color =>
-                {
-                    color.A = MathUtils.GetAlpha(color, colorIndex++, index);
-                });
-
                 var message = new ServerMessage
                 {
                     Type = ServerMessageType.BattleUpdate,
@@ -143,8 +133,7 @@ namespace ArmadilloAssault.Web.Server
                 }
                 else if (clientMessage.Type == ClientMessageType.Pause)
                 {
-                    BattleManager.SetGameOver();
-                    BattleManager.SetPaused(clientMessage.Paused);
+                    BattleManager.ClientPauseRequest(clientMessage.Paused);
                 }
             }
             catch (Exception ex)
@@ -191,7 +180,7 @@ namespace ArmadilloAssault.Web.Server
             if (index != -1)
             {
                 Players[index].AreControlsDown = message.AreControlsDown;
-                Players[index].AimPosition = new Microsoft.Xna.Framework.Vector2(message.AimX, message.AimY);
+                Players[index].AimPosition = new Vector2(message.AimX, message.AimY);
             }
         }
 
@@ -242,8 +231,20 @@ namespace ArmadilloAssault.Web.Server
                 var message = new ServerMessage
                 {
                     Type = ServerMessageType.Pause,
-                    Game_Over = BattleManager.GameOver,
                     Paused = paused
+                };
+
+                Broadcast(message, player.ConnectionId);
+            }
+        }
+
+        public void BroadcastGameOver()
+        {
+            foreach (var player in ClientPlayers)
+            {
+                var message = new ServerMessage
+                {
+                    Type = ServerMessageType.GameOver,
                 };
 
                 Broadcast(message, player.ConnectionId);

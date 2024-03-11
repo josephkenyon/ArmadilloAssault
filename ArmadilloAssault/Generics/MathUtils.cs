@@ -1,5 +1,4 @@
-﻿using ArmadilloAssault.Configuration.Generics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 
 namespace ArmadilloAssault.Generics
@@ -32,14 +31,16 @@ namespace ArmadilloAssault.Generics
             }
         }
 
-        public static int GetAlpha(ColorJson colorJson, int avatarIndex, int playerIndex)
+        public static float GetAlpha(bool invisible, int avatarIndex, int playerIndex)
         {
-            if (colorJson.A != 255)
+            float alpha = 1f;
+
+            if (invisible)
             {
-                colorJson.A = avatarIndex == playerIndex ? 50 : 2;
+                alpha = avatarIndex == playerIndex ? 0.35f : 0.025f;
             }
 
-            return colorJson.A;
+            return alpha;
         }
     }
 }

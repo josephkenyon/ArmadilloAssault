@@ -1,6 +1,5 @@
 {
   "BackgroundTexture": "mountain_background",
-  "PreviewTexture": "gusty_gorge_preview",
   "TilesetTexture": "test_tileset",
   "StartingPositions": {
     "First": { "X": 160, "Y": 64 },

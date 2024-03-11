@@ -51,7 +51,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         {
             if (Mode == Mode.Death_Match)
             {
-                if (BattleStats.Values.Any(stat => stat.Kills >= 5))
+                if (BattleStats.Values.Any(stat => stat.Kills >= 2))
                 {
                     return true;
                 }

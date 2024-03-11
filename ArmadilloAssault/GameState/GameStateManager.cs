@@ -1,7 +1,6 @@
 ﻿using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState.Editor;
 using ArmadilloAssault.GameState.Menus;
-using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Sound;
 
 namespace ArmadilloAssault.GameState

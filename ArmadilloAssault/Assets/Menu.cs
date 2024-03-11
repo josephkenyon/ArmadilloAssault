@@ -20,7 +20,7 @@ namespace ArmadilloAssault.Assets
         public List<Button> Buttons { get; set; } = GetButtons(menu.Buttons, menu.HasLoadingSpinner, applyConditionsImmediately);
         public LoadingSpinner LoadingSpinner { get; set; } = menu.HasLoadingSpinner ? new(new Point(1920 / 2 - LoadingSpinner.Size / 2, ButtonSpaceStart)) : null;
 
-        public IEnumerable<Button> VisibleButtons => Buttons.Where(button => button.Visible);
+        public IEnumerable<Button> VisibleButtons => Buttons.Where(button => button.Visible).ToList();
 
         private static List<Button> GetButtons(List<ButtonJson> buttonJsons, bool hasSpinner, bool applyConditionsImmediately = false)
         {
@@ -76,7 +76,7 @@ namespace ArmadilloAssault.Assets
                     button.TextureName = Enum.Parse<TextureName>(MenuManager.GetValue(button.TextureKey));
                 }
 
-                button.Selected = button.Visible && button.Enabled && rectangle.Contains(ControlsManager.GetAimPosition(0));
+                button.Selected = !button.Unselectable && button.Visible && button.Enabled && rectangle.Contains(ControlsManager.GetMousePosition(0));
             }
         }
     }

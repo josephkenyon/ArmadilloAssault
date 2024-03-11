@@ -52,28 +52,23 @@ namespace ArmadilloAssault.Controls
             return false;
         }
 
-        public static Vector2? GetNullableAimPosition(int playerIndex)
+        public static Vector2 GetMousePosition(int playerIndex)
         {
             if (PlayerControlsStates.TryGetValue(playerIndex, out ControlsState value))
             {
-                return value.AimPosition;
-            }
-
-            return null;
-        }
-
-        public static Vector2 GetAimPosition(int playerIndex)
-        {
-            if (PlayerControlsStates.TryGetValue(playerIndex, out ControlsState value))
-            {
-                return value.AimPosition == null ? Vector2.Zero : (Vector2)value.AimPosition;
+                return value.MousePosition == null ? Vector2.Zero : (Vector2)value.MousePosition;
             }
 
             return Vector2.Zero;
         }
 
-        public static void Update()
+        public static void Update(bool isActive)
         {
+            if (!isActive)
+            {
+                PlayerControlsStates.Remove(0);
+            }
+
             UpdateControlState();
 
             if (ServerManager.IsServing)
@@ -141,7 +136,7 @@ namespace ArmadilloAssault.Controls
                 }
             }
 
-            controlsState.AimPosition = aimPosition;
+            controlsState.MousePosition = aimPosition;
         }
 
         private static void UpdateMouseKeyboardControlState(ControlsState controlsState)
@@ -163,11 +158,11 @@ namespace ArmadilloAssault.Controls
 
             void updateMouseControl(ButtonState buttonState, Control control)
             {
-                if (buttonState == ButtonState.Pressed)
+                if (buttonState == ButtonState.Pressed && Engine.Active)
                 {
                     controlsState.OnControlDown(control);
                 }
-                else if (buttonState == ButtonState.Released)
+                else
                 {
                     controlsState.OnControlUp(control);
                 }
@@ -178,15 +173,9 @@ namespace ArmadilloAssault.Controls
             updateMouseControl(mouseState.MiddleButton, Control.Toggle_Scope);
             updateMouseControl(mouseState.LeftButton, Control.Confirm);
 
-            if (GameStateManager.State == State.Battle && !BattleManager.Paused)
+            if (Engine.Active)
             {
-                CameraManager.UpdateFocusOffset(mouseState.Position.ToVector2());
-
-                controlsState.AimPosition = CameraManager.CursorPosition;
-            }
-            else
-            {
-                controlsState.AimPosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
+                controlsState.MousePosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
             }
         }
 
@@ -223,7 +212,7 @@ namespace ArmadilloAssault.Controls
             updateThumbstickControl(state.ThumbSticks.Left.Y > ControlsHelper.ThumbStickConstant, Control.Up);
             updateThumbstickControl(state.ThumbSticks.Left.Y < -ControlsHelper.ThumbStickConstant, Control.Down);
 
-            controlsState.AimPosition = new Vector2(state.ThumbSticks.Right.X, -state.ThumbSticks.Right.Y);
+            controlsState.MousePosition = new Vector2(state.ThumbSticks.Right.X, -state.ThumbSticks.Right.Y);
         }
 
         private static PlayerIndex GetIndex(int index)

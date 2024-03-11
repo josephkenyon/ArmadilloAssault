@@ -1,6 +1,8 @@
 ﻿
+using ArmadilloAssault.Assets;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle.Camera;
+using ArmadilloAssault.GameState.Menus;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,7 +27,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             }
             else
             {
-                var constant = (1f + (z / 5f));
+                var constant = (1f + ((z + 1) / 5f));
                 return color * constant;
             }
         }
@@ -38,7 +40,22 @@ namespace ArmadilloAssault.Graphics.Drawing
             double result = slope * x + intercept;
             return (int)Math.Round(result, MidpointRounding.AwayFromZero);
         }
-        public static int TileSize => GameStateManager.State == State.Editor ? SolveLinearFunction(SceneSize.X) : 48;
+
+        public static int TileSize => GetTileSize();
+
+        private static int GetTileSize()
+        {
+            if (GameStateManager.State == State.Editor)
+            {
+                return SolveLinearFunction(SceneSize.X);
+            }
+            else if (GameStateManager.State == State.Menu && MenuManager.LobbyFrame != null)
+            {
+                return MenuManager.LobbyFrame.TileSize;
+            }
+
+            return 48;
+        }
 
         public static float ScaleConstant => (float) TileSize / FullTileSize;
         public static float ReverseScaleConstant => (float)FullTileSize / TileSize;
@@ -54,8 +71,14 @@ namespace ArmadilloAssault.Graphics.Drawing
 
         public static Rectangle GetDestinationRectangle(Point point, Point? size = null)
         {
+            bool levelPreview = GameStateManager.State == State.Menu && MenuManager.LobbyFrame != null;
+
+            var xOffset = levelPreview ? 480 : 0;
+            var yOffset = levelPreview ? 160 : 0;
+
             var newSize = size ?? new Point(1, 1);
-            return new Rectangle(point.X * TileSize - CameraManager.CameraOffset.X, point.Y * TileSize - CameraManager.CameraOffset.Y, newSize.X * TileSize, newSize.Y * TileSize);
+
+            return new Rectangle(point.X * TileSize - CameraManager.Offset.X + xOffset, point.Y * TileSize - CameraManager.Offset.Y + yOffset, newSize.X * TileSize, newSize.Y * TileSize);
         }
 
         public static Rectangle GetDestinationRectangle(Vector2 point, Point? size = null)

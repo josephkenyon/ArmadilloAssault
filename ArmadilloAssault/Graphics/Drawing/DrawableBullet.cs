@@ -11,7 +11,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         public TextureName Texture => ConfigurationManager.GetWeaponConfiguration(type).BulletTexture;
         public float GetRotation() => rotation;
         public Rectangle GetDestinationRectangle() => new(
-            position.ToPoint() - CameraManager.CameraOffset,
+            position.ToPoint() - CameraManager.Offset,
             ConfigurationManager.GetWeaponConfiguration(type).BulletSize.ToPoint()
         );
     }

@@ -7,9 +7,8 @@ namespace ArmadilloAssault.Configuration.Scenes
     public class SceneJson
     {
         public TextureName BackgroundTexture { get; set; }
-        public TextureName PreviewTexture { get; set; }
         public TextureName TilesetTexture { get; set; }
-        public PointJson Size { get; set; }
+        public PointJson Size { get; set; } = new PointJson(1920, 1080);
         public StartingPositions StartingPositions { get; set; }
         public ColorJson BackgroundColor { get; set; }
         public bool HighCloudsOnly { get; set; }

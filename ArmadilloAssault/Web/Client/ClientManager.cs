@@ -2,6 +2,7 @@
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Generics;
@@ -43,6 +44,7 @@ namespace ArmadilloAssault.Web.Client
             Client = null;
 
             GameStateManager.State = State.Menu;
+            MenuManager.ClearLobbyFrame();
             MenuManager.Back();
 
             CancellationTokenSource = null;
@@ -56,7 +58,7 @@ namespace ArmadilloAssault.Web.Client
         public static async Task BroadcastUpdate()
         {
             var controlsDown = ControlsManager.AreControlsDown(0);
-            var aim = ControlsManager.GetAimPosition(0);
+            var aim = CameraManager.GetAimAngle();
 
             var hasUpdates = controlsDown.Count > 0
                 && !MathUtils.FloatsAreEqual(aim.X, LastAim.X)
@@ -83,12 +85,12 @@ namespace ArmadilloAssault.Web.Client
         {
             if (serverMessage.Type == ServerMessageType.BattleInitialization)
             {
-                BattleManager.Initialize(serverMessage.SceneName);
+                BattleManager.Initialize(serverMessage.SceneName, serverMessage.PlayerIndex);
                 Engine.QueueAction(() => GameStateManager.State = State.Battle);
             }
             else if (serverMessage.Type == ServerMessageType.BattleUpdate)
             {
-                BattleManager.BattleFrame = serverMessage.BattleFrame;
+                BattleManager.SetFrame(serverMessage.BattleFrame);
             }
             else if (serverMessage.Type == ServerMessageType.LobbyUpdate)
             {
@@ -98,13 +100,13 @@ namespace ArmadilloAssault.Web.Client
             {
                 GameStateManager.State = State.Menu;
             }
-            else if (serverMessage.Type == ServerMessageType.Pause) {
-                if (serverMessage.Game_Over)
-                {
-                    BattleManager.SetGameOver();
-                }
-
-                BattleManager.SetPaused(serverMessage.Paused, enforcedByServer: true);
+            else if (serverMessage.Type == ServerMessageType.Pause)
+            {
+                BattleManager.SetPaused(serverMessage.Paused);
+            }
+            else if (serverMessage.Type == ServerMessageType.GameOver)
+            {
+                BattleManager.SetGameOver();
             }
         }
 

@@ -47,7 +47,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             );
         }
 
-        public static void DrawTexture(TextureName textureName, Rectangle destinationRectangle, float opacity = 1f, Rectangle? sourceRectangle = null)
+        public static void DrawTexture(TextureName textureName, Rectangle destinationRectangle, float opacity = 1f, Rectangle? sourceRectangle = null, Color? color = null)
         {
             _spriteBatch.Begin();
 
@@ -58,7 +58,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                 rotation: 0f,
                 effects: SpriteEffects.None,
                 origin: Vector2.Zero,
-                color: Color.White * opacity,
+                color: (color ?? Color.White) * opacity,
                 layerDepth: 1f
             );
 
@@ -176,7 +176,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                     texture: TextureManager.GetTexture(TextureName.white_pixel),
                     destinationRectangle: destinationRectangle,
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
-                    color: (button.Selected ? MenuManager.ForegroundColor : MenuManager.BackgroundColor)
+                    color: (button.Selected ? MenuManager.ForegroundColor : button.Unselectable ? MenuManager.DarkBackgroundColor : MenuManager.BackgroundColor)
                 );
 
                 if (button.TextureName != TextureName.nothing)
@@ -214,46 +214,56 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
-        public static void DrawHud(HudFrame hudFrame)
+        public static void DrawHud(HudFrame hudFrame, int playerIndex)
         {
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(
-                texture: TextureManager.GetTexture(TextureName.white_pixel),
-                destinationRectangle: new Rectangle(hudFrame.AvatarX + 16 - CameraManager.CameraOffset.X, hudFrame.AvatarY - 24 - CameraManager.CameraOffset.Y, 96, 8),
-                sourceRectangle: new Rectangle(0, 0, 1, 1),
-                color: Color.Black * 0.5f
-            );
+            for (int i = 0; i < hudFrame.PlayerIndices.Count; i++)
+            {
+                var avatarIndex = hudFrame.PlayerIndices[i];
 
-            _spriteBatch.Draw(
-               texture: TextureManager.GetTexture(TextureName.white_pixel),
-               destinationRectangle: new Rectangle(
-                   hudFrame.AvatarX + 16 - CameraManager.CameraOffset.X,
-                   hudFrame.AvatarY - 24 - CameraManager.CameraOffset.Y,
-                   Math.Clamp((int)(96f * (hudFrame.Health / 100f)), 2, 100), 8
-                ),
-               sourceRectangle: new Rectangle(0, 0, 1, 1),
-               color: Color.Red * 0.5f
-            );
+                if (!hudFrame.Visibles[i] && playerIndex != avatarIndex) { continue; }
 
-            _spriteBatch.Draw(
-                texture: TextureManager.GetTexture(TextureName.bullet_box),
-                destinationRectangle: new Rectangle(
-                    hudFrame.AvatarX + 24 - CameraManager.CameraOffset.X,
-                    hudFrame.AvatarY - 64 - CameraManager.CameraOffset.Y,
-                    32, 32
-                ),
-                color: Color.White
-             );
+                _spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.white_pixel),
+                    destinationRectangle: new Rectangle(hudFrame.AvatarXs[i] + 16 - CameraManager.Offset.X, hudFrame.AvatarYs[i] - 24 - CameraManager.Offset.Y, 96, 8),
+                    sourceRectangle: new Rectangle(0, 0, 1, 1),
+                    color: Color.Black * 0.5f
+                );
 
-            _spriteBatch.DrawString(
-                DrawingHelper.GetFont, $"x {hudFrame.Ammo}",
-                new Vector2(
-                    hudFrame.AvatarX + 64 - CameraManager.CameraOffset.X,
-                    hudFrame.AvatarY - 56 - CameraManager.CameraOffset.Y
-                ),
-                Color.White
-            );
+                _spriteBatch.Draw(
+                   texture: TextureManager.GetTexture(TextureName.white_pixel),
+                   destinationRectangle: new Rectangle(
+                       hudFrame.AvatarXs[i] + 16 - CameraManager.Offset.X,
+                       hudFrame.AvatarYs[i] - 24 - CameraManager.Offset.Y,
+                       Math.Clamp((int)(96f * (hudFrame.Healths[i] / 100f)), 2, 100), 8
+                    ),
+                   sourceRectangle: new Rectangle(0, 0, 1, 1),
+                   color: Color.Red * 0.5f
+                );
+
+                if (avatarIndex == playerIndex)
+                {
+                    _spriteBatch.Draw(
+                        texture: TextureManager.GetTexture(TextureName.bullet_box),
+                        destinationRectangle: new Rectangle(
+                            hudFrame.AvatarXs[i] + 24 - CameraManager.Offset.X,
+                            hudFrame.AvatarYs[i] - 64 - CameraManager.Offset.Y,
+                            32, 32
+                        ),
+                        color: Color.White
+                    );
+
+                    _spriteBatch.DrawString(
+                        DrawingHelper.GetFont, $"x {hudFrame.Ammos[i]}",
+                        new Vector2(
+                            hudFrame.AvatarXs[i] + 64 - CameraManager.Offset.X,
+                            hudFrame.AvatarYs[i] - 56 - CameraManager.Offset.Y
+                        ),
+                        Color.White
+                    );
+                }
+            }
 
 
             _spriteBatch.End();

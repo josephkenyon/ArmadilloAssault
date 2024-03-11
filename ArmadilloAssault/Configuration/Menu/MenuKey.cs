@@ -3,7 +3,6 @@
     public enum MenuKey
     {
         nothing,
-        level_name,
-        level_texture
+        level_name
     }
 }

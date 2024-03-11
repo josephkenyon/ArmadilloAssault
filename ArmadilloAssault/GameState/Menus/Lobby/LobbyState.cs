@@ -2,7 +2,6 @@
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
-using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
@@ -14,7 +13,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 {
     public class LobbyState
     {
-        private static IEnumerable<string> SelectableLevelKeys => ConfigurationManager.SceneConfigurations.Keys.Where(key => ConfigurationManager.SceneConfigurations[key].PreviewTexture != TextureName.nothing);
+        private static IEnumerable<string> SelectableLevelKeys => ConfigurationManager.SceneConfigurations.Keys;
 
         public Dictionary<PlayerIndex, Avatar> Avatars { get; private set; } = [];
         public string SelectedLevel { get; private set; } = SelectableLevelKeys.First();
@@ -90,6 +89,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 PlayerBackgroundIds = ServerManager.PlayerIndices,
                 LevelSelect = LevelSelect,
                 SelectedLevel = SelectedLevel,
+                TileSize = GetTileSize()
             };
 
             SoundManager.PushSounds(frame);
@@ -103,6 +103,25 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             {
                 avatar.Update();
             }
+        }
+
+        private int GetTileSize()
+        {
+            var sceneJson = ConfigurationManager.GetSceneConfiguration(SelectedLevel);
+            var ratio = sceneJson.Size.X / (float)sceneJson.Size.Y;
+
+            float tileSize = 48 * (1920f / (sceneJson.Size.X * 2));
+            if (ratio > 1.8f)
+            {
+                tileSize = 48f * (1920f / sceneJson.Size.X);
+            }
+
+            else if (ratio < 1.76f)
+            {
+                tileSize = 48f * (1080f / sceneJson.Size.Y);
+            }
+
+            return (int)tileSize;
         }
 
         public void AvatarDisconnected(PlayerIndex index)

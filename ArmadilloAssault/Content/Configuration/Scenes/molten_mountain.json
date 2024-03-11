@@ -1,6 +1,5 @@
 {
   "BackgroundTexture": "volcano_background",
-  "PreviewTexture": "molten_mountain_preview",
   "TilesetTexture": "volcano_tileset",
   "StartingPositions": {
     "First": { "X": 204, "Y": 196 },

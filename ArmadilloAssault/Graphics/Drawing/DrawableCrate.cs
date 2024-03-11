@@ -11,8 +11,8 @@ namespace ArmadilloAssault.Graphics.Drawing
         public TextureName Texture => grounded ? TextureName.crates : TextureName.crates_parachuting;
         public Rectangle? GetSourceRectangle() => new((int)type * Size.X, 0, Size.X, Size.Y);
         public Rectangle GetDestinationRectangle() => new(
-            (int)position.X - (!grounded ? 14 : 0) - CameraManager.CameraOffset.X,
-            (int)position.Y - (!grounded ? 109 : 0) - CameraManager.CameraOffset.Y,
+            (int)position.X - (!grounded ? 14 : 0) - CameraManager.Offset.X,
+            (int)position.Y - (!grounded ? 109 : 0) - CameraManager.Offset.Y,
             Size.X, Size.Y
         );
     }

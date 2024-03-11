@@ -1,6 +1,5 @@
 {
   "BackgroundTexture": "desert_background",
-  "PreviewTexture": "sunken_sands_preview",
   "TilesetTexture": "desert_tileset",
   "StartingPositions": {
   "First": { "X": 310, "Y": 120 },

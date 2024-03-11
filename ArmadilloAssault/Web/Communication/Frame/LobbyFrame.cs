@@ -12,6 +12,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<int> PlayerBackgroundIds { get; set; } = [];
         public List<string> PlayerNames { get; set; } = [];
         public bool LevelSelect { get; set; } = false;
+        public int TileSize { get; set; } = 24;
         public string SelectedLevel { get; set; } = "";
     }
 }
