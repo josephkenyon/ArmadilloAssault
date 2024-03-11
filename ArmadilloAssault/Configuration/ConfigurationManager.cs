@@ -193,6 +193,11 @@ namespace ArmadilloAssault.Configuration
 
         public static SceneJson GetSceneConfiguration(string name)
         {
+            if (!_sceneConfigurations.ContainsKey(name))
+            {
+                return new SceneJson();
+            }
+
             return _sceneConfigurations[name];
         }
 

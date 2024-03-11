@@ -14,7 +14,7 @@ namespace ArmadilloAssault.Configuration.Avatars
         public PointJson SpriteOffset { get; set; }
         public RectangleJson CollisionBox { get; set; }
         public RectangleJson SpinningCollisionBox { get; set; }
-        public HurtBoxListJson HurtBoxes { get; set; }
+        public RectangleListJson HurtBoxes { get; set; }
         public RectangleJson ShellBox { get; set; }
         public RectangleJson SpinningShellBox { get; set; }
         public RectangleJson SpinningHurtBox { get; set; }

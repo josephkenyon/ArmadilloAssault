@@ -4,6 +4,8 @@ namespace ArmadilloAssault.Configuration.Generics
 {
     public class PointJson
     {
+        public static PointJson Zero => new(0, 0);
+
         public PointJson() { }
 
         public PointJson(int x, int y) {

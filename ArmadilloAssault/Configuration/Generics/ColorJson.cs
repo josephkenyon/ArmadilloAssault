@@ -10,7 +10,9 @@ namespace ArmadilloAssault.Configuration.Generics
 
         public ColorJson()
         {
-
+            R = 100;
+            G = 149;
+            B = 237;
         }
 
         public ColorJson(int r, int g, int b)

@@ -3,7 +3,9 @@ using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -21,6 +23,8 @@ namespace ArmadilloAssault.GameState.Editor
 
         public static void Initialize()
         {
+            Mouse.SetCursor(MouseCursor.Arrow);
+
             Scene = new Scene(ConfigurationManager.GetSceneConfiguration("editor"));
             SceneSize = new Point(Scene.Size.X / 48, (int)Math.Round(Scene.Size.Y / 48d, MidpointRounding.AwayFromZero));
             DrawingHelper.SceneSize = Scene.Size;
@@ -100,12 +104,17 @@ namespace ArmadilloAssault.GameState.Editor
 
             if (ControlsManager.IsControlPressed(playerIndex, Control.Start))
             {
-                var json = JsonSerializer.Serialize(ConfigurationHelper.GetSceneJson(Scene));
-                File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "editor.json"), json);
-
+                if (Scene.CollisionBoxes.Count > 0)
+                {
+                    var json = JsonSerializer.Serialize(ConfigurationHelper.GetSceneJson(Scene));
+                    File.WriteAllText(Path.Combine(ConfigurationHelper.GetConfigurationPath("Scenes"), "editor.json"), json);
+                }
+             
                 ConfigurationManager.LoadScenes();
 
                 GameStateManager.State = State.Menu;
+
+                Mouse.SetCursor(MouseCursor.FromTexture2D(TextureManager.GetTexture(TextureName.cursor), 0, 0));
             }
         }
 
