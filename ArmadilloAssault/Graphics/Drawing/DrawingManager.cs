@@ -222,7 +222,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             {
                 var avatarIndex = hudFrame.PlayerIndices[i];
 
-                if (!hudFrame.Visibles[i] && playerIndex != avatarIndex) { continue; }
+                if ((!hudFrame.Visibles[i] && playerIndex != avatarIndex) || hudFrame.Deads[i]) { continue; }
 
                 _spriteBatch.Draw(
                     texture: TextureManager.GetTexture(TextureName.white_pixel),

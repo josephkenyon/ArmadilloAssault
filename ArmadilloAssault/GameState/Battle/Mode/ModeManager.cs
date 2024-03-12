@@ -41,10 +41,13 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             BattleStats[firedIndex].DamageDealt += damage;
         }
 
-        public void AvatarKilled(int deadIndex, int killIndex)
+        public void AvatarKilled(int deadIndex, int? killIndex)
         {
             BattleStats[deadIndex].Deaths += 1;
-            BattleStats[killIndex].Kills += 1;
+            if (killIndex != null)
+            {
+                BattleStats[(int)killIndex].Kills += 1;
+            }
         }
 
         private bool IsGameOver()

@@ -69,7 +69,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             var crates = Crates.Where(crate => !crate.Grounded);
             foreach (var crate in crates)
             {
-                PhysicsManager.Update(crate, crate.RelevantCollisionBoxes);
+                PhysicsManager.ApplyCrateMotion(crate, crate.RelevantCollisionBoxes);
             }
 
             foreach (var avatar in avatars)

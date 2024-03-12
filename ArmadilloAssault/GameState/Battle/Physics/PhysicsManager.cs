@@ -13,14 +13,17 @@ namespace ArmadilloAssault.GameState.Battle.Physics
     {
         private static readonly float gravityAcceleration = 0.035f;
          
-        public static void Update(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
+        public static void Update(PhysicsObject physicsObject, IPhysicsScene scene)
         {
-            ApplyHorizontalMotion(physicsObject, sceneCollisionBoxes);
-            ApplyVerticalMotion(physicsObject, sceneCollisionBoxes);
+            ApplyHorizontalMotion(physicsObject, scene);
+            ApplyVerticalMotion(physicsObject, scene);
         }
 
-        public static void Update(Avatar avatar, ICollection<Rectangle> sceneCollisionBoxes, Point sceneSize)
+        public static void Update(Avatar avatar, IPhysicsScene scene)
         {
+            var sceneCollisionBoxes = scene.GetCollisionBoxes();
+            var sceneSize = scene.GetSize();
+
             avatar.Grounded = false;
             avatar.CloseToGround = false;
 
@@ -51,7 +54,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 }
             }
 
-            Update(avatar, sceneCollisionBoxes);
+            Update(avatar as PhysicsObject, scene);
 
             var collisionBox = avatar.GetCollisionBox();
             if (collisionBox.Left >= sceneSize.X - 1)
@@ -63,13 +66,20 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 avatar.SetX(avatar.Position.X + sceneSize.X + collisionBox.Width - 1);
             }
 
-            if (collisionBox.Bottom < 0)
+            if (collisionBox.Bottom < 0 && scene.YWraps())
             {
-                avatar.SetY(avatar.Position.Y + sceneSize.Y + collisionBox.Height - 1);
+              avatar.SetY(avatar.Position.Y + sceneSize.Y + collisionBox.Height - 1);
             }
             else if (collisionBox.Top > sceneSize.Y)
             {
-                avatar.SetY(avatar.Position.Y - sceneSize.Y - collisionBox.Height + 1);
+                if (scene.YWraps())
+                {
+                    avatar.SetY(avatar.Position.Y - sceneSize.Y - collisionBox.Height + 1);
+                }
+                else
+                {
+                    avatar.DealDamage(99999);
+                }
             }
         }
 
@@ -81,7 +91,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             return collisionBox.Top - ceiling > 64;
         }
 
-        private static void ApplyHorizontalMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void ApplyHorizontalMotion(PhysicsObject physicsObject, IPhysicsScene scene)
         {
             physicsObject.Velocity = new Vector2(
                 Math.Clamp(
@@ -95,17 +105,17 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
             if (xVelocity > 0)
             {
-                ApplyRightMotion(physicsObject, sceneCollisionBoxes, xVelocity);
+                ApplyRightMotion(physicsObject, scene, xVelocity);
             }
             else if (xVelocity < 0)
             {
-                ApplyLeftMotion(physicsObject, sceneCollisionBoxes, xVelocity);
+                ApplyLeftMotion(physicsObject, scene, xVelocity);
             }
 
             DecelerateX(physicsObject);
         }
 
-        private static void ApplyVerticalMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void ApplyVerticalMotion(PhysicsObject physicsObject, IPhysicsScene scene)
         {
             physicsObject.Velocity = new Vector2(
                 physicsObject.Velocity.X,
@@ -117,20 +127,35 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
             if (physicsObject.Velocity.Y < 0)
             {
-                ApplyUpwardMotion(physicsObject, sceneCollisionBoxes);
+                ApplyUpwardMotion(physicsObject, scene.GetCollisionBoxes());
             }
             else
             {
-                ApplyDownwardMotion(physicsObject, sceneCollisionBoxes);
+                ApplyDownwardMotion(physicsObject, scene.GetCollisionBoxes(), scene.GetSize().Y + 10);
             }
 
             DecelerateY(physicsObject);
         }
 
-        private static void ApplyLeftMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes, float deltaX)
+        public static void ApplyCrateMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
+        {
+            physicsObject.Velocity = new Vector2(
+                physicsObject.Velocity.X,
+                Math.Clamp(
+                    physicsObject.Velocity.Y + physicsObject.Acceleration.Y,
+                    -physicsObject.MaxVelocity.Y, physicsObject.MaxVelocity.Y
+                )
+            );
+
+            ApplyDownwardMotion(physicsObject, sceneCollisionBoxes);
+
+            DecelerateY(physicsObject);
+        }
+
+        private static void ApplyLeftMotion(PhysicsObject physicsObject, IPhysicsScene scene, float deltaX)
         {
             var collisionBox = physicsObject.GetCollisionBox();
-            var wallX = GetLeftWall(collisionBox, sceneCollisionBoxes);
+            var wallX = GetLeftWall(collisionBox, scene.GetCollisionBoxes());
 
             if (collisionBox.Left == wallX)
             {
@@ -150,10 +175,10 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             }
         }
 
-        private static void ApplyRightMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes, float deltaX)
+        private static void ApplyRightMotion(PhysicsObject physicsObject, IPhysicsScene scene, float deltaX)
         {
             var avatarCollisionBox = physicsObject.GetCollisionBox();
-            var wallX = GetRightWall(avatarCollisionBox, sceneCollisionBoxes);
+            var wallX = GetRightWall(avatarCollisionBox, scene.GetCollisionBoxes());
 
             if (avatarCollisionBox.Right == wallX)
             {
@@ -201,7 +226,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             }
         }
 
-        private static void ApplyDownwardMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
+        private static void ApplyDownwardMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes, int sceneHeight = 99999)
         {
             var collisionBox = physicsObject.GetCollisionBox();
             var secondCollisionBox = physicsObject.GetCollisionBox();
@@ -272,16 +297,16 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
                 if (secondCollisionBoxTouches)
                 {
-                    physicsObject.SetY((int)physicsObject.Position.Y + (floorY - secondCollisionBox.Bottom));
+                    physicsObject.SetY((int)Math.Clamp(physicsObject.Position.Y + (floorY - secondCollisionBox.Bottom), 0, sceneHeight));
                 }
                 else
                 {
-                    physicsObject.SetY((int)physicsObject.Position.Y + (floorY - collisionBox.Bottom));
+                    physicsObject.SetY((int)Math.Clamp(physicsObject.Position.Y + (floorY - collisionBox.Bottom), 0, sceneHeight));
                 }
             }
             else
             {
-                physicsObject.SetY(physicsObject.Position.Y + yDelta);
+                physicsObject.SetY(Math.Clamp(physicsObject.Position.Y + yDelta, -500, sceneHeight));
 
                 if (floorY - collisionBox.Bottom < 48)
                 {

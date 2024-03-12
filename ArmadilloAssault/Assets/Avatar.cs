@@ -5,7 +5,6 @@ using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Bullets;
-using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.GameState.Battle.Weapons;
@@ -33,7 +32,7 @@ namespace ArmadilloAssault.Assets
         private readonly Rectangle SpinningCollisionBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningCollisionBox);
 
         // Hurt Boxes
-        private readonly IEnumerable<Rectangle> HurtBoxes = ConfigurationHelper.GetHurtBoxes(avatarJson.HurtBoxes);
+        private readonly IEnumerable<Rectangle> HurtBoxes = ConfigurationHelper.GetRectangles(avatarJson.HurtBoxes);
         private readonly Rectangle ShellBox = ConfigurationHelper.GetRectangle(avatarJson.ShellBox);
         private readonly Rectangle SpinningHurtBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningHurtBox);
         private readonly Rectangle SpinningShellBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningShellBox);
@@ -97,6 +96,7 @@ namespace ArmadilloAssault.Assets
         public bool HoldingAutomaticWeapon => SelectedWeapon.Type == WeaponType.Assault;
         public bool CanFire => !IsSpinning && Weapons.Count != 0 && Weapons[WeaponSelectionIndex].CanFire() && !Reloading && !SwitchingWeapons;
         public int BufferedShotFrameCounter { get; set; } = 0;
+        public int? LastHurtBy { get; private set; }
 
         public float GetRecoil => SelectedWeapon.AmmoInClip == 0 && SelectedWeapon.Ammo == 0 ? (float)(Math.PI / 4) : Recoil;
         private float Recoil { get; set; }
@@ -459,7 +459,6 @@ namespace ArmadilloAssault.Assets
 
         public void HitByBullet(Bullet bullet, bool headShot)
         {
-            var wasAlive = Health > 1;
             var damage = ConfigurationManager.GetWeaponConfiguration(bullet.WeaponType).BulletDamage * bullet.DamageModifier;
 
             if (headShot)
@@ -469,7 +468,21 @@ namespace ArmadilloAssault.Assets
 
             avatarListener?.AvatarHit(playerIndex, bullet.PlayerIndex, (int)damage);
 
-            Health -= (int)damage;
+            LastHurtBy = bullet.PlayerIndex;
+
+            DealDamage((int) damage);
+        }
+
+        public void DealDamage(int damage)
+        {
+            if (IsDead)
+            {
+                return;
+            }
+
+            var wasAlive = Health > 1;
+
+            Health -= damage;
 
             if (IsDead)
             {
@@ -484,7 +497,7 @@ namespace ArmadilloAssault.Assets
                 InfluenceVelocity = 0;
                 RunningVelocity = 0;
 
-                avatarListener?.AvatarKilled(playerIndex, bullet.PlayerIndex);
+                avatarListener?.AvatarKilled(playerIndex, LastHurtBy);
             }
             else
             {
@@ -506,6 +519,7 @@ namespace ArmadilloAssault.Assets
             SoundManager.CancelReloadSoundEffects();
             ReloadingFrames = 0;
             Recoil = 0;
+            LastHurtBy = null;
             Weapons.Clear();
             Weapons.Add(new Weapon(ConfigurationManager.GetWeaponConfiguration(WeaponType.Pistol), avatarListener));
         }

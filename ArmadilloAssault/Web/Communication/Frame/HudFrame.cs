@@ -5,6 +5,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
     public class HudFrame
     {
         public List<int> PlayerIndices { get; set; } = [];
+        public List<bool> Deads { get; set; } = [];
         public List<bool> Visibles { get; set; } = [];
         public List<int> AvatarXs { get; set; } = [];
         public List<int> AvatarYs { get; set; } = [];

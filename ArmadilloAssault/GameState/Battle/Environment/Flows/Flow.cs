@@ -1,5 +1,6 @@
 ﻿using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 
@@ -13,6 +14,6 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Flows
         public int X { get; set; } = x;
         public float Opacity => 0.75f;
 
-        public Rectangle GetDestinationRectangle() => new(X, Y, Size.X, Size.Y);
+        public Rectangle GetDestinationRectangle() => CameraManager.GetFlowDestinationRectangle(new(X, Y, Size.X, Size.Y));
     }
 }

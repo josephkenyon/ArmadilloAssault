@@ -71,11 +71,8 @@ namespace ArmadilloAssault.GameState.Battle.Camera
                 var aimOffset = aimPosition - screenCenter.ToVector2();
 
                 CursorPosition += aimOffset / 2;
-                FocusOffset = new Vector2(
-                    Math.Clamp(FocusOffset.X + aimOffset.X / 2, -800, 800),
-                    Math.Clamp(FocusOffset.Y + aimOffset.Y / 2, -400, 400)
-                );
-
+                FocusOffset = new Vector2(FocusOffset.X + aimOffset.X / 2, FocusOffset.Y + aimOffset.Y / 2);
+            
                 Mouse.SetPosition(screenCenter.X, screenCenter.Y);
             }
             else
@@ -89,8 +86,8 @@ namespace ArmadilloAssault.GameState.Battle.Camera
 
         private static void UpdateCameraOffset() {
             CameraOffset = new Point(
-                (int)Math.Clamp(FocusPoint.X + FocusOffset.X, 960, SceneSize.X - 960) - 960,
-                (int)Math.Clamp(FocusPoint.Y + FocusOffset.Y, 540, SceneSize.Y - 540) - 540
+                (int)Math.Clamp(FocusPoint.X + Math.Clamp(FocusOffset.X, -900, 900), 960, SceneSize.X - 960) - 960,
+                (int)Math.Clamp(FocusPoint.Y + Math.Clamp(FocusOffset.Y, -450, 450), 540, SceneSize.Y - 540) - 540
             );
         }
 
@@ -111,16 +108,67 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             if (SceneSize.X != 1920)
             {
                 width -= (width / 4);
-                x = ScaleValue(Offset.X + 960, 960, SceneSize.X - 960, 0, 960 - width);
+                x += ScaleValue(Offset.X + 960, 960, SceneSize.X - 960, 0, 960 - width);
             }
 
             if (SceneSize.Y != 1080)
             {
                 height -= (height / 4);
-                y = ScaleValue(Offset.Y + 540, 540, SceneSize.Y - 540, 0, 540 - height);
+                y += ScaleValue(Offset.Y + 540, 540, SceneSize.Y - 540, 0, 540 - height);
             }
 
             return new Rectangle(x, y, width, height);
+        }
+
+        public static Rectangle GetEnvironmentalEffectDestinationRectangle(Rectangle effectRectangle)
+        {
+            float x, y, width, height;
+
+            x = effectRectangle.X;
+            y = effectRectangle.Y;
+            width = effectRectangle.Width;
+            height = effectRectangle.Height;
+
+            if (SceneSize.X != 1920)
+            {
+                width += (width / 3f);
+                x *= 1 + (1 / 3f);
+                x -= ScaleValue(Offset.X + 960, 960, SceneSize.X - 960, 0, 960 - width);
+            }
+
+            if (SceneSize.Y != 1080)
+            {
+                height += (height / 3f);
+                y *= 1 + (1 / 3f);
+                y -= ScaleValue(Offset.Y + 540, 540, SceneSize.Y - 540, 0, 540 - height) * 0.92f;
+            }
+
+            return new Rectangle((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(width), (int)Math.Round(height));
+        }
+
+        public static Rectangle GetFlowDestinationRectangle(Rectangle flowRectangle)
+        {
+            float x, y, width, height;
+
+            x = flowRectangle.X;
+            y = flowRectangle.Y;
+            width = flowRectangle.Width;
+            height = flowRectangle.Height;
+
+            if (SceneSize.X != 1920)
+            {
+                width += (width / 3f);
+                x *= 1 + (1 / 3f);
+            }
+
+            if (SceneSize.Y != 1080)
+            {
+                height += (height / 3f);
+                y *= 1 + (1 / 3f);
+                y -= ScaleValue(Offset.Y + 540, 540, SceneSize.Y - 540, 0, 540 - height) * 0.92f;
+            }
+
+            return new Rectangle((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(width), (int)Math.Round(height));
         }
 
         public static int ScaleValue(double value, double oldMin, double oldMax, double newMin, double newMax)
@@ -129,7 +177,7 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             double ratio = (clampedValue - oldMin) / (oldMax - oldMin);
             double scaledValue = ratio * (newMax - newMin) + newMin;
 
-            return (int)scaledValue;
+            return (int)Math.Round(scaledValue);
         }
 
         public static Vector2 GetAimAngle()

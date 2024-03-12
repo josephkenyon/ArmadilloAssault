@@ -8,6 +8,7 @@ namespace ArmadilloAssault.Configuration.Scenes
     {
         public TextureName BackgroundTexture { get; set; } = TextureName.mountain_background;
         public TextureName TilesetTexture { get; set; } = TextureName.test_tileset;
+        public bool WrapY { get; set; } = true;
         public PointJson Size { get; set; } = new PointJson(1920, 1080);
         public StartingPositions StartingPositions { get; set; } = new();
         public ColorJson BackgroundColor { get; set; } = new();

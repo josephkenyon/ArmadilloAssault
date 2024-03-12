@@ -124,7 +124,7 @@ namespace ArmadilloAssault.GameState.Battle
                     InputManager.UpdateAvatar((int)avatarPair.Key, avatar);
                 }
 
-                PhysicsManager.Update(avatar, Scene.CollisionBoxes, Scene.Size);
+                PhysicsManager.Update(avatar, Scene);
 
                 avatar.Update();
             }
@@ -214,8 +214,8 @@ namespace ArmadilloAssault.GameState.Battle
 
             if (Frame != null)
             {
-                var vector = new Vector2(64, 64 - 16);
-                DrawingManager.DrawStrings(Frame.AvatarFrame.RespawnTimers, Frame.AvatarFrame.Positions.Select(position => position + vector - CameraManager.Offset.ToVector2()));
+                var offset = new Vector2(64, -48);
+                DrawingManager.DrawStrings(Frame.AvatarFrame.RespawnTimers, Frame.AvatarFrame.Positions.Select(position => position + offset - CameraManager.Offset.ToVector2()));
 
                 if (Frame.HudFrame != null)
                 {
@@ -254,6 +254,7 @@ namespace ArmadilloAssault.GameState.Battle
                 var weapon = avatar.SelectedWeapon;
 
                 hudFrame.PlayerIndices.Add((int)avatarKey);
+                hudFrame.Deads.Add(avatar.IsDead);
                 hudFrame.Visibles.Add(PowerUpType.Invisibility != avatar.CurrentPowerUp);
                 hudFrame.AvatarXs.Add((int)avatar.Position.X);
                 hudFrame.AvatarYs.Add((int)avatar.Position.Y);
@@ -274,7 +275,7 @@ namespace ArmadilloAssault.GameState.Battle
             ModeManager.AvatarHit(hitIndex, firedIndex, damage);
         }
 
-        public void AvatarKilled(int deadIndex, int killIndex)
+        public void AvatarKilled(int deadIndex, int? killIndex)
         {
             ModeManager.AvatarKilled(deadIndex, killIndex);
 

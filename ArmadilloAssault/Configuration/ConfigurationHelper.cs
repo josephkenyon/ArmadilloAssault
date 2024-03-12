@@ -16,7 +16,7 @@ namespace ArmadilloAssault.Configuration
         public static string GetConfigurationPath(string folderName) => Path.Combine(ConfigurationManager.ContentManager.RootDirectory, "Configuration", folderName);
 
         public static Rectangle GetRectangle(RectangleJson rectangleJson) => new(rectangleJson.X, rectangleJson.Y, rectangleJson.Width, rectangleJson.Height);
-        public static List<Rectangle> GetHurtBoxes(RectangleListJson collisionBoxListJson)
+        public static List<Rectangle> GetRectangles(RectangleListJson collisionBoxListJson)
         {
             List<Rectangle> collisionBoxesList = [];
 
@@ -98,6 +98,8 @@ namespace ArmadilloAssault.Configuration
 
             json.StartingPositions = scene.StartingPositions;
             json.BackgroundColor = scene.BackgroundColorJson;
+
+            json.WrapY = scene.WrapY;
 
             json.Size = new PointJson(scene.Size.X, scene.Size.Y);
 

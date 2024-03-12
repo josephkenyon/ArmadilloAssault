@@ -1,6 +1,7 @@
 {
   "BackgroundTexture": "floating_fortress",
   "TilesetTexture": "floating_island_tileset",
+  "WrapY": false,
   "Size": {
     "X": 3840,
     "Y": 2160
