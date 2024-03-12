@@ -331,23 +331,44 @@ namespace ArmadilloAssault.Assets
             BufferedShotFrameCounter = 0;
         }
 
-        public void CycleWeapon()
+        public void CycleWeapon(bool forward = true)
         {
-            if (Weapons.Count > WeaponSelectionIndex + 1)
+            var newWeaponIndex = WeaponSelectionIndex + (forward ? 1 : -1);
+
+            if (newWeaponIndex > Weapons.Count - 1)
             {
-                WeaponSelectionIndex++;
-                if (SelectedWeapon.Ammo != 0 || SelectedWeapon.AmmoInClip != 0)
-                {
-                    HandleWeaponChange();
-                }
-                else
-                {
-                    CycleWeapon();
-                }
+                newWeaponIndex = 0;
             }
-            else if (WeaponSelectionIndex != 0)
+            else if (newWeaponIndex < 0)
+            {
+                newWeaponIndex = Weapons.Count - 1;
+            }
+
+            WeaponSelectionIndex = newWeaponIndex;
+
+            if (SelectedWeapon.Ammo != 0 || SelectedWeapon.AmmoInClip != 0)
+            {
+                HandleWeaponChange();
+            }
+            else if (Weapons.All(weapon => weapon.Ammo == 0 && weapon.AmmoInClip == 0))
             {
                 WeaponSelectionIndex = 0;
+                HandleWeaponChange();
+            }
+            else
+            {
+                CycleWeapon(forward);
+            }
+        }
+
+        internal void SwitchToWeapon(int weaponTypeIndex)
+        {
+            var weaponType = (WeaponType)weaponTypeIndex;
+
+            var weaponIndex = Weapons.FindIndex(weapon => weapon.Type == weaponType);
+            if (weaponIndex != -1)
+            {
+                WeaponSelectionIndex = weaponIndex;
                 HandleWeaponChange();
             }
         }

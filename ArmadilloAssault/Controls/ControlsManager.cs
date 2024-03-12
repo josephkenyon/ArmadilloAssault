@@ -173,6 +173,26 @@ namespace ArmadilloAssault.Controls
             updateMouseControl(mouseState.MiddleButton, Control.Toggle_Scope);
             updateMouseControl(mouseState.LeftButton, Control.Confirm);
 
+            if (controlsState.ScrollWheelValue > mouseState.ScrollWheelValue)
+            {
+                controlsState.OnControlDown(Control.Cycle_Weapon_Backward);
+            }
+            else
+            {
+                controlsState.OnControlUp(Control.Cycle_Weapon_Backward);
+            }
+
+            if (controlsState.ScrollWheelValue < mouseState.ScrollWheelValue)
+            {
+                controlsState.OnControlDown(Control.Cycle_Weapon);
+            }
+            else if (!keyboardState.IsKeyDown(Keys.Tab))
+            {
+                controlsState.OnControlUp(Control.Cycle_Weapon);
+            }
+            
+            controlsState.ScrollWheelValue = mouseState.ScrollWheelValue;
+
             if (Engine.Active)
             {
                 controlsState.MousePosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);

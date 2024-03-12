@@ -12,7 +12,12 @@
         Fire_Secondary,
         Reload,
         Cycle_Weapon,
+        Cycle_Weapon_Backward,
         Confirm,
+        Pistol,
+        Assault,
+        Shotgun,
+        Sniper,
         Start
     }
 }

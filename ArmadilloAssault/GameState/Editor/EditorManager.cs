@@ -21,6 +21,8 @@ namespace ArmadilloAssault.GameState.Editor
         public static Point SpriteSelectionIndex { get; set; }
         public static TextureName SelectedTextureName { get; set; }
 
+        public static bool ClickFrameDebounce { get; set; }
+
         public static void Initialize()
         {
             Mouse.SetCursor(MouseCursor.Arrow);
@@ -31,6 +33,8 @@ namespace ArmadilloAssault.GameState.Editor
             Z = 1;
             SelectedTextureName = Scene.TilesetTexture;
             SpriteSelectionIndex = new Point(0, 0);
+
+            ClickFrameDebounce = false;
         }
 
         public static void Update()
@@ -47,7 +51,7 @@ namespace ArmadilloAssault.GameState.Editor
                 return;
             }
 
-            if (ControlsManager.IsControlDown(playerIndex, Control.Confirm))
+            if (ControlsManager.IsControlDown(playerIndex, Control.Confirm) && ClickFrameDebounce)
             {
                 if (xTileIndex < SceneSize.X && yTileIndex < SceneSize.Y)
                 {
@@ -115,6 +119,11 @@ namespace ArmadilloAssault.GameState.Editor
                 GameStateManager.State = State.Menu;
 
                 Mouse.SetCursor(MouseCursor.FromTexture2D(TextureManager.GetTexture(TextureName.cursor), 0, 0));
+            }
+
+            if (!ControlsManager.IsControlDown(playerIndex, Control.Confirm))
+            {
+                ClickFrameDebounce = true;
             }
         }
 

@@ -9,6 +9,7 @@ namespace ArmadilloAssault.Controls
         private Dictionary<Control, int> ControlDownFrames { get; set; }
         private Dictionary<Control, bool> ControlDown { get; set; }
         private Dictionary<Control, bool> ControlPress { get; set; }
+        public int ScrollWheelValue { get; set; } = 0;
 
         public ControlsState() {
             ControlDownFrames = [];

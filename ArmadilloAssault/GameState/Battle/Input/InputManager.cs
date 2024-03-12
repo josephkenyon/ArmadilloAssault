@@ -42,6 +42,26 @@ namespace ArmadilloAssault.GameState.Battle.Input
             {
                 avatar.CycleWeapon();
             }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Cycle_Weapon_Backward))
+            {
+                avatar.CycleWeapon(false);
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Pistol))
+            {
+                avatar.SwitchToWeapon(0);
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Assault))
+            {
+                avatar.SwitchToWeapon(1);
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Shotgun))
+            {
+                avatar.SwitchToWeapon(2);
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Sniper))
+            {
+                avatar.SwitchToWeapon(3);
+            }
             else if (ControlsManager.IsControlDownStart(playerIndex, Control.Reload))
             {
                 avatar.Reload();

@@ -26,8 +26,6 @@ namespace ArmadilloAssault.Assets
         {
             var buttons = new List<Button>();
 
-            //var spaceBetweenButtons = buttonJsons.Count > 1 ? (ButtonSpaceY - (buttonJsons.Count * MenuManager.ButtonSize.Y)) / (buttonJsons.Count - 1) : 0;
-
             var start = ButtonSpaceStart;
 
             if (hasSpinner)
