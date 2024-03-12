@@ -52,21 +52,21 @@
   },
   "HurtBoxes": {
     "X": [ 58, 48, 46 ],
-    "Y": [ 9, 33, 96 ],
+    "Y": [ 24, 43, 96 ],
     "Width": [ 26, 24, 24 ],
-    "Height": [ 24, 64, 30 ]
+    "Height": [ 24, 54, 30 ]
   },
-  "ShellBox": {
-    "X": 28,
-    "Y": 28,
-    "Width": 20,
-    "Height": 62
+  "ShellBox": { 
+    "X": 20,
+    "Y": 42,
+    "Width": 24,
+    "Height": 54
   },
   "SpinningShellBox": {
-    "X": 40,
+    "X": 36,
     "Y": 31,
     "Width": 52,
-    "Height": 22
+    "Height": 31
   },
   "SpinningHurtBox": {
     "X": 34,

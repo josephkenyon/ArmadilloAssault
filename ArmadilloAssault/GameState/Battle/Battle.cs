@@ -199,19 +199,6 @@ namespace ArmadilloAssault.GameState.Battle
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
 
-            /**
-            var boxList = new List<Rectangle>();
-            var boxesList = Avatars.Values.Select(avatar => avatar.GetHurtBoxes());
-            foreach (var boxes in boxesList)
-            {
-                boxList.AddRange(boxes);
-            }
-
-            boxList.AddRange(Avatars.Values.Select(avatar => avatar.GetShellBox()));
-
-            DrawingManager.DrawCollisionBoxes(boxList);
-            **/
-
             if (Frame != null)
             {
                 var offset = new Vector2(64, -48);
@@ -297,6 +284,20 @@ namespace ArmadilloAssault.GameState.Battle
         public void CreateBullet(WeaponJson weaponConfiguration, Vector2 position, float angleTrajectory, float damageModifier, int playerIndex)
         {
             BulletManager?.CreateBullet(weaponConfiguration, position, angleTrajectory, damageModifier, playerIndex);
+        }
+
+        private void DrawCollisionBoxes()
+        {
+            var boxList = new List<Rectangle>();
+            var boxesList = Avatars.Values.Select(avatar => avatar.GetHurtBoxes());
+            foreach (var boxes in boxesList)
+            {
+                boxList.AddRange(boxes);
+            }
+
+            boxList.AddRange(Avatars.Values.Select(avatar => avatar.GetShellBox()));
+
+            DrawingManager.DrawCollisionBoxes(boxList);
         }
     }
 }
