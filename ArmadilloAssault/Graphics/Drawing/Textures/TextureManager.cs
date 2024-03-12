@@ -22,12 +22,14 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
 
             _textures.Add(TextureName.arthur, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "arthur")));
             _textures.Add(TextureName.axel, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "axel")));
+            _textures.Add(TextureName.angie, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "angie")));
             _textures.Add(TextureName.titan, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "titan")));
             _textures.Add(TextureName.turbo, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "turbo")));
             _textures.Add(TextureName.claus, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "claus")));
 
             _textures.Add(TextureName.arthur_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "arthur_select")));
             _textures.Add(TextureName.axel_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "axel_select")));
+            _textures.Add(TextureName.angie_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "angie_select")));
             _textures.Add(TextureName.titan_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "titan_select")));
             _textures.Add(TextureName.turbo_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "turbo_select")));
             _textures.Add(TextureName.claus_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "claus_select")));

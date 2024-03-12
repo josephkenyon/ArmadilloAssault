@@ -4,6 +4,7 @@
     {
         Arthur,
         Axel,
+        Angie,
         Titan,
         Turbo,
         Claus,

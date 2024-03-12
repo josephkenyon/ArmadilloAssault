@@ -3,6 +3,8 @@
     public enum TextureName
     {
         nothing,
+        angie,
+        angie_select,
         arthur,
         arthur_select,
         assault,

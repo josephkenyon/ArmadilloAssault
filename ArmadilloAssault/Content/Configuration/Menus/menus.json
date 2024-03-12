@@ -94,6 +94,21 @@
         "Data": "Axel"
       },
       {
+        "TextureName": "angie_select",
+        "Conditions": [ "avatar_select" ],
+        "Text": "Angie",
+        "Size": {
+          "X": 256,
+          "Y": 256
+        },
+        "Location": {
+          "X": 688,
+          "Y": 128
+        },
+        "Actions": [ "select_avatar" ],
+        "Data": "Angie"
+      },
+      {
         "TextureName": "titan_select",
         "Conditions": [ "avatar_select" ],
         "Text": "Titan",

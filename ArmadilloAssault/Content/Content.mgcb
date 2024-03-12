@@ -14,6 +14,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Configuration/Avatars/angie.json
+/copy:Configuration/Avatars/angie.json
+
 #begin Configuration/Avatars/arthur.json
 /copy:Configuration/Avatars/arthur.json
 
@@ -130,6 +133,18 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Graphics/Fonts/menu_font.spritefont
+
+#begin Graphics/Sprites/angie.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Sprites/angie.png
 
 #begin Graphics/Sprites/arthur.png
 /importer:TextureImporter
@@ -251,6 +266,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Sprites/turbo.png
 
+#begin Graphics/Textures/Avatar_Selection/angie_select.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/Avatar_Selection/angie_select.png
+
 #begin Graphics/Textures/Avatar_Selection/arthur_select.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -351,7 +378,7 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
+/processorParam:ColorKeyEnabled=False
 /processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
@@ -589,6 +616,30 @@
 
 #begin Misc/credits.json
 /copy:Misc/credits.json
+
+#begin Sound/Angie/angie_dead.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Angie/angie_dead.mp3
+
+#begin Sound/Angie/angie_hurt.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Angie/angie_hurt.mp3
+
+#begin Sound/Angie/angie_jump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Angie/angie_jump.mp3
+
+#begin Sound/Angie/angie_ready.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Angie/angie_ready.mp3
 
 #begin Sound/Arthur/arthur_dead.mp3
 /importer:Mp3Importer
