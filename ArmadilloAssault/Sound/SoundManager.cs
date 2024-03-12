@@ -221,7 +221,7 @@ namespace ArmadilloAssault.Sound
 
                 foreach (var avatarSound in soundFrame.AvatarSounds.Distinct())
                 {
-                    _avatarSounds[avatarSound.Key][avatarSound.Value].Play(0.5f * SoundScaler, 0f, 0f);
+                    _avatarSounds[avatarSound.Key][avatarSound.Value].Play((avatarSound.Key == AvatarType.Claus ? 1f : 0.5f) * SoundScaler, 0f, 0f);
                 }
             }
         }
