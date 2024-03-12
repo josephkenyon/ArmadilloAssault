@@ -45,6 +45,14 @@
     "Name": "Options",
     "Buttons": [
       {
+        "TextKey": "fullscreen_toggle_text",
+        "Actions": [ "toggle_fullscreen" ],
+        "Size": {
+          "X": 448,
+          "Y": 96
+        }
+      },
+      {
         "Text": "Back",
         "Actions": [ "back" ]
       }

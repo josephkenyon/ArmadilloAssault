@@ -35,16 +35,15 @@ namespace ArmadilloAssault.Assets
                 start += LoadingSpinner.Size + ButtonsSpace;
             }
 
-            var buttonLocation = new Point(1920 / 2 - MenuManager.ButtonSize.X / 2, start);
-
+            var buttonLocationY = start;
             foreach (var buttonJson in buttonJsons.Where(buttonJson => !applyConditionsImmediately || MenuManager.ConditionsFulfilled(buttonJson.Conditions)))
             {
                 var size = buttonJson.Size != null ? buttonJson.Size.ToPoint() : MenuManager.ButtonSize;
 
                 if (buttonJson.Location == null)
                 {
-                    buttons.Add(new Button(buttonJson, buttonLocation, size));
-                    buttonLocation = new Point(buttonLocation.X, buttonLocation.Y + ButtonsSpace + MenuManager.ButtonSize.Y);
+                    buttons.Add(new Button(buttonJson, new Point(1920 / 2 - (buttonJson.Size != null ? buttonJson.Size.ToPoint() : MenuManager.ButtonSize).X / 2, buttonLocationY), size));
+                    buttonLocationY += ButtonsSpace + MenuManager.ButtonSize.Y;
                 }
                 else
                 {

@@ -102,7 +102,10 @@ namespace ArmadilloAssault.Web.Server
         public void Broadcast(ServerMessage serverMessage, string id)
         {
             var message = JsonConvert.SerializeObject(serverMessage);
-            WebSocketServer.WebSocketServices["/game"].Sessions.SendTo(message, id);
+            if (WebSocketServer.WebSocketServices["/game"].Sessions.ActiveIDs.Any())
+            {
+                WebSocketServer.WebSocketServices["/game"].Sessions.SendTo(message, id);
+            }
         }
 
         public void OnNext(string value, string id)

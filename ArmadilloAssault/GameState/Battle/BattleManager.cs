@@ -47,7 +47,7 @@ namespace ArmadilloAssault.GameState.Battle
                 CameraManager.ToggleScoped();
             }
 
-            if (Paused || Battle.GameOver)
+            if ((Paused || Battle.GameOver) && Menu != null)
             {
                 Menu.Update();
 

@@ -137,6 +137,9 @@ namespace ArmadilloAssault.GameState.Menus
                 case MenuAction.level_select:
                     LobbyState?.SetLevelSelect(true);
                     break;
+                case MenuAction.toggle_fullscreen:
+                    GraphicsManager.ToggleFullscreen();
+                    break;
                 case MenuAction.next_level:
                     _ = NextLevel();
                     break;
@@ -341,6 +344,7 @@ namespace ArmadilloAssault.GameState.Menus
         {
             return menuKey switch
             {
+                MenuKey.fullscreen_toggle_text => $"Fullscreen: {(GraphicsManager.IsFullscreen ? "Off" : "On")}",
                 MenuKey.level_name => LobbyFrame != null ? GetFormattedLevelName(LobbyFrame.SelectedLevel) : null,
                 _ => null
             };

@@ -11,6 +11,7 @@
         stop_server,
         start_game,
         open_editor,
+        toggle_fullscreen,
         select_avatar,
         avatar_select,
         level_select,

@@ -18,6 +18,8 @@ namespace ArmadilloAssault.Graphics
 
         public static Point ScreenCenter => new(_graphicsDevice.Viewport.Width / 2, _graphicsDevice.Viewport.Height / 2);
 
+        public static bool IsFullscreen => _graphicsDeviceManager.IsFullScreen;
+
         public static void Initialize(Engine engine)
         {
             _graphicsDeviceManager = new(engine)
