@@ -70,19 +70,27 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 var x = middle;
                 if (playerIndex == 0)
                 {
-                    x -= 288 + 96;
+                    x -= 432 + 160;
                 }
-                else if (playerIndex == 1)
+                if (playerIndex == 1)
                 {
-                    x -= 144 + 32;
+                    x -= 288 + 96;
                 }
                 else if (playerIndex == 2)
                 {
-                    x += 32;
+                    x -= 144 + 32;
                 }
                 else if (playerIndex == 3)
                 {
+                    x += 32;
+                }
+                else if (playerIndex == 4)
+                {
                     x += 144 + 96;
+                }
+                else if (playerIndex == 5)
+                {
+                    x += 288 + 160;
                 }
 
                 rectangleDictionary.Add(playerIndex, new Rectangle(x, 448, 144, 256));
