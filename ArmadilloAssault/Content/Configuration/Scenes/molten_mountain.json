@@ -24,10 +24,10 @@
     }
   },
   "CapturePoint": {
-    "X": 23,
-    "Y": 27,
-    "Width": 9,
-    "Height": 4
+    "X": 18,
+    "Y": 21,
+    "Width": 20,
+    "Height": 10
   },
   "BackgroundColor": {
     "R": 42,

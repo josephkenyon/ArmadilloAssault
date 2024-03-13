@@ -126,7 +126,7 @@ namespace ArmadilloAssault.GameState.Battle
                 }
                 else
                 {
-                    if (avatar.Animation != Animation.Dead)
+                    if (avatar.Animation != Animation.Dead && !avatar.IsSpinning)
                     {
                         avatar.SetAnimation(Animation.Resting);
                     }
