@@ -21,7 +21,8 @@ namespace ArmadilloAssault.Assets
         public List<TileList> TileLists { get; set; } = GetTileLists(json);
         public bool WrapY { get; set; } = json.WrapY;
         public Rectangle? CapturePoint { get; set; } = json.CapturePoint?.ToRectangle(DrawingHelper.FullTileSize);
-        public readonly StartingPositions StartingPositions = json.StartingPositions;
+
+        public readonly List<Vector2> StartingPositions = json.StartingPositions.Select(position => (position.ToVector2() * DrawingHelper.FullTileSize)).ToList();
 
         public void UpdateTile(int z, Point position, Point spriteLocation, TextureName textureName)
         {

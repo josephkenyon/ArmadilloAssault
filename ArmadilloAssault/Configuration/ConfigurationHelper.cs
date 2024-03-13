@@ -2,6 +2,7 @@
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Scenes;
+using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -96,10 +97,13 @@ namespace ArmadilloAssault.Configuration
             json.BackgroundTexture = scene.BackgroundTexture;
             json.TilesetTexture = scene.TilesetTexture;
 
-            json.StartingPositions = scene.StartingPositions;
+            json.StartingPositions = scene.StartingPositions.Select(pos => PointJson.CreateFrom((pos / DrawingHelper.FullTileSize).ToPoint())).ToList();
             json.BackgroundColor = scene.BackgroundColorJson;
 
-            json.CapturePoint = RectangleJson.CreateFrom(scene.CapturePoint);
+            if (scene.CapturePoint != null)
+            {
+                json.CapturePoint = RectangleJson.CreateFrom((Rectangle)scene.CapturePoint, 1f / DrawingHelper.FullTileSize);
+            }
 
             json.WrapY = scene.WrapY;
 

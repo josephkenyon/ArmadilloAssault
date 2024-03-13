@@ -28,6 +28,7 @@ using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using Microsoft.Xna.Framework.Input;
 using ArmadilloAssault.Configuration.Generics;
+using System;
 
 namespace ArmadilloAssault.GameState.Battle
 {
@@ -76,24 +77,9 @@ namespace ArmadilloAssault.GameState.Battle
 
             foreach (var index in avatars.Keys)
             {
-                Avatars.Add(index, new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatars[index]), this));
-            }
-
-            Avatars.Values.First().SetStartingPosition(Scene.StartingPositions.First.ToVector2());
-
-            if (Avatars.Values.Count >= 2)
-            {
-                Avatars.Values.ElementAt(1).SetStartingPosition(Scene.StartingPositions.Second.ToVector2());
-            }
-
-            if (Avatars.Values.Count >= 3)
-            {
-                Avatars.Values.ElementAt(2).SetStartingPosition(Scene.StartingPositions.Third.ToVector2());
-            }
-
-            if (Avatars.Values.Count >= 4)
-            {
-                Avatars.Values.ElementAt(3).SetStartingPosition(Scene.StartingPositions.Fourth.ToVector2());
+                var avatar = new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatars[index]), this);
+                avatar.SetStartingPosition(Scene.StartingPositions[index]);
+                Avatars.Add(index, avatar);
             }
 
             BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);

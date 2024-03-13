@@ -62,6 +62,7 @@ namespace ArmadilloAssault.Assets
 
         // Physics
         public int AvailableJumps { get; set; } = 1;
+        public int JumpingFrames { get; set; } = 0;
 
         private bool runningBackwards = false;
         public bool Scoped { get; set; }
@@ -155,6 +156,7 @@ namespace ArmadilloAssault.Assets
         {
             if (Grounded)
             {
+                JumpingFrames = 0;
                 Falling = false;
                 Rising = false;
                 AvailableJumps = 2;
@@ -177,7 +179,7 @@ namespace ArmadilloAssault.Assets
             {
                 Rising = false;
 
-                if (AvailableJumps == 2)
+                if (AvailableJumps == 2 && JumpingFrames >= 20)
                 {
                     AvailableJumps = 1;
                 }
@@ -213,6 +215,11 @@ namespace ArmadilloAssault.Assets
             if (!Grounded || Animation != Animation.Rolling)
             {
                 RollingFrameCount = 0;
+            }
+
+            if (!Grounded)
+            {
+                JumpingFrames++;
             }
         }
 

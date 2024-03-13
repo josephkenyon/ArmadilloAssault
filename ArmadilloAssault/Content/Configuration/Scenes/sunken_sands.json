@@ -2,12 +2,14 @@
   "BackgroundTexture": "desert_background",
   "TilesetTexture": "desert_tileset",
   "WrapY": false,
-  "StartingPositions": {
-  "First": { "X": 310, "Y": 120 },
-    "Second": { "X": 1600, "Y": 120 },
-    "Third": { "X": 500, "Y": 740 },
-    "Fourth": { "X": 1300, "Y": 740 }
-  },
+  "StartingPositions": [
+    { "X": 6, "Y": 2 },
+    { "X": 33, "Y": 2 },
+    { "X": 6, "Y": 8 },
+    { "X": 33, "Y": 8 },
+    { "X": 6, "Y": 12 },
+    { "X": 33, "Y": 12 }
+  ],
   "CapturePoint": {
     "X": 15,
     "Y": 12,

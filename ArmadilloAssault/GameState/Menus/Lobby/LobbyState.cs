@@ -96,7 +96,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             var frame = new LobbyFrame
             {
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars),
-                PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(RectangleJson.CreateFrom).ToList(),
+                PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerBackgroundIds = [.. PlayerTeamRelations.Keys],
                 PlayerTeamIds = [.. PlayerTeamRelations.Values],
                 LevelSelect = LevelSelect,

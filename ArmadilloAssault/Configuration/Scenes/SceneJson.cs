@@ -10,7 +10,7 @@ namespace ArmadilloAssault.Configuration.Scenes
         public TextureName TilesetTexture { get; set; } = TextureName.test_tileset;
         public bool WrapY { get; set; } = true;
         public PointJson Size { get; set; } = new PointJson(1920, 1080);
-        public StartingPositions StartingPositions { get; set; } = new();
+        public List<PointJson> StartingPositions { get; set; } = [];
         public ColorJson BackgroundColor { get; set; } = new();
         public bool HighCloudsOnly { get; set; }
         public FlowJson Flow { get; set; }
