@@ -3,7 +3,8 @@
     "Key": "Deathmatch",
     "Texts": [
       "A  fight  to the death!",
-      "First  player (or team) to 5 kills wins!"
+      "First  player to 5 kills or first",
+      "team to 10 kills wins!"
     ]
   },
   {

@@ -23,6 +23,12 @@
       "Y": 912
     }
   },
+  "CapturePoint": {
+    "X": 23,
+    "Y": 27,
+    "Width": 9,
+    "Height": 4
+  },
   "BackgroundColor": {
     "R": 42,
     "G": 0,

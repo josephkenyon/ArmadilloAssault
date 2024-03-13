@@ -22,6 +22,7 @@
         PreviousLevel,
         Pause,
         PreviousMode,
-        NextMode
+        NextMode,
+        TeamIndexIncrement
     }
 }

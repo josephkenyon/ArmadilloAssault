@@ -3,7 +3,6 @@ using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.Generics;
-using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Sound;
 using Microsoft.Xna.Framework;
 using System;
@@ -247,7 +246,6 @@ namespace ArmadilloAssault.GameState.Battle.Input
             {
                 avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
             }
-
 
             var notTryingToMove = !holdingLeft && !holdingRight;
 

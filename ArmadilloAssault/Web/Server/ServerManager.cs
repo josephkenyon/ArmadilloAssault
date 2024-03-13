@@ -61,13 +61,13 @@ namespace ArmadilloAssault.Web.Server
 
         public static void StartGame(string data)
         {
-            var avatarTypeDictionary = new Dictionary<PlayerIndex, AvatarType>();
+            var avatarTypeDictionary = new Dictionary<int, AvatarType>();
 
             foreach (var playerIndex in MenuManager.LobbyState.Avatars.Keys) {
                 avatarTypeDictionary.Add(playerIndex, MenuManager.LobbyState.Avatars[playerIndex].Type);
             }
 
-            BattleManager.Initialize(avatarTypeDictionary, data);
+            BattleManager.Initialize(avatarTypeDictionary, MenuManager.LobbyState.PlayerTeamRelations, MenuManager.LobbyState.SelectedMode, data);
             GameStateManager.State = State.Battle;
 
             Server.MessageIntialization(data);

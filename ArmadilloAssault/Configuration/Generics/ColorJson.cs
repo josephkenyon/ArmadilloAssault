@@ -24,6 +24,8 @@ namespace ArmadilloAssault.Configuration.Generics
 
         public static ColorJson White => new() { R = 255, G = 255, B = 255 };
 
+        public static ColorJson CreateFrom(Color color) => new() { R = color.R, G = color.G, B = color.B };
+
         public Color ToColor() => new(R, G, B);
     }
 }

@@ -138,18 +138,18 @@ namespace ArmadilloAssault.GameState.Editor
 
             DrawingManager.DrawTexture(Scene.TilesetTexture, new Vector2((SceneSize.X + 1) * scaledTileSize, 1 * scaledTileSize));
 
-            DrawingManager.DrawString($"Z: {Z}", new Point(SceneSize.X, 0), DrawingHelper.GetFont);
+            DrawingManager.DrawEditorString($"Z: {Z}", new Point(SceneSize.X, 0), DrawingHelper.GetFont);
 
             var aimPosition = ControlsManager.GetMousePosition(0);
 
             var xTileIndex = (int)(aimPosition.X / DrawingHelper.TileSize);
             var yTileIndex = (int)(aimPosition.Y / DrawingHelper.TileSize);
 
-            DrawingManager.DrawString($"X: {xTileIndex}, Y: {yTileIndex}", new Point(SceneSize.X + 4, 0), DrawingHelper.GetFont);
+            DrawingManager.DrawEditorString($"X: {xTileIndex}, Y: {yTileIndex}", new Point(SceneSize.X + 4, 0), DrawingHelper.GetFont);
 
             if (Z == 0)
             {
-                DrawingManager.DrawCollisionBoxes(Scene.CollisionBoxes);
+                DrawingManager.DrawRectangles(Scene.CollisionBoxes);
             }
         }
     }

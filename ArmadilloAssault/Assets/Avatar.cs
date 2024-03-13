@@ -3,6 +3,7 @@ using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Bullets;
 using ArmadilloAssault.GameState.Battle.Physics;
@@ -26,6 +27,8 @@ namespace ArmadilloAssault.Assets
         public static readonly float JumpingAcceleration = 0.5f;
 
         public static readonly int BreathingCycleFrameLength = 80;
+
+        public int PlayerIndex => playerIndex;
 
         // Collision
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);

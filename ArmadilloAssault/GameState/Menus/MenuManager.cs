@@ -19,6 +19,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ArmadilloAssault.GameState.Menus
@@ -67,6 +68,19 @@ namespace ArmadilloAssault.GameState.Menus
                 {
                     SoundManager.PlayMenuSound(MenuSound.confirm);
                     button.Actions.ForEach(async action => await InvokeAction(action, button.Data));
+                }
+                else if (LobbyFrame != null)
+                {
+                    var index = 0;
+                    foreach (var rec in LobbyFrame.PlayerBackgrounds.Select(background => background.ToRectangle()))
+                    {
+                        if (rec.Contains(ControlsManager.GetMousePosition(0)))
+                        {
+                            InvokeAction(MenuAction.increment_team_index, index.ToString());
+                        }
+
+                        index++;
+                    }
                 }
             }
             else if (ControlsManager.IsControlDownStart(0, Control.Start))
@@ -134,6 +148,9 @@ namespace ArmadilloAssault.GameState.Menus
                     LobbyState?.SetLevelSelect(false);
                     LobbyState?.SetModeSelect(false);
                     break;
+                case MenuAction.increment_team_index:
+                    _ = IncrementTeamIndex(int.Parse(data));
+                    break;
                 case MenuAction.mode_select:
                     LobbyState?.SetModeSelect(true);
                     LobbyState?.SetLevelSelect(false);
@@ -173,12 +190,24 @@ namespace ArmadilloAssault.GameState.Menus
             return Task.CompletedTask;
         }
 
+        public static async Task IncrementTeamIndex(int playerIndex)
+        {
+            if (ServerManager.IsServing)
+            {
+                LobbyState?.IncrementTeamIndex(playerIndex);
+            }
+            else if (ClientManager.IsActive)
+            {
+                await ClientManager.BroadcastTeamIndexIncrement(playerIndex);
+            }
+        }
+
         private static async Task SelectAvatar(string avatarTypeString)
         {
             var avatarType = Enum.Parse<AvatarType>(avatarTypeString);
             if (ServerManager.IsServing)
             {
-                LobbyState.AvatarSelected(PlayerIndex.One, avatarType);
+                LobbyState.AvatarSelected(0, avatarType);
             }
             else if (ClientManager.IsActive)
             {
@@ -217,7 +246,12 @@ namespace ArmadilloAssault.GameState.Menus
             {
                 if (ConditionFulfilled(MenuCondition.avatar_select))
                 {
-                    DrawingManager.DrawLobbyPlayerBackgrounds(LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle), LobbyFrame.PlayerBackgroundIds);
+                    DrawingManager.DrawLobbyPlayerBackgrounds(
+                        LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle()),
+                        LobbyFrame.PlayerTeamIds,
+                        LobbyFrame.PlayerBackgroundIds
+                    );
+
                     DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
                 }
 
@@ -230,6 +264,16 @@ namespace ArmadilloAssault.GameState.Menus
                 DrawingManager.DrawTexture(TextureName.white_pixel, new Rectangle(480, 160, 960, 540), color: sceneJson.BackgroundColor != null ? sceneJson.BackgroundColor.ToColor() : Color.CornflowerBlue);
                 DrawingManager.DrawTexture(sceneJson.BackgroundTexture, new Rectangle(480, 160, 960, 540), color: Color.White * 0.75f);
 
+                if (LobbyFrame.SelectedMode == Battle.Mode.Mode.King_of_the_Hill && sceneJson.CapturePoint != null)
+                {
+                    DrawingManager.DrawRectangles([new Rectangle(
+                        480 + (sceneJson.CapturePoint.X * LobbyFrame.TileSize),
+                        160 + (sceneJson.CapturePoint.Y * LobbyFrame.TileSize),
+                        sceneJson.CapturePoint.Width * LobbyFrame.TileSize,
+                        sceneJson.CapturePoint.Height * LobbyFrame.TileSize
+                    )], Color.White);
+                }
+
                 if (PreviewScene != null)
                 {
                     foreach (var list in PreviewScene.TileLists)
@@ -240,9 +284,9 @@ namespace ArmadilloAssault.GameState.Menus
             }
             else if (ConditionFulfilled(MenuCondition.mode_select) && LobbyFrame != null)
             {
-                var toolTip = ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode);
+                var toolTip = ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode.ToString());
 
-                DrawingManager.DrawTooltip(ConfigurationManager.GetToolTip(LobbyState.SelectedMode.ToString()), new Point(960, 440));
+                DrawingManager.DrawTooltip(ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode.ToString()), new Point(960, 440));
             }
         }
 
@@ -374,12 +418,12 @@ namespace ArmadilloAssault.GameState.Menus
 
         public static void UpdateAvatarSelection(int index, AvatarType avatarType)
         {
-            LobbyState?.AvatarSelected((PlayerIndex)index, avatarType);
+            LobbyState?.AvatarSelected(index, avatarType);
         }
 
         public static void PlayerDisconnected(int index)
         {
-            LobbyState?.AvatarDisconnected((PlayerIndex)index);
+            LobbyState?.AvatarDisconnected(index);
         }
 
         public static string GetValue(MenuKey menuKey)

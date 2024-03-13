@@ -13,5 +13,6 @@ namespace ArmadilloAssault.Web.Communication
         public float AimY { get; set; }
         public List<Control> AreControlsDown { get; set; }
         public AvatarType AvatarType { get; set; }
+        public int PlayerIndex { get; set; }
     }
 }

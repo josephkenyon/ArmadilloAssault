@@ -99,6 +99,8 @@ namespace ArmadilloAssault.Configuration
             json.StartingPositions = scene.StartingPositions;
             json.BackgroundColor = scene.BackgroundColorJson;
 
+            json.CapturePoint = RectangleJson.CreateFrom(scene.CapturePoint);
+
             json.WrapY = scene.WrapY;
 
             json.Size = new PointJson(scene.Size.X, scene.Size.Y);

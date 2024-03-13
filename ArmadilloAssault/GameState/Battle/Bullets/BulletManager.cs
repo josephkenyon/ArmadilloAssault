@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;
@@ -91,6 +92,9 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
                 {
                     for (int i = 0; i < avatars.Count; i++)
                     {
+                        if (bulletListener.GetTeamIndex(bullet.PlayerIndex) == bulletListener.GetTeamIndex(avatars[i].PlayerIndex))
+                            continue;
+
                         var avatarCenter = avatars[i].GetCenter();
                         if (MathUtils.DistanceBetweenTwoVectors(avatarCenter, bullet.Position) <= (Bullet_Speed * 2))
                         {

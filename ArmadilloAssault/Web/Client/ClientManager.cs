@@ -9,6 +9,7 @@ using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -167,6 +168,17 @@ namespace ArmadilloAssault.Web.Client
             {
                 Type = ClientMessageType.Pause,
                 Paused = paused,
+            };
+
+            await Client.MessageServer(message);
+        }
+
+        public static async Task BroadcastTeamIndexIncrement(int playerIndex)
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.TeamIndexIncrement,
+                PlayerIndex = playerIndex
             };
 
             await Client.MessageServer(message);

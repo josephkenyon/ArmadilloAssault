@@ -85,18 +85,26 @@ namespace ArmadilloAssault.Web.Server
         public void SendLobbyFrame(LobbyFrame lobbyFrame)
         {
             var index = 1;
-            foreach (var player in ClientPlayers)
+            try
             {
-                var message = new ServerMessage
+                foreach (var player in ClientPlayers)
                 {
-                    Type = ServerMessageType.LobbyUpdate,
-                    LobbyFrame = lobbyFrame
-                };
+                    var message = new ServerMessage
+                    {
+                        Type = ServerMessageType.LobbyUpdate,
+                        LobbyFrame = lobbyFrame
+                    };
 
-                Broadcast(message, player.ConnectionId);
+                    Broadcast(message, player.ConnectionId);
 
-                index++;
+                    index++;
+                }
             }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            
         }
 
         public void Broadcast(ServerMessage serverMessage, string id)
@@ -126,6 +134,10 @@ namespace ArmadilloAssault.Web.Server
                 {
                     UpdateAvatarSelection(clientMessage, id);
                 }
+                else if (clientMessage.Type == ClientMessageType.TeamIndexIncrement)
+                {
+                    _ = MenuManager.IncrementTeamIndex(clientMessage.PlayerIndex);
+                }
                 else if (clientMessage.Type == ClientMessageType.NextLevel)
                 {
                     _ = MenuManager.NextLevel();
@@ -142,6 +154,7 @@ namespace ArmadilloAssault.Web.Server
                 {
                     _ = MenuManager.PreviousMode();
                 }
+
                 else if (clientMessage.Type == ClientMessageType.Pause)
                 {
                     BattleManager.ClientPauseRequest(clientMessage.Paused);
@@ -155,7 +168,7 @@ namespace ArmadilloAssault.Web.Server
 
         private void OnJoinGame(string name, string id)
         {
-            if (GameStateManager.State == State.Menu)
+            if (GameStateManager.State == State.Menu && Players.Count < 6)
             {
                 var newIndex = 0;
                 while (Players.Any(player => player.PlayerIndex == newIndex))
@@ -169,6 +182,8 @@ namespace ArmadilloAssault.Web.Server
                     ConnectionId = id,
                     PlayerIndex = newIndex
                 });
+
+                MenuManager.LobbyState?.PlayerTeamRelations.TryAdd(newIndex, newIndex);
 
                 Players = [.. Players.OrderBy(player => player.PlayerIndex)];
             }

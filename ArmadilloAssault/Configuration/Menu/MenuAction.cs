@@ -22,6 +22,7 @@
         end_pause,
         prev_mode,
         next_mode,
-        mode_select
+        mode_select,
+        increment_team_index
     }
 }

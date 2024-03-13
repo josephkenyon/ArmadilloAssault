@@ -42,6 +42,32 @@ namespace ArmadilloAssault.Graphics.Drawing
             return (int)Math.Round(result, MidpointRounding.AwayFromZero);
         }
 
+        public static Color GetTeamColor(int index)
+        {
+            if (index == 1)
+            {
+                return new Color(255, 80, 80);
+            }
+            else if (index == 2)
+            {
+                return new Color(80, 180, 80);
+            }
+            else if (index == 3)
+            {
+                return new Color(200, 200, 60);
+            }
+            else if (index == 4)
+            {
+                return new Color(70, 200, 200);
+            }
+            else if (index == 5)
+            {
+                return new Color(200, 70, 190);
+            }
+
+            return new Color(80, 80, 255);
+        }
+
         public static int TileSize => GetTileSize();
 
         private static int GetTileSize()

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ArmadilloAssault.GameState.Menus.Lobby
 {
@@ -17,13 +18,19 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
     {
         private static IEnumerable<string> SelectableLevelKeys => ConfigurationManager.SceneConfigurations.Keys;
 
-        public Dictionary<PlayerIndex, Avatar> Avatars { get; private set; } = [];
+        public Dictionary<int, Avatar> Avatars { get; private set; } = [];
+        public Dictionary<int, int> PlayerTeamRelations { get; private set; } = [];
         public string SelectedLevel { get; private set; } = SelectableLevelKeys.First();
         public Mode SelectedMode { get; private set; } = Mode.Deathmatch;
         public bool LevelSelect { get; private set; } = false;
         public bool ModeSelect { get; private set; } = false;
 
-        public void AvatarSelected(PlayerIndex index, AvatarType avatarType)
+        public LobbyState()
+        {
+            PlayerTeamRelations.TryAdd(0, 0);
+        }
+
+        public void AvatarSelected(int index, AvatarType avatarType)
         {
             if (Avatars.TryGetValue(index, out Avatar value) && value.Type == avatarType)
             {
@@ -37,12 +44,12 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             {
                 if (value.Type != avatarType)
                 {
-                    Avatars[index] = new Avatar((int)index, ConfigurationManager.GetAvatarConfiguration(avatarType));
+                    Avatars[index] = new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatarType));
                 }
             }
             else
             {
-                Avatars.Add(index, new Avatar((int)index, ConfigurationManager.GetAvatarConfiguration(avatarType)));
+                Avatars.Add(index, new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatarType)));
             }
 
             var rectangle = GetPlayerBackgroundRectangles()[index];
@@ -53,9 +60,9 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             Avatars[index].SetY(rectangle.Y + 16);
         }
 
-        public static Dictionary<PlayerIndex, Rectangle> GetPlayerBackgroundRectangles()
+        public static Dictionary<int, Rectangle> GetPlayerBackgroundRectangles()
         {
-            var rectangleDictionary = new Dictionary<PlayerIndex, Rectangle>();
+            var rectangleDictionary = new Dictionary<int, Rectangle>();
 
             foreach (var playerIndex in ServerManager.PlayerIndices)
             {
@@ -78,7 +85,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                     x += 144 + 96;
                 }
 
-                rectangleDictionary.Add((PlayerIndex)playerIndex, new Rectangle(x, 448, 144, 256));
+                rectangleDictionary.Add(playerIndex, new Rectangle(x, 448, 144, 256));
             }
 
             return rectangleDictionary;
@@ -90,11 +97,12 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             {
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars),
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(RectangleJson.CreateFrom).ToList(),
-                PlayerBackgroundIds = ServerManager.PlayerIndices,
+                PlayerBackgroundIds = [.. PlayerTeamRelations.Keys],
+                PlayerTeamIds = [.. PlayerTeamRelations.Values],
                 LevelSelect = LevelSelect,
                 ModeSelect = ModeSelect,
                 SelectedLevel = SelectedLevel,
-                SelectedMode = SelectedMode.ToString(),
+                SelectedMode = SelectedMode,
                 ModeName = SelectedMode.ToString().Replace("_", " "),
                 TileSize = GetTileSize()
             };
@@ -131,9 +139,10 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             return (int)tileSize;
         }
 
-        public void AvatarDisconnected(PlayerIndex index)
+        public void AvatarDisconnected(int index)
         {
             Avatars.Remove(index);
+            PlayerTeamRelations.Remove(index);
         }
 
         public void SetLevelSelect(bool levelSelect)
@@ -202,6 +211,18 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             }
 
             SelectedMode = values[index];
+        }
+
+        public void IncrementTeamIndex(int playerIndex)
+        {
+            var newTeamIndex = PlayerTeamRelations[playerIndex];
+            newTeamIndex++;
+            if (newTeamIndex > 5)
+            {
+                newTeamIndex = 0;
+            }
+
+            PlayerTeamRelations[playerIndex] = newTeamIndex;
         }
     }
 }

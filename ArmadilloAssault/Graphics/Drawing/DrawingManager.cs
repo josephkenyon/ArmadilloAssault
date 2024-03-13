@@ -10,7 +10,7 @@ using ArmadilloAssault.GameState.Menus.Assets;
 using ArmadilloAssault.GameState.Menus;
 using System.Linq;
 using ArmadilloAssault.GameState.Battle.Camera;
-using static System.Net.Mime.MediaTypeNames;
+using ArmadilloAssault.GameState;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -79,54 +79,49 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
-        public static void DrawString(string text, Point position, SpriteFont spriteFont)
+        public static void DrawEditorString(string text, Point position, SpriteFont spriteFont)
         {
             _spriteBatch.Begin();
             _spriteBatch.DrawString(spriteFont, text, position.ToVector2() * DrawingHelper.TileSize, Color.White);
             _spriteBatch.End();
         }
 
-        public static void DrawStrings(IEnumerable<string> texts, IEnumerable<Vector2> positions)
+        public static void DrawString(string text, Vector2 position, SpriteFont spriteFont = null)
         {
             _spriteBatch.Begin();
 
-            var index = 0;
-            var font = DrawingHelper.GetFont;
-            foreach (var text in texts)
-            {
-                var measureString = font.MeasureString(text);
-                _spriteBatch.DrawString(DrawingHelper.GetFont, text, positions.ElementAt(index++) - (measureString / 2), Color.White);
-            }
+            var font = spriteFont ?? DrawingHelper.GetFont;
+            var measureString = font.MeasureString(text);
+            _spriteBatch.DrawString(font, text, position - (measureString / 2), Color.White);
 
             _spriteBatch.End();
         }
 
-        private static Color GetPlayerColor(int index)
+
+        public static void DrawStrings(IEnumerable<string> texts, IEnumerable<Vector2> positions, SpriteFont spriteFont = null)
         {
-            if (index == 1)
+            _spriteBatch.Begin();
+
+            var index = 0;
+            var font = spriteFont ?? DrawingHelper.GetFont;
+            foreach (var text in texts)
             {
-                return new Color(255, 80, 80);
-            }
-            else if (index == 2)
-            {
-                return new Color(80, 180, 80);
-            }
-            else if (index == 3)
-            {
-                return new Color(180, 120, 80);
+                var measureString = font.MeasureString(text);
+                _spriteBatch.DrawString(font, text, positions.ElementAt(index++) - (measureString / 2), Color.White);
             }
 
-            return new Color(80, 80, 255);
-        }
+            _spriteBatch.End();
+        }      
 
-        public static void DrawLobbyPlayerBackgrounds(IEnumerable<Rectangle> lobbyPlayerRectangles, IEnumerable<int> lobbyPlayerIds)
+        public static void DrawLobbyPlayerBackgrounds(IEnumerable<Rectangle> lobbyPlayerRectangles, IEnumerable<int> lobbyTeamIds, IEnumerable<int> lobbyPlayerIds)
         {
             _spriteBatch.Begin();
 
             var index = 0;
             foreach (var rectangle in lobbyPlayerRectangles)
             {
-                var id = lobbyPlayerIds.ElementAt(index);
+                var playerId = lobbyPlayerIds.ElementAt(index);
+                var teamId = lobbyTeamIds.ElementAt(index);
 
                 _spriteBatch.Draw(
                      texture: TextureManager.GetTexture(TextureName.white_pixel),
@@ -139,10 +134,10 @@ namespace ArmadilloAssault.Graphics.Drawing
                     texture: TextureManager.GetTexture(TextureName.white_pixel),
                     destinationRectangle: rectangle,
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
-                    color: GetPlayerColor(id)
+                    color: DrawingHelper.GetTeamColor(teamId)
                 );
 
-                var text = $"P{id + 1}";
+                var text = $"P{playerId + 1}";
                 var font = DrawingHelper.GetFont;
                 var size = font.MeasureString(text);
 
@@ -270,11 +265,11 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch.End();
         }
 
-        public static void DrawCollisionBoxes(IEnumerable<Rectangle> rectangles)
+        public static void DrawRectangles(IEnumerable<Rectangle> rectangles, Color? color = null)
         {
             _spriteBatch.Begin();
 
-            var scaleConstant = DrawingHelper.ScaleConstant;
+            var scaleConstant = GameStateManager.State != State.Menu ? DrawingHelper.ScaleConstant : 1f;
 
             foreach (var rectangle in rectangles)
             {
@@ -284,7 +279,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                     texture: TextureManager.GetTexture(TextureName.white_pixel),
                     destinationRectangle: destinationRectangle,
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
-                    color: Color.Yellow * 0.35f
+                    color: (color ?? Color.Yellow) * (color != null ? 0.7f : 0.35f)
                 );
             }
 

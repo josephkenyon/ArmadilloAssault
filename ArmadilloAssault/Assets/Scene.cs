@@ -3,6 +3,7 @@ using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Generics;
+using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace ArmadilloAssault.Assets
         public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetRectangles(json.CollisionBoxes);
         public List<TileList> TileLists { get; set; } = GetTileLists(json);
         public bool WrapY { get; set; } = json.WrapY;
-
+        public Rectangle? CapturePoint { get; set; } = json.CapturePoint?.ToRectangle(DrawingHelper.FullTileSize);
         public readonly StartingPositions StartingPositions = json.StartingPositions;
 
         public void UpdateTile(int z, Point position, Point spriteLocation, TextureName textureName)

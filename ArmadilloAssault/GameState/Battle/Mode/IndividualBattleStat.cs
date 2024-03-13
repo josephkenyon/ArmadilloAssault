@@ -1,6 +1,6 @@
 ﻿namespace ArmadilloAssault.GameState.Battle.Mode
 {
-    public class BattleStat
+    public class IndividualBattleStat
     {
         public int Kills { get; set; }
         public int Deaths { get; set; }

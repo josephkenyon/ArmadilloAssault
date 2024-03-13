@@ -9,7 +9,6 @@ using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Client;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,6 +21,7 @@ namespace ArmadilloAssault.GameState.Battle
         public static BattleFrame BattleFrame => Battle.Frame;
 
         public static bool Paused { get; private set; }
+        public static bool GameoOver => Battle != null && Battle.GameOver;
         public static bool ShowCursor => Paused || (Battle != null && Battle.GameOver);
 
         public static void Initialize(string data, int playerIndex)
@@ -30,10 +30,10 @@ namespace ArmadilloAssault.GameState.Battle
             Battle = new(data, playerIndex);
         }
 
-        public static void Initialize(Dictionary<PlayerIndex, AvatarType> avatars, string data)
+        public static void Initialize(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Mode.Mode mode, string data)
         {
             Paused = false;
-            Battle = new(avatars, data);
+            Battle = new(avatars, playerTeamRelations, mode, data);
         }
 
         public static void Update()
@@ -136,7 +136,7 @@ namespace ArmadilloAssault.GameState.Battle
         {
             if (Battle != null)
             {
-                Battle.Avatars.Remove((PlayerIndex)index);
+                Battle.Avatars.Remove(index);
             }
         }
 
