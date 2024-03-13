@@ -68,14 +68,14 @@ namespace ArmadilloAssault.Web.Server
             }
 
             BattleManager.Initialize(avatarTypeDictionary, MenuManager.LobbyState.PlayerTeamRelations, MenuManager.LobbyState.SelectedMode, data);
-            GameStateManager.State = State.Battle;
+            GameStateManager.PushNewState(State.Battle);
 
             Server.MessageIntialization(data);
         }
 
         public static void EndGame()
         {
-            GameStateManager.State = State.Menu;
+            GameStateManager.PushNewState(State.Menu);
 
             Server.MessageGameEnd();
         }

@@ -139,7 +139,7 @@ namespace ArmadilloAssault.GameState.Menus
                     ServerManager.StartGame(LobbyState.SelectedLevel);
                     break;
                 case MenuAction.open_editor:
-                    GameStateManager.State = State.Editor;
+                    GameStateManager.PushNewState(State.Editor);
                     break;
                 case MenuAction.select_avatar:
                     _ = SelectAvatar(data);
@@ -254,7 +254,10 @@ namespace ArmadilloAssault.GameState.Menus
 
                     DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
                 }
+            }
 
+            if (LobbyFrame != null)
+            {
                 SoundManager.PlaySounds(LobbyFrame.SoundFrame);
             }
 

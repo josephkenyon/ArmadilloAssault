@@ -6,13 +6,13 @@ using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Editor;
 using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Graphics;
+using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Graphics.Drawing.Textures;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Client;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ArmadilloAssault
@@ -21,9 +21,7 @@ namespace ArmadilloAssault
     {
         private static Action ExitAction { get; set; }
 
-        private static Queue<Action> Actions { get; set; } = [];
-
-        public static bool Active = false;
+        public static bool Active;
 
         public Engine()
         {
@@ -48,7 +46,7 @@ namespace ArmadilloAssault
             GraphicsManager.LoadContent(GraphicsDevice, Content);
             SoundManager.LoadContent(Content);
 
-            GameStateManager.State = State.Menu;
+            GameStateManager.PushNewState(State.Menu);
 
             Mouse.SetCursor(MouseCursor.FromTexture2D(TextureManager.GetTexture(TextureName.cursor), 0, 0));
         }
@@ -57,18 +55,7 @@ namespace ArmadilloAssault
         {
             Active = IsActive;
 
-            while (Actions.Count > 0)
-            {
-                var action = Actions.Dequeue();
-                try
-                {
-                    action.Invoke();
-                }
-                catch (Exception ex)
-                {
-                    Trace.Write(ex);
-                }
-            }
+            GameStateManager.Update();
 
             ControlsManager.Update(IsActive);
 
@@ -97,6 +84,8 @@ namespace ArmadilloAssault
 
         protected override void Draw(GameTime gameTime)
         {
+            DrawingManager.Begin();
+
             switch (GameStateManager.State)
             {
                 case State.Menu:
@@ -111,12 +100,9 @@ namespace ArmadilloAssault
                     break;
             }
 
-            base.Draw(gameTime);
-        }
+            DrawingManager.End();
 
-        public static void QueueAction(Action action)
-        {
-            Actions.Enqueue(action);
+            base.Draw(gameTime);
         }
 
         public static void Quit()

@@ -22,16 +22,22 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch = new SpriteBatch(graphicsDevice);
         }
 
-        public static void DrawCollection(IEnumerable<IDrawableObject> drawableObjects)
+        public static void Begin()
         {
             _spriteBatch.Begin();
+        }
 
+        public static void End()
+        {
+            _spriteBatch.End();
+        }
+
+        public static void DrawCollection(IEnumerable<IDrawableObject> drawableObjects)
+        {
             foreach (var drawableObject in drawableObjects)
             {
                 DrawObject(drawableObject);
             }
-
-            _spriteBatch.End();
         }
 
         private static void DrawObject(IDrawableObject drawableObject)
@@ -50,8 +56,6 @@ namespace ArmadilloAssault.Graphics.Drawing
 
         public static void DrawTexture(TextureName textureName, Rectangle destinationRectangle, float opacity = 1f, Rectangle? sourceRectangle = null, Color? color = null)
         {
-            _spriteBatch.Begin();
-
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(textureName),
                 destinationRectangle: destinationRectangle,
@@ -62,46 +66,32 @@ namespace ArmadilloAssault.Graphics.Drawing
                 color: (color ?? Color.White) * opacity,
                 layerDepth: 1f
             );
-
-            _spriteBatch.End();
         }
 
         public static void DrawTexture(TextureName textureName, Vector2 position)
         {
-            _spriteBatch.Begin();
-
             _spriteBatch.Draw(
                 texture: TextureManager.GetTexture(textureName),
                 position: position,
                 color: Color.White
             );
-
-            _spriteBatch.End();
         }
 
         public static void DrawEditorString(string text, Point position, SpriteFont spriteFont)
         {
-            _spriteBatch.Begin();
             _spriteBatch.DrawString(spriteFont, text, position.ToVector2() * DrawingHelper.TileSize, Color.White);
-            _spriteBatch.End();
         }
 
         public static void DrawString(string text, Vector2 position, SpriteFont spriteFont = null)
         {
-            _spriteBatch.Begin();
-
             var font = spriteFont ?? DrawingHelper.GetFont;
             var measureString = font.MeasureString(text);
             _spriteBatch.DrawString(font, text, position - (measureString / 2), Color.White);
-
-            _spriteBatch.End();
         }
 
 
         public static void DrawStrings(IEnumerable<string> texts, IEnumerable<Vector2> positions, SpriteFont spriteFont = null)
         {
-            _spriteBatch.Begin();
-
             var index = 0;
             var font = spriteFont ?? DrawingHelper.GetFont;
             foreach (var text in texts)
@@ -109,14 +99,10 @@ namespace ArmadilloAssault.Graphics.Drawing
                 var measureString = font.MeasureString(text);
                 _spriteBatch.DrawString(font, text, positions.ElementAt(index++) - (measureString / 2), Color.White);
             }
-
-            _spriteBatch.End();
         }      
 
         public static void DrawLobbyPlayerBackgrounds(IEnumerable<Rectangle> lobbyPlayerRectangles, IEnumerable<int> lobbyTeamIds, IEnumerable<int> lobbyPlayerIds)
         {
-            _spriteBatch.Begin();
-
             var index = 0;
             foreach (var rectangle in lobbyPlayerRectangles)
             {
@@ -149,14 +135,10 @@ namespace ArmadilloAssault.Graphics.Drawing
 
                 index++;
             }
-
-            _spriteBatch.End();
         }
 
         public static void DrawMenuButtons(IEnumerable<Button> buttons)
         {
-            _spriteBatch.Begin();
-
             foreach (var button in buttons)
             {
                 var destinationRectangle = button.GetRectangle();
@@ -206,14 +188,10 @@ namespace ArmadilloAssault.Graphics.Drawing
                     );
                 }
             }
-
-            _spriteBatch.End();
         }
 
         public static void DrawHud(HudFrame hudFrame, int playerIndex)
         {
-            _spriteBatch.Begin();
-
             for (int i = 0; i < hudFrame.PlayerIndices.Count; i++)
             {
                 var avatarIndex = hudFrame.PlayerIndices[i];
@@ -260,15 +238,10 @@ namespace ArmadilloAssault.Graphics.Drawing
                     );
                 }
             }
-
-
-            _spriteBatch.End();
         }
 
         public static void DrawRectangles(IEnumerable<Rectangle> rectangles, Color? color = null)
         {
-            _spriteBatch.Begin();
-
             var scaleConstant = GameStateManager.State != State.Menu ? DrawingHelper.ScaleConstant : 1f;
 
             foreach (var rectangle in rectangles)
@@ -282,13 +255,10 @@ namespace ArmadilloAssault.Graphics.Drawing
                     color: (color ?? Color.Yellow) * (color != null ? 0.7f : 0.35f)
                 );
             }
-
-            _spriteBatch.End();
         }
 
         public static void DrawTooltip(List<string> texts, Point startingPoint)
         {
-            _spriteBatch.Begin();
             var font = DrawingHelper.SmallFont;
 
             var position = new Point(startingPoint.X, startingPoint.Y);
@@ -307,8 +277,6 @@ namespace ArmadilloAssault.Graphics.Drawing
 
                 _spriteBatch.DrawString(font, text, new Vector2(position.X - (measureString.X / 2), position.Y), Color.White);
             }
-
-            _spriteBatch.End();
         }
     }
 }

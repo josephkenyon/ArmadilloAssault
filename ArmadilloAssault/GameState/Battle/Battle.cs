@@ -28,7 +28,6 @@ using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using Microsoft.Xna.Framework.Input;
 using ArmadilloAssault.Configuration.Generics;
-using System;
 
 namespace ArmadilloAssault.GameState.Battle
 {

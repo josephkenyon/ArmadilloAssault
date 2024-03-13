@@ -116,7 +116,7 @@ namespace ArmadilloAssault.GameState.Editor
              
                 ConfigurationManager.LoadScenes();
 
-                GameStateManager.State = State.Menu;
+                GameStateManager.PushNewState(State.Menu);
 
                 Mouse.SetCursor(MouseCursor.FromTexture2D(TextureManager.GetTexture(TextureName.cursor), 0, 0));
             }

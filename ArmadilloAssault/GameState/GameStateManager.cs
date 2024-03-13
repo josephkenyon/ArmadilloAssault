@@ -7,21 +7,35 @@ namespace ArmadilloAssault.GameState
 {
     public static class GameStateManager
     {
-        private static State _state;
-        public static State State { get { return _state; } set { SetState(value); } }
+        public static State State { get; private set; }
+        private static State? NewState { get; set; }
+
+        public static void PushNewState(State newState)
+        {
+            NewState = newState;
+        }
+
+        public static void Update()
+        {
+            if (NewState != null)
+            {
+                SetState((State)NewState);
+                NewState = null;
+            }
+        }
 
         private static void SetState(State newState)
         {
-            var oldState = _state;
+            var oldState = State;
             if (oldState != newState)
             {
-                _state = newState;
+                State = newState;
 
-                if (_state == State.Battle)
+                if (State == State.Battle)
                 {
                     SoundManager.PlayMusic(MusicSong.battle_music);
                 }
-                else if (_state == State.Menu)
+                else if (State == State.Menu)
                 {
                     CameraManager.Disable();
                     MenuManager.Initialize();
@@ -31,7 +45,7 @@ namespace ArmadilloAssault.GameState
                         SoundManager.PlayMusic(MusicSong.menu_music);
                     }
                 }
-                else if (_state == State.Editor)
+                else if (State == State.Editor)
                 {
                     CameraManager.Disable();
                     EditorManager.Initialize();

@@ -87,7 +87,7 @@ namespace ArmadilloAssault.Web.Client
             if (serverMessage.Type == ServerMessageType.BattleInitialization)
             {
                 BattleManager.Initialize(serverMessage.SceneName, serverMessage.PlayerIndex);
-                Engine.QueueAction(() => GameStateManager.State = State.Battle);
+                GameStateManager.PushNewState(State.Battle);
             }
             else if (serverMessage.Type == ServerMessageType.BattleUpdate)
             {
@@ -99,7 +99,7 @@ namespace ArmadilloAssault.Web.Client
             }
             else if (serverMessage.Type == ServerMessageType.BattleTermination)
             {
-                GameStateManager.State = State.Menu;
+                GameStateManager.PushNewState(State.Menu);
             }
             else if (serverMessage.Type == ServerMessageType.Pause)
             {

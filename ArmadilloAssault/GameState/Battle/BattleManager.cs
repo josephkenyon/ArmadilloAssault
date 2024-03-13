@@ -73,7 +73,7 @@ namespace ArmadilloAssault.GameState.Battle
         {
             Battle?.Draw();
 
-            if (Paused || (Battle != null && Battle.GameOver))
+            if ((Paused || (Battle != null && Battle.GameOver)) && Menu != null)
             {
                 DrawingManager.DrawMenuButtons(Menu.VisibleButtons);
                 return;
