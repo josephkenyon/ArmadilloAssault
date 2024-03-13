@@ -7,6 +7,7 @@
         selection_complete,
         avatar_select,
         level_select,
-        being_served
+        being_served,
+        mode_select
     }
 }

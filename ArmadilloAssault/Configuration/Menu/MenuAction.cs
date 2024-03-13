@@ -19,6 +19,9 @@
         next_level,
         exit,
         end_game,
-        end_pause
+        end_pause,
+        prev_mode,
+        next_mode,
+        mode_select
     }
 }

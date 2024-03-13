@@ -134,6 +134,14 @@ namespace ArmadilloAssault.Web.Server
                 {
                     _ = MenuManager.PreviousLevel();
                 }
+                else if (clientMessage.Type == ClientMessageType.NextMode)
+                {
+                    _ = MenuManager.NextMode();
+                }
+                else if (clientMessage.Type == ClientMessageType.PreviousMode)
+                {
+                    _ = MenuManager.PreviousMode();
+                }
                 else if (clientMessage.Type == ClientMessageType.Pause)
                 {
                     BattleManager.ClientPauseRequest(clientMessage.Paused);

@@ -2,10 +2,12 @@
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,7 +19,9 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
         public Dictionary<PlayerIndex, Avatar> Avatars { get; private set; } = [];
         public string SelectedLevel { get; private set; } = SelectableLevelKeys.First();
+        public Mode SelectedMode { get; private set; } = Mode.Deathmatch;
         public bool LevelSelect { get; private set; } = false;
+        public bool ModeSelect { get; private set; } = false;
 
         public void AvatarSelected(PlayerIndex index, AvatarType avatarType)
         {
@@ -88,7 +92,10 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(RectangleJson.CreateFrom).ToList(),
                 PlayerBackgroundIds = ServerManager.PlayerIndices,
                 LevelSelect = LevelSelect,
+                ModeSelect = ModeSelect,
                 SelectedLevel = SelectedLevel,
+                SelectedMode = SelectedMode.ToString(),
+                ModeName = SelectedMode.ToString().Replace("_", " "),
                 TileSize = GetTileSize()
             };
 
@@ -134,6 +141,11 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             LevelSelect = levelSelect;
         }
 
+        public void SetModeSelect(bool modeSelect)
+        {
+            ModeSelect = modeSelect;
+        }
+
         public void NextLevel()
         {
             var keys = SelectableLevelKeys.ToList();
@@ -158,6 +170,38 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             }
 
             SelectedLevel = keys[index];
+        }
+
+        public void NextMode()
+        {
+            var values = Enum.GetValues<Mode>().ToList();
+
+            var index = values.IndexOf(SelectedMode);
+
+            index++;
+
+            if (index == values.Count)
+            {
+                index = 0;
+            }
+
+            SelectedMode = values[index];
+        }
+
+        public void PreviousMode()
+        {
+            var values = Enum.GetValues<Mode>().ToList();
+
+            var index = values.IndexOf(SelectedMode);
+
+            index--;
+
+            if (index == -1)
+            {
+                index = values.Count - 1;
+            }
+
+            SelectedMode = values[index];
         }
     }
 }

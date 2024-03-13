@@ -52,7 +52,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         private bool IsGameOver()
         {
-            if (Mode == Mode.Death_Match)
+            if (Mode == Mode.Deathmatch)
             {
                 if (BattleStats.Values.Any(stat => stat.Kills >= 2))
                 {

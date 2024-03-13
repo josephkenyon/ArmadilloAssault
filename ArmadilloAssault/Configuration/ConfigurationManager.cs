@@ -18,6 +18,7 @@ namespace ArmadilloAssault.Configuration
         public static ContentManager ContentManager { get; set; }
 
         private static Dictionary<string, MenuJson> _menuConfigurations;
+        private static Dictionary<string, List<string>> _toolTips;
         private static Dictionary<string, SceneJson> _sceneConfigurations;
         private static Dictionary<AvatarType, AvatarJson> _avatarConfigurations;
         private static Dictionary<WeaponType, WeaponJson> _weaponConfigurations;
@@ -30,6 +31,7 @@ namespace ArmadilloAssault.Configuration
             ContentManager = contentManager;
 
             LoadMenus();
+            LoadTooltips();
             LoadScenes();
             LoadAvatars();
             LoadWeapons();
@@ -42,7 +44,7 @@ namespace ArmadilloAssault.Configuration
 
             var fileNames = Directory
                 .GetFiles(ConfigurationHelper.GetConfigurationPath("Menus"))
-                .Where(file => file.EndsWith(".json"));
+                .Where(file => file.EndsWith("menus.json"));
 
             var fileName = fileNames.First();
 
@@ -57,6 +59,35 @@ namespace ArmadilloAssault.Configuration
                 menuJsons.ForEach(menuJson =>
                 {
                     _menuConfigurations.Add(menuJson.Name, menuJson);
+                });
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message, e);
+            }
+        }
+
+        private static void LoadTooltips()
+        {
+            _toolTips = [];
+
+            var fileNames = Directory
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Menus"))
+                .Where(file => file.EndsWith("tooltips.json"));
+
+            var fileName = fileNames.First();
+
+            using StreamReader r = new(fileName);
+
+            string json = r.ReadToEnd();
+
+            try
+            {
+                var tooltipJsons = JsonConvert.DeserializeObject<List<TooltipJson>>(json);
+
+                tooltipJsons.ForEach(json =>
+                {
+                    _toolTips.Add(json.Key, json.Texts);
                 });
             }
             catch (Exception e)
@@ -189,6 +220,16 @@ namespace ArmadilloAssault.Configuration
         public static MenuJson GetMenuConfiguration(string name)
         {
             return _menuConfigurations.Values.Single(screen => screen.Name == name);
+        }
+
+        public static List<string> GetToolTip(string name)
+        {
+            if (_toolTips.TryGetValue(name, out List<string> value))
+            {
+                return value;
+            }
+
+            return [];
         }
 
         public static SceneJson GetSceneConfiguration(string name)

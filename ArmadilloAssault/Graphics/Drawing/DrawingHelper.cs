@@ -14,7 +14,8 @@ namespace ArmadilloAssault.Graphics.Drawing
     public static class DrawingHelper
     {
         private static SpriteFont EditorFont { get; set; }
-        public static SpriteFont MenuFont { get; private set; }
+        public static SpriteFont MediumFont { get; private set; }
+        public static SpriteFont SmallFont { get; private set; }
         private static SpriteFont GameFont { get; set; }
 
         public static readonly int FullTileSize = 48;
@@ -60,13 +61,14 @@ namespace ArmadilloAssault.Graphics.Drawing
         public static float ScaleConstant => (float) TileSize / FullTileSize;
         public static float ReverseScaleConstant => (float)FullTileSize / TileSize;
 
-        public static SpriteFont GetFont => GameStateManager.State == State.Editor ? EditorFont : GameStateManager.State == State.Menu ? MenuFont : GameFont;
+        public static SpriteFont GetFont => GameStateManager.State == State.Editor ? EditorFont : GameStateManager.State == State.Menu ? MediumFont : GameFont;
           
         public static void LoadContent(ContentManager contentManager)
         {
             EditorFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "editor_font"));
             GameFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "game_font"));
-            MenuFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "menu_font"));
+            SmallFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "small_font"));
+            MediumFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "medium_font"));
         }
 
         public static Rectangle GetDestinationRectangle(Point point, Point? size = null)

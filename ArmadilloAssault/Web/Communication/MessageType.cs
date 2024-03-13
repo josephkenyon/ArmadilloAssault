@@ -20,6 +20,8 @@
         AvatarSelection,
         NextLevel,
         PreviousLevel,
-        Pause
+        Pause,
+        PreviousMode,
+        NextMode
     }
 }

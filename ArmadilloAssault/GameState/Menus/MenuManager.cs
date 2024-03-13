@@ -72,8 +72,7 @@ namespace ArmadilloAssault.GameState.Menus
             else if (ControlsManager.IsControlDownStart(0, Control.Start))
             {
                 var cancelButton = CurrentMenu.Buttons.SingleOrDefault(button =>
-                    (button.Actions.Contains(MenuAction.back)
-                    || button.Actions.Contains(MenuAction.stop_client)) && button.Visible && button.Enabled
+                    (button.Actions.Contains(MenuAction.back) || button.Actions.Contains(MenuAction.stop_client) || button.Text == "Back") && button.Visible && button.Enabled
                 );
 
                 SoundManager.PlayMenuSound(MenuSound.cancel);
@@ -133,8 +132,14 @@ namespace ArmadilloAssault.GameState.Menus
                     break;
                 case MenuAction.avatar_select:
                     LobbyState?.SetLevelSelect(false);
+                    LobbyState?.SetModeSelect(false);
+                    break;
+                case MenuAction.mode_select:
+                    LobbyState?.SetModeSelect(true);
+                    LobbyState?.SetLevelSelect(false);
                     break;
                 case MenuAction.level_select:
+                    LobbyState?.SetModeSelect(false);
                     LobbyState?.SetLevelSelect(true);
                     break;
                 case MenuAction.toggle_fullscreen:
@@ -145,6 +150,12 @@ namespace ArmadilloAssault.GameState.Menus
                     break;
                 case MenuAction.prev_level:
                     _ = PreviousLevel();
+                    break;
+                case MenuAction.next_mode:
+                    _ = NextMode();
+                    break;
+                case MenuAction.prev_mode:
+                    _ = PreviousMode();
                     break;
                 case MenuAction.back:
                     Back();
@@ -204,7 +215,7 @@ namespace ArmadilloAssault.GameState.Menus
 
             if (MenuStack.Peek() == "Lobby" && LobbyFrame != null)
             {
-                if (!LobbyFrame.LevelSelect)
+                if (ConditionFulfilled(MenuCondition.avatar_select))
                 {
                     DrawingManager.DrawLobbyPlayerBackgrounds(LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle), LobbyFrame.PlayerBackgroundIds);
                     DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
@@ -226,6 +237,12 @@ namespace ArmadilloAssault.GameState.Menus
                         DrawingManager.DrawCollection([.. list.Tiles]);
                     }
                 }
+            }
+            else if (ConditionFulfilled(MenuCondition.mode_select) && LobbyFrame != null)
+            {
+                var toolTip = ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode);
+
+                DrawingManager.DrawTooltip(ConfigurationManager.GetToolTip(LobbyState.SelectedMode.ToString()), new Point(960, 440));
             }
         }
 
@@ -302,6 +319,30 @@ namespace ArmadilloAssault.GameState.Menus
             }
         }
 
+        public static async Task NextMode()
+        {
+            if (ServerManager.IsServing)
+            {
+                LobbyState?.NextMode();
+            }
+            else if (ClientManager.IsActive)
+            {
+                await ClientManager.BroadcastNextMode();
+            }
+        }
+
+        public static async Task PreviousMode()
+        {
+            if (ServerManager.IsServing)
+            {
+                LobbyState?.PreviousMode();
+            }
+            else if (ClientManager.IsActive)
+            {
+                await ClientManager.BroadcastPreviousMode();
+            }
+        }
+
         public static bool ConditionsFulfilled(List<MenuCondition> menuConditions)
         {
             return menuConditions.All(ConditionFulfilled);
@@ -313,8 +354,9 @@ namespace ArmadilloAssault.GameState.Menus
             {
                 MenuCondition.hosting => ServerManager.IsServing,
                 MenuCondition.being_served => ClientManager.IsActive,
-                MenuCondition.avatar_select => LobbyFrame != null && !LobbyFrame.LevelSelect,
+                MenuCondition.avatar_select => LobbyFrame != null && !LobbyFrame.LevelSelect && !LobbyFrame.ModeSelect,
                 MenuCondition.level_select => LobbyFrame != null && LobbyFrame.LevelSelect,
+                MenuCondition.mode_select => LobbyFrame != null && LobbyFrame.ModeSelect,
                 MenuCondition.selection_complete => LobbyState != null && LobbyState.Avatars.Count == ServerManager.PlayerCount,
                 _ => true
             };
@@ -345,6 +387,7 @@ namespace ArmadilloAssault.GameState.Menus
             return menuKey switch
             {
                 MenuKey.fullscreen_toggle_text => $"Fullscreen: {(GraphicsManager.IsFullscreen ? "Off" : "On")}",
+                MenuKey.game_mode => LobbyFrame != null ? LobbyFrame.ModeName : "",
                 MenuKey.level_name => LobbyFrame != null ? GetFormattedLevelName(LobbyFrame.SelectedLevel) : null,
                 _ => null
             };

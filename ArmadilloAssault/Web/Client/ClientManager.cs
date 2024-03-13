@@ -141,6 +141,26 @@ namespace ArmadilloAssault.Web.Client
             await Client.MessageServer(message);
         }
 
+        public static async Task BroadcastNextMode()
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.NextMode,
+            };
+
+            await Client.MessageServer(message);
+        }
+
+        public static async Task BroadcastPreviousMode()
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.PreviousMode,
+            };
+
+            await Client.MessageServer(message);
+        }
+
         public static async Task BroadcastPausedChange(bool paused)
         {
             var message = new ClientMessage

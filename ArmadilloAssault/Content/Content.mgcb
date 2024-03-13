@@ -38,6 +38,9 @@
 #begin Configuration/Menus/menus.json
 /copy:Configuration/Menus/menus.json
 
+#begin Configuration/Menus/tooltips.json
+/copy:Configuration/Menus/tooltips.json
+
 #begin Configuration/Scenes/floating_fortress.json
 /copy:Configuration/Scenes/floating_fortress.json
 
@@ -127,12 +130,19 @@
 /processorParam:TextureFormat=Compressed
 /build:Graphics/Fonts/game_font.spritefont
 
-#begin Graphics/Fonts/menu_font.spritefont
+#begin Graphics/Fonts/medium_font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Graphics/Fonts/menu_font.spritefont
+/build:Graphics/Fonts/medium_font.spritefont
+
+#begin Graphics/Fonts/small_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Graphics/Fonts/small_font.spritefont
 
 #begin Graphics/Sprites/angie.png
 /importer:TextureImporter

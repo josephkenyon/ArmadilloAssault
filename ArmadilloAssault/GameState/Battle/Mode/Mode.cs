@@ -2,8 +2,8 @@
 {
     public enum Mode
     {
-        Death_Match,
-        King_Of_The_Hill,
-        Capture_The_Flag
+        Deathmatch,
+        King_of_the_Hill,
+        //Capture_the_Flag
     }
 }

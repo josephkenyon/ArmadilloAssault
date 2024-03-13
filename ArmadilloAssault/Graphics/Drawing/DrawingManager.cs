@@ -10,6 +10,7 @@ using ArmadilloAssault.GameState.Menus.Assets;
 using ArmadilloAssault.GameState.Menus;
 using System.Linq;
 using ArmadilloAssault.GameState.Battle.Camera;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -190,7 +191,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                 
                 if (button.Text != null)
                 {
-                    var font = DrawingHelper.MenuFont;
+                    var font = DrawingHelper.MediumFont;
                     var size = font.MeasureString(button.Text);
 
                     var textPosition = destinationRectangle.Center - (size / 2).ToPoint();
@@ -285,6 +286,31 @@ namespace ArmadilloAssault.Graphics.Drawing
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
                     color: Color.Yellow * 0.35f
                 );
+            }
+
+            _spriteBatch.End();
+        }
+
+        public static void DrawTooltip(List<string> texts, Point startingPoint)
+        {
+            _spriteBatch.Begin();
+            var font = DrawingHelper.SmallFont;
+
+            var position = new Point(startingPoint.X, startingPoint.Y);
+
+            if (texts.Count > 0)
+            {
+                var measureString = font.MeasureString(texts.First());
+                position = new Point(position.X, position.Y - (int)(texts.Count * measureString.Y));
+            }
+
+            foreach (var text in texts)
+            {
+                var measureString = font.MeasureString(text);
+
+                position = new Point(position.X, position.Y + (int)measureString.Y);
+
+                _spriteBatch.DrawString(font, text, new Vector2(position.X - (measureString.X / 2), position.Y), Color.White);
             }
 
             _spriteBatch.End();

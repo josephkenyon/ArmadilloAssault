@@ -1,0 +1,26 @@
+[
+  {
+    "Key": "Deathmatch",
+    "Texts": [
+      "A  fight  to the death!",
+      "First  player (or team) to 5 kills wins!"
+    ]
+  },
+  {
+    "Key": "King_of_the_Hill",
+    "Texts": [
+      "Hold the contested zone and fight",
+      "off enemies!  First  player (or team)",
+      "to hold control of the highlighted zone",
+      "for 30 seconds wins!"
+    ]
+  },
+  {
+    "Key": "Capture_the_Flag",
+    "Texts": [
+      "Capture the opposing teams flag",
+      "and return it to your own base!",
+      "First team to score 3 points wins!"
+    ]
+  }
+]
