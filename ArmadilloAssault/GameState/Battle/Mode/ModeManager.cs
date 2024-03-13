@@ -103,7 +103,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             }
             else if (Mode == Mode.King_of_the_Hill)
             {
-                if (TeamBattleStats.Values.Any(stat => (stat.CapturePointFrames / 60) >= 5))
+                if (TeamBattleStats.Values.Any(stat => (stat.CapturePointFrames / 60) >= 20))
                 {
                     return true;
                 }
