@@ -44,7 +44,7 @@ namespace ArmadilloAssault.Web.Client
         public static void ConnectionTerminated() {
             Client = null;
 
-            GameStateManager.State = State.Menu;
+            GameStateManager.PushNewState(State.Menu);
             MenuManager.ClearLobbyFrame();
             MenuManager.Back();
 
