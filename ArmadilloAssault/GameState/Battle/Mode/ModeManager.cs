@@ -3,6 +3,7 @@ using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ArmadilloAssault.GameState.Battle.Mode
 {
@@ -14,6 +15,8 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         private Dictionary<int, IndividualBattleStat> IndividualBattleStats { get; set; } = [];
         private Dictionary<int, TeamBattleStat> TeamBattleStats { get; set; } = [];
         private Dictionary<int, bool> Disconnecteds { get; set; } = [];
+
+        public string VictoryMessage { get; private set; }
 
         private bool GameOverOverride { get; set; }
 
@@ -96,20 +99,49 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         {
             if (Mode == Mode.Deathmatch)
             {
-                if ((TeamsEnabled && TeamBattleStats.Values.Any(stat => stat.Kills >= 10)) || IndividualBattleStats.Values.Any(stat => stat.Kills >= 5))
+                if (TeamsEnabled)
                 {
-                    return true;
+                    var teamIndex = TeamBattleStats.Keys.SingleOrDefault(index => TeamBattleStats[index].Kills >= 10, -1);
+                    if (teamIndex != -1)
+                    {
+                        VictoryMessage = $"Team  {GetTeamString(teamIndex)}  Wins!";
+                        return true;
+                    }
+                }
+                else
+                {
+                    var playerIndex = IndividualBattleStats.Keys.SingleOrDefault(index => IndividualBattleStats[index].Kills >= 5, -1);
+                    if (playerIndex != -1)
+                    {
+                        VictoryMessage = $"Player  {playerIndex + 1}  Wins!";
+                        return true;
+                    }
                 }
             }
             else if (Mode == Mode.King_of_the_Hill)
             {
-                if (TeamBattleStats.Values.Any(stat => (stat.CapturePointFrames / 60) >= 20))
+                var teamIndex = TeamBattleStats.Keys.SingleOrDefault(index => (TeamBattleStats[index].CapturePointFrames / 60) >= 20, -1);
+                if (teamIndex != -1)
                 {
+                    VictoryMessage = $"Team  {GetTeamString(teamIndex)}  Wins!";
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private static string GetTeamString(int team)
+        {
+            return team switch
+            {
+                1 => "Red",
+                2 => "Green",
+                3 => "Yellow",
+                4 => "Teal",
+                5 => "Pink",
+                _ => "Blue",
+            };
         }
 
         public void OverrideGameOver()

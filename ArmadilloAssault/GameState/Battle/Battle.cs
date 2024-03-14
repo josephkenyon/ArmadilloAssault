@@ -245,12 +245,18 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 DrawingManager.DrawTexture(TextureName.crosshair, CameraManager.CursorPosition - new Vector2(16, 16));
             }
+
+            if (GameOver && Frame != null && Frame.GameOverMessage != null)
+            {
+                DrawingManager.DrawString(Frame.GameOverMessage, new Vector2(960, 360), DrawingHelper.MediumFont);
+            }
         }
 
         private BattleFrame CreateFrame()
         {
             var battleFrame = new BattleFrame
             {
+                GameOverMessage = ModeManager.VictoryMessage,
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars),
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
