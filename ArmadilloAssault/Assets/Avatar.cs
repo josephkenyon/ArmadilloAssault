@@ -109,6 +109,7 @@ namespace ArmadilloAssault.Assets
 
         public bool Reloading { get; set; } = false;
         public int ReloadingFrames { get; set; } = 0;
+        public bool CanPickUpPowerUps { get; private set; } = true;
 
         // Power Ups
         public PowerUpType? CurrentPowerUp { get; set; } = null;
@@ -543,6 +544,7 @@ namespace ArmadilloAssault.Assets
             Position = StartingPosition;
             PowerUpFramesLeft = 3 * 60;
             CurrentPowerUp = PowerUpType.Invincibility;
+            CanPickUpPowerUps = true;
 
             WeaponSelectionIndex = 0;
             FramesUntilRecoil = -1;
@@ -791,6 +793,7 @@ namespace ArmadilloAssault.Assets
 
         public void GivePowerUp(PowerUpType powerUpType)
         {
+            CanPickUpPowerUps = false;
             CurrentPowerUp = powerUpType;
 
             var seconds = powerUpType switch

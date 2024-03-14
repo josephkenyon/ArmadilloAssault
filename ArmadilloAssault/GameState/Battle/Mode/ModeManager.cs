@@ -31,7 +31,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         public void UpdateKingOfTheHill(Rectangle capturePointBox, ICollection<Avatar> avatars)
         {
-            ContestingTeamIndicies = avatars.Where(avatar => capturePointBox.Intersects(avatar.GetCollisionBox())).Select(avatar => PlayerTeamRelations[avatar.PlayerIndex]).Distinct().ToList();
+            ContestingTeamIndicies = avatars.Where(avatar => !avatar.IsDead && capturePointBox.Intersects(avatar.GetCollisionBox())).Select(avatar => PlayerTeamRelations[avatar.PlayerIndex]).Distinct().ToList();
 
             if (ContestingTeamIndicies.Count == 1 && !GameOver)
             {
