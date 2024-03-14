@@ -84,7 +84,7 @@ namespace ArmadilloAssault
 
         protected override void Draw(GameTime gameTime)
         {
-            DrawingManager.Begin();
+                        DrawingManager.Begin();
 
             switch (GameStateManager.State)
             {
