@@ -80,6 +80,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                         GiveCrate(avatar, crate);
                         return true;
                     }
+
                     return false;
                 });
                    
