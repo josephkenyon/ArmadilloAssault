@@ -15,7 +15,11 @@ namespace ArmadilloAssault.GameState.Battle.Physics
          
         public static void Update(PhysicsObject physicsObject, IPhysicsScene scene)
         {
-            ApplyHorizontalMotion(physicsObject, scene);
+            if (!BattleManager.GameOver)
+            {
+                ApplyHorizontalMotion(physicsObject, scene);
+            }
+
             ApplyVerticalMotion(physicsObject, scene);
         }
 

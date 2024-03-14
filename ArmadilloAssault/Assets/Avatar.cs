@@ -222,6 +222,19 @@ namespace ArmadilloAssault.Assets
             {
                 JumpingFrames++;
             }
+
+            if (BattleManager.GameOver)
+            {
+                if (Animation == Animation.Running)
+                {
+                    SetAnimation(Animation.Resting);
+                }
+
+                Acceleration = Vector2.Zero;
+                Recoil = 0f;
+                InfluenceVelocity = 0;
+                RunningVelocity = 0;
+            }
         }
 
         private void UpdateSwitchingWeapons()

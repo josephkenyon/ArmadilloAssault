@@ -21,7 +21,7 @@ namespace ArmadilloAssault.GameState.Battle
         public static BattleFrame BattleFrame => Battle.Frame;
 
         public static bool Paused { get; private set; }
-        public static bool GameoOver => Battle != null && Battle.GameOver;
+        public static bool GameOver => Battle != null && Battle.GameOver;
         public static bool ShowCursor => Paused || (Battle != null && Battle.GameOver);
 
         public static void Initialize(string data, int playerIndex)

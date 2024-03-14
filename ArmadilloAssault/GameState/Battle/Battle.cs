@@ -109,17 +109,6 @@ namespace ArmadilloAssault.GameState.Battle
                 {
                     InputManager.UpdateAvatar(avatarPair.Key, avatar);
                 }
-                else
-                {
-                    if (avatar.Animation != Animation.Dead && !avatar.IsSpinning)
-                    {
-                        avatar.SetAnimation(Animation.Resting);
-                    }
-
-                    avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                    avatar.RunningVelocity = 0f;
-                    avatar.Velocity = new Vector2(0, avatar.Velocity.Y);
-                }
 
                 PhysicsManager.Update(avatar, Scene);
 
