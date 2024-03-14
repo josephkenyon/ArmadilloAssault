@@ -95,6 +95,10 @@ namespace ArmadilloAssault.Graphics.Drawing
             GameFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "game_font"));
             SmallFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "small_font"));
             MediumFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "medium_font"));
+
+            GameFont.Spacing = 4f;
+            MediumFont.Spacing = 4f;
+            SmallFont.Spacing = 4f;
         }
 
         public static Rectangle GetDestinationRectangle(Point point, Point? size = null)

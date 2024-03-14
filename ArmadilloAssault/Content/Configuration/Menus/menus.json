@@ -17,7 +17,7 @@
         "Data": "Options"
       },
       {
-        "Text": "Exit Game",
+        "Text": "Exit  Game",
         "Actions": [ "back" ]
       }
     ]
@@ -26,12 +26,12 @@
     "Name": "Multiplayer",
     "Buttons": [
       {
-        "Text": "Join Game",
+        "Text": "Join  Game",
         "Actions": [ "navigate_to", "start_client" ],
         "Data": "ClientConnection"
       },
       {
-        "Text": "Host Game",
+        "Text": "Host  Game",
         "Actions": [ "start_server", "navigate_to" ],
         "Data": "Lobby"
       },
@@ -323,7 +323,7 @@
         "Actions": [ "end_pause" ]
       },
       {
-        "Text": "Leave Server",
+        "Text": "Leave  Server",
         "Actions": [ "stop_client" ],
         "Conditions": [ "being_served" ]
       },
@@ -338,7 +338,7 @@
     "Name": "Game_Over",
     "Buttons": [
       {
-        "Text": "Leave Server",
+        "Text": "Leave  Server",
         "Actions": [ "stop_client" ],
         "Conditions": [ "being_served" ]
       },

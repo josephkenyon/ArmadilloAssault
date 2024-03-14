@@ -2,26 +2,26 @@
   {
     "Key": "Deathmatch",
     "Texts": [
-      "A  fight  to the death!",
-      "First  player to 5 kills or first",
-      "team to 10 kills wins!"
+      "A  fight  to  the  death!",
+      "First  player  to  5 kills  or  first",
+      "team  to  10  kills  wins!"
     ]
   },
   {
     "Key": "King_of_the_Hill",
     "Texts": [
-      "Hold the contested zone and fight",
-      "off enemies!  First  player (or team)",
-      "to hold control of the highlighted zone",
-      "for 20 seconds wins!"
+      "Hold  the  contested  zone  and  fight",
+      "off  enemies!  First  player  ( or  team )",
+      "to  hold  control  of  the  highlighted  zone",
+      "for  20  seconds  wins!"
     ]
   },
   {
     "Key": "Capture_the_Flag",
     "Texts": [
-      "Capture the opposing teams flag",
-      "and return it to your own base!",
-      "First team to score 3 points wins!"
+      "Capture  the  opposing  teams  flag",
+      "and  return  it  to your  own  base!",
+      "First  team  to  score  3  points  wins!"
     ]
   }
 ]

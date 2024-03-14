@@ -111,7 +111,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 ModeSelect = ModeSelect,
                 SelectedLevel = SelectedLevel,
                 SelectedMode = SelectedMode,
-                ModeName = SelectedMode.ToString().Replace("_", " "),
+                ModeName = SelectedMode.ToString().Replace("_", "  "),
                 TileSize = GetTileSize()
             };
 

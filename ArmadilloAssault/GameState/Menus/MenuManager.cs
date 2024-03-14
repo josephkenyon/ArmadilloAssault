@@ -443,7 +443,7 @@ namespace ArmadilloAssault.GameState.Menus
         private static string GetFormattedLevelName(string value)
         {
             var strings = value.Split("_");
-            return string.Join(' ', strings.Select(UppercaseFirst));
+            return string.Join("  ", strings.Select(UppercaseFirst));
         }
     }
 }
