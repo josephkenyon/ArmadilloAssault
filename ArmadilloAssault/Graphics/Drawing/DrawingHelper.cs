@@ -124,5 +124,20 @@ namespace ArmadilloAssault.Graphics.Drawing
             var newSize = size ?? new Point(1, 1);
             return new Rectangle(point.X * FullTileSize, point.Y * FullTileSize, newSize.X * FullTileSize, newSize.Y * FullTileSize);
         }
+
+        public static Rectangle GetTooltipRec(int index)
+        {
+            var sizeX = 896;
+            var sizeY = 240;
+            var offset = 16;
+
+            return index switch
+            {
+                1 => new Rectangle(1920 - sizeX - offset, offset, sizeX, sizeY),
+                2 => new Rectangle(offset, 1080 - sizeY - offset, sizeX, sizeY),
+                3 => new Rectangle(1920 - sizeX - offset, 1080 - sizeY - offset, sizeX, sizeY),
+                _ => new Rectangle(offset, offset, sizeX, sizeY)
+            };
+        }
     }
 }

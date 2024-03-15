@@ -8,6 +8,7 @@
         avatar_select,
         level_select,
         being_served,
-        mode_select
+        mode_select,
+        is_tutorial
     }
 }

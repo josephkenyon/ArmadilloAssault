@@ -7,6 +7,7 @@ using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Environment.Clouds;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Menus.Lobby;
 using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Graphics.Drawing;
@@ -19,8 +20,8 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ArmadilloAssault.GameState.Menus
 {
@@ -138,6 +139,9 @@ namespace ArmadilloAssault.GameState.Menus
                 case MenuAction.start_game:
                     ServerManager.StartGame(LobbyState.SelectedLevel);
                     break;
+                case MenuAction.open_tutorial:
+                    OpenTutorial();
+                    break;
                 case MenuAction.open_editor:
                     GameStateManager.PushNewState(State.Editor);
                     break;
@@ -188,6 +192,22 @@ namespace ArmadilloAssault.GameState.Menus
             }
 
             return Task.CompletedTask;
+        }
+
+        private static void OpenTutorial()
+        {
+            var avatarTypeDictionary = new Dictionary<int, AvatarType>
+            {
+                { 0, AvatarType.Arthur }
+            };
+
+            var playerTeamRelations = new Dictionary<int, int>
+            {
+                { 0, 0 }
+            };
+
+            BattleManager.Initialize(avatarTypeDictionary, playerTeamRelations, ModeType.Tutorial, "gusty_gorge");
+            GameStateManager.PushNewState(State.Battle);
         }
 
         public static async Task IncrementTeamIndex(int playerIndex)
@@ -267,7 +287,7 @@ namespace ArmadilloAssault.GameState.Menus
                 DrawingManager.DrawTexture(TextureName.white_pixel, new Rectangle(480, 160, 960, 540), color: sceneJson.BackgroundColor != null ? sceneJson.BackgroundColor.ToColor() : Color.CornflowerBlue);
                 DrawingManager.DrawTexture(sceneJson.BackgroundTexture, new Rectangle(480, 160, 960, 540), color: Color.White * 0.75f);
 
-                if (LobbyFrame.SelectedMode == Battle.Mode.Mode.King_of_the_Hill && sceneJson.CapturePoint != null)
+                if (LobbyFrame.SelectedMode == Battle.Mode.ModeType.King_of_the_Hill && sceneJson.CapturePoint != null)
                 {
                     DrawingManager.DrawRectangles([new Rectangle(
                         480 + (sceneJson.CapturePoint.X * LobbyFrame.TileSize),
@@ -399,6 +419,7 @@ namespace ArmadilloAssault.GameState.Menus
         {
             return menuCondition switch
             {
+                MenuCondition.is_tutorial => ModeType.Tutorial == BattleManager.Mode,
                 MenuCondition.hosting => ServerManager.IsServing,
                 MenuCondition.being_served => ClientManager.IsActive,
                 MenuCondition.avatar_select => LobbyFrame != null && !LobbyFrame.LevelSelect && !LobbyFrame.ModeSelect,

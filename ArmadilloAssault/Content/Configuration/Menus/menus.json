@@ -8,13 +8,13 @@
         "Data": "Multiplayer"
       },
       {
-        "Text": "Editor",
-        "Actions": [ "open_editor" ]
-      },
-      {
         "Text": "Options",
         "Actions": [ "navigate_to" ],
         "Data": "Options"
+      },
+      {
+        "Text": "Tutorial",
+        "Actions": [ "open_tutorial" ]
       },
       {
         "Text": "Exit  Game",
@@ -330,7 +330,12 @@
       {
         "Text": "End Game",
         "Actions": [ "end_game" ],
-        "Conditions": [ "hosting", "level_select" ]
+        "Conditions": [ "hosting" ]
+      },
+      {
+        "Text": "Leave",
+        "Actions": [ "end_game" ],
+        "Conditions": [ "is_tutorial" ]
       }
     ]
   },

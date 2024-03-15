@@ -77,7 +77,10 @@ namespace ArmadilloAssault.Web.Server
         {
             GameStateManager.PushNewState(State.Menu);
 
-            Server.MessageGameEnd();
+            if (IsServing)
+            {
+                Server.MessageGameEnd();
+            }
         }
 
         public static void TerminateServer()

@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Menus;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState.Menus;
@@ -24,13 +25,15 @@ namespace ArmadilloAssault.GameState.Battle
         public static bool GameOver => Battle != null && Battle.GameOver;
         public static bool ShowCursor => Paused || (Battle != null && Battle.GameOver);
 
+        public static Mode.ModeType? Mode => Battle?.Mode;
+
         public static void Initialize(string data, int playerIndex)
         {
             Paused = false;
             Battle = new(data, playerIndex);
         }
 
-        public static void Initialize(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Mode.Mode mode, string data)
+        public static void Initialize(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Mode.ModeType mode, string data)
         {
             Paused = false;
             Battle = new(avatars, playerTeamRelations, mode, data);
@@ -84,12 +87,16 @@ namespace ArmadilloAssault.GameState.Battle
         {
             Paused = pause ?? !Paused;
 
-            if (ServerManager.IsServing)
+            if (ServerManager.IsServing || MenuManager.ConditionFulfilled(MenuCondition.is_tutorial))
             {
                 Battle.Paused = Paused;
-                ServerManager.BroadcastPause(Paused);
+
+                if (ServerManager.IsServing)
+                {
+                    ServerManager.BroadcastPause(Paused);
+                }
             }
-            else
+            else if (ClientManager.IsActive)
             {
                 _ = ClientManager.BroadcastPausedChange(Paused);
             }

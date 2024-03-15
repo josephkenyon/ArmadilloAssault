@@ -7,6 +7,7 @@ using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         public Dictionary<int, Avatar> Avatars { get; private set; } = [];
         public Dictionary<int, int> PlayerTeamRelations { get; private set; } = [];
         public string SelectedLevel { get; private set; } = SelectableLevelKeys.First();
-        public Mode SelectedMode { get; private set; } = Mode.Deathmatch;
+        public ModeType SelectedMode { get; private set; } = ModeType.Deathmatch;
         public bool LevelSelect { get; private set; } = false;
         public bool ModeSelect { get; private set; } = false;
 
@@ -191,7 +192,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
         public void NextMode()
         {
-            var values = Enum.GetValues<Mode>().ToList();
+            var values = Enum.GetValues<ModeType>().Where(mode => mode != ModeType.Tutorial).ToList();
 
             var index = values.IndexOf(SelectedMode);
 
@@ -207,7 +208,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
         public void PreviousMode()
         {
-            var values = Enum.GetValues<Mode>().ToList();
+            var values = Enum.GetValues<ModeType>().Where(mode => mode != ModeType.Tutorial).ToList();
 
             var index = values.IndexOf(SelectedMode);
 

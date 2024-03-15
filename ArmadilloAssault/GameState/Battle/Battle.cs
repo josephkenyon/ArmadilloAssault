@@ -50,6 +50,8 @@ namespace ArmadilloAssault.GameState.Battle
 
         public readonly int PlayerIndex;
 
+        public ModeType? Mode => ModeManager?.Mode;
+
         public Battle(string data, int playerIndex)
         {
             PlayerIndex = playerIndex;
@@ -66,7 +68,7 @@ namespace ArmadilloAssault.GameState.Battle
             FlowManager = new(sceneConfiguration.Flow);
         }
 
-        public Battle(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Mode.Mode mode, string sceneName) {
+        public Battle(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, ModeType mode, string sceneName) {
             PlayerIndex = 0;
 
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(sceneName);
@@ -140,7 +142,7 @@ namespace ArmadilloAssault.GameState.Battle
                 }
             }
 
-            if (ModeManager != null && ModeManager.Mode == Mode.Mode.King_of_the_Hill)
+            if (ModeManager != null && ModeManager.Mode == ModeType.King_of_the_Hill)
             {
                 ModeManager.UpdateKingOfTheHill((Rectangle)Scene.CapturePoint, Avatars.Values);
 
@@ -239,6 +241,16 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 DrawingManager.DrawString(Frame.GameOverMessage, new Vector2(960, 360), DrawingHelper.MediumFont);
             }
+
+            if (ModeType.Tutorial == Mode && !Paused)
+            {
+                DrawingManager.DrawBattleTooltips([
+                    ConfigurationManager.GetToolTip("movement"),
+                    ConfigurationManager.GetToolTip("firing"),
+                    ConfigurationManager.GetToolTip("weapon_crates"),
+                    ConfigurationManager.GetToolTip("power_ups"),
+                ]);
+            }
         }
 
         private BattleFrame CreateFrame()
@@ -275,7 +287,7 @@ namespace ArmadilloAssault.GameState.Battle
                 hudFrame.Ammos.Add(weapon.AmmoInClip + weapon.Ammo);
             }
 
-            if (ModeManager != null && ModeManager.Mode == Mode.Mode.King_of_the_Hill)
+            if (ModeType.King_of_the_Hill == Mode)
             {
                 hudFrame.CapturePointColor = ColorJson.CreateFrom(ModeManager.GetCapturePointColor());
                 hudFrame.CapturePointSeconds = ModeManager.CaputurePointSeconds;

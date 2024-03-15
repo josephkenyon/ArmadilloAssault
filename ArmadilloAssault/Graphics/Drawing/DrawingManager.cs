@@ -266,16 +266,46 @@ namespace ArmadilloAssault.Graphics.Drawing
             if (texts.Count > 0)
             {
                 var measureString = font.MeasureString(texts.First());
-                position = new Point(position.X, position.Y - (int)(texts.Count * measureString.Y));
+                position = new Point(position.X, position.Y - (int)(texts.Count * measureString.Y / 2));
             }
 
             foreach (var text in texts)
             {
                 var measureString = font.MeasureString(text);
 
-                position = new Point(position.X, position.Y + (int)measureString.Y);
+                position = new Point(position.X, position.Y);
 
                 _spriteBatch.DrawString(font, text, new Vector2(position.X - (measureString.X / 2), position.Y), Color.White);
+
+                position = new Point(position.X, position.Y + (int)measureString.Y);
+
+            }
+        }
+
+        public static void DrawBattleTooltips(List<List<string>> textsList)
+        {
+            var index = 0;
+            foreach (var texts in textsList)
+            {
+                var destinationRectangle = DrawingHelper.GetTooltipRec(index);
+
+                _spriteBatch.Draw(
+                     texture: TextureManager.GetTexture(TextureName.white_pixel),
+                     destinationRectangle: new Rectangle(destinationRectangle.X - 2, destinationRectangle.Y - 2, destinationRectangle.Width + 4, destinationRectangle.Height + 4),
+                     sourceRectangle: new Rectangle(0, 0, 1, 1),
+                     color: Color.White * 0.5f
+                 );
+
+                _spriteBatch.Draw(
+                    texture: TextureManager.GetTexture(TextureName.white_pixel),
+                    destinationRectangle: destinationRectangle,
+                    sourceRectangle: new Rectangle(0, 0, 1, 1),
+                    color: MenuManager.DarkBackgroundColor * 0.5f
+                );
+
+                DrawTooltip(texts, new Point(destinationRectangle.Center.X, destinationRectangle.Center.Y));
+
+                index++;
             }
         }
     }

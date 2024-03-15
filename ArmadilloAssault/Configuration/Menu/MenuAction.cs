@@ -10,6 +10,7 @@
         start_server,
         stop_server,
         start_game,
+        open_tutorial,
         open_editor,
         toggle_fullscreen,
         select_avatar,

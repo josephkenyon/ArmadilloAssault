@@ -17,7 +17,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public bool ModeSelect { get; set; } = false;
         public int TileSize { get; set; } = 24;
         public string SelectedLevel { get; set; } = "";
-        public Mode SelectedMode { get; set; } = Mode.Deathmatch;
+        public ModeType SelectedMode { get; set; } = ModeType.Deathmatch;
         public string ModeName { get; set; } = "";
     }
 }

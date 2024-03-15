@@ -3,13 +3,12 @@ using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 
 namespace ArmadilloAssault.GameState.Battle.Mode
 {
     public class ModeManager
     {
-        public readonly Mode Mode;
+        public readonly ModeType Mode;
 
         private Dictionary<int, int> PlayerTeamRelations { get; set; } = [];
         private Dictionary<int, IndividualBattleStat> IndividualBattleStats { get; set; } = [];
@@ -67,7 +66,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             return returnColor;
         }
 
-        public ModeManager(IEnumerable<KeyValuePair<int, int>> playerIndices, Mode mode)
+        public ModeManager(IEnumerable<KeyValuePair<int, int>> playerIndices, ModeType mode)
         {
             foreach (var playerIndexPair in playerIndices)
             {
@@ -97,7 +96,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         private bool IsGameOver()
         {
-            if (Mode == Mode.Deathmatch)
+            if (Mode == ModeType.Deathmatch)
             {
                 if (TeamsEnabled)
                 {
@@ -118,7 +117,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                     }
                 }
             }
-            else if (Mode == Mode.King_of_the_Hill)
+            else if (Mode == ModeType.King_of_the_Hill)
             {
                 var teamIndex = TeamBattleStats.Keys.SingleOrDefault(index => (TeamBattleStats[index].CapturePointFrames / 60) >= 20, -1);
                 if (teamIndex != -1)
