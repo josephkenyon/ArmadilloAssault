@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace ArmadilloAssault.Graphics.Drawing.Avatars
 {
@@ -36,6 +35,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 try
                 {
                     var avatarIndex = avatarFrame.PlayerIndices[index];
+                    var teamIndex = avatarFrame.TeamIndices[index];
 
                     var drawableAvatar = new DrawableAvatar
                     {
@@ -50,10 +50,12 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                         Rotation = avatarFrame.Rotations[index],
                         Spinning = avatarFrame.Spinnings[index],
                         TextureName = avatarFrame.TextureNames[index],
+                        WhiteTextureName = avatarFrame.WhiteTextureNames[index],
                         Type = avatarFrame.Types[index],
                         WeaponTexture = avatarFrame.WeaponTextures[index],
                         Color = avatarFrame.Colors[index].ToColor(),
-                        Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], avatarIndex, playerIndex)
+                        TeamColor = avatarFrame.TeamIndices[index] != -1 ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
+                        Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], playerIndex, teamIndex)
                     };
 
                     drawableAvatars.Add(drawableAvatar);
@@ -73,27 +75,40 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
         {
             var avatarCollection = new List<IDrawableObject>();
 
-            var notSpinningOrDeadAvatars = avatars.Where(avatar => !avatar.Spinning && !avatar.Dead).ToList();
-
-            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(GetArm(avatar, Direction.Left)));
-
-            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(GetLeg(avatar, Direction.Left)));
-
             foreach (var avatar in avatars)
             {
-                avatarCollection.Add(GetBody(avatar));
+                for (int i = 0; i < 2; i++)
+                {
+                    if (i == 0 && avatar.TeamColor == null)
+                    {
+                        continue;
+                    }
+
+                    if (!avatar.Spinning && !avatar.Dead)
+                    {
+                        avatarCollection.Add(GetArm(avatar, Direction.Left, i == 0));
+                        avatarCollection.Add(GetLeg(avatar, Direction.Left, i == 0));
+                    }
+
+                    avatarCollection.Add(GetBody(avatar, i == 0));
+
+                    if (!avatar.Spinning && !avatar.Dead)
+                    {
+                        avatarCollection.Add(GetLeg(avatar, Direction.Right, i == 0));
+
+                        avatarCollection.Add(GetHead(avatar, true, i == 0));
+                        avatarCollection.Add(GetHead(avatar, false, i == 0));
+
+                        avatarCollection.Add(GetGun(avatar));
+                        avatarCollection.Add(GetArm(avatar, Direction.Right, i == 0));
+                    }
+                }
             }
-
-            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(GetLeg(avatar, Direction.Right)));
-
-            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(GetHead(avatar)));
-            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(GetGun(avatar)));
-            notSpinningOrDeadAvatars.ForEach(avatar => avatarCollection.Add(GetArm(avatar, Direction.Right)));
 
             return avatarCollection;
         }
 
-        private static Body GetBody(IDrawableAvatar avatar) => new(avatar);
+        private static Body GetBody(IDrawableAvatar avatar, bool white = false) => new(avatar, white);
 
         private static float GetSpriteOffsetX(IDrawableAvatar avatar)
         {
@@ -118,18 +133,18 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             {
                 X = (animation.X + avatar.AnimationFrame) * size.X,
                 Y = animation.Y * size.Y,
-                Width = size.X,
+                Width = avatar.Spinning ? (size.X - 2) : size.X,
                 Height = size.Y
             };
         }
 
-        private class Body(IDrawableAvatar avatar) : IDrawableObject
+        private class Body(IDrawableAvatar avatar, bool white = false) : IDrawableObject
         {
             public Direction GetDirection() => avatar.Direction;
 
             private float SpriteOffset => GetSpriteOffsetX(avatar);
 
-            public TextureName Texture => avatar.TextureName;
+            public TextureName Texture => white ? avatar.WhiteTextureName : avatar.TextureName;
 
             public Rectangle GetDestinationRectangle()
             {
@@ -137,7 +152,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                 return new(
                     (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? size.X / 2 : 0)) - CameraManager.Offset.X,
-                    (int)avatar.Position.Y + (avatar.Spinning ? size.Y / 2 : 0) - CameraManager.Offset.Y,
+                    (int)avatar.Position.Y + (white && avatar.Dead ? 2 : 0) + (avatar.Spinning ? size.Y / 2 : 0) - CameraManager.Offset.Y,
                     size.X,
                     size.Y
                 );
@@ -149,23 +164,23 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
             public Rectangle? GetSourceRectangle() => avatar.Spinning || avatar.Dead ? AvatarDrawingHelper.GetSourceRectangle(avatar) : new Rectangle(Point.Zero, GetSize(avatar));
 
-            public Color Color => avatar.Color;
+            public Color Color => white ? (Color)avatar.TeamColor : avatar.Color;
 
             public float Opacity => avatar.Opacity;
         }
 
-        private static LegPart GetLeg(IDrawableAvatar avatar, Direction whichLeg)
+        private static LegPart GetLeg(IDrawableAvatar avatar, Direction whichLeg, bool white = false)
         {
-            return new LegPart(avatar, whichLeg);
+            return new LegPart(avatar, whichLeg, white);
         }
 
-        private class LegPart(IDrawableAvatar avatar, Direction whichLeg) : IDrawableObject
+        private class LegPart(IDrawableAvatar avatar, Direction whichLeg, bool white = false) : IDrawableObject
         {
             public Direction GetDirection() => avatar.Direction;
 
             private float SpriteOffset => GetSpriteOffsetX(avatar);
 
-            public TextureName Texture => avatar.TextureName;
+            public TextureName Texture => white ? avatar.WhiteTextureName : avatar.TextureName;
 
             public Rectangle GetDestinationRectangle()
             {
@@ -173,7 +188,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                 return new(
                     (int)(avatar.Position.X + SpriteOffset) - CameraManager.Offset.X,
-                    (int)avatar.Position.Y - CameraManager.Offset.Y,
+                    (int)avatar.Position.Y + (white ? 2 : 0) - CameraManager.Offset.Y,
                     size.X,
                     size.Y
                 );
@@ -192,15 +207,15 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 return sourceRectangle;
             }
 
-            public Color Color => avatar.Color;
+            public Color Color => white ? (Color)avatar.TeamColor : avatar.Color;
 
             public float Opacity => avatar.Opacity;
         }
 
-        private static Limb GetArm(IDrawableAvatar avatar, Direction direction)
+        private static Limb GetArm(IDrawableAvatar avatar, Direction direction, bool white = false)
         {
             var spriteLocation = new Point(direction == Direction.Right ? 3 : 2, 0);
-            return GetArm(avatar, spriteLocation);
+            return GetArm(avatar, spriteLocation, null, white);
         }
 
         private static Limb GetGun(IDrawableAvatar avatar)
@@ -239,15 +254,15 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             return new Vector2(headOriginX, avatarJson.HeadOrigin.Y);
         }
 
-        private static Limb GetArm(IDrawableAvatar avatar, Point spriteLocation, TextureName? textureName = null)
+        private static Limb GetArm(IDrawableAvatar avatar, Point spriteLocation, TextureName? textureName = null, bool white = false)
         {
             var armOrigin = GetArmSpriteOrigin(avatar);
-            return new Limb(avatar, armOrigin, spriteLocation, textureName: textureName, applyBreathing: true, applyRecoil: true);
+            return new Limb(avatar, armOrigin, spriteLocation, textureName: textureName, applyBreathing: true, applyRecoil: true, white: white);
         }
 
-        private static Limb GetHead(IDrawableAvatar avatar)
+        private static Limb GetHead(IDrawableAvatar avatar, bool background, bool white = false)
         {
-            var spriteLocation = new Point(1, 0);
+            var spriteLocation = new Point(background ? 6 : 1, 0);
             var headOrigin = GetHeadOrigin(avatar);
 
             double xOffset = 0;
@@ -276,10 +291,11 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                 }
             }
 
-            return new Limb(avatar, headOrigin, spriteLocation, offset: new Point((int)xOffset, (int)yOffset));
+            return new Limb(avatar, headOrigin, spriteLocation, offset: new Point((int)xOffset, (int)yOffset), white: white);
         }
 
-        private class Limb(IDrawableAvatar avatar, Vector2 origin, Point spriteLocation, TextureName? textureName = null, bool applyBreathing = false, Point? offset = null, bool applyRecoil = false) : IDrawableObject
+        private class Limb(IDrawableAvatar avatar, Vector2 origin, Point spriteLocation, TextureName? textureName = null,
+            bool applyBreathing = false, Point? offset = null, bool applyRecoil = false, bool white = false) : IDrawableObject
         {
             private readonly int SpriteOffest = (int)GetSpriteOffsetX(avatar);
 
@@ -299,9 +315,9 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
             public Vector2 GetOrigin() => origin;
 
-            public TextureName Texture => textureName != null ? (TextureName)textureName : avatar.TextureName;
+            public TextureName Texture => white ? avatar.WhiteTextureName : (textureName != null ? (TextureName)textureName : avatar.TextureName);
 
-            public Color Color => avatar.Color;
+            public Color Color => white ? (Color)avatar.TeamColor : avatar.Color;
 
             public float Opacity => avatar.Opacity;
 
@@ -321,7 +337,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             {
                 var size = GetSize(avatar);
 
-                return new(spriteLocation.X * size.X, spriteLocation.Y * size.Y, size.X, size.Y);
+                return new(spriteLocation.X * size.X + 2, spriteLocation.Y * size.Y, size.X - 4, size.Y);
             }
         }
     }

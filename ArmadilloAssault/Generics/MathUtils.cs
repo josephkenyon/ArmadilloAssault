@@ -31,13 +31,13 @@ namespace ArmadilloAssault.Generics
             }
         }
 
-        public static float GetAlpha(bool invisible, int avatarIndex, int playerIndex)
+        public static float GetAlpha(bool invisible, int playerIndex, int teamIndex)
         {
             float alpha = 1f;
 
             if (invisible)
             {
-                alpha = avatarIndex == playerIndex ? 0.35f : 0.025f;
+                alpha = playerIndex == teamIndex ? 0.35f : 0.025f;
             }
 
             return alpha;

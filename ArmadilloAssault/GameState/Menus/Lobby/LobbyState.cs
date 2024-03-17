@@ -7,7 +7,6 @@ using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +38,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 return;
             }
 
-            if (Avatars.Values.Any(avatar => avatar.Type == avatarType)) return;
+            if (Avatars.Any(avatar => avatar.Value.Type == avatarType && PlayerTeamRelations[avatar.Key] == PlayerTeamRelations[index])) return;
 
             if (Avatars.TryGetValue(index, out value))
             {
@@ -57,7 +56,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
             SoundManager.QueueAvatarSound(avatarType, AvatarSound.Ready);
 
-            Avatars[index].SetX(rectangle.X);
+          Avatars[index].SetX(rectangle.X);
             Avatars[index].SetY(rectangle.Y + 16);
         }
 
@@ -104,7 +103,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         {
             var frame = new LobbyFrame
             {
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars),
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars, PlayerTeamRelations),
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerBackgroundIds = [.. PlayerTeamRelations.Keys],
                 PlayerTeamIds = [.. PlayerTeamRelations.Values],
@@ -229,6 +228,20 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             if (newTeamIndex > 5)
             {
                 newTeamIndex = 0;
+            }
+
+            if (Avatars[playerIndex] != null)
+            {
+                var avatarType = Avatars[playerIndex].Type;
+
+                while (Avatars.Any(avatar => avatar.Value.Type == avatarType && PlayerTeamRelations[avatar.Key] == newTeamIndex))
+                {
+                    newTeamIndex++;
+                    if (newTeamIndex > 5)
+                    {
+                        newTeamIndex = 0;
+                    }
+                }
             }
 
             PlayerTeamRelations[playerIndex] = newTeamIndex;

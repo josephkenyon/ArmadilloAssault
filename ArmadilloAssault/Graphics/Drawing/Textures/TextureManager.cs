@@ -1,6 +1,8 @@
-﻿using ArmadilloAssault.Configuration.Textures;
+﻿using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Textures;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -20,19 +22,15 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.crosshair, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "crosshair")));
             _textures.Add(TextureName.white_pixel, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "white_pixel")));
 
-            _textures.Add(TextureName.arthur, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "arthur")));
-            _textures.Add(TextureName.axel, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "axel")));
-            _textures.Add(TextureName.angie, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "angie")));
-            _textures.Add(TextureName.titan, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "titan")));
-            _textures.Add(TextureName.turbo, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "turbo")));
-            _textures.Add(TextureName.claus, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "claus")));
+            foreach (var avatar in Enum.GetValues<AvatarType>())
+            {
+                _textures.Add(Enum.Parse<TextureName>(avatar.ToString().ToLower()), contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Avatars", avatar.ToString().ToLower())));
 
-            _textures.Add(TextureName.arthur_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "arthur_select")));
-            _textures.Add(TextureName.axel_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "axel_select")));
-            _textures.Add(TextureName.angie_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "angie_select")));
-            _textures.Add(TextureName.titan_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "titan_select")));
-            _textures.Add(TextureName.turbo_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "turbo_select")));
-            _textures.Add(TextureName.claus_select, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", "claus_select")));
+                var selectName = Enum.Parse<TextureName>(avatar.ToString().ToLower()) + "_select";
+                _textures.Add(Enum.Parse<TextureName>(selectName), contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Avatar_Selection", selectName)));
+
+                _textures.Add(Enum.Parse<TextureName>(avatar.ToString().ToLower() + "_white"), contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Avatars", "White", avatar.ToString().ToLower())));
+            }
 
             _textures.Add(TextureName.loading_spinner, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "loading_spinner")));
             _textures.Add(TextureName.clouds, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "clouds")));

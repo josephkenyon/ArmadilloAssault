@@ -1,12 +1,11 @@
 {
-  "TextureName": "arthur",
   "ArmOrigin": {
     "X": 55,
     "Y": 51
   },
   "HeadOrigin": {
     "X": 61,
-    "Y": 28
+    "Y": 30
   },
   "Size": {
     "X": 128,

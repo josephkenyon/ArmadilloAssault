@@ -10,7 +10,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
     {
         public readonly ModeType Mode;
 
-        private Dictionary<int, int> PlayerTeamRelations { get; set; } = [];
+        public Dictionary<int, int> PlayerTeamRelations { get; private set; } = [];
         private Dictionary<int, IndividualBattleStat> IndividualBattleStats { get; set; } = [];
         private Dictionary<int, TeamBattleStat> TeamBattleStats { get; set; } = [];
         private Dictionary<int, bool> Disconnecteds { get; set; } = [];

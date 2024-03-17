@@ -258,7 +258,7 @@ namespace ArmadilloAssault.GameState.Battle
             var battleFrame = new BattleFrame
             {
                 GameOverMessage = ModeManager.VictoryMessage,
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars),
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars, ModeManager.PlayerTeamRelations),
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
                 EffectFrame = EffectManager.GetEffectFrame(),

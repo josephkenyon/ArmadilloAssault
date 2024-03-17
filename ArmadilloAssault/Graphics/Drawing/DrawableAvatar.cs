@@ -18,9 +18,11 @@ namespace ArmadilloAssault.Graphics.Drawing
         public float Rotation { get; set; }
         public bool Spinning { get; set; }
         public TextureName TextureName { get; set; }
+        public TextureName WhiteTextureName { get; set; }
         public AvatarType Type { get; set; }
         public TextureName WeaponTexture { get; set; }
         public Color Color { get; set; }
+        public Color? TeamColor { get; set; }
         public float Opacity { get; set; }
     }
 }
