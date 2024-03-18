@@ -29,43 +29,50 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
         {
             var drawableAvatars = new List<IDrawableAvatar>();
 
-            var index = 0;
-            foreach (var type in avatarFrame.Types)
+            if (avatarFrame.PlayerIndices.Count > 0)
             {
-                try
-                {
-                    var avatarIndex = avatarFrame.PlayerIndices[index];
-                    var teamIndex = avatarFrame.TeamIndices[index];
+                var playerAvatarIndex = avatarFrame.PlayerIndices.FindIndex(frame => frame == playerIndex);
+                var playerTeamIndex = playerAvatarIndex != -1 ? avatarFrame.TeamIndices[playerAvatarIndex] : 0;
 
-                    var drawableAvatar = new DrawableAvatar
+                var index = 0;
+                foreach (var type in avatarFrame.Types)
+                {
+                    try
                     {
-                        Animation = avatarFrame.Animations[index],
-                        ArmAngle = avatarFrame.ArmAngles[index],
-                        AnimationFrame = avatarFrame.AnimationFrames[index],
-                        BreathingYOffset = avatarFrame.BreathingYOffsets[index],
-                        Dead = avatarFrame.Deads[index],
-                        Direction = avatarFrame.Directions[index],
-                        Position = avatarFrame.Positions[index],
-                        Recoil = avatarFrame.Recoils[index],
-                        Rotation = avatarFrame.Rotations[index],
-                        Spinning = avatarFrame.Spinnings[index],
-                        TextureName = avatarFrame.TextureNames[index],
-                        WhiteTextureName = avatarFrame.WhiteTextureNames[index],
-                        Type = avatarFrame.Types[index],
-                        WeaponTexture = avatarFrame.WeaponTextures[index],
-                        Color = avatarFrame.Colors[index].ToColor(),
-                        TeamColor = avatarFrame.ShowTeamColors[index] ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
-                        Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], playerIndex, teamIndex)
-                    };
+                        var avatarPlayerIndex = avatarFrame.PlayerIndices[index];
+                        var avatarTeamIndex = avatarFrame.TeamIndices[index];
 
-                    drawableAvatars.Add(drawableAvatar);
-                }
-                catch (Exception ex)
-                {
-                    Trace.Write(ex);
+                        var drawableAvatar = new DrawableAvatar
+                        {
+                            Animation = avatarFrame.Animations[index],
+                            ArmAngle = avatarFrame.ArmAngles[index],
+                            AnimationFrame = avatarFrame.AnimationFrames[index],
+                            BreathingYOffset = avatarFrame.BreathingYOffsets[index],
+                            Dead = avatarFrame.Deads[index],
+                            Direction = avatarFrame.Directions[index],
+                            Position = avatarFrame.Positions[index],
+                            Recoil = avatarFrame.Recoils[index],
+                            Rotation = avatarFrame.Rotations[index],
+                            Spinning = avatarFrame.Spinnings[index],
+                            TextureName = avatarFrame.TextureNames[index],
+                            WhiteTextureName = avatarFrame.WhiteTextureNames[index],
+                            Type = avatarFrame.Types[index],
+                            WeaponTexture = avatarFrame.WeaponTextures[index],
+                            Color = avatarFrame.Colors[index].ToColor(),
+                            TeamColor = avatarFrame.ShowTeamColors[index] ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
+                            Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], playerTeamIndex, avatarTeamIndex)
+                        };
+
+                        drawableAvatars.Add(drawableAvatar);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.Write(ex);
+                    }
+
+                    index++;
                 }
 
-                index++;
             }
 
             return GetAvatars(drawableAvatars);

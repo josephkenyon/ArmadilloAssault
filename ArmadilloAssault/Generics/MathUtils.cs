@@ -37,7 +37,7 @@ namespace ArmadilloAssault.Generics
 
             if (invisible)
             {
-                alpha = playerIndex == teamIndex ? 0.35f : 0.025f;
+                alpha = playerIndex == teamIndex ? 0.35f : 0.0035f;
             }
 
             return alpha;
