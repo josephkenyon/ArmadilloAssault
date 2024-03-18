@@ -285,9 +285,15 @@ namespace ArmadilloAssault.GameState.Menus
             {
                 var sceneJson = ConfigurationManager.GetSceneConfiguration(LobbyFrame.SelectedLevel);
                 DrawingManager.DrawTexture(TextureName.white_pixel, new Rectangle(480, 160, 960, 540), color: sceneJson.BackgroundColor != null ? sceneJson.BackgroundColor.ToColor() : Color.CornflowerBlue);
-                DrawingManager.DrawTexture(sceneJson.BackgroundTexture, new Rectangle(480, 160, 960, 540), color: Color.White * 0.75f);
 
-                if (LobbyFrame.SelectedMode == Battle.Mode.ModeType.King_of_the_Hill && sceneJson.CapturePoint != null)
+                if (sceneJson.BackBackgroundTexture != TextureName.nothing)
+                {
+                    DrawingManager.DrawTexture(sceneJson.BackBackgroundTexture, new Rectangle(480, 160, 960, 540), 0.75f);
+                }
+
+                DrawingManager.DrawTexture(sceneJson.BackgroundTexture, new Rectangle(480, 160, 960, 540), color: Color.White * (sceneJson.BackBackgroundTexture != TextureName.nothing ? 1f : 0.75f));
+
+                if (LobbyFrame.SelectedMode == ModeType.King_of_the_Hill && sceneJson.CapturePoint != null)
                 {
                     DrawingManager.DrawRectangles([new Rectangle(
                         480 + (sceneJson.CapturePoint.X * LobbyFrame.TileSize),

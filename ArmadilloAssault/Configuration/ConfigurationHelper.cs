@@ -94,6 +94,7 @@ namespace ArmadilloAssault.Configuration
 
             json.CollisionBoxes = collisionBoxListJson;
 
+            json.BackBackgroundTexture = scene.BackBackgroundTexture;
             json.BackgroundTexture = scene.BackgroundTexture;
             json.TilesetTexture = scene.TilesetTexture;
 

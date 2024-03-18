@@ -19,6 +19,7 @@
         claus,
         claus_select,
         claus_white,
+        cloud_background,
         clouds,
         crates,
         crates_parachuting,

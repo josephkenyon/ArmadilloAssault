@@ -1,4 +1,5 @@
 {
+  "BackBackgroundTexture": "cloud_background",
   "BackgroundTexture": "floating_fortress",
   "TilesetTexture": "floating_island_tileset",
   "WrapY": false,

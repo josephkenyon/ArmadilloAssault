@@ -13,6 +13,7 @@ namespace ArmadilloAssault.Assets
 {
     public class Scene(SceneJson json) : IPhysicsScene
     {
+        public TextureName BackBackgroundTexture { get; set; } = json.BackBackgroundTexture;
         public TextureName BackgroundTexture { get; set; } = json.BackgroundTexture;
         public TextureName TilesetTexture { get; set; } = json.TilesetTexture;
         public PrecipitationType PrecipitationType { get; set; } = json.PrecipitationType;

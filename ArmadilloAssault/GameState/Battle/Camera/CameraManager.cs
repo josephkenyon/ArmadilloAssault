@@ -96,6 +96,30 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             CameraOffset = Point.Zero;
         }
 
+        public static Rectangle GetBackBackgroundSourceRectangle()
+        {
+            int x, y, width, height;
+
+            x = 0;
+            y = 0;
+            width = 960;
+            height = 540;
+
+            if (SceneSize.X != 1920)
+            {
+                width -= (int)(width / 5f);
+                x += ScaleValue(Offset.X + 960, 960, SceneSize.X - 960, 0, 960 - width);
+            }
+
+            if (SceneSize.Y != 1080)
+            {
+                height -= (int)(height / 5f);
+                y += ScaleValue(Offset.Y + 540, 540, SceneSize.Y - 540, 0, 540 - height);
+            }
+
+            return new Rectangle(x, y, width, height);
+        }
+
         public static Rectangle GetBackgroundSourceRectangle()
         {
             int x, y, width, height;

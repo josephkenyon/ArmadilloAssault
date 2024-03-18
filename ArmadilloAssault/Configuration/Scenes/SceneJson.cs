@@ -7,6 +7,7 @@ namespace ArmadilloAssault.Configuration.Scenes
 {
     public class SceneJson
     {
+        public TextureName BackBackgroundTexture { get; set; } = TextureName.nothing;
         public TextureName BackgroundTexture { get; set; } = TextureName.mountain_background;
         public TextureName TilesetTexture { get; set; } = TextureName.test_tileset;
         public bool WrapY { get; set; } = true;

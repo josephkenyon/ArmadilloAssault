@@ -176,7 +176,16 @@ namespace ArmadilloAssault.GameState.Battle
 
             DrawingManager.DrawCollection(FlowManager.Flows);
 
-            DrawingManager.DrawTexture(Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f, CameraManager.GetBackgroundSourceRectangle());
+            if (Scene.BackBackgroundTexture != TextureName.nothing)
+            {
+                DrawingManager.DrawTexture(Scene.BackBackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f, CameraManager.GetBackBackgroundSourceRectangle());
+            }
+
+            DrawingManager.DrawTexture(
+                Scene.BackgroundTexture, new Rectangle(0, 0, 1920, 1080),
+                Scene.BackBackgroundTexture != TextureName.nothing ? 1f : 0.75f,
+                CameraManager.GetBackgroundSourceRectangle()
+            );
 
             DrawingManager.DrawCollection(EnvironmentalEffectsManager.Effects);
 

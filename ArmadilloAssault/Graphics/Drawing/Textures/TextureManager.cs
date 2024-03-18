@@ -47,6 +47,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.mountain_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "mountain_background")));
             _textures.Add(TextureName.volcano_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "volcano_background")));
             _textures.Add(TextureName.floating_fortress, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "floating_fortress_background")));
+            _textures.Add(TextureName.cloud_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "cloud_background")));
             _textures.Add(TextureName.snow_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "snow_background")));
 
             _textures.Add(TextureName.gusty_gorge_preview, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Level_Preview", "gusty_gorge")));
