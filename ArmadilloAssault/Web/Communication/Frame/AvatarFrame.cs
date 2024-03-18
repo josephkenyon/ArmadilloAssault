@@ -34,13 +34,14 @@ namespace ArmadilloAssault.Web.Communication.Frame
 
         public static AvatarFrame CreateFrom(Dictionary<int, Avatar> avatars, Dictionary<int, int> playerTeamRelations)
         {
+            var showTeamColors = playerTeamRelations.Values.Distinct().Count() != playerTeamRelations.Count;
+
             var avatarFrame = new AvatarFrame();
             foreach (var playerIndex in avatars.Keys)
             {
                 var avatar = avatars[playerIndex];
 
-                var showTeamColor = avatars.Values.Count(av => av.Type == avatar.Type) > 1
-                    || playerTeamRelations.Count(relation => relation.Value == playerTeamRelations[playerIndex]) > 1;
+                var showTeamColor = showTeamColors || avatars.Values.Count(av => av.Type == avatar.Type) > 1;
 
                 avatarFrame.PlayerIndices.Add(playerIndex);
                 avatarFrame.TeamIndices.Add(showTeamColor ? playerTeamRelations[playerIndex] : -1);
