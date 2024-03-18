@@ -1,6 +1,7 @@
 {
   "BackgroundTexture": "mountain_background",
   "TilesetTexture": "test_tileset",
+  "PrecipitationType": "Rain",
   "StartingPositions": [
     { "X": 3, "Y": 1 },
     { "X": 28, "Y": 17 },

@@ -1,5 +1,6 @@
 ﻿using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
 using System.Collections.Generic;
 
 namespace ArmadilloAssault.Configuration.Scenes
@@ -14,6 +15,7 @@ namespace ArmadilloAssault.Configuration.Scenes
         public ColorJson BackgroundColor { get; set; } = new();
         public bool HighCloudsOnly { get; set; }
         public FlowJson Flow { get; set; }
+        public PrecipitationType PrecipitationType { get; set; }
         public EnvironmentalEffectJson EnvironmentalEffects { get; set; }
         public RectangleListJson CollisionBoxes { get; set; } = new();
         public RectangleJson CapturePoint { get; set; }

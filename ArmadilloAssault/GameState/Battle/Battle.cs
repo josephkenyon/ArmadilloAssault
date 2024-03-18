@@ -28,6 +28,7 @@ using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using Microsoft.Xna.Framework.Input;
 using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
 
 namespace ArmadilloAssault.GameState.Battle
 {
@@ -38,6 +39,7 @@ namespace ArmadilloAssault.GameState.Battle
         public Scene Scene { get; set; }
         public BulletManager BulletManager { get; set; }
         public CloudManager CloudManager { get; set; }
+        public PrecipitationManager PrecipitationManager { get; set; }
         public CrateManager CrateManager { get; set; }
         public EffectManager EffectManager { get; set; }
         public EnvironmentalEffectsManager EnvironmentalEffectsManager { get; set; }
@@ -66,6 +68,7 @@ namespace ArmadilloAssault.GameState.Battle
             EnvironmentalEffectsManager = new(sceneConfiguration.EnvironmentalEffects);
             CloudManager = new(sceneConfiguration.HighCloudsOnly, Scene.Size);
             FlowManager = new(sceneConfiguration.Flow);
+            PrecipitationManager = new(Scene.Size, sceneConfiguration.PrecipitationType);
         }
 
         public Battle(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, ModeType mode, string sceneName) {
@@ -92,6 +95,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             CloudManager = new(sceneConfiguration.HighCloudsOnly, Scene.Size);
             FlowManager = new(sceneConfiguration.Flow);
+            PrecipitationManager = new(Scene.Size, sceneConfiguration.PrecipitationType);
 
             ModeManager = new(avatars.Keys.Select(key => new KeyValuePair<int, int>(key, playerTeamRelations[key])), mode);
 
@@ -122,6 +126,7 @@ namespace ArmadilloAssault.GameState.Battle
             EnvironmentalEffectsManager.UpdateEffects();
             CloudManager.UpdateClouds();
             FlowManager.UpdateFlows();
+            PrecipitationManager.UpdatePrecipitation();
 
             CrateManager?.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
 
@@ -171,6 +176,8 @@ namespace ArmadilloAssault.GameState.Battle
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => !cloud.Foreground));
 
+            DrawingManager.DrawCollection(PrecipitationManager.BackgroundParticles);
+
             foreach (var list in Scene.TileLists.Where(list => list.Z < 0))
             {
                 DrawingManager.DrawCollection([.. list.Tiles]);
@@ -208,6 +215,7 @@ namespace ArmadilloAssault.GameState.Battle
             }
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
+            DrawingManager.DrawCollection(PrecipitationManager.ForegroundParticles);
 
             if (Frame != null)
             {

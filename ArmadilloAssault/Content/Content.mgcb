@@ -564,6 +564,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/mountain_background.png
 
+#begin Graphics/Textures/rain.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/rain.png
+
 #begin Graphics/Textures/shotgun_bullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -575,6 +587,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/shotgun_bullet.png
+
+#begin Graphics/Textures/snowball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/snowball.png
 
 #begin Graphics/Textures/volcano_background.png
 /importer:TextureImporter
