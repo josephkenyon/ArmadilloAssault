@@ -178,7 +178,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             if (Scene.BackBackgroundTexture != TextureName.nothing)
             {
-                DrawingManager.DrawTexture(Scene.BackBackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f, CameraManager.GetBackBackgroundSourceRectangle());
+                DrawingManager.DrawTexture(Scene.BackBackgroundTexture, new Rectangle(0, 0, 1920, 1080), 0.75f, CameraManager.GetBackgroundSourceRectangle(true));
             }
 
             DrawingManager.DrawTexture(

@@ -240,7 +240,6 @@ namespace ArmadilloAssault.Graphics.Drawing
                 }
             }
 
-            var index = 0;
             foreach (var teamIndex in hudFrame.TeamIndices)
             {
                 _spriteBatch.Draw(
@@ -259,7 +258,9 @@ namespace ArmadilloAssault.Graphics.Drawing
                   color: DrawingHelper.GetTeamColor(teamIndex) * 0.65f
                 );
 
-                var value = $"{hudFrame.ModeValues[index]}";
+                var modeValueIndex = hudFrame.TeamIndices.Distinct().ToList().IndexOf(teamIndex);
+
+                var value = $"{hudFrame.ModeValues[modeValueIndex]}";
                 var stringSize = DrawingHelper.GetFont.MeasureString(value);
 
                 if (ModeType.Deathmatch == hudFrame.ModeType)
@@ -273,15 +274,13 @@ namespace ArmadilloAssault.Graphics.Drawing
                 }
 
                 _spriteBatch.DrawString(
-                    DrawingHelper.GetFont, $"{hudFrame.ModeValues[index]}",
+                    DrawingHelper.GetFont, $"{hudFrame.ModeValues[modeValueIndex]}",
                     new Vector2(
                         rec.Center.X + (hudFrame.ModeType == ModeType.King_of_the_Hill ? 0 : 20) - (stringSize.X / 2),
                         rec.Center.Y - (stringSize.Y / 2)
                     ),
                     Color.White
                 );
-
-                index++;
             }
         }
 
