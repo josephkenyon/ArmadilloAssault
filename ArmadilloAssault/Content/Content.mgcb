@@ -41,6 +41,9 @@
 #begin Configuration/Menus/tooltips.json
 /copy:Configuration/Menus/tooltips.json
 
+#begin Configuration/Scenes/blizzard_basin.json
+/copy:Configuration/Scenes/blizzard_basin.json
+
 #begin Configuration/Scenes/floating_fortress.json
 /copy:Configuration/Scenes/floating_fortress.json
 
@@ -588,6 +591,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/shotgun_bullet.png
 
+#begin Graphics/Textures/snow_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/snow_background.png
+
 #begin Graphics/Textures/snowball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -695,6 +710,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Tilesets/floating_island_tileset.png
+
+#begin Graphics/Tilesets/snow_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Tilesets/snow_tileset.png
 
 #begin Graphics/Tilesets/test_tileset.png
 /importer:TextureImporter

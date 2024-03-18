@@ -100,6 +100,8 @@ namespace ArmadilloAssault.Configuration
             json.StartingPositions = scene.StartingPositions.Select(pos => PointJson.CreateFrom((pos / DrawingHelper.FullTileSize).ToPoint())).ToList();
             json.BackgroundColor = scene.BackgroundColorJson;
 
+            json.PrecipitationType = scene.PrecipitationType;
+
             if (scene.CapturePoint != null)
             {
                 json.CapturePoint = RectangleJson.CreateFrom((Rectangle)scene.CapturePoint, 1f / DrawingHelper.FullTileSize);

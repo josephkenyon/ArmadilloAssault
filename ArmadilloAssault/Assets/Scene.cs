@@ -2,6 +2,7 @@
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Textures;
+using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
@@ -14,6 +15,7 @@ namespace ArmadilloAssault.Assets
     {
         public TextureName BackgroundTexture { get; set; } = json.BackgroundTexture;
         public TextureName TilesetTexture { get; set; } = json.TilesetTexture;
+        public PrecipitationType PrecipitationType { get; set; } = json.PrecipitationType;
         public Point Size { get; private set; } = json.Size != null ? json.Size.ToPoint() : new Point(1920, 1080);
         public ColorJson BackgroundColorJson { get; private set; } = json.BackgroundColor;
         public Color BackgroundColor { get; private set; } = json.BackgroundColor != null ? new Color(json.BackgroundColor.R, json.BackgroundColor.G, json.BackgroundColor.B) : Color.CornflowerBlue;

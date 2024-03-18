@@ -4,18 +4,29 @@ using System.Collections.Generic;
 
 namespace ArmadilloAssault.GameState.Battle.Environment.Precipitation
 {
-    public class PrecipitationManager(Point sceneSize, PrecipitationType precipitationType)
+    public class PrecipitationManager
     {
         private Random Random { get; set; } = new();
 
-        private readonly float ParticleSpeed = precipitationType == PrecipitationType.Snow ? 8f : 16f;
+        private readonly float ParticleSpeed;
 
-        private Point SceneSize { get; set; } = sceneSize ;
-        private PrecipitationType PrecipitationType { get; set; } = precipitationType;
+        private Point SceneSize { get; set; }
+        private PrecipitationType PrecipitationType { get; set; }
 
         public List<PrecipitationParticle> BackgroundParticles { get; private set; } = [];
         public List<PrecipitationParticle> ForegroundParticles { get; private set; } = [];
 
+        public PrecipitationManager(Point sceneSize, PrecipitationType precipitationType)
+        {
+            SceneSize = sceneSize;
+            PrecipitationType = precipitationType;
+            ParticleSpeed = precipitationType == PrecipitationType.Snow ? 8f : 16f;
+
+            for (int i = 0; i < 300; i++)
+            {
+                UpdatePrecipitation();
+            }
+        }
 
         public void UpdatePrecipitation()
         {
@@ -55,7 +66,7 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Precipitation
                 rotation += (((float)Random.NextDouble() - 0.5f) / 2f);
             }
 
-            var x = Random.Next(-SceneSize.Y / 3, SceneSize.X);
+            var x = Random.Next(-(int)(SceneSize.Y / 2.5f), SceneSize.X);
 
             int sizeX = 0, sizeY = 0;
 
