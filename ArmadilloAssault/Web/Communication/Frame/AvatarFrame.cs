@@ -14,6 +14,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
     {
         public List<int> PlayerIndices { get; set; } = [];
         public List<int> TeamIndices { get; set; } = [];
+        public List<bool> ShowTeamColors { get; set; } = [];
         public List<Animation> Animations { get; set; } = [];
         public List<float> ArmAngles { get; set; } = [];
         public List<int> AnimationFrames { get; set; } = [];
@@ -44,7 +45,8 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 var showTeamColor = showTeamColors || avatars.Values.Count(av => av.Type == avatar.Type) > 1;
 
                 avatarFrame.PlayerIndices.Add(playerIndex);
-                avatarFrame.TeamIndices.Add(showTeamColor ? playerTeamRelations[playerIndex] : -1);
+                avatarFrame.TeamIndices.Add(playerTeamRelations[playerIndex]);
+                avatarFrame.ShowTeamColors.Add(showTeamColor);
                 avatarFrame.Animations.Add(avatar.Animation);
                 avatarFrame.ArmAngles.Add((float)avatar.ArmAngle);
                 avatarFrame.AnimationFrames.Add(avatar.AnimationFrame);

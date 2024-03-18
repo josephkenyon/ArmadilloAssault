@@ -54,7 +54,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                         Type = avatarFrame.Types[index],
                         WeaponTexture = avatarFrame.WeaponTextures[index],
                         Color = avatarFrame.Colors[index].ToColor(),
-                        TeamColor = avatarFrame.TeamIndices[index] != -1 ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
+                        TeamColor = avatarFrame.ShowTeamColors[index] ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
                         Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], playerIndex, teamIndex)
                     };
 
