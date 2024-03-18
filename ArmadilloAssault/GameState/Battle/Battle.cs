@@ -86,6 +86,11 @@ namespace ArmadilloAssault.GameState.Battle
                 Avatars.Add(index, avatar);
             }
 
+            if (ModeType.Tutorial == mode)
+            {
+                Avatars.Values.ElementAt(0).SetStartingPosition(new Vector2(900, 580));
+            }
+
             BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);
             CrateManager = new(Scene.CollisionBoxes);
 

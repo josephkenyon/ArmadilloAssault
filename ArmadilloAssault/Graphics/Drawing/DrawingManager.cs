@@ -293,14 +293,14 @@ namespace ArmadilloAssault.Graphics.Drawing
                      texture: TextureManager.GetTexture(TextureName.white_pixel),
                      destinationRectangle: new Rectangle(destinationRectangle.X - 2, destinationRectangle.Y - 2, destinationRectangle.Width + 4, destinationRectangle.Height + 4),
                      sourceRectangle: new Rectangle(0, 0, 1, 1),
-                     color: Color.White * 0.5f
+                     color: Color.White * 0.25f
                  );
 
                 _spriteBatch.Draw(
                     texture: TextureManager.GetTexture(TextureName.white_pixel),
                     destinationRectangle: destinationRectangle,
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
-                    color: MenuManager.DarkBackgroundColor * 0.5f
+                    color: MenuManager.DarkBackgroundColor * 0.25f
                 );
 
                 DrawTooltip(texts, new Point(destinationRectangle.Center.X, destinationRectangle.Center.Y));

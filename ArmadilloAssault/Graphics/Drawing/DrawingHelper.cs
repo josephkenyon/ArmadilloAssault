@@ -128,7 +128,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         public static Rectangle GetTooltipRec(int index)
         {
             var sizeX = 896;
-            var sizeY = 240;
+            var sizeY = 200;
             var offset = 16;
 
             return index switch
