@@ -147,5 +147,19 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         {
             GameOverOverride = true;
         }
+
+        public List<int> GetModeValues()
+        {
+            var battleStats = TeamBattleStats.OrderBy(stat => stat.Key);
+
+            if (Mode == ModeType.King_of_the_Hill)
+            {
+                return battleStats.Select(stat => stat.Value.CapturePointFrames / 60).ToList();
+            }
+            else
+            {
+                return battleStats.Select(stat => stat.Value.Kills).ToList();
+            }
+        }
     }
 }

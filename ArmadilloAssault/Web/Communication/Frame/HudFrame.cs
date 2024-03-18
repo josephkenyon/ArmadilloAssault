@@ -1,10 +1,14 @@
 ﻿using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.GameState.Battle.Mode;
 using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class HudFrame
     {
+        public ModeType ModeType { get; set; }
+        public List<int> TeamIndices { get; set; } = [];
+        public List<int> ModeValues { get; set; } = [];
         public List<int> PlayerIndices { get; set; } = [];
         public List<bool> Deads { get; set; } = [];
         public List<bool> Visibles { get; set; } = [];

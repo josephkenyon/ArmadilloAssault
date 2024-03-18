@@ -11,6 +11,7 @@ using ArmadilloAssault.GameState.Menus;
 using System.Linq;
 using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState;
+using ArmadilloAssault.GameState.Battle.Mode;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -237,6 +238,47 @@ namespace ArmadilloAssault.Graphics.Drawing
                         Color.White
                     );
                 }
+            }
+
+            foreach (var teamIndex in hudFrame.TeamIndices)
+            {  
+                _spriteBatch.Draw(
+                   texture: TextureManager.GetTexture(TextureName.white_pixel),
+                   destinationRectangle: DrawingHelper.GetTeamScoreRec(teamIndex, true),
+                   sourceRectangle: new Rectangle(0, 0, 1, 1),
+                   color: Color.White * 0.65f
+                );
+
+                var rec = DrawingHelper.GetTeamScoreRec(teamIndex, false);
+
+                _spriteBatch.Draw(
+                  texture: TextureManager.GetTexture(TextureName.white_pixel),
+                  destinationRectangle: rec,
+                  sourceRectangle: new Rectangle(0, 0, 1, 1),
+                  color: DrawingHelper.GetTeamColor(teamIndex) * 0.65f
+                );
+
+                var value = $"{hudFrame.ModeValues[teamIndex]}";
+                var stringSize = DrawingHelper.GetFont.MeasureString(value);
+
+                if (ModeType.Deathmatch == hudFrame.ModeType)
+                {
+                    var texture = TextureManager.GetTexture(TextureName.skull);
+                    _spriteBatch.Draw(
+                      texture: texture,
+                      position: new Vector2(rec.Center.X - 20 - (texture.Width / 2f), rec.Center.Y - (texture.Height / 2f)),
+                      color: Color.White
+                    );
+                }
+
+                _spriteBatch.DrawString(
+                        DrawingHelper.GetFont, $"{hudFrame.ModeValues[teamIndex]}",
+                        new Vector2(
+                            rec.Center.X + (hudFrame.ModeType == ModeType.King_of_the_Hill ? 0 : 20) - (stringSize.X / 2),
+                            rec.Center.Y - (stringSize.Y / 2)
+                        ),
+                        Color.White
+                    );
             }
         }
 

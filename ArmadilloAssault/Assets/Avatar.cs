@@ -232,7 +232,7 @@ namespace ArmadilloAssault.Assets
                     SetAnimation(Animation.Resting);
                 }
 
-                Acceleration = Vector2.Zero;
+                Acceleration = new Vector2(0, Acceleration.Y);
                 Recoil = 0f;
                 InfluenceVelocity = 0;
                 RunningVelocity = 0;

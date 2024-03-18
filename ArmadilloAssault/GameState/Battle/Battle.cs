@@ -106,6 +106,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             Frame = CreateFrame();
         }
+
         public void Update()
         {
             CameraManager.UpdateFocusOffset(Mouse.GetState().Position.ToVector2());
@@ -284,6 +285,13 @@ namespace ArmadilloAssault.GameState.Battle
         private HudFrame CreateHudFrame()
         {
             var hudFrame = new HudFrame();
+
+            if (ModeType.Tutorial != Mode)
+            {
+                hudFrame.ModeType = ModeManager.Mode;
+                hudFrame.TeamIndices = [.. ModeManager.PlayerTeamRelations.Values.Order()];
+                hudFrame.ModeValues = ModeManager.GetModeValues();
+            }
 
             foreach (var avatarKey in Avatars.Keys)
             {

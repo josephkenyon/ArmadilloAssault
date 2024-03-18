@@ -139,5 +139,18 @@ namespace ArmadilloAssault.Graphics.Drawing
                 _ => new Rectangle(offset, offset, sizeX, sizeY)
             };
         }
+
+        private static readonly int TeamScoreRecWidth = 96;
+        private static readonly int TeamScoreRecHeight = 48;
+
+        public static Rectangle GetTeamScoreRec(int index, bool background = false)
+        {
+            return new Rectangle(
+                16 + (index * TeamScoreRecWidth) + (index * (352 - TeamScoreRecWidth)) - (background ? 2 : 0),
+                16 - (background ? 2 : 0),
+                background ? (TeamScoreRecWidth + 4) : TeamScoreRecWidth,
+                background ? (TeamScoreRecHeight + 4) : TeamScoreRecHeight
+            );
+        }
     }
 }

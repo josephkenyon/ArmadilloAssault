@@ -45,6 +45,7 @@
         ricochet,
         shotgun,
         shotgun_bullet,
+        skull,
         smoke,
         sniper,
         snow_background,
