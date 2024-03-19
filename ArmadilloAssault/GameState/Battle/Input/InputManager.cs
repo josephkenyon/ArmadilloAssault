@@ -212,7 +212,7 @@ namespace ArmadilloAssault.GameState.Battle.Input
                 else
                 {
                     avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                    avatar.InfluenceVelocity = avatar.SuperSpeed && avatar.IsSpinning ? -7 : -4;
+                    avatar.InfluenceVelocity = avatar.SuperSpeed && avatar.IsSpinning ? -8 : -5;
                 }
             }
             else if (ControlsManager.IsControlDown(playerIndex, Control.Right) || ControlsManager.IsControlDownStart(playerIndex, Control.Right))
@@ -239,7 +239,7 @@ namespace ArmadilloAssault.GameState.Battle.Input
                 else
                 {
                     avatar.Acceleration = new Vector2(0, avatar.Acceleration.Y);
-                    avatar.InfluenceVelocity = avatar.SuperSpeed && avatar.IsSpinning ? 7 : 4;
+                    avatar.InfluenceVelocity = avatar.SuperSpeed && avatar.IsSpinning ? 8 : 5;
                 }
             }
             else
