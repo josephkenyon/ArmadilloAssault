@@ -13,7 +13,6 @@ using ArmadilloAssault.Web.Client;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Diagnostics;
 
 namespace ArmadilloAssault
 {
@@ -21,7 +20,7 @@ namespace ArmadilloAssault
     {
         private static Action ExitAction { get; set; }
 
-        public static bool Active;
+        public static bool Active { get; private set; }
 
         public Engine()
         {
@@ -29,6 +28,9 @@ namespace ArmadilloAssault
 
             Content.RootDirectory = "Content"; 
             IsMouseVisible = true;
+
+            Window.AllowUserResizing = false;
+            Window.IsBorderless = true;
         }
 
         protected override void Initialize()
@@ -54,6 +56,11 @@ namespace ArmadilloAssault
         protected override void Update(GameTime gameTime)
         {
             Active = IsActive;
+            if (Active && GraphicsManager.IsFullscreen)
+            {
+                var mouseState = Mouse.GetState();
+                Mouse.SetPosition(Math.Clamp(mouseState.Position.X, 0, 1920), Math.Clamp(mouseState.Position.Y, 0, 1080));
+            }
 
             GameStateManager.Update();
 
