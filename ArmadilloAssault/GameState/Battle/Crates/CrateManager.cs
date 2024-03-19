@@ -141,10 +141,41 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 }
             }
 
-            var crate = new Crate(type, weaponType, singleClip)
+            Crate crate;
+
+            if (position != null)
             {
-                GoingDown = DirectionDown,
-            };
+                crate = new Crate(type, weaponType, singleClip)
+                {
+                    GoingDown = DirectionDown,
+                };
+
+                var newPosition = (Vector2)position;
+                crate.SetX(newPosition.X);
+                crate.SetY(newPosition.Y);
+
+                var crateBox = crate.GetCollisionBox();
+
+                var collisionBoxes = CollisionBoxes
+                    .Where(box => box.Top > crateBox.Bottom && CollisionHelper.RectanglesIntersectInTheXPlane(crateBox, box))
+                    .OrderBy(box => box.Top);
+
+                if (!collisionBoxes.Any())
+                {
+                    return;
+                }
+
+                crate.RelevantCollisionBox = collisionBoxes.First();
+
+                crate.GoingDown = true;
+            }
+            else
+            {
+                crate = new Crate(type, weaponType, singleClip)
+                {
+                    GoingDown = DirectionDown,
+                };
+            }
 
             if (position == null)
             {
@@ -164,12 +195,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 crate.SetX(x - (crate.Size.X / 2));
 
                 crate.RelevantCollisionBox = relevantCollisionBox;
-            }
 
-            Crates.Add(crate);
-
-            if (position == null)
-            {
                 if (!crate.GoingDown)
                 {
                     crate.SetY(sceneSize.Y);
@@ -181,20 +207,8 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
                 DirectionDown = !DirectionDown;
             }
-            else
-            {
-                var newPosition = (Vector2)position;
-                crate.SetX(newPosition.X);
-                crate.SetY(newPosition.Y);
 
-                var crateBox = crate.GetCollisionBox();
-
-                crate.RelevantCollisionBox = CollisionBoxes
-                    .Where(box => box.Top > crateBox.Bottom && CollisionHelper.RectanglesIntersectInTheXPlane(crateBox, box))
-                    .OrderBy(box => box.Top).First();
-
-                crate.GoingDown = true;
-            }
+            Crates.Add(crate);
         }
 
         private static void GiveCrate(Avatar avatar, Crate crate)
