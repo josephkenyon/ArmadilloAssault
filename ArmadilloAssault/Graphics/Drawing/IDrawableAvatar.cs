@@ -11,6 +11,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         float ArmAngle { get; }
         int AnimationFrame { get; }
         float BreathingYOffset { get; }
+        bool Crowned { get; }
         bool Dead { get; }
         Direction Direction { get; }
         Vector2 Position { get; }

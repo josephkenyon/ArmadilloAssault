@@ -27,6 +27,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<float> Rotations { get; } = [];
         public List<bool> Spinnings { get; set; } = [];
         public List<bool> Invisibles { get; set; } = [];
+        public List<bool> HasCrowns { get; set; } = [];
         public List<TextureName> TextureNames { get; set; } = [];
         public List<TextureName> WhiteTextureNames { get; set; } = [];
         public List<AvatarType> Types { get; set; } = [];
@@ -63,6 +64,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 avatarFrame.WhiteTextureNames.Add(avatar.WhiteTextureName);
                 avatarFrame.Types.Add(avatar.Type);
                 avatarFrame.WeaponTextures.Add(avatar.CurrentWeaponConfiguration.TextureName);
+                avatarFrame.HasCrowns.Add(avatar.Crowned);
                 avatarFrame.Colors.Add(avatar.GetColor());
             }
 

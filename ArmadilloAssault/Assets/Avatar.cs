@@ -57,6 +57,9 @@ namespace ArmadilloAssault.Assets
 
         public bool IsDead => Health < 1 || Animation == Animation.Dead;
 
+        // Mode specific
+        public bool Crowned { get; set; } = false;
+
         // Health
         private int health = 100;
         public int Health { get { return health; } set { health = Math.Clamp(value, 0, 100); } }

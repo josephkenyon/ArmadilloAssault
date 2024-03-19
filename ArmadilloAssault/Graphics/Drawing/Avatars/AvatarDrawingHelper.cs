@@ -49,6 +49,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                             AnimationFrame = avatarFrame.AnimationFrames[index],
                             BreathingYOffset = avatarFrame.BreathingYOffsets[index],
                             Dead = avatarFrame.Deads[index],
+                            Crowned = avatarFrame.HasCrowns[index],
                             Direction = avatarFrame.Directions[index],
                             Position = avatarFrame.Positions[index],
                             Recoil = avatarFrame.Recoils[index],
@@ -99,6 +100,11 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                     avatarCollection.Add(GetBody(avatar, i == 0));
 
+                    if (avatar.Spinning && i == 1 && avatar.Crowned)
+                    {
+                        avatarCollection.Add(GetBody(avatar, i == 0, true));
+                    }
+
                     if (!avatar.Spinning && !avatar.Dead)
                     {
                         avatarCollection.Add(GetLeg(avatar, Direction.Right, i == 0));
@@ -108,6 +114,11 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                         avatarCollection.Add(GetGun(avatar));
                         avatarCollection.Add(GetArm(avatar, Direction.Right, i == 0));
+
+                        if (avatar.Crowned && i == 1)
+                        {
+                            avatarCollection.Add(GetHead(avatar, false, false, true));
+                        }
                     }
                 }
             }
@@ -115,7 +126,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             return avatarCollection;
         }
 
-        private static Body GetBody(IDrawableAvatar avatar, bool white = false) => new(avatar, white);
+        private static Body GetBody(IDrawableAvatar avatar, bool white = false, bool crown = false) => new(avatar, white, crown);
 
         private static float GetSpriteOffsetX(IDrawableAvatar avatar)
         {
@@ -131,21 +142,21 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             return avatar.Spinning ? new Vector2(size.X / 2, size.Y / 2) : Vector2.Zero;
         }
 
-        private static Rectangle GetSourceRectangle(IDrawableAvatar avatar)
+        private static Rectangle GetSourceRectangle(IDrawableAvatar avatar, bool crown = false)
         {
             var animation = Animations[avatar.Type][avatar.Animation];
             var size = GetSize(avatar);
 
             return new Rectangle()
             {
-                X = (animation.X + avatar.AnimationFrame) * size.X,
+                X = (crown ? 8 : animation.X + avatar.AnimationFrame) * size.X,
                 Y = animation.Y * size.Y,
                 Width = avatar.Spinning ? (size.X - 3) : size.X,
                 Height = size.Y
             };
         }
 
-        private class Body(IDrawableAvatar avatar, bool white = false) : IDrawableObject
+        private class Body(IDrawableAvatar avatar, bool white = false, bool crown = false) : IDrawableObject
         {
             public Direction GetDirection() => avatar.Direction;
 
@@ -169,7 +180,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
             public float GetRotation() => avatar.Spinning ? avatar.Rotation : 0f;
 
-            public Rectangle? GetSourceRectangle() => avatar.Spinning || avatar.Dead ? AvatarDrawingHelper.GetSourceRectangle(avatar) : new Rectangle(Point.Zero, GetSize(avatar));
+            public Rectangle? GetSourceRectangle() => avatar.Spinning || avatar.Dead ? AvatarDrawingHelper.GetSourceRectangle(avatar, crown) : new Rectangle(Point.Zero, GetSize(avatar));
 
             public Color Color => white ? (Color)avatar.TeamColor : avatar.Color;
 
@@ -267,9 +278,9 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             return new Limb(avatar, armOrigin, spriteLocation, textureName: textureName, applyBreathing: true, applyRecoil: true, white: white);
         }
 
-        private static Limb GetHead(IDrawableAvatar avatar, bool background, bool white = false)
+        private static Limb GetHead(IDrawableAvatar avatar, bool background, bool white = false, bool crown = false)
         {
-            var spriteLocation = new Point(background ? 6 : 1, 0);
+            var spriteLocation = new Point(background ? 6 : (crown ? 7 : 1), 0);
             var headOrigin = GetHeadOrigin(avatar);
 
             double xOffset = 0;
