@@ -89,16 +89,16 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         private void CreateNewCrate(CrateType? crateType = null)
         {
-            var typeIndex = Random.NextInt64(0, 4);
+            var typeDouble = Random.NextDouble();
             var type = crateType != null ? (CrateType)crateType : CrateType.Weapon;
 
             if (crateType == null)
             {
-                if (typeIndex < 2)
+                if (typeDouble < 0.65f)
                 {
                     type = CrateType.Weapon;
                 }
-                else if (typeIndex < 3)
+                else if (typeDouble < 0.85f)
                 {
                     type = CrateType.Health;
                 }
