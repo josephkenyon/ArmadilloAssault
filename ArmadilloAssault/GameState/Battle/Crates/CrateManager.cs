@@ -1,5 +1,6 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
@@ -119,7 +120,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             }
         }
 
-        private void CreateNewCrate(CrateType? crateType = null)
+        public void CreateNewCrate(CrateType? crateType = null, WeaponType? weaponType = null, Vector2? position = null, bool singleClip = false)
         {
             var typeDouble = Random.NextDouble();
             var type = crateType != null ? (CrateType)crateType : CrateType.Weapon;
@@ -140,39 +141,60 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 }
             }
 
-            int collisionBoxIndex;
-            int x;
-            Rectangle relevantCollisionBox;
-            do
-            {
-                collisionBoxIndex = Random.Next(0, CollisionBoxes.Count);
-                relevantCollisionBox = CollisionBoxes[collisionBoxIndex];
-                x = Random.Next(relevantCollisionBox.Left + 24, relevantCollisionBox.Right - 24);
-            }
-            while (Math.Abs(x - LastX) < 500 && LastX != -1);
-
-            var crate = new Crate(type)
+            var crate = new Crate(type, weaponType, singleClip)
             {
                 GoingDown = DirectionDown,
-                RelevantCollisionBox = relevantCollisionBox
             };
 
-            LastX = x;
+            if (position == null)
+            {
+                int collisionBoxIndex;
+                int x;
+                Rectangle relevantCollisionBox;
+                do
+                {
+                    collisionBoxIndex = Random.Next(0, CollisionBoxes.Count);
+                    relevantCollisionBox = CollisionBoxes[collisionBoxIndex];
+                    x = Random.Next(relevantCollisionBox.Left + 24, relevantCollisionBox.Right - 24);
+                }
+                while (Math.Abs(x - LastX) < 500 && LastX != -1);
 
-            crate.SetX(x - (crate.Size.X / 2));
+                LastX = x;
+
+                crate.SetX(x - (crate.Size.X / 2));
+
+                crate.RelevantCollisionBox = relevantCollisionBox;
+            }
 
             Crates.Add(crate);
 
-            if (!crate.GoingDown)
+            if (position == null)
             {
-                crate.SetY(sceneSize.Y);
+                if (!crate.GoingDown)
+                {
+                    crate.SetY(sceneSize.Y);
+                }
+                else
+                {
+                    crate.SetY(-200);
+                }
+
+                DirectionDown = !DirectionDown;
             }
             else
             {
-                crate.SetY(-200);
-            }
+                var newPosition = (Vector2)position;
+                crate.SetX(newPosition.X);
+                crate.SetY(newPosition.Y);
 
-            DirectionDown = !DirectionDown;
+                var crateBox = crate.GetCollisionBox();
+
+                crate.RelevantCollisionBox = CollisionBoxes
+                    .Where(box => box.Top > crateBox.Bottom && CollisionHelper.RectanglesIntersectInTheXPlane(crateBox, box))
+                    .OrderBy(box => box.Top).First();
+
+                crate.GoingDown = true;
+            }
         }
 
         private static void GiveCrate(Avatar avatar, Crate crate)
@@ -183,7 +205,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             }
             else if (crate.Type == CrateType.Weapon)
             {
-                avatar.GiveWeapon((WeaponType)crate.WeaponType);
+                avatar.GiveWeapon((WeaponType)crate.WeaponType, crate.SingleClip);
             }
             else if (crate.Type == CrateType.Power_Up)
             {

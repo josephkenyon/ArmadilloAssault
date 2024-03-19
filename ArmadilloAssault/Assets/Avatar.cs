@@ -538,13 +538,13 @@ namespace ArmadilloAssault.Assets
                     SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Dead);
                 }
 
+                avatarListener?.AvatarKilled(playerIndex, LastHurtBy);
+
                 Animation = Animation.Dead;
                 Acceleration = Vector2.Zero;
                 Recoil = 0f;
                 InfluenceVelocity = 0;
                 RunningVelocity = 0;
-
-                avatarListener?.AvatarKilled(playerIndex, LastHurtBy);
             }
             else
             {
@@ -780,7 +780,7 @@ namespace ArmadilloAssault.Assets
             return BufferedAnimation != null;
         }
 
-        public void GiveWeapon(WeaponType weaponType)
+        public void GiveWeapon(WeaponType weaponType, bool singleClip)
         {
             var configuration = ConfigurationManager.GetWeaponConfiguration(weaponType);
             var weapon = Weapons.SingleOrDefault(weapon => weapon.Type == weaponType);
@@ -789,12 +789,12 @@ namespace ArmadilloAssault.Assets
 
             if (weapon != null)
             {
-                weapon.Ammo += configuration.ClipsGiven * configuration.ClipSize;
+                weapon.Ammo += (singleClip ? 1 : configuration.ClipsGiven) * configuration.ClipSize;
                 WeaponSelectionIndex = Weapons.IndexOf(weapon);
             }
             else
             {
-                var newWeapon = new Weapon(configuration, avatarListener);
+                var newWeapon = new Weapon(configuration, avatarListener, singleClip);
                 Weapons.Add(newWeapon);
 
                 WeaponSelectionIndex = Weapons.IndexOf(newWeapon);
@@ -833,17 +833,13 @@ namespace ArmadilloAssault.Assets
 
                 blinkFrame = (int)(255f - (blinkFrame * 255f / 60f));
 
-                switch ((PowerUpType)CurrentPowerUp)
+                return (PowerUpType)CurrentPowerUp switch
                 {
-                    case PowerUpType.Damage_Up:
-                        return new ColorJson(255, blinkFrame, blinkFrame);
-                    case PowerUpType.Super_Speed:
-                        return new ColorJson(blinkFrame, 255, blinkFrame);
-                    case PowerUpType.Invincibility:
-                        return new ColorJson(blinkFrame, blinkFrame, 255);
-                    default:
-                        return new ColorJson(255, 255, 255);
-                }
+                    PowerUpType.Damage_Up => new ColorJson(255, blinkFrame, blinkFrame),
+                    PowerUpType.Super_Speed => new ColorJson(blinkFrame, 255, blinkFrame),
+                    PowerUpType.Invincibility => new ColorJson(blinkFrame, blinkFrame, 255),
+                    _ => new ColorJson(255, 255, 255),
+                };
             }
 
             return color;

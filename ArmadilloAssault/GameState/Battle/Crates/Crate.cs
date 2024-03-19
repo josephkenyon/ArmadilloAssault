@@ -7,16 +7,17 @@ using System;
 
 namespace ArmadilloAssault.GameState.Battle.Crates
 {
-    public class Crate(CrateType type) : PhysicsObject
+    public class Crate(CrateType type, WeaponType? weaponType, bool singleClip = false) : PhysicsObject
     {
         private static readonly Random Random = new();
 
         public readonly int HealthGiven = type == CrateType.Health ? 35 : 0;
-        public readonly WeaponType? WeaponType = type == CrateType.Weapon ? GetRandomWeaponType() : null;
+        public readonly WeaponType? WeaponType = type == CrateType.Weapon ? weaponType ?? GetRandomWeaponType() : null;
         public readonly PowerUpType? PowerUpType = type == CrateType.Power_Up ? GetRandomPowerUpType() : null;
 
         public Point Size => Grounded ? new Point(96, 96) : new Point(128, 204);
         public CrateType Type { get; private set; } = type;
+        public bool SingleClip { get; private set; } = singleClip;
         public Rectangle RelevantCollisionBox { get; set; }
         public override Rectangle GetCollisionBox() => new((int)Position.X + 18, (int)Position.Y + 24, 60, 52);
         public override Vector2 MaxVelocity => new(8f, 2);

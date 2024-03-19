@@ -8,13 +8,13 @@ using System;
 
 namespace ArmadilloAssault.GameState.Battle.Weapons
 {
-    public class Weapon(WeaponJson weaponJson, IWeaponListener weaponListener)
+    public class Weapon(WeaponJson weaponJson, IWeaponListener weaponListener, bool singleClip = false)
     {
         private readonly int FireRate = weaponJson.FireRate;
 
         public WeaponType Type { get; set; } = weaponJson.Type;
         public int AmmoInClip { get; set; } = weaponJson.ClipSize;
-        public int Ammo { get; set; } = weaponJson.ClipSize * (weaponJson.ClipsGiven - 1);
+        public int Ammo { get; set; } = weaponJson.ClipSize * (singleClip ? 1 : (weaponJson.ClipsGiven - 1));
         public int FramesSinceFired { get; set; } = -1;
 
         private readonly WeaponJson WeaponJson = weaponJson;

@@ -338,6 +338,8 @@ namespace ArmadilloAssault.GameState.Battle
 
         public void AvatarKilled(int deadIndex, int? killIndex)
         {
+            CrateManager.CreateNewCrate(CrateType.Weapon, Avatars[deadIndex].SelectedWeapon.Type, Avatars[deadIndex].Position, true);
+
             ModeManager.AvatarKilled(deadIndex, killIndex);
 
             if (ModeManager.GameOver)
