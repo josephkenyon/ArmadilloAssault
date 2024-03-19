@@ -17,6 +17,7 @@ using ArmadilloAssault.Web.Client;
 using ArmadilloAssault.Web.Communication.Frame;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +96,8 @@ namespace ArmadilloAssault.GameState.Menus
                 {
                     cancelButton.Actions.ForEach(async action => await InvokeAction(action, cancelButton.Data));
                 }
-                else if (CurrentMenu.Buttons.Any(button => button.Visible && button.Enabled && button.Actions.Contains(MenuAction.avatar_select))) {
+                else if (CurrentMenu.Buttons.Any(button => button.Visible && button.Enabled && button.Actions.Contains(MenuAction.avatar_select)))
+                {
                     InvokeAction(MenuAction.avatar_select);
                 }
                 else
@@ -112,6 +114,9 @@ namespace ArmadilloAssault.GameState.Menus
                 {
                     ServerManager.SendLobbyFrame(LobbyFrame);
                 }
+            }
+            else if (MenuStack.Peek() == "Root" && Keyboard.GetState().IsKeyDown(Keys.Back)) {
+                InvokeAction(MenuAction.open_editor);
             }
         }
 
