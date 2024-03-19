@@ -14,13 +14,15 @@ namespace ArmadilloAssault.Sound
 {
     public static class SoundManager
     {
+        private static readonly float scaler = 0.16f;
+
         private static Dictionary<MusicSong, Song> _musicSongs;
         private static Dictionary<MenuSound, SoundEffect> _menuSounds;
         private static Dictionary<BattleSound, SoundEffect> _battleSounds;
         private static Dictionary<WeaponType, SoundEffect> _weaponSounds;
         private static Dictionary<AvatarType, Dictionary<AvatarSound, SoundEffect>> _avatarSounds;
 
-        private static float SoundScaler => SoundEffectsEnabled ? 0.16f : 0f;
+        private static float SoundScaler => SoundEffectsEnabled ? scaler : 0f;
 
         private static SoundFrame _soundFrame;
 
@@ -45,7 +47,7 @@ namespace ArmadilloAssault.Sound
         {
             MusicEnabled = !MusicEnabled;
             
-            MediaPlayer.Volume = SoundScaler * (MusicEnabled ? 0.5f : 0f);
+            MediaPlayer.Volume = scaler * (MusicEnabled ? 0.5f : 0f);
         }
 
         public static void ToggleSoundEffects()
