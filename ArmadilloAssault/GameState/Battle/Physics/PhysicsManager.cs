@@ -141,21 +141,6 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             DecelerateY(physicsObject);
         }
 
-        public static void ApplyCrateMotion(PhysicsObject physicsObject, ICollection<Rectangle> sceneCollisionBoxes)
-        {
-            physicsObject.Velocity = new Vector2(
-                physicsObject.Velocity.X,
-                Math.Clamp(
-                    physicsObject.Velocity.Y + physicsObject.Acceleration.Y,
-                    -physicsObject.MaxVelocity.Y, physicsObject.MaxVelocity.Y
-                )
-            );
-
-            ApplyDownwardMotion(physicsObject, sceneCollisionBoxes);
-
-            DecelerateY(physicsObject);
-        }
-
         private static void ApplyLeftMotion(PhysicsObject physicsObject, IPhysicsScene scene, float deltaX)
         {
             var collisionBox = physicsObject.GetCollisionBox();

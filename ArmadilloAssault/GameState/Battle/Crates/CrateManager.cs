@@ -1,6 +1,5 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration.Weapons;
-using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
@@ -13,7 +12,7 @@ using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Crates
 {
-    public class CrateManager(ICollection<Rectangle> collisionBoxes)
+    public class CrateManager(ICollection<Rectangle> collisionBoxes, Point sceneSize)
     {
         private List<Rectangle> CollisionBoxes { get; set; } = collisionBoxes.Where(box =>
             {
@@ -30,6 +29,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         private int TimeSinceLastCrate { get; set; } = 0;
         private int LastX { get; set; } = -1;
+        private bool DirectionDown { get; set; }
         private Random Random { get; set; } = new();
 
         private bool InitialDrop { get; set; } = false;
@@ -69,7 +69,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             var crates = Crates.Where(crate => !crate.Grounded);
             foreach (var crate in crates)
             {
-                PhysicsManager.ApplyCrateMotion(crate, crate.RelevantCollisionBoxes);
+                UpdateCratePosition(crate);
             }
 
             foreach (var avatar in avatars)
@@ -84,6 +84,38 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                     return false;
                 });
                    
+            }
+        }
+
+        private static void UpdateCratePosition(Crate crate)
+        {
+            if (!crate.Grounded)
+            {
+                var collisionBox = crate.GetCollisionBox();
+                {
+                    if (crate.GoingDown)
+                    {
+                        if (collisionBox.Bottom < crate.RelevantCollisionBox.Top)
+                        {
+                            crate.SetY(crate.Position.Y + crate.MaxVelocity.Y);
+                        }
+                        else
+                        {
+                            crate.Grounded = true;
+                        }
+                    }
+                    else
+                    {
+                        if (collisionBox.Bottom > crate.RelevantCollisionBox.Top)
+                        {
+                            crate.SetY(crate.Position.Y - crate.MaxVelocity.Y);
+                        }
+                        else
+                        {
+                            crate.Grounded = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -121,7 +153,8 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
             var crate = new Crate(type)
             {
-                RelevantCollisionBoxes = [relevantCollisionBox]
+                GoingDown = DirectionDown,
+                RelevantCollisionBox = relevantCollisionBox
             };
 
             LastX = x;
@@ -129,6 +162,17 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             crate.SetX(x - (crate.Size.X / 2));
 
             Crates.Add(crate);
+
+            if (!crate.GoingDown)
+            {
+                crate.SetY(sceneSize.Y);
+            }
+            else
+            {
+                crate.SetY(-200);
+            }
+
+            DirectionDown = !DirectionDown;
         }
 
         private static void GiveCrate(Avatar avatar, Crate crate)
@@ -159,6 +203,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 crateFrame.PositionXs.Add(crate.Position.X);
                 crateFrame.PositionYs.Add(crate.Position.Y);
                 crateFrame.Groundeds.Add(crate.Grounded);
+                crateFrame.GoingDowns.Add(crate.GoingDown);
             }
 
             return crateFrame;
@@ -176,7 +221,8 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                     var drawableCrate = new DrawableCrate(
                         type,
                         new Vector2(crateFrame.PositionXs[index], crateFrame.PositionYs[index]),
-                        crateFrame.Groundeds[index]
+                        crateFrame.Groundeds[index],
+                        crateFrame.GoingDowns[index]
                     );
 
                     drawableCrates.Add(drawableCrate);

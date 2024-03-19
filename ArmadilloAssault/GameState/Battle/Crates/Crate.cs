@@ -4,7 +4,6 @@ using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace ArmadilloAssault.GameState.Battle.Crates
 {
@@ -17,11 +16,12 @@ namespace ArmadilloAssault.GameState.Battle.Crates
         public readonly PowerUpType? PowerUpType = type == CrateType.Power_Up ? GetRandomPowerUpType() : null;
 
         public Point Size => Grounded ? new Point(96, 96) : new Point(128, 204);
-        public TextureName TextureName => Grounded ? TextureName.crates : TextureName.crates_parachuting;
         public CrateType Type { get; private set; } = type;
-        public List<Rectangle> RelevantCollisionBoxes { get; set; } = [];
+        public Rectangle RelevantCollisionBox { get; set; }
         public override Rectangle GetCollisionBox() => new((int)Position.X + 18, (int)Position.Y + 24, 60, 52);
         public override Vector2 MaxVelocity => new(8f, 2);
+
+        public bool GoingDown { get; set; }
 
         private static WeaponType GetRandomWeaponType()
         {

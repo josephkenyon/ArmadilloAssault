@@ -22,6 +22,7 @@
         cloud_background,
         clouds,
         crates,
+        crates_ballooning,
         crates_parachuting,
         crosshair,
         cursor,

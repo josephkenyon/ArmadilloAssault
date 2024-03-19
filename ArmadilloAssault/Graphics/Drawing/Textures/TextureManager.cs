@@ -36,6 +36,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.clouds, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "clouds")));
             _textures.Add(TextureName.crates, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates")));
             _textures.Add(TextureName.crates_parachuting, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates_parachuting")));
+            _textures.Add(TextureName.crates_ballooning, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates_ballooning")));
             _textures.Add(TextureName.smoke, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "smoke")));
 
             _textures.Add(TextureName.pistol, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "pistol")));

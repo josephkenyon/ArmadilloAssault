@@ -92,7 +92,7 @@ namespace ArmadilloAssault.GameState.Battle
             }
 
             BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);
-            CrateManager = new(Scene.CollisionBoxes);
+            CrateManager = new(Scene.CollisionBoxes, Scene.Size);
 
             EffectManager = new();
 

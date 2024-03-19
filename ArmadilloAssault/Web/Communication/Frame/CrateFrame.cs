@@ -9,5 +9,6 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<float> PositionXs { get; set; } = [];
         public List<float> PositionYs { get; set; } = [];
         public List<bool> Groundeds { get; set; } = [];
+        public List<bool> GoingDowns { get; set; } = [];
     }
 }
