@@ -20,22 +20,37 @@ namespace ArmadilloAssault.Sound
         private static Dictionary<WeaponType, SoundEffect> _weaponSounds;
         private static Dictionary<AvatarType, Dictionary<AvatarSound, SoundEffect>> _avatarSounds;
 
-        private static readonly float SoundScaler = 0.16f;
+        private static float SoundScaler => SoundEffectsEnabled ? 0.16f : 0f;
 
         private static SoundFrame _soundFrame;
+
+        public static bool MusicEnabled { get; private set; } = true;
+        public static bool SoundEffectsEnabled { get; private set; } = true;
 
         private static SoundEffectInstance _reloadInstance;
         private static SoundEffectInstance _reloadEndInstance;
 
         public static void LoadContent(ContentManager contentManager)
         {
-            MediaPlayer.Volume = SoundScaler * 0.5f;
+            MediaPlayer.Volume = SoundScaler * 0.4f;
 
             LoadMusicSongs(contentManager);
             LoadMenuSounds(contentManager);
             LoadBattleSounds(contentManager);
             LoadWeaponSounds(contentManager);
             LoadAvatarSounds(contentManager);
+        }
+
+        public static void ToggleMusic()
+        {
+            MusicEnabled = !MusicEnabled;
+            
+            MediaPlayer.Volume = SoundScaler * (MusicEnabled ? 0.5f : 0f);
+        }
+
+        public static void ToggleSoundEffects()
+        {
+            SoundEffectsEnabled = !SoundEffectsEnabled;
         }
 
         private static void LoadMusicSongs(ContentManager contentManager)
@@ -137,8 +152,11 @@ namespace ArmadilloAssault.Sound
 
         public static void PlayMusic(MusicSong musicSong)
         {
-            MediaPlayer.Play(_musicSongs[musicSong]);
-            MediaPlayer.IsRepeating = true;
+            if (MusicEnabled)
+            {
+                MediaPlayer.Play(_musicSongs[musicSong]);
+                MediaPlayer.IsRepeating = true;
+            }
         }
 
         public static void PlayMenuSound(MenuSound menuSound)
@@ -192,37 +210,40 @@ namespace ArmadilloAssault.Sound
                     CancelReloadInstances();
                 }
 
-                foreach (var battleSound in soundFrame.BattleSounds)
+                if (SoundEffectsEnabled)
                 {
-                    if (battleSound == BattleSound.reload)
+                    foreach (var battleSound in soundFrame.BattleSounds)
                     {
-                        _reloadInstance = _battleSounds[battleSound].CreateInstance();
-                        _reloadInstance.Volume = SoundScaler;
-                        _reloadInstance.Play();
+                        if (battleSound == BattleSound.reload)
+                        {
+                            _reloadInstance = _battleSounds[battleSound].CreateInstance();
+                            _reloadInstance.Volume = SoundScaler;
+                            _reloadInstance.Play();
+                        }
+                        else if (battleSound == BattleSound.reload_end)
+                        {
+                            _reloadEndInstance = _battleSounds[battleSound].CreateInstance();
+                            _reloadEndInstance.Volume = SoundScaler;
+                            _reloadEndInstance.Play();
+
+                            CancelReloadInstance();
+                        }
+                        else
+                        {
+                            _battleSounds[battleSound].Play(SoundScaler, 0f, 0f);
+                        }
                     }
-                    else if (battleSound == BattleSound.reload_end)
+
+                    foreach (var weaponSound in soundFrame.WeaponSounds.Distinct())
                     {
-                        _reloadEndInstance = _battleSounds[battleSound].CreateInstance();
-                        _reloadEndInstance.Volume = SoundScaler;
-                        _reloadEndInstance.Play();
-
-                        CancelReloadInstance();
+                        _weaponSounds[weaponSound].Play(0.5f * SoundScaler, 0f, 0f);
                     }
-                    else
+
+                    foreach (var avatarSound in soundFrame.AvatarSounds.Distinct())
                     {
-                        _battleSounds[battleSound].Play(SoundScaler, 0f, 0f);
+                        var scaleFactor = (avatarSound.Key == AvatarType.Claus || (avatarSound.Key == AvatarType.Angie && avatarSound.Value == AvatarSound.Ready)) ? 1f : 0.5f;
+                        _avatarSounds[avatarSound.Key][avatarSound.Value].Play(scaleFactor * SoundScaler, 0f, 0f);
                     }
-                }
-
-                foreach (var weaponSound in soundFrame.WeaponSounds.Distinct())
-                {
-                    _weaponSounds[weaponSound].Play(0.5f * SoundScaler, 0f, 0f);
-                }
-
-                foreach (var avatarSound in soundFrame.AvatarSounds.Distinct())
-                {
-                    var scaleFactor = (avatarSound.Key == AvatarType.Claus || (avatarSound.Key == AvatarType.Angie && avatarSound.Value == AvatarSound.Ready)) ? 1f : 0.5f;
-                    _avatarSounds[avatarSound.Key][avatarSound.Value].Play(scaleFactor * SoundScaler, 0f, 0f);
                 }
             }
         }

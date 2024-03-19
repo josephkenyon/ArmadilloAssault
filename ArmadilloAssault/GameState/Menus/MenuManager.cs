@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ArmadilloAssault.GameState.Menus
 {
@@ -165,6 +164,12 @@ namespace ArmadilloAssault.GameState.Menus
                     break;
                 case MenuAction.toggle_fullscreen:
                     GraphicsManager.ToggleFullscreen();
+                    break;
+                case MenuAction.toggle_music:
+                    SoundManager.ToggleMusic();
+                    break;
+                case MenuAction.toggle_sound_effects:
+                    SoundManager.ToggleSoundEffects();
                     break;
                 case MenuAction.next_level:
                     _ = NextLevel();
@@ -461,6 +466,8 @@ namespace ArmadilloAssault.GameState.Menus
             return menuKey switch
             {
                 MenuKey.fullscreen_toggle_text => $"Fullscreen: {(GraphicsManager.IsFullscreen ? "Off" : "On")}",
+                MenuKey.music_toggle_text => $"Music: {(SoundManager.MusicEnabled ? "Off" : "On")}",
+                MenuKey.sound_effects_toggle_text => $"Sound FX: {(SoundManager.SoundEffectsEnabled ? "Off" : "On")}",
                 MenuKey.game_mode => LobbyFrame != null ? LobbyFrame.ModeName : "",
                 MenuKey.level_name => LobbyFrame != null ? GetFormattedLevelName(LobbyFrame.SelectedLevel) : null,
                 _ => null

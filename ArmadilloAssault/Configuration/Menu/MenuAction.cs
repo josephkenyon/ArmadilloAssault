@@ -13,6 +13,8 @@
         open_tutorial,
         open_editor,
         toggle_fullscreen,
+        toggle_music,
+        toggle_sound_effects,
         select_avatar,
         avatar_select,
         level_select,
