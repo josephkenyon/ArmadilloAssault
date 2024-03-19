@@ -12,6 +12,7 @@ namespace ArmadilloAssault.Controls
             new(Keys.D, Control.Right),
             new(Keys.W, Control.Up),
             new(Keys.S, Control.Down),
+            new(Keys.LeftControl, Control.Crouch),
             new(Keys.Tab, Control.Cycle_Weapon),
             new(Keys.D1, Control.Pistol),
             new(Keys.D2, Control.Assault),

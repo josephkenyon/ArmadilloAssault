@@ -1,13 +1,9 @@
-﻿using ArmadilloAssault.GameState;
-using ArmadilloAssault.GameState.Battle;
-using ArmadilloAssault.GameState.Battle.Camera;
-using ArmadilloAssault.Graphics;
+﻿using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace ArmadilloAssault.Controls
 {

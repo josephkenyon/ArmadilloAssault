@@ -305,9 +305,23 @@ namespace ArmadilloAssault.GameState.Battle.Input
                 SoundManager.QueueAvatarSound(avatar.Type, AvatarSound.Jump);
             }
 
-            if (ControlsManager.IsControlDownStart(playerIndex, Control.Down))
+            if (ControlsManager.IsControlDownStart(playerIndex, Control.Crouch))
             {
-                if (avatar.Grounded )
+                if (avatar.IsSpinning)
+                {
+                    if (avatar.Grounded)
+                    {
+                        avatar.BufferAnimation(Animation.Resting);
+                    }
+                }
+                else
+                {
+                    avatar.BufferAnimation(Animation.Rolling);
+                }
+            }
+            else if (ControlsManager.IsControlDownStart(playerIndex, Control.Down))
+            {
+                if (avatar.Grounded)
                 {
                     avatar.DropThrough = true;
                 }

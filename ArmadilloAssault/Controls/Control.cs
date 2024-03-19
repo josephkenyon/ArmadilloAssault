@@ -6,6 +6,7 @@
         Right,
         Up,
         Down,
+        Crouch,
         Jump,
         Toggle_Scope,
         Fire_Primary,
