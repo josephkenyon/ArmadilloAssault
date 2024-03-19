@@ -59,7 +59,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                             Type = avatarFrame.Types[index],
                             WeaponTexture = avatarFrame.WeaponTextures[index],
                             Color = avatarFrame.Colors[index].ToColor(),
-                            TeamColor = avatarFrame.ShowTeamColors[index] ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
+                            TeamColor = avatarFrame.ShowTeamColors[index] || true ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
                             Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], playerTeamIndex, avatarTeamIndex)
                         };
 
@@ -140,7 +140,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             {
                 X = (animation.X + avatar.AnimationFrame) * size.X,
                 Y = animation.Y * size.Y,
-                Width = avatar.Spinning ? (size.X - 2) : size.X,
+                Width = avatar.Spinning ? (size.X - 3) : size.X,
                 Height = size.Y
             };
         }
@@ -159,7 +159,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                 return new(
                     (int)(avatar.Position.X + SpriteOffset + (avatar.Spinning ? size.X / 2 : 0)) - CameraManager.Offset.X,
-                    (int)avatar.Position.Y + (white && avatar.Dead ? 2 : 0) + (avatar.Spinning ? size.Y / 2 : 0) - CameraManager.Offset.Y,
+                    (int)avatar.Position.Y + (white && avatar.Dead ? 3 : 0) + (avatar.Spinning ? size.Y / 2 : 0) - CameraManager.Offset.Y,
                     size.X,
                     size.Y
                 );
@@ -195,7 +195,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                 return new(
                     (int)(avatar.Position.X + SpriteOffset) - CameraManager.Offset.X,
-                    (int)avatar.Position.Y + (white ? 2 : 0) - CameraManager.Offset.Y,
+                    (int)avatar.Position.Y + (white ? 3 : 0) - CameraManager.Offset.Y,
                     size.X,
                     size.Y
                 );
@@ -344,7 +344,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             {
                 var size = GetSize(avatar);
 
-                return new(spriteLocation.X * size.X + 2, spriteLocation.Y * size.Y, size.X - 4, size.Y);
+                return new(spriteLocation.X * size.X + 3, spriteLocation.Y * size.Y, size.X - 6, size.Y);
             }
         }
     }
