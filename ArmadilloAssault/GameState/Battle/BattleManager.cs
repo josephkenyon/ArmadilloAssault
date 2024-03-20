@@ -23,6 +23,11 @@ namespace ArmadilloAssault.GameState.Battle
         private static Battle Battle { get; set; }
         public static BattleFrame BattleFrame => Battle.Frame;
 
+        public static int PlayerIndex { get; private set; }
+        public static int FocusPlayerIndex { get; private set; }
+
+        public static bool AmAlive => Battle.IsAlive(PlayerIndex);
+
         public static bool Paused { get; private set; }
         public static bool GameOver => Battle != null && Battle.GameOver;
         public static bool ShowCursor => Paused || (Battle != null && Battle.GameOver);
@@ -31,18 +36,29 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static void Initialize(string data, int playerIndex)
         {
+            PlayerIndex = playerIndex;
+            FocusPlayerIndex = playerIndex;
+
             Paused = false;
-            Battle = new(data, playerIndex);
+            Battle = new(data);
         }
 
         public static void Initialize(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Dictionary<int, AvatarProp> avatarProps, ModeType mode, string data)
         {
+            PlayerIndex = 0;
+            FocusPlayerIndex = 0;
+
             Paused = false;
             Battle = new(avatars, playerTeamRelations, avatarProps, mode, data);
         }
 
         public static void Update()
         {
+            if (FocusPlayerIndex != PlayerIndex && AmAlive)
+            {
+                FocusPlayerIndex = PlayerIndex;
+            }
+
             if (ControlsManager.IsControlDownStart(0, Control.Start) && !Battle.GameOver)
             {
                 OnPause();
@@ -50,6 +66,10 @@ namespace ArmadilloAssault.GameState.Battle
             else if (ControlsManager.IsControlDownStart(0, Control.Toggle_Scope))
             {
                 CameraManager.ToggleScoped();
+            }
+            else if (ControlsManager.IsControlDownStart(0, Control.Cycle_Weapon) && !AmAlive)
+            {
+                FocusPlayerIndex = Battle.GetNextPlayerIndex(FocusPlayerIndex);
             }
 
             if ((Paused || Battle.GameOver) && Menu != null)

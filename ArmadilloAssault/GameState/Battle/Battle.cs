@@ -29,6 +29,7 @@ using ArmadilloAssault.GameState.Battle.PowerUps;
 using Microsoft.Xna.Framework.Input;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
+using System;
 
 namespace ArmadilloAssault.GameState.Battle
 {
@@ -50,14 +51,10 @@ namespace ArmadilloAssault.GameState.Battle
         public bool Paused { get; set; }
         public bool GameOver { get; set; }
 
-        public readonly int PlayerIndex;
-
         public ModeType? Mode => ModeManager?.Mode;
 
-        public Battle(string data, int playerIndex)
+        public Battle(string data)
         {
-            PlayerIndex = playerIndex;
-
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
 
             Scene = new Scene(sceneConfiguration);
@@ -72,8 +69,6 @@ namespace ArmadilloAssault.GameState.Battle
         }
 
         public Battle(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Dictionary<int, AvatarProp> avatarProps, ModeType mode, string sceneName) {
-            PlayerIndex = 0;
-
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(sceneName);
             Scene = new Scene(sceneConfiguration);
 
@@ -82,10 +77,14 @@ namespace ArmadilloAssault.GameState.Battle
             foreach (var index in avatars.Keys)
             {
                 var crowned = false;
-                var avatarProp = avatarProps[index];
-                if (avatarProp != null)
+
+                if (avatarProps.TryGetValue(index, out AvatarProp value))
                 {
-                    crowned = avatarProp.Crowned;
+                    var avatarProp = value;
+                    if (avatarProp != null)
+                    {
+                        crowned = avatarProp.Crowned;
+                    }
                 }
 
                 var avatar = new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatars[index]), this, crowned);
@@ -146,7 +145,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             if (Avatars.Count > 0)
             {
-                CameraManager.UpdateFocusPoint(Avatars[PlayerIndex].Position);
+                CameraManager.UpdateFocusPoint(Avatars[BattleManager.FocusPlayerIndex].Position);
             }
 
             if (Avatars.Count > 0)
@@ -176,7 +175,7 @@ namespace ArmadilloAssault.GameState.Battle
         {
             if (Frame != null)
             {
-                var index = Frame.AvatarFrame.PlayerIndices.IndexOf(PlayerIndex);
+                var index = Frame.AvatarFrame.PlayerIndices.IndexOf(BattleManager.FocusPlayerIndex);
                 CameraManager.UpdateFocusPoint(Frame.AvatarFrame.Positions[index]);
             }
 
@@ -222,7 +221,7 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 SoundManager.PlaySounds(Frame.SoundFrame);
 
-                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame, PlayerIndex));
+                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame, BattleManager.PlayerIndex));
                 DrawingManager.DrawCollection(CrateManager.GetDrawableCrates(Frame.CrateFrame));
             }
 
@@ -247,7 +246,7 @@ namespace ArmadilloAssault.GameState.Battle
 
                 if (Frame.HudFrame != null)
                 {
-                    DrawingManager.DrawHud(Frame.HudFrame, PlayerIndex);
+                    DrawingManager.DrawHud(Frame.HudFrame, BattleManager.PlayerIndex);
 
                     if (Frame.HudFrame.CapturePointColor != null && Scene.CapturePoint != null && Frame.HudFrame.CapturePointSeconds != null)
                     {
@@ -392,5 +391,48 @@ namespace ArmadilloAssault.GameState.Battle
         }
 
         public Dictionary<int, Avatar> GetAvatars() => Avatars;
+
+        public bool IsAlive(int playerIndex)
+        {
+            if (Avatars.TryGetValue(playerIndex, out Avatar value))
+            {
+                return !value.IsDead;
+            }
+            else if (Frame != null)
+            {
+                var index = Frame.AvatarFrame.PlayerIndices.IndexOf(playerIndex);
+
+                return !Frame.AvatarFrame.Deads[index];
+            }
+
+            return true;
+        }
+
+        public int GetNextPlayerIndex(int focusPlayerIndex)
+        {
+            List<int> playerIds = [];
+            if (Avatars.Count > 0)
+            {
+                playerIds = [.. Avatars.Keys];
+            }
+            else if (Frame != null)
+            {
+                playerIds = [.. Frame.AvatarFrame.PlayerIndices];
+            }
+
+            if (playerIds.Count != 0)
+            {
+                var index = playerIds.IndexOf(focusPlayerIndex);
+                index++;
+                if (index > playerIds.Count - 1)
+                {
+                    index = 0;
+                }
+
+                return playerIds[index];
+            }
+
+            return focusPlayerIndex;
+        }
     }
 }

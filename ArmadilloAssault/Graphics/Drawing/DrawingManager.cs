@@ -293,7 +293,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                 var value = $"{hudFrame.ModeValues[modeValueIndex]}";
                 var stringSize = DrawingHelper.GetFont.MeasureString(value);
 
-                if (ModeType.Deathmatch == hudFrame.ModeType)
+                if (ModeType.Deathmatch == hudFrame.ModeType || ModeType.Regicide == hudFrame.ModeType)
                 {
                     var texture = TextureManager.GetTexture(TextureName.skull);
                     _spriteBatch.Draw(
