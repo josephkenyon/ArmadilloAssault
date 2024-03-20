@@ -28,9 +28,16 @@ namespace ArmadilloAssault.GameState.Editor
             Mouse.SetCursor(MouseCursor.Arrow);
 
             Scene = new Scene(ConfigurationManager.GetSceneConfiguration("editor"));
-            SceneSize = new Point(Scene.Size.X / 48, (int)Math.Round(Scene.Size.Y / 48d, MidpointRounding.AwayFromZero));
+
+            SceneSize = new Point(
+                (int)Math.Round(Scene.Size.X / 48d, MidpointRounding.AwayFromZero),
+                (int)Math.Round(Scene.Size.Y / 48d, MidpointRounding.AwayFromZero)
+            );
+
             DrawingHelper.SceneSize = Scene.Size;
+
             Z = 1;
+
             SelectedTextureName = Scene.TilesetTexture;
             SpriteSelectionIndex = new Point(0, 0);
 

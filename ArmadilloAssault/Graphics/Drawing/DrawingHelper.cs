@@ -34,13 +34,6 @@ namespace ArmadilloAssault.Graphics.Drawing
         }
 
         public static Point SceneSize { get; set; }
-        private static int SolveLinearFunction(double x)
-        {
-            double slope = -1.0 / 96.0; // Slope
-            double intercept = 60.0; // Y-intercept
-            double result = slope * x + intercept;
-            return (int)Math.Round(result, MidpointRounding.AwayFromZero);
-        }
 
         public static Color GetTeamColor(int index)
         {
@@ -74,7 +67,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         {
             if (GameStateManager.State == State.Editor)
             {
-                return SolveLinearFunction(SceneSize.X);
+                return 1536 * 48 / SceneSize.X;
             }
             else if (GameStateManager.State == State.Menu && MenuManager.LobbyFrame != null)
             {

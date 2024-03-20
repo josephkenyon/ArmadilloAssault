@@ -762,6 +762,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Tilesets/floating_island_tileset.png
 
+#begin Graphics/Tilesets/gusty_gorge_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Tilesets/gusty_gorge_tileset.png
+
 #begin Graphics/Tilesets/haunted_house_tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -785,18 +797,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Tilesets/snow_tileset.png
-
-#begin Graphics/Tilesets/test_tileset.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Tilesets/test_tileset.png
 
 #begin Graphics/Tilesets/volcano_tileset.png
 /importer:TextureImporter

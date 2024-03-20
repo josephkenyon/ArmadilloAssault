@@ -58,7 +58,7 @@
         snowball,
         snow_tileset,
         sunken_sands_preview,
-        test_tileset,
+        gusty_gorge_tileset,
         titan,
         titan_select,
         titan_white,
