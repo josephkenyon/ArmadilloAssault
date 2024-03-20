@@ -81,14 +81,15 @@ namespace ArmadilloAssault.GameState.Battle
 
             foreach (var index in avatars.Keys)
             {
-                var avatar = new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatars[index]), this);
-                avatar.SetStartingPosition(Scene.StartingPositions[index]);
-
+                var crowned = false;
                 var avatarProp = avatarProps[index];
                 if (avatarProp != null)
                 {
-                    avatar.Crowned = avatarProp.Crowned;
+                    crowned = avatarProp.Crowned;
                 }
+
+                var avatar = new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatars[index]), this, crowned);
+                avatar.SetStartingPosition(Scene.StartingPositions[index]);
 
                 Avatars.Add(index, avatar);
             }

@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace ArmadilloAssault.Assets
 {
-    public class Avatar(int playerIndex, AvatarJson avatarJson, IAvatarListener avatarListener = null) : PhysicsObject
+    public class Avatar(int playerIndex, AvatarJson avatarJson, IAvatarListener avatarListener = null, bool crowned = false) : PhysicsObject
     {
         // Constants
         public static readonly int spriteWidth = 128;
@@ -29,6 +29,7 @@ namespace ArmadilloAssault.Assets
         public static readonly int BreathingCycleFrameLength = 80;
 
         public int PlayerIndex => playerIndex;
+        public bool Crowned => crowned;
 
         // Collision
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);
@@ -57,12 +58,11 @@ namespace ArmadilloAssault.Assets
 
         public bool IsDead => Health < 1 || Animation == Animation.Dead;
 
-        // Mode specific
-        public bool Crowned { get; set; } = false;
-
         // Health
-        private int health = 100;
-        public int Health { get { return health; } set { health = Math.Clamp(value, 0, 100); } }
+        private readonly int MaxHealth = crowned ? 150 : 100;
+
+        private int health = crowned ? 150 : 100;
+        public int Health { get { return health; } set { health = Math.Clamp(value, 0, MaxHealth); } }
         public int RespawnTimerFrames { get; internal set; } = -1;
 
         // Physics
@@ -558,7 +558,7 @@ namespace ArmadilloAssault.Assets
 
         private void Respawn()
         {
-            Health = 100;
+            Health = MaxHealth;
             Animation = Animation.Resting;
             Position = StartingPosition;
             PowerUpFramesLeft = 3 * 60;
