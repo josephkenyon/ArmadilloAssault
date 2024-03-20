@@ -50,6 +50,9 @@
 #begin Configuration/Scenes/gusty_gorge.json
 /copy:Configuration/Scenes/gusty_gorge.json
 
+#begin Configuration/Scenes/haunted_house.json
+/copy:Configuration/Scenes/haunted_house.json
+
 #begin Configuration/Scenes/molten_mountain.json
 /copy:Configuration/Scenes/molten_mountain.json
 
@@ -543,6 +546,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/floating_fortress_background.png
 
+#begin Graphics/Textures/haunted_house_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/haunted_house_background.png
+
 #begin Graphics/Textures/lava_flow.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -555,42 +570,6 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/lava_flow.png
 
-#begin Graphics/Textures/Level_Preview/gusty_gorge.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Textures/Level_Preview/gusty_gorge.png
-
-#begin Graphics/Textures/Level_Preview/molten_mountain.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Textures/Level_Preview/molten_mountain.png
-
-#begin Graphics/Textures/Level_Preview/sunken_sands.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Textures/Level_Preview/sunken_sands.png
-
 #begin Graphics/Textures/logo.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -602,6 +581,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/logo.png
+
+#begin Graphics/Textures/moon_sky_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/moon_sky_background.png
 
 #begin Graphics/Textures/mountain_background.png
 /importer:TextureImporter
@@ -770,6 +761,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Tilesets/floating_island_tileset.png
+
+#begin Graphics/Tilesets/haunted_house_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Tilesets/haunted_house_tileset.png
 
 #begin Graphics/Tilesets/snow_tileset.png
 /importer:TextureImporter

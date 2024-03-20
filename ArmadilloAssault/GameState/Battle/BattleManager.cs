@@ -67,10 +67,6 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 CameraManager.ToggleScoped();
             }
-            else if (ControlsManager.IsControlDownStart(0, Control.Cycle_Weapon) && !AmAlive)
-            {
-                FocusPlayerIndex = Battle.GetNextPlayerIndex(FocusPlayerIndex);
-            }
 
             if ((Paused || Battle.GameOver) && Menu != null)
             {
@@ -90,6 +86,11 @@ namespace ArmadilloAssault.GameState.Battle
 
             if (!Battle.Paused)
             {
+                if ((ControlsManager.IsControlDownStart(0, Control.Cycle_Weapon) || ControlsManager.IsControlDownStart(0, Control.Confirm)) && !AmAlive)
+                {
+                    FocusPlayerIndex = Battle.GetNextPlayerIndex(FocusPlayerIndex);
+                }
+
                 Battle?.Update();
             }
         }

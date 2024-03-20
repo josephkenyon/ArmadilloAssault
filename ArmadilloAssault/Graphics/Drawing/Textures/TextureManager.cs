@@ -50,6 +50,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.floating_fortress, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "floating_fortress_background")));
             _textures.Add(TextureName.cloud_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "cloud_background")));
             _textures.Add(TextureName.snow_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "snow_background")));
+            _textures.Add(TextureName.moon_sky_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "moon_sky_background")));
+            _textures.Add(TextureName.haunted_house_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "haunted_house_background")));
 
             _textures.Add(TextureName.gusty_gorge_preview, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Level_Preview", "gusty_gorge")));
             _textures.Add(TextureName.sunken_sands_preview, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Level_Preview", "sunken_sands")));
@@ -70,6 +72,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.volcano_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "volcano_tileset")));
             _textures.Add(TextureName.floating_island_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "floating_island_tileset")));
             _textures.Add(TextureName.snow_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "snow_tileset")));
+            _textures.Add(TextureName.haunted_house_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "haunted_house_tileset")));
 
             _textures.Add(TextureName.muzzle_flash_small, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_small")));
             _textures.Add(TextureName.muzzle_flash_large, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_large")));

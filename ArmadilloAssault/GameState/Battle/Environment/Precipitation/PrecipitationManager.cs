@@ -53,6 +53,12 @@ namespace ArmadilloAssault.GameState.Battle.Environment.Precipitation
                 );
             }
 
+            if (PrecipitationType == PrecipitationType.Rain && SceneSize.Y > 1080)
+            {
+                CreateNewParticle(false);
+                CreateNewParticle(true);
+            }
+
             CreateNewParticle(false);
             CreateNewParticle(true);
         }
