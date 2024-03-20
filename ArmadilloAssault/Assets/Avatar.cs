@@ -29,7 +29,7 @@ namespace ArmadilloAssault.Assets
         public static readonly int BreathingCycleFrameLength = 80;
 
         public int PlayerIndex => playerIndex;
-        public bool Crowned => crowned;
+        public bool Crowned { get; set; } = crowned;
 
         // Collision
         private readonly Rectangle CollisionBox = ConfigurationHelper.GetRectangle(avatarJson.CollisionBox);
