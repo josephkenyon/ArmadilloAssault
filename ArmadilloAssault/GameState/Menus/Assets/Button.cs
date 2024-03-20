@@ -15,7 +15,7 @@ namespace ArmadilloAssault.GameState.Menus.Assets
         public bool Unselectable { get; set; } = json.Unselectable;
         public bool Selected { get; set; }
         public List<MenuCondition> Conditions { get; set; } = json.Conditions;
-        public MenuCondition EnabledCondition { get; set; } = json.EnabledCondition;
+        public List<MenuCondition> EnabledConditions { get; set; } = json.EnabledConditions;
         public MenuKey TextKey { get; set; } = json.TextKey;
         public MenuKey TextureKey { get; set; } = json.TextureKey;
         public bool Visible { get; set; }

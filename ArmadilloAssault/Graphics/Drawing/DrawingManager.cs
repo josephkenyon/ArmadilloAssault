@@ -124,6 +124,18 @@ namespace ArmadilloAssault.Graphics.Drawing
                     color: DrawingHelper.GetTeamColor(teamId)
                 );
 
+                index++;
+            }
+        }
+
+        public static void DrawLobbyPlayerNames(IEnumerable<Rectangle> lobbyPlayerRectangles, IEnumerable<int> lobbyTeamIds, IEnumerable<int> lobbyPlayerIds)
+        {
+            var index = 0;
+            foreach (var rectangle in lobbyPlayerRectangles)
+            {
+                var playerId = lobbyPlayerIds.ElementAt(index);
+                var teamId = lobbyTeamIds.ElementAt(index);
+
                 var text = $"P{playerId + 1}";
                 var font = DrawingHelper.GetFont;
                 var size = font.MeasureString(text);
@@ -133,6 +145,24 @@ namespace ArmadilloAssault.Graphics.Drawing
                 _spriteBatch.DrawString(
                     font, text, textPosition.ToVector2(), Color.White
                 );
+
+                index++;
+            }
+        }
+
+        public static void DrawLobbyPlayerCrowns(IEnumerable<Rectangle> lobbyPlayerRectangles)
+        {
+            var index = 0;
+            foreach (var rectangle in lobbyPlayerRectangles)
+            {
+                var texture = TextureManager.GetTexture(TextureName.crown);
+                var crownPosition = new Vector2(rectangle.Center.X - (texture.Width / 2), rectangle.Center.Y - (texture.Height / 2));
+
+                _spriteBatch.Draw(
+                     texture: texture,
+                     position: crownPosition,
+                     color: Color.White
+                 );
 
                 index++;
             }

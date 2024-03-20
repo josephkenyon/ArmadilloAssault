@@ -1,13 +1,16 @@
 ﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ArmadilloAssault.GameState.Battle.Mode
 {
     public class ModeManager
     {
+        public readonly IModeManagerListener ModeManagerListener;
         public readonly ModeType Mode;
 
         public Dictionary<int, int> PlayerTeamRelations { get; private set; } = [];
@@ -15,11 +18,11 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         private Dictionary<int, TeamBattleStat> TeamBattleStats { get; set; } = [];
         private Dictionary<int, bool> Disconnecteds { get; set; } = [];
 
+        public Dictionary<int, int> CrownedPlayerIndices { get; set; } = [];
+
         public string VictoryMessage { get; private set; }
 
-        private bool GameOverOverride { get; set; }
-
-        public bool GameOver => GameOverOverride || IsGameOver();
+        public bool GameOver => IsGameOver();
 
         public bool TeamsEnabled => TeamBattleStats.Count != IndividualBattleStats.Count;
 
@@ -30,6 +33,33 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         private List<int> ContestingTeamIndicies { get; set; } = [];
 
         public int? CaputurePointSeconds => ContestingTeamIndicies.Count == 1 ? TeamBattleStats[ContestingTeamIndicies.First()].CapturePointFrames / 60 : null;
+
+        public ModeManager(IModeManagerListener modeManagerListener, IEnumerable<KeyValuePair<int, int>> playerIndices, ModeType mode)
+        {
+            ModeManagerListener = modeManagerListener;
+
+            foreach (var playerIndexPair in playerIndices)
+            {
+                PlayerTeamRelations.Add(playerIndexPair.Key, playerIndexPair.Value);
+                TeamBattleStats.TryAdd(playerIndexPair.Value, new TeamBattleStat());
+                IndividualBattleStats.Add(playerIndexPair.Key, new IndividualBattleStat());
+            }
+
+            Mode = mode;
+
+            if (mode == ModeType.Regicide)
+            {
+                foreach (var avatar in modeManagerListener.GetAvatars().Values)
+                {
+                    var teamIndex = PlayerTeamRelations[avatar.PlayerIndex];
+
+                    if (avatar.Crowned)
+                    {
+                        CrownedPlayerIndices.Add(teamIndex, avatar.PlayerIndex);
+                    }
+                }
+            }
+        }
 
         public void UpdateKingOfTheHill(Rectangle capturePointBox, ICollection<Avatar> avatars)
         {
@@ -64,18 +94,6 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             });
 
             return returnColor;
-        }
-
-        public ModeManager(IEnumerable<KeyValuePair<int, int>> playerIndices, ModeType mode)
-        {
-            foreach (var playerIndexPair in playerIndices)
-            {
-                PlayerTeamRelations.Add(playerIndexPair.Key, playerIndexPair.Value);
-                TeamBattleStats.TryAdd(playerIndexPair.Value, new TeamBattleStat());
-                IndividualBattleStats.Add(playerIndexPair.Key, new IndividualBattleStat());
-            }
-
-            Mode = mode;
         }
 
         public void AvatarHit(int hitIndex, int firedIndex, int damage)
@@ -126,6 +144,17 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                     return true;
                 }
             }
+            else if (Mode == ModeType.Regicide)
+            {
+                var avatars = ModeManagerListener.GetAvatars();
+                var aliveIndices = CrownedPlayerIndices.Where(playerIndex => !avatars[playerIndex.Value].IsDead);
+
+                if (aliveIndices.Count() == 1)
+                {
+                    VictoryMessage = $"Team  {GetTeamString(aliveIndices.First().Key)}  Wins!";
+                    return true;
+                }
+            }
 
             return false;
         }
@@ -143,11 +172,6 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             };
         }
 
-        public void OverrideGameOver()
-        {
-            GameOverOverride = true;
-        }
-
         public List<int> GetModeValues()
         {
             var battleStats = TeamBattleStats.OrderBy(stat => stat.Key);
@@ -160,6 +184,31 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             {
                 return battleStats.Select(stat => stat.Value.Kills).ToList();
             }
+        }
+
+        public bool GetPlayerShouldRespawn(int playerIndex)
+        {
+            if (GameOver)
+            {
+                return false;
+            }
+
+            if (Mode == ModeType.Regicide)
+            {
+                var teamIndex = GetTeamIndex(playerIndex);
+
+                var crownedPlayerIndex = CrownedPlayerIndices[teamIndex];
+                if (playerIndex == crownedPlayerIndex)
+                {
+                    return false;
+                }
+                else
+                {
+                    return !ModeManagerListener.GetAvatars()[crownedPlayerIndex].IsDead;
+                }
+            }
+
+            return true;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ArmadilloAssault.Configuration.Menus
         public PointJson Location { get; set; }
         public PointJson Size { get; set; }
 
-        public MenuCondition EnabledCondition { get; set; }
+        public List<MenuCondition> EnabledConditions { get; set; } = [];
 
         public List<MenuCondition> Conditions { get; set; } = [];
         public List<MenuAction> Actions { get; set; } = [];

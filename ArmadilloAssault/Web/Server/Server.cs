@@ -135,6 +135,10 @@ namespace ArmadilloAssault.Web.Server
                 {
                     _ = MenuManager.IncrementTeamIndex(clientMessage.PlayerIndex);
                 }
+                else if (clientMessage.Type == ClientMessageType.CrownPlayer)
+                {
+                    _ = MenuManager.CrownPlayer(clientMessage.PlayerIndex);
+                }
                 else if (clientMessage.Type == ClientMessageType.NextLevel)
                 {
                     _ = MenuManager.NextLevel();

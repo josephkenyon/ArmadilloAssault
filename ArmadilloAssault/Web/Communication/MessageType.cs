@@ -23,6 +23,7 @@
         Pause,
         PreviousMode,
         NextMode,
-        TeamIndexIncrement
+        TeamIndexIncrement,
+        CrownPlayer
     }
 }

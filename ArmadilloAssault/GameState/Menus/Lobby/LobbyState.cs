@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace ArmadilloAssault.GameState.Menus.Lobby
 {
@@ -56,11 +55,52 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
             SoundManager.QueueAvatarSound(avatarType, AvatarSound.Ready);
 
-          Avatars[index].SetX(rectangle.X);
+            Avatars[index].SetX(rectangle.X);
             Avatars[index].SetY(rectangle.Y + 16);
         }
 
-        public static Dictionary<int, Rectangle> GetPlayerBackgroundRectangles()
+        public Dictionary<int, Rectangle> GetPlayerBackgroundRectangles()
+        {
+            var offset = ModeSelect ? 32 : 0;
+
+            var rectangleDictionary = new Dictionary<int, Rectangle>();
+
+            foreach (var playerIndex in ServerManager.PlayerIndices)
+            {
+                var middle = 1920 / 2;
+                var x = middle;
+                if (playerIndex == 0)
+                {
+                    x -= 432 + 160;
+                }
+                if (playerIndex == 1)
+                {
+                    x -= 288 + 96;
+                }
+                else if (playerIndex == 2)
+                {
+                    x -= 144 + 32;
+                }
+                else if (playerIndex == 3)
+                {
+                    x += 32;
+                }
+                else if (playerIndex == 4)
+                {
+                    x += 144 + 96;
+                }
+                else if (playerIndex == 5)
+                {
+                    x += 288 + 160;
+                }
+
+                rectangleDictionary.Add(playerIndex, new Rectangle(x, 448 + offset, 144, 256));
+            }
+
+            return rectangleDictionary;
+        }
+
+        public Dictionary<int, Rectangle> GetPlayerModeButtonRectangles()
         {
             var rectangleDictionary = new Dictionary<int, Rectangle>();
 
@@ -93,7 +133,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                     x += 288 + 160;
                 }
 
-                rectangleDictionary.Add(playerIndex, new Rectangle(x, 448, 144, 256));
+                rectangleDictionary.Add(playerIndex, new Rectangle(x, 448 + 32 + 256 + 16, 144, 64));
             }
 
             return rectangleDictionary;
@@ -103,8 +143,9 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         {
             var frame = new LobbyFrame
             {
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars, PlayerTeamRelations),
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars, PlayerTeamRelations, ModeSelect ? 32 : 0, ModeSelect && ModeType.Regicide == SelectedMode),
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
+                PlayerModeButtons = GetPlayerModeButtonRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerBackgroundIds = [.. PlayerTeamRelations.Keys],
                 PlayerTeamIds = [.. PlayerTeamRelations.Values],
                 LevelSelect = LevelSelect,
@@ -244,7 +285,39 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 }
             }
 
+            var avatar = Avatars[playerIndex];
+            if (avatar != null)
+            {
+                avatar.Crowned = false;
+            }
+
             PlayerTeamRelations[playerIndex] = newTeamIndex;
+        }
+
+        public void CrownPlayer(int crownedPlayerIndex)
+        {
+            var teamIndex = PlayerTeamRelations[crownedPlayerIndex];
+            var playerIndices = PlayerTeamRelations.Where(relation => relation.Value == teamIndex).Select(relation => relation.Key).ToList();
+
+            foreach (var playerIndex in playerIndices)
+            {
+                if (Avatars[playerIndex] != null)
+                {
+                    Avatars[playerIndex].Crowned = playerIndex == crownedPlayerIndex;
+                }
+            }
+        }
+
+        public bool ModeConditionsComplete()
+        {
+            if (ModeType.Regicide == SelectedMode)
+            {
+                var teamsCount = PlayerTeamRelations.Select(relation => relation.Value).Distinct().Count();
+
+                return Avatars.Where(avatar => avatar.Value.Crowned).Count() == teamsCount;
+            }
+
+            return true;
         }
     }
 }

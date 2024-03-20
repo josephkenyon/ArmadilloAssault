@@ -184,6 +184,17 @@ namespace ArmadilloAssault.Web.Client
             await Client.MessageServer(message);
         }
 
+        public static async Task BroadcastCrownPlayer(int playerIndex)
+        {
+            var message = new ClientMessage
+            {
+                Type = ClientMessageType.CrownPlayer,
+                PlayerIndex = playerIndex
+            };
+
+            await Client.MessageServer(message);
+        }
+
         public static bool IsActive => Client != null && Client.Connected;
     }
 }

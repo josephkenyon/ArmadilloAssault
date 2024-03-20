@@ -25,6 +25,7 @@
         crates_ballooning,
         crates_parachuting,
         crosshair,
+        crown,
         cursor,
         desert_background,
         desert_tileset,

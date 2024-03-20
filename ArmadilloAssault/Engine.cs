@@ -30,7 +30,6 @@ namespace ArmadilloAssault
             IsMouseVisible = true;
 
             Window.AllowUserResizing = false;
-            Window.IsBorderless = true;
         }
 
         protected override void Initialize()

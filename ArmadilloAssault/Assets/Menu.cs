@@ -61,7 +61,7 @@ namespace ArmadilloAssault.Assets
             {
                 var rectangle = button.GetRectangle();
                 button.Visible = MenuManager.ConditionsFulfilled(button.Conditions);
-                button.Enabled = MenuManager.ConditionFulfilled(button.EnabledCondition);
+                button.Enabled = MenuManager.ConditionsFulfilled(button.EnabledConditions);
 
                 if (button.Visible && button.TextKey != MenuKey.nothing)
                 {

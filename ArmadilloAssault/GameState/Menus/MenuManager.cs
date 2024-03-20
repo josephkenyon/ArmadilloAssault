@@ -82,6 +82,17 @@ namespace ArmadilloAssault.GameState.Menus
 
                         index++;
                     }
+
+                    index = 0;
+                    foreach (var rec in LobbyFrame.PlayerModeButtons.Select(background => background.ToRectangle()))
+                    {
+                        if (rec.Contains(ControlsManager.GetMousePosition(0)))
+                        {
+                            InvokeAction(MenuAction.crown_player, index.ToString());
+                        }
+
+                        index++;
+                    }
                 }
             }
             else if (ControlsManager.IsControlDownStart(0, Control.Start))
@@ -159,6 +170,9 @@ namespace ArmadilloAssault.GameState.Menus
                 case MenuAction.increment_team_index:
                     _ = IncrementTeamIndex(int.Parse(data));
                     break;
+                case MenuAction.crown_player:
+                    _ = CrownPlayer(int.Parse(data));
+                    break;
                 case MenuAction.mode_select:
                     LobbyState?.SetModeSelect(true);
                     LobbyState?.SetLevelSelect(false);
@@ -216,7 +230,7 @@ namespace ArmadilloAssault.GameState.Menus
                 { 0, 0 }
             };
 
-            BattleManager.Initialize(avatarTypeDictionary, playerTeamRelations, ModeType.Tutorial, "gusty_gorge");
+            BattleManager.Initialize(avatarTypeDictionary, playerTeamRelations, [], ModeType.Tutorial, "gusty_gorge");
             GameStateManager.PushNewState(State.Battle);
         }
 
@@ -229,6 +243,18 @@ namespace ArmadilloAssault.GameState.Menus
             else if (ClientManager.IsActive)
             {
                 await ClientManager.BroadcastTeamIndexIncrement(playerIndex);
+            }
+        }
+
+        public static async Task CrownPlayer(int playerIndex)
+        {
+            if (ServerManager.IsServing)
+            {
+                LobbyState?.CrownPlayer(playerIndex);
+            }
+            else if (ClientManager.IsActive)
+            {
+                await ClientManager.BroadcastCrownPlayer(playerIndex);
             }
         }
 
@@ -274,15 +300,38 @@ namespace ArmadilloAssault.GameState.Menus
 
             if (MenuStack.Peek() == "Lobby" && LobbyFrame != null)
             {
-                if (ConditionFulfilled(MenuCondition.avatar_select))
+                if (ConditionFulfilled(MenuCondition.avatar_select) || ConditionFulfilled(MenuCondition.mode_select))
                 {
+                    var playerBackgroundRecs = LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle());
+
                     DrawingManager.DrawLobbyPlayerBackgrounds(
-                        LobbyFrame.PlayerBackgrounds.Select(rec => rec.ToRectangle()),
+                        playerBackgroundRecs,
                         LobbyFrame.PlayerTeamIds,
                         LobbyFrame.PlayerBackgroundIds
                     );
 
+                    DrawingManager.DrawLobbyPlayerNames(
+                      playerBackgroundRecs,
+                      LobbyFrame.PlayerTeamIds,
+                      LobbyFrame.PlayerBackgroundIds
+                    );
+
                     DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
+
+                    if (ConditionFulfilled(MenuCondition.mode_select) && ModeType.Regicide == LobbyFrame.SelectedMode)
+                    {
+                        var recs = LobbyFrame.PlayerModeButtons.Select(rec => rec.ToRectangle());
+
+                        DrawingManager.DrawLobbyPlayerBackgrounds(
+                            recs,
+                            LobbyFrame.PlayerTeamIds,
+                            LobbyFrame.PlayerBackgroundIds
+                        );
+
+                        DrawingManager.DrawLobbyPlayerCrowns(
+                            recs
+                        );
+                    }
                 }
             }
 
@@ -325,7 +374,7 @@ namespace ArmadilloAssault.GameState.Menus
             {
                 var toolTip = ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode.ToString());
 
-                DrawingManager.DrawTooltip(ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode.ToString()), new Point(960, 440));
+                DrawingManager.DrawTooltip(ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode.ToString()), new Point(960, 288));
             }
         }
 
@@ -442,6 +491,7 @@ namespace ArmadilloAssault.GameState.Menus
                 MenuCondition.level_select => LobbyFrame != null && LobbyFrame.LevelSelect,
                 MenuCondition.mode_select => LobbyFrame != null && LobbyFrame.ModeSelect,
                 MenuCondition.selection_complete => LobbyState != null && LobbyState.Avatars.Count == ServerManager.PlayerCount,
+                MenuCondition.mode_conditions_complete => LobbyState != null && LobbyState.ModeConditionsComplete(),
                 _ => true
             };
         }

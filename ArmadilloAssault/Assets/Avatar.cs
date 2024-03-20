@@ -541,9 +541,10 @@ namespace ArmadilloAssault.Assets
                     SoundManager.QueueAvatarSound(avatarJson.Type, AvatarSound.Dead);
                 }
 
+                Animation = Animation.Dead;
+
                 avatarListener?.AvatarKilled(playerIndex, LastHurtBy);
 
-                Animation = Animation.Dead;
                 Acceleration = Vector2.Zero;
                 Recoil = 0f;
                 InfluenceVelocity = 0;

@@ -3,7 +3,9 @@ using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Menus;
 using ArmadilloAssault.Controls;
+using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Camera;
+using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
@@ -25,7 +27,7 @@ namespace ArmadilloAssault.GameState.Battle
         public static bool GameOver => Battle != null && Battle.GameOver;
         public static bool ShowCursor => Paused || (Battle != null && Battle.GameOver);
 
-        public static Mode.ModeType? Mode => Battle?.Mode;
+        public static ModeType? Mode => Battle?.Mode;
 
         public static void Initialize(string data, int playerIndex)
         {
@@ -33,10 +35,10 @@ namespace ArmadilloAssault.GameState.Battle
             Battle = new(data, playerIndex);
         }
 
-        public static void Initialize(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Mode.ModeType mode, string data)
+        public static void Initialize(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Dictionary<int, AvatarProp> avatarProps, ModeType mode, string data)
         {
             Paused = false;
-            Battle = new(avatars, playerTeamRelations, mode, data);
+            Battle = new(avatars, playerTeamRelations, avatarProps, mode, data);
         }
 
         public static void Update()

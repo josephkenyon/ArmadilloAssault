@@ -34,7 +34,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<TextureName> WeaponTextures { get; set; } = [];
         public List<ColorJson> Colors { get; set; } = [];
 
-        public static AvatarFrame CreateFrom(Dictionary<int, Avatar> avatars, Dictionary<int, int> playerTeamRelations)
+        public static AvatarFrame CreateFrom(Dictionary<int, Avatar> avatars, Dictionary<int, int> playerTeamRelations, int yOffset = 0, bool showCrowns = false)
         {
             var showTeamColors = playerTeamRelations.Values.Distinct().Count() != playerTeamRelations.Count;
 
@@ -55,7 +55,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 avatarFrame.BreathingYOffsets.Add(avatar.GetBreathingYOffset());
                 avatarFrame.Deads.Add(avatar.IsDead);
                 avatarFrame.Directions.Add(avatar.Direction);
-                avatarFrame.Positions.Add(avatar.Position);
+                avatarFrame.Positions.Add(new Vector2(avatar.Position.X, avatar.Position.Y + yOffset));
                 avatarFrame.Recoils.Add(avatar.GetRecoil);
                 avatarFrame.Rotations.Add(avatar.Rotation);
                 avatarFrame.Spinnings.Add(avatar.IsSpinning);
@@ -64,7 +64,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 avatarFrame.WhiteTextureNames.Add(avatar.WhiteTextureName);
                 avatarFrame.Types.Add(avatar.Type);
                 avatarFrame.WeaponTextures.Add(avatar.CurrentWeaponConfiguration.TextureName);
-                avatarFrame.HasCrowns.Add(avatar.Crowned);
+                avatarFrame.HasCrowns.Add(avatar.Crowned && showCrowns);
                 avatarFrame.Colors.Add(avatar.GetColor());
             }
 

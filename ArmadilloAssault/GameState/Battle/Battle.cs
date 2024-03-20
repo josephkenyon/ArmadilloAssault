@@ -32,7 +32,7 @@ using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
 
 namespace ArmadilloAssault.GameState.Battle
 {
-    public class Battle : IAvatarListener, IBulletListener, IWeaponListener
+    public class Battle : IModeManagerListener, IAvatarListener, IBulletListener, IWeaponListener
     {
         public Dictionary<int, Avatar> Avatars { get; set; } = [];
 
@@ -71,7 +71,7 @@ namespace ArmadilloAssault.GameState.Battle
             PrecipitationManager = new(Scene.Size, sceneConfiguration.PrecipitationType);
         }
 
-        public Battle(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, ModeType mode, string sceneName) {
+        public Battle(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Dictionary<int, AvatarProp> avatarProps, ModeType mode, string sceneName) {
             PlayerIndex = 0;
 
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(sceneName);
@@ -83,6 +83,13 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 var avatar = new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatars[index]), this);
                 avatar.SetStartingPosition(Scene.StartingPositions[index]);
+
+                var avatarProp = avatarProps[index];
+                if (avatarProp != null)
+                {
+                    avatar.Crowned = avatarProp.Crowned;
+                }
+
                 Avatars.Add(index, avatar);
             }
 
@@ -102,7 +109,7 @@ namespace ArmadilloAssault.GameState.Battle
             FlowManager = new(sceneConfiguration.Flow);
             PrecipitationManager = new(Scene.Size, sceneConfiguration.PrecipitationType);
 
-            ModeManager = new(avatars.Keys.Select(key => new KeyValuePair<int, int>(key, playerTeamRelations[key])), mode);
+            ModeManager = new(this, avatars.Keys.Select(key => new KeyValuePair<int, int>(key, playerTeamRelations[key])), mode);
 
             Frame = CreateFrame();
         }
@@ -281,7 +288,7 @@ namespace ArmadilloAssault.GameState.Battle
             var battleFrame = new BattleFrame
             {
                 GameOverMessage = ModeManager.VictoryMessage,
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars, ModeManager.PlayerTeamRelations),
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars, ModeManager.PlayerTeamRelations, showCrowns: ModeType.Regicide == Mode),
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
                 EffectFrame = EffectManager.GetEffectFrame(),
@@ -338,6 +345,8 @@ namespace ArmadilloAssault.GameState.Battle
 
         public void AvatarKilled(int deadIndex, int? killIndex)
         {
+            if (GameOver) return;
+
             CrateManager.CreateNewCrate(CrateType.Weapon, Avatars[deadIndex].SelectedWeapon.Type, Avatars[deadIndex].Position, true);
 
             ModeManager.AvatarKilled(deadIndex, killIndex);
@@ -346,7 +355,7 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 BattleManager.SetGameOver();
             }
-            else
+            else if (ModeManager.GetPlayerShouldRespawn(deadIndex))
             {
                 SetRespawnTimer(deadIndex, ModeManager.RespawnFrames);
             }
@@ -380,5 +389,7 @@ namespace ArmadilloAssault.GameState.Battle
         {
             return ModeManager.GetTeamIndex(playerIndex);
         }
+
+        public Dictionary<int, Avatar> GetAvatars() => Avatars;
     }
 }

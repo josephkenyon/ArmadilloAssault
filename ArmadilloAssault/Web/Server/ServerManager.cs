@@ -2,6 +2,7 @@
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
+using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Web.Communication.Frame;
@@ -62,12 +63,14 @@ namespace ArmadilloAssault.Web.Server
         public static void StartGame(string data)
         {
             var avatarTypeDictionary = new Dictionary<int, AvatarType>();
+            var avatarProps = new Dictionary<int, AvatarProp>();
 
             foreach (var playerIndex in MenuManager.LobbyState.Avatars.Keys) {
                 avatarTypeDictionary.Add(playerIndex, MenuManager.LobbyState.Avatars[playerIndex].Type);
+                avatarProps.Add(playerIndex, new AvatarProp(MenuManager.LobbyState.Avatars[playerIndex], MenuManager.LobbyState.SelectedMode));
             }
 
-            BattleManager.Initialize(avatarTypeDictionary, MenuManager.LobbyState.PlayerTeamRelations, MenuManager.LobbyState.SelectedMode, data);
+            BattleManager.Initialize(avatarTypeDictionary, MenuManager.LobbyState.PlayerTeamRelations, avatarProps, MenuManager.LobbyState.SelectedMode, data);
             GameStateManager.PushNewState(State.Battle);
 
             Server.MessageIntialization(data);

@@ -25,6 +25,14 @@
     ]
   },
   {
+    "Key": "Regicide",
+    "Texts": [
+      "Crown  a  member  of  each  team  king",
+      "and  give  them  extra  health.  Win  by",
+      "killing  each  enemy  king!"
+    ]
+  },
+  {
     "Key": "movement",
     "Texts": [
       "Move  around  with  w,  a,  s,  d.  and  jump",

@@ -63,6 +63,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.rain, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "rain")));
             _textures.Add(TextureName.snowball, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "snowball")));
             _textures.Add(TextureName.skull, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "skull")));
+            _textures.Add(TextureName.crown, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Crown")));
 
             _textures.Add(TextureName.test_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "test_tileset")));
             _textures.Add(TextureName.desert_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "desert_tileset")));

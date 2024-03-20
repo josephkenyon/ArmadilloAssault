@@ -26,6 +26,7 @@
         prev_mode,
         next_mode,
         mode_select,
-        increment_team_index
+        increment_team_index,
+        crown_player
     }
 }

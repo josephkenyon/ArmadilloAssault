@@ -183,7 +183,7 @@
         "Actions": [ "prev_mode" ],
         "Location": {
           "X": 64,
-          "Y": 350
+          "Y": 230
         }
       },
       {
@@ -205,7 +205,7 @@
         "Actions": [ "next_mode" ],
         "Location": {
           "X": 1472,
-          "Y": 350
+          "Y": 230
         }
       },
       {
@@ -220,7 +220,7 @@
       {
         "Text": "Next",
         "Conditions": [ "hosting", "mode_select" ],
-        "EnabledCondition": "selection_complete",
+        "EnabledConditions": [ "selection_complete", "mode_conditions_complete" ],
         "Actions": [ "level_select" ],
         "Location": {
           "X": 992,
@@ -249,7 +249,7 @@
         },
         "Size": {
           "X": 960,
-          "Y": 540
+          "Y": 256
         }
       },
       {
@@ -303,7 +303,7 @@
       {
         "Text": "Next",
         "Conditions": [ "hosting", "avatar_select" ],
-        "EnabledCondition": "selection_complete",
+        "EnabledConditions": [ "selection_complete" ],
         "Actions": [ "mode_select" ],
         "Location": {
           "X": 992,
@@ -313,7 +313,7 @@
       {
         "Text": "Play",
         "Conditions": [ "hosting", "level_select" ],
-        "EnabledCondition": "selection_complete",
+        "EnabledConditions": [ "selection_complete" ],
         "Actions": [ "start_game" ],
         "Location": {
           "X": 992,

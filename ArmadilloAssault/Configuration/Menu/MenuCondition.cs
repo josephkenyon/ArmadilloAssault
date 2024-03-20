@@ -5,6 +5,7 @@
         nothing,
         hosting,
         selection_complete,
+        mode_conditions_complete,
         avatar_select,
         level_select,
         being_served,
