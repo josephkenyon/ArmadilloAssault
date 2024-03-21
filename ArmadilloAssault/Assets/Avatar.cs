@@ -56,6 +56,8 @@ namespace ArmadilloAssault.Assets
         private int FrameCounter { get; set; }
         public int AnimationFrame { get; private set; }
 
+        public bool FastReload => PowerUpType.Super_Speed == CurrentPowerUp || PowerUpType.Damage_Up == CurrentPowerUp;
+
         public bool IsDead => Health < 1 || Animation == Animation.Dead;
 
         // Health
@@ -349,9 +351,9 @@ namespace ArmadilloAssault.Assets
         {
             if (!Reloading && !SelectedWeapon.HasFullClip() && SelectedWeapon.CanReload())
             {
-                ReloadingFrames = CurrentWeaponConfiguration.ReloadRate;
+                ReloadingFrames = CurrentWeaponConfiguration.ReloadRate / (FastReload ? 2 : 1);
                 Reloading = true;
-                Recoil = (float)(Math.PI / 2);
+                Recoil = (float)(Math.PI / 2f / (FastReload ? 2f : 1f));
                 SwitchingWeapons = false;
                 FramesUntilRecoil = -1;
                 SoundManager.QueueBattleSound(BattleSound.reload);
