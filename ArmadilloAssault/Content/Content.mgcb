@@ -47,6 +47,9 @@
 #begin Configuration/Scenes/floating_fortress.json
 /copy:Configuration/Scenes/floating_fortress.json
 
+#begin Configuration/Scenes/gloomy_glade.json
+/copy:Configuration/Scenes/gloomy_glade.json
+
 #begin Configuration/Scenes/gusty_gorge.json
 /copy:Configuration/Scenes/gusty_gorge.json
 
@@ -545,6 +548,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/Textures/floating_fortress_background.png
+
+#begin Graphics/Textures/gloomy_glade_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Textures/gloomy_glade_background.png
 
 #begin Graphics/Textures/haunted_house_background.png
 /importer:TextureImporter

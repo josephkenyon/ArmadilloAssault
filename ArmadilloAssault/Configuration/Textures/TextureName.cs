@@ -33,6 +33,7 @@
         floating_fortress,
         floating_island_tileset,
         forest_background,
+        gloomy_glade_background,
         gusty_gorge_preview,
         haunted_house_background,
         haunted_house_tileset,

@@ -343,20 +343,24 @@ namespace ArmadilloAssault.GameState.Menus
             if (ConditionFulfilled(MenuCondition.level_select) && LobbyFrame != null)
             {
                 var sceneJson = ConfigurationManager.GetSceneConfiguration(LobbyFrame.SelectedLevel);
-                DrawingManager.DrawTexture(TextureName.white_pixel, new Rectangle(480, 160, 960, 540), color: sceneJson.BackgroundColor != null ? sceneJson.BackgroundColor.ToColor() : Color.CornflowerBlue);
+
+                var backgroundHeight = sceneJson.Size.X == 7680 ? 270 : 540;
+                var backgroundOffset = sceneJson.Size.X == 7680 ? 140 : 0;
+
+                DrawingManager.DrawTexture(TextureName.white_pixel, new Rectangle(480, 160 + backgroundOffset, 960, backgroundHeight), color: sceneJson.BackgroundColor != null ? sceneJson.BackgroundColor.ToColor() : Color.CornflowerBlue);
 
                 if (sceneJson.BackBackgroundTexture != TextureName.nothing)
                 {
-                    DrawingManager.DrawTexture(sceneJson.BackBackgroundTexture, new Rectangle(480, 160, 960, 540), 0.75f);
+                    DrawingManager.DrawTexture(sceneJson.BackBackgroundTexture, new Rectangle(480, 160 + backgroundOffset, 960, backgroundHeight), 0.75f);
                 }
 
-                DrawingManager.DrawTexture(sceneJson.BackgroundTexture, new Rectangle(480, 160, 960, 540), color: Color.White * (sceneJson.BackBackgroundTexture != TextureName.nothing ? 1f : 0.75f));
+                DrawingManager.DrawTexture(sceneJson.BackgroundTexture, new Rectangle(480, 160 + backgroundOffset, 960, backgroundHeight), color: Color.White * (sceneJson.BackBackgroundTexture != TextureName.nothing ? 1f : 0.75f));
 
                 if (LobbyFrame.SelectedMode == ModeType.King_of_the_Hill && sceneJson.CapturePoint != null)
                 {
                     DrawingManager.DrawRectangles([new Rectangle(
                         480 + (sceneJson.CapturePoint.X * LobbyFrame.TileSize),
-                        160 + (sceneJson.CapturePoint.Y * LobbyFrame.TileSize),
+                        160 + (sceneJson.CapturePoint.Y * LobbyFrame.TileSize) + backgroundOffset,
                         sceneJson.CapturePoint.Width * LobbyFrame.TileSize,
                         sceneJson.CapturePoint.Height * LobbyFrame.TileSize
                     )], Color.White);

@@ -175,11 +175,15 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             var ratio = sceneJson.Size.X / (float)sceneJson.Size.Y;
 
             float tileSize = 48 * (1920f / (sceneJson.Size.X * 2));
-            if (ratio > 1.8f)
+
+            if (ratio > 3.4f)
+            {
+                tileSize = 48f * (960f / sceneJson.Size.X);
+            }
+            else if (ratio > 1.8f)
             {
                 tileSize = 48f * (1920f / sceneJson.Size.X);
             }
-
             else if (ratio < 1.76f)
             {
                 tileSize = 48f * (1080f / sceneJson.Size.Y);

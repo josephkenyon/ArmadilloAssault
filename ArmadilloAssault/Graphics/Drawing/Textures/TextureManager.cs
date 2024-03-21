@@ -52,6 +52,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.snow_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "snow_background")));
             _textures.Add(TextureName.moon_sky_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "moon_sky_background")));
             _textures.Add(TextureName.haunted_house_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "haunted_house_background")));
+            _textures.Add(TextureName.gloomy_glade_background, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "gloomy_glade_background")));
 
             _textures.Add(TextureName.gusty_gorge_preview, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Level_Preview", "gusty_gorge")));
             _textures.Add(TextureName.sunken_sands_preview, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Level_Preview", "sunken_sands")));

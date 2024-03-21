@@ -67,7 +67,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         {
             if (GameStateManager.State == State.Editor)
             {
-                return 1536 * 48 / SceneSize.X;
+                return 1536 * 48 / SceneSize.X; //3072
             }
             else if (GameStateManager.State == State.Menu && MenuManager.LobbyFrame != null)
             {
@@ -99,7 +99,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             bool levelPreview = GameStateManager.State == State.Menu && MenuManager.LobbyFrame != null;
 
             var xOffset = levelPreview ? 480 : 0;
-            var yOffset = levelPreview ? 160 : 0;
+            var yOffset = levelPreview ? 160 + (TileSize == 6 ? 140 : 0) : 0;
 
             var newSize = size ?? new Point(1, 1);
 
