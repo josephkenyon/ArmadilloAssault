@@ -133,6 +133,11 @@ namespace ArmadilloAssault.Assets
         public bool Jumped { get; set; }
         public bool DropThrough { get; set; }
 
+        public void SetStartingPosition(Vector2 position)
+        {
+            Position = position;
+        }
+
         public void Update()
         {
             UpdateRespawnTimer();
@@ -562,7 +567,7 @@ namespace ArmadilloAssault.Assets
         {
             Health = MaxHealth;
             Animation = Animation.Resting;
-            Position = StartingPosition;
+            Position = SpawnLocation ?? avatarListener.GetSpawnLocation();
             PowerUpFramesLeft = 3 * 60;
             CurrentPowerUp = PowerUpType.Invincibility;
             CanPickUpPowerUps = true;

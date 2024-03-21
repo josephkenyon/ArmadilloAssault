@@ -51,6 +51,8 @@ namespace ArmadilloAssault.GameState.Battle
         public bool Paused { get; set; }
         public bool GameOver { get; set; }
 
+        private int SpawnLocationIndex { get; set; }
+
         public ModeType? Mode => ModeManager?.Mode;
 
         public Battle(string data)
@@ -88,14 +90,14 @@ namespace ArmadilloAssault.GameState.Battle
                 }
 
                 var avatar = new Avatar(index, ConfigurationManager.GetAvatarConfiguration(avatars[index]), this, crowned);
-                avatar.SetStartingPosition(Scene.StartingPositions[index]);
+                avatar.SetStartingPosition(GetSpawnLocation());
 
                 Avatars.Add(index, avatar);
             }
 
             if (ModeType.Tutorial == mode)
             {
-                Avatars.Values.ElementAt(0).SetStartingPosition(new Vector2(1350, 540));
+                Avatars.Values.ElementAt(0).SetSpawnLocation(new Vector2(1350, 540));
             }
 
             BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);
@@ -433,6 +435,18 @@ namespace ArmadilloAssault.GameState.Battle
             }
 
             return focusPlayerIndex;
+        }
+
+        public Vector2 GetSpawnLocation()
+        {
+            var index = SpawnLocationIndex++;
+
+            if (SpawnLocationIndex > 5)
+            {
+                SpawnLocationIndex = 0;
+            }
+
+            return Scene.StartingPositions[index];
         }
     }
 }

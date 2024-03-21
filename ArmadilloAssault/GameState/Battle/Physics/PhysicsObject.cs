@@ -1,13 +1,12 @@
 ﻿using ArmadilloAssault.Generics;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace ArmadilloAssault.GameState.Battle.Physics
 {
     public abstract class PhysicsObject
     {
         public Direction Direction { get; protected set; }
-        public Vector2 StartingPosition { get; protected set; } = Vector2.Zero;
+        public Vector2? SpawnLocation { get; protected set; }
         public Vector2 Position { get; protected set; } = Vector2.Zero;
         public Vector2 Velocity { get; set; } = Vector2.Zero;
         public Vector2 Acceleration { get; set; } = Vector2.Zero;
@@ -34,9 +33,9 @@ namespace ArmadilloAssault.GameState.Battle.Physics
             Position = new Vector2(Position.X, y);
         }
 
-        public void SetStartingPosition(Vector2 position)
+        public void SetSpawnLocation(Vector2 position)
         {
-            StartingPosition = position;
+            SpawnLocation = position;
             Position = position;
         }
 
