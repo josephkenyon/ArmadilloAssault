@@ -29,6 +29,7 @@ namespace ArmadilloAssault
             Content.RootDirectory = "Content"; 
             IsMouseVisible = true;
 
+            Window.IsBorderless = true;
             Window.AllowUserResizing = false;
         }
 

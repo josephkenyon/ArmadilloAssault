@@ -6,7 +6,6 @@ using ArmadilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace ArmadilloAssault.Graphics
 {
@@ -15,10 +14,13 @@ namespace ArmadilloAssault.Graphics
         private static GraphicsDeviceManager _graphicsDeviceManager;
 
         private static GraphicsDevice _graphicsDevice;
+        private static GameWindow _gameWindow;
 
         public static Point ScreenCenter => new(_graphicsDevice.Viewport.Width / 2, _graphicsDevice.Viewport.Height / 2);
 
         public static bool IsFullscreen => _graphicsDeviceManager.IsFullScreen;
+
+        public static bool IsBorderless => _gameWindow.IsBorderless;
 
         public static void Initialize(Engine engine)
         {
@@ -28,6 +30,8 @@ namespace ArmadilloAssault.Graphics
                 PreferredBackBufferHeight = 1080,
                 IsFullScreen = true
             };
+
+            _gameWindow = engine.Window;
 
             _graphicsDeviceManager.ApplyChanges();
         }
@@ -58,6 +62,11 @@ namespace ArmadilloAssault.Graphics
         public static void Clear(Color color)
         {
             _graphicsDevice.Clear(color);
+        }
+
+        public static void ToggleBorderless()
+        {
+            _gameWindow.IsBorderless = !_gameWindow.IsBorderless;
         }
 
         public static void ToggleFullscreen()

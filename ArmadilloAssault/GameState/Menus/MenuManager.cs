@@ -181,6 +181,9 @@ namespace ArmadilloAssault.GameState.Menus
                     LobbyState?.SetModeSelect(false);
                     LobbyState?.SetLevelSelect(true);
                     break;
+                case MenuAction.toggle_borderless:
+                    GraphicsManager.ToggleBorderless();
+                    break;
                 case MenuAction.toggle_fullscreen:
                     GraphicsManager.ToggleFullscreen();
                     break;
@@ -524,6 +527,7 @@ namespace ArmadilloAssault.GameState.Menus
         {
             return menuKey switch
             {
+                MenuKey.borderless_toggle_text => $"Borderless: {(GraphicsManager.IsBorderless ? "Off" : "On")}",
                 MenuKey.fullscreen_toggle_text => $"Fullscreen: {(GraphicsManager.IsFullscreen ? "Off" : "On")}",
                 MenuKey.music_toggle_text => $"Music: {(SoundManager.MusicEnabled ? "Off" : "On")}",
                 MenuKey.sound_effects_toggle_text => $"Sound FX: {(SoundManager.SoundEffectsEnabled ? "Off" : "On")}",

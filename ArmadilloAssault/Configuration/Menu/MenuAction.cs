@@ -12,6 +12,7 @@
         start_game,
         open_tutorial,
         open_editor,
+        toggle_borderless,
         toggle_fullscreen,
         toggle_music,
         toggle_sound_effects,

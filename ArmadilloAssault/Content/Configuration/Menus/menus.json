@@ -45,13 +45,24 @@
     "Name": "Options",
     "Buttons": [
       {
-        "TextKey": "fullscreen_toggle_text",
-        "Actions": [ "toggle_fullscreen" ],
-        "Size": {
-          "X": 448,
-          "Y": 96
-        }
+        "Text": "Video",
+        "Actions": [ "navigate_to" ],
+        "Data": "Video"
       },
+      {
+        "Text": "Audio",
+        "Actions": [ "navigate_to" ],
+        "Data": "Audio"
+      },
+      {
+        "Text": "Back",
+        "Actions": [ "back" ]
+      }
+    ]
+  },
+  {
+    "Name": "Audio",
+    "Buttons": [
       {
         "TextKey": "music_toggle_text",
         "Actions": [ "toggle_music" ],
@@ -63,6 +74,31 @@
       {
         "TextKey": "sound_effects_toggle_text",
         "Actions": [ "toggle_sound_effects" ],
+        "Size": {
+          "X": 448,
+          "Y": 96
+        }
+      },
+      {
+        "Text": "Back",
+        "Actions": [ "back" ]
+      }
+    ]
+  },
+  {
+    "Name": "Video",
+    "Buttons": [
+      {
+        "TextKey": "fullscreen_toggle_text",
+        "Actions": [ "toggle_fullscreen" ],
+        "Size": {
+          "X": 448,
+          "Y": 96
+        }
+      },
+      {
+        "TextKey": "borderless_toggle_text",
+        "Actions": [ "toggle_borderless" ],
         "Size": {
           "X": 448,
           "Y": 96
