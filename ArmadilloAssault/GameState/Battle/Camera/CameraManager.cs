@@ -105,7 +105,12 @@ namespace ArmadilloAssault.GameState.Battle.Camera
             width = 960;
             height = 540;
 
-            if (SceneSize.X != 1920)
+            if (SceneSize.X == 7680)
+            {
+                width -= (int)(width / (backBack ? 5f : 4));
+                x += ScaleValue(Offset.X + 960, 960, SceneSize.X - 960, 0, 1920 - width);
+            }
+            else if (SceneSize.X != 1920)
             {
                 width -= (int)(width / (backBack ? 5f : 4));
                 x += ScaleValue(Offset.X + 960, 960, SceneSize.X - 960, 0, 960 - width);

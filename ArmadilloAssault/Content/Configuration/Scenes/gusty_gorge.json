@@ -1,7 +1,6 @@
 {
   "BackgroundTexture": "mountain_background",
   "TilesetTexture": "gusty_gorge_tileset",
-  "PrecipitationType": "Rain",
   "Size": {
     "X": 2880,
     "Y": 1620
