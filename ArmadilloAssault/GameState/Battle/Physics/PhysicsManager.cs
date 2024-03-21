@@ -12,7 +12,9 @@ namespace ArmadilloAssault.GameState.Battle.Physics
     public static class PhysicsManager
     {
         private static readonly float gravityAcceleration = 0.035f;
-         
+
+        private static int SceneHeight = 0;
+
         public static void Update(PhysicsObject physicsObject, IPhysicsScene scene)
         {
             if (!BattleManager.GameOver)
@@ -27,6 +29,8 @@ namespace ArmadilloAssault.GameState.Battle.Physics
         {
             var sceneCollisionBoxes = scene.GetCollisionBoxes();
             var sceneSize = scene.GetSize();
+
+            SceneHeight = sceneSize.Y;
 
             avatar.Grounded = false;
             avatar.CloseToGround = false;
@@ -425,7 +429,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 return new Floor { Value = boxCandidates.First().Top, Passable = boxCandidates.First().Height < CollisionHelper.PassableYThreshold };
             }
 
-            return new Floor{Value = 9999, Passable = false };
+            return new Floor { Value = SceneHeight + 128, Passable = false };
         }
 
         private class Floor
