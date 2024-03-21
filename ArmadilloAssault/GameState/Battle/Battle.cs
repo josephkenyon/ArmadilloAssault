@@ -31,6 +31,7 @@ using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
 using System;
 using ArmadilloAssault.GameState.Battle.Items;
+using ArmadilloAssault.Configuration.Items;
 
 namespace ArmadilloAssault.GameState.Battle
 {
@@ -116,6 +117,14 @@ namespace ArmadilloAssault.GameState.Battle
 
             ModeManager = new(this, avatars.Keys.Select(key => new KeyValuePair<int, int>(key, playerTeamRelations[key])), mode);
 
+            if (ModeType.Capture_the_Flag == Mode)
+            {
+                foreach (var flags in sceneConfiguration.Flags)
+                {
+                    ItemManager.CreateNewItem(ItemType.Flag, new Vector2(flags.X, flags.Y), flags.TeamIndex);
+                }
+            }
+
             Frame = CreateFrame();
         }
 
@@ -147,6 +156,8 @@ namespace ArmadilloAssault.GameState.Battle
             PrecipitationManager.UpdatePrecipitation();
 
             CrateManager?.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
+
+            ItemManager?.UpdateItems(Scene);
 
             if (Avatars.Count > 0)
             {
@@ -228,6 +239,7 @@ namespace ArmadilloAssault.GameState.Battle
 
                 DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame, BattleManager.PlayerIndex));
                 DrawingManager.DrawCollection(CrateManager.GetDrawableCrates(Frame.CrateFrame));
+                DrawingManager.DrawCollection(ItemManager.GetDrawableItems(Frame.ItemFrame));
             }
 
             foreach (var list in Scene.TileLists.Where(list => list.Z > 0))
@@ -239,7 +251,6 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 DrawingManager.DrawCollection(BulletManager.GetDrawableBullets(Frame.BulletFrame));
                 DrawingManager.DrawCollection(EffectManager.GetDrawableEffects(Frame.EffectFrame));
-                DrawingManager.DrawCollection(ItemManager.GetDrawableItems(Frame.ItemFrame));
             }
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
@@ -456,19 +467,7 @@ namespace ArmadilloAssault.GameState.Battle
 
         public bool BeingHeld(Item item)
         {
-            return !Avatars.Values.Any(avatar => avatar.HeldItems.Contains(item));
-        }
-
-        public int? TeamHeldIndex(Item item)
-        {
-            var avatar = Avatars.Values.SingleOrDefault(avatar => avatar.HeldItems.Contains(item));
-
-            if (avatar == null)
-            {
-                return null;
-            }
-
-            return ModeManager.PlayerTeamRelations[avatar.PlayerIndex];
+            return Avatars.Values.Any(avatar => avatar.HeldItems.Contains(item));
         }
     }
 }

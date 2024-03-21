@@ -18,6 +18,9 @@ namespace ArmadilloAssault.Configuration.Scenes
         public FlowJson Flow { get; set; }
         public PrecipitationType PrecipitationType { get; set; }
         public EnvironmentalEffectJson EnvironmentalEffects { get; set; }
+        public List<TeamRectangleJson> BlockedZones { get; set; }
+        public List<TeamRectangleJson> ReturnZones { get; set; }
+        public List<FlagJson> Flags { get; set; }
         public RectangleJson CapturePoint { get; set; }
         public RectangleListJson CollisionBoxes { get; set; } = new();
         public List<TileListJson> TileLists { get; set; } = [];

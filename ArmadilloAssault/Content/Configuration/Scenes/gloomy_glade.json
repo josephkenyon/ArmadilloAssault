@@ -39,6 +39,64 @@
   },
   "HighCloudsOnly": true,
   "PrecipitationType": "Rain",
+  "Flags": [
+    {
+      "TeamIndex": 0,
+      "X": 816,
+      "Y": 1116
+    },
+    {
+      "TeamIndex": 1,
+      "X": 6750,
+      "Y": 1116
+    }
+  ],
+  "BlockedZones": [
+    {
+      "TeamIndex": 1,
+      "X": 9,
+      "Y": 20,
+      "Width": 2,
+      "Height": 5
+    },
+    {
+      "TeamIndex": 1,
+      "X": 26,
+      "Y": 20,
+      "Width": 2,
+      "Height": 5
+    },
+    {
+      "TeamIndex": 0,
+      "X": 132,
+      "Y": 20,
+      "Width": 2,
+      "Height": 5
+    },
+    {
+      "TeamIndex": 0,
+      "X": 149,
+      "Y": 20,
+      "Width": 2,
+      "Height": 5
+    }
+  ],
+  "ReturnZones": [
+    {
+      "TeamIndex": 0,
+      "X": 17,
+      "Y": 22,
+      "Width": 3,
+      "Height": 6
+    },
+    {
+      "TeamIndex": 1,
+      "X": 141,
+      "Y": 22,
+      "Width": 3,
+      "Height": 6
+    }
+  ],
   "CapturePoint": {
     "X": 66,
     "Y": 24,

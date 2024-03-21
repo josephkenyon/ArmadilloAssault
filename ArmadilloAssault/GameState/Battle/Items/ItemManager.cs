@@ -1,15 +1,36 @@
 ﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration.Items;
 using ArmadilloAssault.GameState.Battle.Items;
+using ArmadilloAssault.GameState.Battle.Physics;
+using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Bullets
 {
     public class ItemManager(IItemListener itemListener)
     {
         public List<Item> Items = [];
+
+        public void CreateNewItem(ItemType type, Vector2 position, int teamIndex)
+        {
+            var item = new Item(itemListener, type, teamIndex);
+
+            item.SetSpawnLocation(position);
+
+            Items.Add(item);
+        }
+
+        public void UpdateItems(IPhysicsScene physicsScene)
+        {
+            foreach (var item in Items.Where(i => !i.BeingHeld))
+            {
+                PhysicsManager.Update(item, physicsScene);
+            }
+        }
 
         public ItemFrame GetItemFrame()
         {

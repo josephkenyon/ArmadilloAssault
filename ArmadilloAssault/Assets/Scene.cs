@@ -3,6 +3,7 @@ using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
+using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
@@ -21,6 +22,7 @@ namespace ArmadilloAssault.Assets
         public ColorJson BackgroundColorJson { get; private set; } = json.BackgroundColor;
         public Color BackgroundColor { get; private set; } = json.BackgroundColor != null ? new Color(json.BackgroundColor.R, json.BackgroundColor.G, json.BackgroundColor.B) : Color.CornflowerBlue;
         public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetRectangles(json.CollisionBoxes);
+        public List<TeamRectangle> TeamRectangles { get; set; } = json.BlockedZones?.Select(zone => new TeamRectangle(zone.ToRectangle(), zone.TeamIndex)).ToList();
         public List<TileList> TileLists { get; set; } = GetTileLists(json);
         public bool WrapY { get; set; } = json.WrapY;
         public Rectangle? CapturePoint { get; set; } = json.CapturePoint?.ToRectangle(DrawingHelper.FullTileSize);
@@ -128,6 +130,8 @@ namespace ArmadilloAssault.Assets
         }
 
         public ICollection<Rectangle> GetCollisionBoxes() => CollisionBoxes;
+
+        public ICollection<TeamRectangle> GetTeamRectangles() => TeamRectangles;
 
         public Point GetSize() => Size;
 
