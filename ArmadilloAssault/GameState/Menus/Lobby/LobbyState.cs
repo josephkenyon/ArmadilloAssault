@@ -19,7 +19,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
         public Dictionary<int, Avatar> Avatars { get; private set; } = [];
         public Dictionary<int, int> PlayerTeamRelations { get; private set; } = [];
-        public string SelectedLevel { get; private set; } = SelectableLevelKeys.First();
+        private string _selectedLevel = SelectableLevelKeys.First();
+        public string SelectedLevel => ModeType.Capture_the_Flag != SelectedMode ? _selectedLevel : "gloomy_glade";
         public ModeType SelectedMode { get; private set; } = ModeType.Deathmatch;
         public bool LevelSelect { get; private set; } = false;
         public bool ModeSelect { get; private set; } = false;
@@ -211,27 +212,27 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         public void NextLevel()
         {
             var keys = SelectableLevelKeys.ToList();
-            var index = keys.IndexOf(SelectedLevel) + 1;
+            var index = keys.IndexOf(_selectedLevel) + 1;
 
             if (index == keys.Count)
             {
                 index = 0;
             }
 
-            SelectedLevel = keys[index];
+            _selectedLevel = keys[index];
         }
 
         public void PreviousLevel()
         {
             var keys = SelectableLevelKeys.ToList();
-            var index = keys.IndexOf(SelectedLevel) - 1;
+            var index = keys.IndexOf(_selectedLevel) - 1;
 
             if (index == -1)
             {
                 index = keys.Count - 1;
             }
 
-            SelectedLevel = keys[index];
+            _selectedLevel = keys[index];
         }
 
         public void NextMode()
@@ -319,6 +320,12 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 var teamsCount = PlayerTeamRelations.Select(relation => relation.Value).Distinct().Count();
 
                 return Avatars.Where(avatar => avatar.Value.Crowned).Count() == teamsCount;
+            }
+            else if (ModeType.Capture_the_Flag == SelectedMode)
+            {
+                var teamsCount = PlayerTeamRelations.Select(relation => relation.Value).Distinct().Count();
+
+                return teamsCount == 1; // 2;
             }
 
             return true;

@@ -2,9 +2,7 @@
 using ArmadilloAssault.Configuration.Items;
 using ArmadilloAssault.GameState.Battle.Items;
 using ArmadilloAssault.Generics;
-using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace ArmadilloAssault.Assets
 {
@@ -26,7 +24,8 @@ namespace ArmadilloAssault.Assets
             );
         }
 
-        public bool BeingHeld { get; set; }
-        public bool CanBePickedUp => itemListener.CanBePickedUp(this);
+        public int? TeamIndex => itemListener.TeamHeldIndex(this);
+        public bool BeingHeld => itemListener.BeingHeld(this);
+        public bool CanBePickedUp => !BeingHeld;
     }
 }

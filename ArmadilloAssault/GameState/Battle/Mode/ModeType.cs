@@ -2,10 +2,10 @@
 {
     public enum ModeType
     {
+        Tutorial,
         Deathmatch,
         King_of_the_Hill,
-        //Capture_the_Flag
-        Tutorial,
-        Regicide,
+        Capture_the_Flag,
+        Regicide
     }
 }

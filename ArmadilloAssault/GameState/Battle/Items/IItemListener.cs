@@ -4,6 +4,7 @@ namespace ArmadilloAssault.GameState.Battle.Items
 {
     public interface IItemListener
     {
-        bool CanBePickedUp(Item item);
+        int? TeamHeldIndex(Item item);
+        bool BeingHeld(Item item);
     }
 }

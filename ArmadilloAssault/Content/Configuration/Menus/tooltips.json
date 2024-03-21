@@ -20,8 +20,9 @@
     "Key": "Capture_the_Flag",
     "Texts": [
       "Capture  the  opposing  teams  flag",
-      "and  return  it  to your  own  base!",
-      "First  team  to  score  3  points  wins!"
+      "from  the  enemy  base,  and  return  it",
+      "to  your  teams  base  to  win!",
+      "Playable  only  with  exactly  two  teams."
     ]
   },
   {

@@ -454,9 +454,21 @@ namespace ArmadilloAssault.GameState.Battle
             return Scene.StartingPositions[index];
         }
 
-        public bool CanBePickedUp(Item item)
+        public bool BeingHeld(Item item)
         {
             return !Avatars.Values.Any(avatar => avatar.HeldItems.Contains(item));
+        }
+
+        public int? TeamHeldIndex(Item item)
+        {
+            var avatar = Avatars.Values.SingleOrDefault(avatar => avatar.HeldItems.Contains(item));
+
+            if (avatar == null)
+            {
+                return null;
+            }
+
+            return ModeManager.PlayerTeamRelations[avatar.PlayerIndex];
         }
     }
 }

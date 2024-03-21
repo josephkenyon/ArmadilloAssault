@@ -302,7 +302,7 @@
       },
       {
         "Text": "Previous",
-        "Conditions": [ "level_select" ],
+        "Conditions": [ "level_select", "not_capture_the_flag" ],
         "Actions": [ "prev_level" ],
         "Location": {
           "X": 64,
@@ -311,7 +311,7 @@
       },
       {
         "Text": "Next",
-        "Conditions": [ "level_select" ],
+        "Conditions": [ "level_select", "not_capture_the_flag" ],
         "Actions": [ "next_level" ],
         "Location": {
           "X": 1472,

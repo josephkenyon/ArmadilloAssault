@@ -497,6 +497,7 @@ namespace ArmadilloAssault.GameState.Menus
                 MenuCondition.avatar_select => LobbyFrame != null && !LobbyFrame.LevelSelect && !LobbyFrame.ModeSelect,
                 MenuCondition.level_select => LobbyFrame != null && LobbyFrame.LevelSelect,
                 MenuCondition.mode_select => LobbyFrame != null && LobbyFrame.ModeSelect,
+                MenuCondition.not_capture_the_flag => LobbyFrame == null || LobbyFrame.SelectedMode != ModeType.Capture_the_Flag,
                 MenuCondition.selection_complete => LobbyState != null && LobbyState.Avatars.Count == ServerManager.PlayerCount,
                 MenuCondition.mode_conditions_complete => LobbyState != null && LobbyState.ModeConditionsComplete(),
                 _ => true
