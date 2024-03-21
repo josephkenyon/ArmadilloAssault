@@ -243,7 +243,8 @@ namespace ArmadilloAssault.Sound
 
                     foreach (var avatarSound in soundFrame.AvatarSounds.Distinct())
                     {
-                        var scaleFactor = (avatarSound.Key == AvatarType.Claus || (avatarSound.Key == AvatarType.Angie && avatarSound.Value == AvatarSound.Ready)) ? 1f : 0.5f;
+                        var scaleFactor = (avatarSound.Key == AvatarType.Claus || (avatarSound.Key == AvatarType.Angie && avatarSound.Value == AvatarSound.Ready))
+                            ? 1f : (avatarSound.Value == AvatarSound.Hurt || avatarSound.Value == AvatarSound.Dead ? 0.75f : 0.5f);
                         _avatarSounds[avatarSound.Key][avatarSound.Value].Play(scaleFactor * SoundScaler, 0f, 0f);
                     }
                 }
