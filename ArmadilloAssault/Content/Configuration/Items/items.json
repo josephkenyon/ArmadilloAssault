@@ -1,0 +1,12 @@
+[
+  {
+    "Type": "Flag",
+    "TextureName": "flag",
+    "CollisionRectangle": {
+      "X": 53,
+      "Y": 10,
+      "Width": 10,
+      "Height": 118
+    }
+  }
+]

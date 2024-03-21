@@ -30,10 +30,11 @@ using Microsoft.Xna.Framework.Input;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
 using System;
+using ArmadilloAssault.GameState.Battle.Items;
 
 namespace ArmadilloAssault.GameState.Battle
 {
-    public class Battle : IModeManagerListener, IAvatarListener, IBulletListener, IWeaponListener
+    public class Battle : IModeManagerListener, IAvatarListener, IBulletListener, IWeaponListener, IItemListener
     {
         public Dictionary<int, Avatar> Avatars { get; set; } = [];
 
@@ -42,6 +43,7 @@ namespace ArmadilloAssault.GameState.Battle
         public CloudManager CloudManager { get; set; }
         public PrecipitationManager PrecipitationManager { get; set; }
         public CrateManager CrateManager { get; set; }
+        public ItemManager ItemManager { get; set; }
         public EffectManager EffectManager { get; set; }
         public EnvironmentalEffectsManager EnvironmentalEffectsManager { get; set; }
         public FlowManager FlowManager { get; set; }
@@ -104,6 +106,7 @@ namespace ArmadilloAssault.GameState.Battle
             CrateManager = new(Scene.CollisionBoxes, Scene.Size);
 
             EffectManager = new();
+            ItemManager = new(this);
 
             EnvironmentalEffectsManager = new(sceneConfiguration.EnvironmentalEffects);
 
@@ -236,6 +239,7 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 DrawingManager.DrawCollection(BulletManager.GetDrawableBullets(Frame.BulletFrame));
                 DrawingManager.DrawCollection(EffectManager.GetDrawableEffects(Frame.EffectFrame));
+                DrawingManager.DrawCollection(ItemManager.GetDrawableItems(Frame.ItemFrame));
             }
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
@@ -294,7 +298,8 @@ namespace ArmadilloAssault.GameState.Battle
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
                 EffectFrame = EffectManager.GetEffectFrame(),
-                HudFrame = CreateHudFrame()
+                HudFrame = CreateHudFrame(),
+                ItemFrame = ItemManager.GetItemFrame()
             };
 
             return battleFrame;
@@ -447,6 +452,11 @@ namespace ArmadilloAssault.GameState.Battle
             }
 
             return Scene.StartingPositions[index];
+        }
+
+        public bool CanBePickedUp(Item item)
+        {
+            return !Avatars.Values.Any(avatar => avatar.HeldItems.Contains(item));
         }
     }
 }

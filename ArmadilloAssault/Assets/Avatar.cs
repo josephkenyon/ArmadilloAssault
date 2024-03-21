@@ -118,15 +118,18 @@ namespace ArmadilloAssault.Assets
         public int ReloadingFrames { get; set; } = 0;
         public bool CanPickUpPowerUps { get; private set; } = true;
 
+        public bool SwitchingWeapons { get; set; } = false;
+        public int SwitchingWeaponFrames { get; set; } = 0;
+
+        private static readonly int WeaponSwitchFrames = 10;
+
         // Power Ups
         public PowerUpType? CurrentPowerUp { get; set; } = null;
         public bool SuperSpeed => PowerUpType.Super_Speed == CurrentPowerUp;
         public int PowerUpFramesLeft { get; set; } = 0;
 
-        public bool SwitchingWeapons { get; set; } = false;
-        public int SwitchingWeaponFrames { get; set; } = 0;
-
-        private static readonly int WeaponSwitchFrames = 10;
+        // Items
+        public List<Item> HeldItems { get; private set; } = [];
 
         public override float DragModifier => 1f * ((!Grounded && IsSpinning) ? 0.1f : 1f) * (SuperSpeed ? 1f : 1f);
 

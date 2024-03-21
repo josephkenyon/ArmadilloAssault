@@ -35,6 +35,9 @@
 #begin Configuration/Effects/effects.json
 /copy:Configuration/Effects/effects.json
 
+#begin Configuration/Items/items.json
+/copy:Configuration/Items/items.json
+
 #begin Configuration/Menus/menus.json
 /copy:Configuration/Menus/menus.json
 

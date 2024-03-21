@@ -30,6 +30,7 @@
         desert_background,
         desert_tileset,
         dust_cloud,
+        flag,
         floating_fortress,
         floating_island_tileset,
         forest_background,

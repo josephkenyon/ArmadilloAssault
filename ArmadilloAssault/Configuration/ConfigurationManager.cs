@@ -10,6 +10,7 @@ using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Menus;
+using ArmadilloAssault.Configuration.Items;
 
 namespace ArmadilloAssault.Configuration
 {
@@ -23,6 +24,7 @@ namespace ArmadilloAssault.Configuration
         private static Dictionary<AvatarType, AvatarJson> _avatarConfigurations;
         private static Dictionary<WeaponType, WeaponJson> _weaponConfigurations;
         private static Dictionary<EffectType, EffectJson> _effectConfigurations;
+        private static Dictionary<ItemType, ItemJson> _itemConfigurations;
 
         public static Dictionary<string, SceneJson> SceneConfigurations => _sceneConfigurations;
 
@@ -36,6 +38,7 @@ namespace ArmadilloAssault.Configuration
             LoadAvatars();
             LoadWeapons();
             LoadEffects();
+            LoadItems();
         }
 
         private static void LoadMenus()
@@ -125,7 +128,6 @@ namespace ArmadilloAssault.Configuration
 
         private static void LoadAvatars()
         {
-
             _avatarConfigurations = [];
 
             var fileNames = Directory
@@ -158,7 +160,6 @@ namespace ArmadilloAssault.Configuration
         }
         private static void LoadWeapons()
         {
-
             _weaponConfigurations = [];
 
             var fileNames = Directory
@@ -189,7 +190,6 @@ namespace ArmadilloAssault.Configuration
 
         private static void LoadEffects()
         {
-
             _effectConfigurations = [];
 
             var fileNames = Directory
@@ -209,6 +209,35 @@ namespace ArmadilloAssault.Configuration
                 effectConfigurations.ForEach(effect =>
                 {
                     _effectConfigurations.Add(effect.Type, effect);
+                });
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message, e);
+            }
+        }
+
+        private static void LoadItems()
+        {
+            _itemConfigurations = [];
+
+            var fileNames = Directory
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Items"))
+                .Where(file => file.EndsWith("items.json"));
+
+            var fileName = fileNames.First();
+
+            using StreamReader r = new(fileName);
+
+            string json = r.ReadToEnd();
+
+            try
+            {
+                var itemJsons = JsonConvert.DeserializeObject<List<ItemJson>>(json);
+
+                itemJsons.ForEach(itemJson =>
+                {
+                    _itemConfigurations.Add(itemJson.Type, itemJson);
                 });
             }
             catch (Exception e)
@@ -255,6 +284,11 @@ namespace ArmadilloAssault.Configuration
         public static EffectJson GetEffectConfiguration(EffectType effectType)
         {
             return _effectConfigurations[effectType];
+        }
+
+        public static ItemJson GetItemConfiguration(ItemType itemType)
+        {
+            return _itemConfigurations[itemType];
         }
     }
 }

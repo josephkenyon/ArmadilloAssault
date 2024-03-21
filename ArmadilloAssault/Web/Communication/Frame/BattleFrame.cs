@@ -11,5 +11,8 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public EffectFrame EffectFrame { get; set; } = new();
         public HudFrame HudFrame { get; set; } = new();
         public SoundFrame SoundFrame { get; set; } = new();
+
+        public ItemFrame ItemFrame { get; set; }
+
     }
 }
