@@ -2,6 +2,7 @@
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Controls;
+using ArmadilloAssault.Graphics;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Graphics.Drawing.Textures;
 using Microsoft.Xna.Framework;
@@ -26,6 +27,7 @@ namespace ArmadilloAssault.GameState.Editor
         public static void Initialize()
         {
             Mouse.SetCursor(MouseCursor.Arrow);
+            GraphicsManager.AllowResizing();
 
             Scene = new Scene(ConfigurationManager.GetSceneConfiguration("editor"));
 

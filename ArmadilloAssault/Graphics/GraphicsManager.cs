@@ -64,6 +64,11 @@ namespace ArmadilloAssault.Graphics
             _graphicsDevice.Clear(color);
         }
 
+        public static void AllowResizing()
+        {
+            _gameWindow.AllowUserResizing = true;
+        }
+
         public static void ToggleBorderless()
         {
             _gameWindow.IsBorderless = !_gameWindow.IsBorderless;
