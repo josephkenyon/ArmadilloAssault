@@ -22,6 +22,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                 ApplyHorizontalMotion(physicsObject, scene);
             }
 
+            physicsObject.Grounded = false;
             ApplyVerticalMotion(physicsObject, scene);
         }
 
@@ -32,7 +33,6 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
             SceneHeight = sceneSize.Y;
 
-            avatar.Grounded = false;
             avatar.CloseToGround = false;
 
             var bufferedDirection = avatar.PopBufferedDirection();
@@ -51,12 +51,12 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                         avatar.SetAnimation((Animation)bufferedAnimation);
                         avatar.SetY(avatar.Position.Y - 44);
                     }
-                    else
+                    else if (avatar.CanRoll)
                     {
                         avatar.SetAnimation(Animation.Rolling);
                     }
                 }
-                else
+                else if (bufferedAnimation != Animation.Rolling || avatar.CanRoll)
                 {
                     avatar.SetAnimation((Animation)bufferedAnimation);
                 }
@@ -147,8 +147,23 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
         private static void ApplyLeftMotion(PhysicsObject physicsObject, IPhysicsScene scene, float deltaX)
         {
+            var boxes = new List<Rectangle>(scene.GetCollisionBoxes());
+
+            if (physicsObject is Avatar)
+            {
+                var avatar = physicsObject as Avatar;
+                var teamIndex = avatar.TeamIndex;
+
+                boxes.AddRange(scene.GetTeamRectangles() 
+                    .Where(rec => !rec.ReturnZone && !rec.AllowRightEdge && rec.TeamIndex != teamIndex && !avatar.HeldItems
+                    .Any(item => item.TeamIndex == rec.TeamIndex))
+                    .Select(rec => rec.Rectangle)
+                );
+            }
+
             var collisionBox = physicsObject.GetCollisionBox();
-            var wallX = GetLeftWall(collisionBox, scene.GetCollisionBoxes());
+
+            var wallX = GetLeftWall(collisionBox, boxes);
 
             if (collisionBox.Left == wallX)
             {
@@ -170,8 +185,22 @@ namespace ArmadilloAssault.GameState.Battle.Physics
 
         private static void ApplyRightMotion(PhysicsObject physicsObject, IPhysicsScene scene, float deltaX)
         {
+            var boxes = new List<Rectangle>(scene.GetCollisionBoxes());
+
+            if (physicsObject is Avatar)
+            {
+                var avatar = physicsObject as Avatar;
+                var teamIndex = avatar.TeamIndex;
+
+                boxes.AddRange(scene.GetTeamRectangles()
+                    .Where(rec => !rec.ReturnZone && !rec.AllowLeftEdge && rec.TeamIndex != teamIndex && !avatar.HeldItems
+                    .Any(item => item.TeamIndex == rec.TeamIndex))
+                    .Select(rec => rec.Rectangle)
+                );
+            }
+
             var avatarCollisionBox = physicsObject.GetCollisionBox();
-            var wallX = GetRightWall(avatarCollisionBox, scene.GetCollisionBoxes());
+            var wallX = GetRightWall(avatarCollisionBox, boxes);
 
             if (avatarCollisionBox.Right == wallX)
             {
@@ -249,7 +278,7 @@ namespace ArmadilloAssault.GameState.Battle.Physics
                         {
                             avatar.SetY(avatar.Position.Y + 1);
                         }
-                        else
+                        else if (avatar.CanRoll)
                         {
                             avatar.SetAnimation(Animation.Rolling);
                         }

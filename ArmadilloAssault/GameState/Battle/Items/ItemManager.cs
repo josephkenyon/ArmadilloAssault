@@ -29,6 +29,17 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             foreach (var item in Items.Where(i => !i.BeingHeld))
             {
                 PhysicsManager.Update(item, physicsScene);
+
+                var itemBox = item.GetCollisionBox();
+
+                var avatar = itemListener.GetAvatars().Values
+                    .FirstOrDefault(avatar => !avatar.IsDead && avatar.TeamIndex != item.TeamIndex && avatar.GetCollisionBox().Intersects(itemBox));
+
+                if (avatar != null)
+                {
+                    item.Disturbed = true;
+                    avatar.GiveItem(item);
+                }
             }
         }
 

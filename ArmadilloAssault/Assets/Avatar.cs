@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Generics;
+using ArmadilloAssault.Configuration.Items;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.GameState.Battle;
@@ -29,6 +30,7 @@ namespace ArmadilloAssault.Assets
         public static readonly int BreathingCycleFrameLength = 80;
 
         public int PlayerIndex => playerIndex;
+        public int TeamIndex => avatarListener.GetTeamIndex(playerIndex);
         public bool Crowned { get; set; } = crowned;
 
         // Collision
@@ -116,7 +118,8 @@ namespace ArmadilloAssault.Assets
 
         public bool Reloading { get; set; } = false;
         public int ReloadingFrames { get; set; } = 0;
-        public bool CanPickUpPowerUps { get; private set; } = true;
+        private bool _canPickUpPowerUps { get; set; } = true;
+        public bool CanPickUpPowerUps => _canPickUpPowerUps && !HeldItems.Any(item => item.Type == ItemType.Flag);
 
         public bool SwitchingWeapons { get; set; } = false;
         public int SwitchingWeaponFrames { get; set; } = 0;
@@ -126,6 +129,7 @@ namespace ArmadilloAssault.Assets
         // Power Ups
         public PowerUpType? CurrentPowerUp { get; set; } = null;
         public bool SuperSpeed => PowerUpType.Super_Speed == CurrentPowerUp;
+        public bool CanRoll => HeldItems.Count == 0;
         public int PowerUpFramesLeft { get; set; } = 0;
 
         // Items
@@ -152,6 +156,17 @@ namespace ArmadilloAssault.Assets
             UpdatePowerUp();
             UpdatePhysics();
 
+            HeldItems.ForEach(item =>
+            {
+                item.SetDirection(Direction);
+                item.SetPosition(Position);
+            });
+
+            if (IsSpinning && !CanRoll)
+            {
+                BufferAnimation(Animation.Resting);
+            }
+
             Weapons.ForEach(weapon => weapon.Update());
         }
 
@@ -175,7 +190,7 @@ namespace ArmadilloAssault.Assets
                 JumpingFrames = 0;
                 Falling = false;
                 Rising = false;
-                AvailableJumps = 2;
+                AvailableJumps = CanRoll ? 2 : 1;
                 if (Animation == Animation.Falling)
                 {
                     SetAnimation(Animation.Resting);
@@ -185,7 +200,7 @@ namespace ArmadilloAssault.Assets
                     SetAnimation(Animation.Resting);
                 }
 
-                if (Animation == Animation.Rolling && RollingFrameCount == (SuperSpeed ? 20 : 35))
+                if (Animation == Animation.Rolling && RollingFrameCount == (SuperSpeed ? 20 : 37))
                 {
                     SoundManager.QueueBattleSound(BattleSound.rolling_grass);
                     RollingFrameCount = 0;
@@ -211,14 +226,14 @@ namespace ArmadilloAssault.Assets
             }
             else if (Rising)
             {
-                if (AvailableJumps == 1)
+                if (AvailableJumps == 1 || !CanRoll)
                 {
                     if (Animation != Animation.Rolling)
                     {
                         SetAnimation(Animation.Jumping);
                     }
                 }
-                else
+                else if (CanRoll)
                 {
                     IncrementSpin();
                     if (Animation != Animation.Rolling)
@@ -297,6 +312,10 @@ namespace ArmadilloAssault.Assets
                 {
                     CurrentPowerUp = null;
                 }
+            }
+            else
+            {
+                _canPickUpPowerUps = true;
             }
         }
 
@@ -554,6 +573,7 @@ namespace ArmadilloAssault.Assets
                 Animation = Animation.Dead;
 
                 avatarListener?.AvatarKilled(playerIndex, LastHurtBy);
+                HeldItems.Clear();
 
                 Acceleration = Vector2.Zero;
                 Recoil = 0f;
@@ -570,10 +590,10 @@ namespace ArmadilloAssault.Assets
         {
             Health = MaxHealth;
             Animation = Animation.Resting;
-            Position = SpawnLocation ?? avatarListener.GetSpawnLocation();
+            Position = SpawnLocation ?? avatarListener.GetSpawnLocation(PlayerIndex);
             PowerUpFramesLeft = 3 * 60;
             CurrentPowerUp = PowerUpType.Invincibility;
-            CanPickUpPowerUps = true;
+            _canPickUpPowerUps = true;
 
             WeaponSelectionIndex = 0;
             FramesUntilRecoil = -1;
@@ -751,7 +771,7 @@ namespace ArmadilloAssault.Assets
         {
             if (Animation != bufferedAnimation)
             {
-                BufferedAnimation = bufferedAnimation;
+                 BufferedAnimation = bufferedAnimation;
             }
         }
 
@@ -822,7 +842,7 @@ namespace ArmadilloAssault.Assets
 
         public void GivePowerUp(PowerUpType powerUpType)
         {
-            CanPickUpPowerUps = false;
+            _canPickUpPowerUps = false;
             CurrentPowerUp = powerUpType;
 
             var seconds = powerUpType switch
@@ -835,6 +855,16 @@ namespace ArmadilloAssault.Assets
             };
 
             PowerUpFramesLeft = seconds * 60;
+        }
+
+        public void GiveItem(Item item)
+        {
+            if (ItemType.Flag == item.Type)
+            {
+                CurrentPowerUp = null;
+            }
+
+            HeldItems.Add(item);
         }
 
         public ColorJson GetColor()

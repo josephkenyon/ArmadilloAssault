@@ -18,5 +18,10 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<int?> Ammos { get; set; } = [];
         public ColorJson CapturePointColor { get; set; }
         public int? CapturePointSeconds { get; set; }
+
+        public List<int> FlagTimerValues { get; set; } = [];
+        public List<float> FlagTimerXs { get; set; } = [];
+        public List<float> FlagTimerYs { get; set; } = [];
+
     }
 }

@@ -23,7 +23,7 @@ namespace ArmadilloAssault
         public static bool Active { get; private set; }
 
         public Engine()
-        {
+        {  
             GraphicsManager.Initialize(this);
 
             Content.RootDirectory = "Content"; 

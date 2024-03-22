@@ -293,7 +293,8 @@ namespace ArmadilloAssault.Graphics.Drawing
                 var value = $"{hudFrame.ModeValues[modeValueIndex]}";
                 var stringSize = DrawingHelper.GetFont.MeasureString(value);
 
-                if (ModeType.Deathmatch == hudFrame.ModeType || ModeType.Regicide == hudFrame.ModeType)
+                var drawSkull = ModeType.Deathmatch == hudFrame.ModeType || ModeType.Regicide == hudFrame.ModeType;
+                if (drawSkull)
                 {
                     var texture = TextureManager.GetTexture(TextureName.skull);
                     _spriteBatch.Draw(
@@ -306,7 +307,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                 _spriteBatch.DrawString(
                     DrawingHelper.GetFont, $"{hudFrame.ModeValues[modeValueIndex]}",
                     new Vector2(
-                        rec.Center.X + (hudFrame.ModeType == ModeType.King_of_the_Hill ? 0 : 20) - (stringSize.X / 2),
+                        rec.Center.X + (drawSkull ? 20 : 0) - (stringSize.X / 2f),
                         rec.Center.Y - (stringSize.Y / 2)
                     ),
                     Color.White
@@ -314,20 +315,25 @@ namespace ArmadilloAssault.Graphics.Drawing
             }
         }
 
-        public static void DrawRectangles(IEnumerable<Rectangle> rectangles, Color? color = null)
+        public static void DrawRectangle(Rectangle rectangle, Color? color = null)
         {
             var scaleConstant = GameStateManager.State != State.Menu ? DrawingHelper.ScaleConstant : 1f;
 
+            var destinationRectangle = new Rectangle((int)(rectangle.X * scaleConstant), (int)(rectangle.Y * scaleConstant), (int)(rectangle.Width * scaleConstant), (int)(rectangle.Height * scaleConstant));
+
+            _spriteBatch.Draw(
+                texture: TextureManager.GetTexture(TextureName.white_pixel),
+                destinationRectangle: destinationRectangle,
+                sourceRectangle: new Rectangle(0, 0, 1, 1),
+                color: (color ?? Color.Yellow) * (color != null ? 0.7f : 0.35f)
+            );
+        }
+
+        public static void DrawRectangles(IEnumerable<Rectangle> rectangles, Color? color = null)
+        {
             foreach (var rectangle in rectangles)
             {
-                var destinationRectangle = new Rectangle((int)(rectangle.X * scaleConstant), (int)(rectangle.Y * scaleConstant), (int)(rectangle.Width * scaleConstant), (int)(rectangle.Height * scaleConstant));
-
-                _spriteBatch.Draw(
-                    texture: TextureManager.GetTexture(TextureName.white_pixel),
-                    destinationRectangle: destinationRectangle,
-                    sourceRectangle: new Rectangle(0, 0, 1, 1),
-                    color: (color ?? Color.Yellow) * (color != null ? 0.7f : 0.35f)
-                );
+                DrawRectangle(rectangle, color);
             }
         }
 

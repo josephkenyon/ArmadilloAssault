@@ -361,12 +361,12 @@ namespace ArmadilloAssault.GameState.Menus
 
                 if (LobbyFrame.SelectedMode == ModeType.King_of_the_Hill && sceneJson.CapturePoint != null)
                 {
-                    DrawingManager.DrawRectangles([new Rectangle(
+                    DrawingManager.DrawRectangle(new Rectangle(
                         480 + (sceneJson.CapturePoint.X * LobbyFrame.TileSize),
                         160 + (sceneJson.CapturePoint.Y * LobbyFrame.TileSize) + backgroundOffset,
                         sceneJson.CapturePoint.Width * LobbyFrame.TileSize,
                         sceneJson.CapturePoint.Height * LobbyFrame.TileSize
-                    )], Color.White);
+                    ), Color.White);
                 }
 
                 if (PreviewScene != null)

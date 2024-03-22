@@ -1,11 +1,12 @@
 ﻿using ArmadilloAssault.Configuration.Generics;
-using Microsoft.Xna.Framework;
-using System;
 
 namespace ArmadilloAssault.Configuration.Scenes
 {
     public class TeamRectangleJson : RectangleJson
     {
         public int TeamIndex { get; set; }
+        public bool ReturnZone { get; set; }
+        public bool AllowLeftEdge { get; set; }
+        public bool AllowRightEdge { get; set; }
     }
 }

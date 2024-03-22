@@ -293,7 +293,7 @@ namespace ArmadilloAssault.GameState.Battle.Input
                         avatar.SetBufferedDirection(Direction.Right);
                     }
 
-                    if (avatar.Animation != Animation.Rolling)
+                    if (avatar.Animation != Animation.Rolling && avatar.CanRoll)
                     {
                         avatar.SetAnimation(Animation.Spinning);
                     }
@@ -314,7 +314,7 @@ namespace ArmadilloAssault.GameState.Battle.Input
                         avatar.BufferAnimation(Animation.Resting);
                     }
                 }
-                else
+                else if (avatar.CanRoll)
                 {
                     avatar.BufferAnimation(Animation.Rolling);
                 }
@@ -327,12 +327,12 @@ namespace ArmadilloAssault.GameState.Battle.Input
                 }
                 else if (avatar.IsSpinning)
                 {
-                    if (!avatar.Grounded)
+                    if (!avatar.Grounded && avatar.CanRoll)
                     {
                         avatar.BufferAnimation(Animation.Rolling);
                     }
                 }
-                else
+                else if (avatar.CanRoll)
                 {
                     avatar.BufferAnimation(Animation.Rolling);
                 }

@@ -22,7 +22,9 @@ namespace ArmadilloAssault.Assets
         public ColorJson BackgroundColorJson { get; private set; } = json.BackgroundColor;
         public Color BackgroundColor { get; private set; } = json.BackgroundColor != null ? new Color(json.BackgroundColor.R, json.BackgroundColor.G, json.BackgroundColor.B) : Color.CornflowerBlue;
         public List<Rectangle> CollisionBoxes { get; set; } = ConfigurationHelper.GetRectangles(json.CollisionBoxes);
-        public List<TeamRectangle> TeamRectangles { get; set; } = json.BlockedZones?.Select(zone => new TeamRectangle(zone.ToRectangle(), zone.TeamIndex)).ToList();
+        public List<TeamRectangle> TeamRectangles { get; set; } = json.TeamRectangles != null ? json.TeamRectangles
+            .Select(zone => new TeamRectangle(zone.ToRectangle(DrawingHelper.FullTileSize), zone.TeamIndex, zone.ReturnZone, zone.AllowLeftEdge, zone.AllowRightEdge)).ToList() : [];
+
         public List<TileList> TileLists { get; set; } = GetTileLists(json);
         public bool WrapY { get; set; } = json.WrapY;
         public Rectangle? CapturePoint { get; set; } = json.CapturePoint?.ToRectangle(DrawingHelper.FullTileSize);
@@ -136,5 +138,20 @@ namespace ArmadilloAssault.Assets
         public Point GetSize() => Size;
 
         public bool YWraps() => WrapY;
+
+        public void UpdateTeamIndexes(int teamIndex0, int teamIndex1)
+        {
+            foreach (var rec in TeamRectangles)
+            {
+                if (rec.TeamIndex == 0)
+                {
+                    rec.SetTeamIndex(teamIndex0);
+                }
+                else
+                {
+                    rec.SetTeamIndex(teamIndex1);
+                }
+            }
+        }
     }
 }

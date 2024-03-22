@@ -34,20 +34,16 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<TextureName> WeaponTextures { get; set; } = [];
         public List<ColorJson> Colors { get; set; } = [];
 
-        public static AvatarFrame CreateFrom(Dictionary<int, Avatar> avatars, Dictionary<int, int> playerTeamRelations, int yOffset = 0, bool showCrowns = false)
+        public static AvatarFrame CreateFrom(Dictionary<int, Avatar> avatars, Dictionary<int, int> playerTeamRelations, bool showColors, int yOffset = 0, bool showCrowns = false)
         {
-            var showTeamColors = playerTeamRelations.Values.Distinct().Count() != playerTeamRelations.Count;
-
             var avatarFrame = new AvatarFrame();
             foreach (var playerIndex in avatars.Keys)
             {
                 var avatar = avatars[playerIndex];
 
-                var showTeamColor = showTeamColors || avatars.Values.Count(av => av.Type == avatar.Type) > 1;
-
                 avatarFrame.PlayerIndices.Add(playerIndex);
                 avatarFrame.TeamIndices.Add(playerTeamRelations[playerIndex]);
-                avatarFrame.ShowTeamColors.Add(showTeamColor);
+                avatarFrame.ShowTeamColors.Add(showColors);
                 avatarFrame.Animations.Add(avatar.Animation);
                 avatarFrame.ArmAngles.Add((float)avatar.ArmAngle);
                 avatarFrame.AnimationFrames.Add(avatar.AnimationFrame);

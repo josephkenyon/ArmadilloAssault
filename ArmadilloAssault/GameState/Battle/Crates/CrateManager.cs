@@ -77,7 +77,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             {
                 Crates.RemoveAll(crate =>
                 {
-                    if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox()) && ((avatar.CurrentPowerUp == null || avatar.CanPickUpPowerUps) || crate.Type != CrateType.Power_Up)) {
+                    if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox()) && (avatar.CanPickUpPowerUps || crate.Type != CrateType.Power_Up)) {
                         GiveCrate(avatar, crate);
                         return true;
                     }

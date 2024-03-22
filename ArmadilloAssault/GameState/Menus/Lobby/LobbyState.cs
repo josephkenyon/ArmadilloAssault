@@ -144,7 +144,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         {
             var frame = new LobbyFrame
             {
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars, PlayerTeamRelations, ModeSelect ? 32 : 0, ModeSelect && ModeType.Regicide == SelectedMode),
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars, PlayerTeamRelations, false, ModeSelect ? 32 : 0, ModeSelect && ModeType.Regicide == SelectedMode),
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerModeButtons = GetPlayerModeButtonRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerBackgroundIds = [.. PlayerTeamRelations.Keys],
@@ -325,7 +325,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             {
                 var teamsCount = PlayerTeamRelations.Select(relation => relation.Value).Distinct().Count();
 
-                return teamsCount == 1; // 2;
+                return teamsCount == 2;
             }
 
             return true;

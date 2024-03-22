@@ -47,13 +47,14 @@
     },
     {
       "TeamIndex": 1,
-      "X": 6750,
+      "X": 6730,
       "Y": 1116
     }
   ],
-  "BlockedZones": [
+  "TeamRectangles": [
     {
       "TeamIndex": 1,
+      "AllowRightEdge": true,
       "X": 9,
       "Y": 20,
       "Width": 2,
@@ -61,6 +62,7 @@
     },
     {
       "TeamIndex": 1,
+      "AllowLeftEdge": true,
       "X": 26,
       "Y": 20,
       "Width": 2,
@@ -68,6 +70,7 @@
     },
     {
       "TeamIndex": 0,
+      "AllowRightEdge": true,
       "X": 132,
       "Y": 20,
       "Width": 2,
@@ -75,15 +78,15 @@
     },
     {
       "TeamIndex": 0,
+      "AllowLeftEdge": true,
       "X": 149,
       "Y": 20,
       "Width": 2,
       "Height": 5
-    }
-  ],
-  "ReturnZones": [
+    },
     {
       "TeamIndex": 0,
+      "ReturnZone": true,
       "X": 17,
       "Y": 22,
       "Width": 3,
@@ -91,7 +94,8 @@
     },
     {
       "TeamIndex": 1,
-      "X": 141,
+      "ReturnZone": true,
+      "X": 140,
       "Y": 22,
       "Width": 3,
       "Height": 6
