@@ -198,7 +198,7 @@ namespace ArmadilloAssault.Sound
         public static void CancelReloadSoundEffects()
         {
             _soundFrame ??= new SoundFrame();
-            _soundFrame.CancelReloadSound = true;
+            _soundFrame.CancelReloudSound = true;
         }
 
         public static void PlaySounds(SoundFrame soundFrame)
@@ -207,7 +207,7 @@ namespace ArmadilloAssault.Sound
             {
                 soundFrame.Played = true;
 
-                if (soundFrame.CancelReloadSound)
+                if (soundFrame.CancelReloudSound)
                 {
                     CancelReloadInstances();
                 }

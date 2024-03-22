@@ -73,7 +73,7 @@ namespace ArmadilloAssault.Web.Server
             BattleManager.Initialize(avatarTypeDictionary, MenuManager.LobbyState.PlayerTeamRelations, avatarProps, MenuManager.LobbyState.SelectedMode, data);
             GameStateManager.PushNewState(State.Battle);
 
-            Server.MessageIntialization(data);
+            Server.MessageIntialization(BattleManager.BattleStaticData);
         }
 
         public static void EndGame()
@@ -112,7 +112,6 @@ namespace ArmadilloAssault.Web.Server
         public static void PlayerDisconnected(int index)
         {
             MenuManager.PlayerDisconnected(index);
-            BattleManager.PlayerDisconnected(index);
         }
 
         public static void ClientDisconnected(string id)

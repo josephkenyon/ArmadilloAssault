@@ -21,6 +21,7 @@ namespace ArmadilloAssault.GameState.Battle
     {
         private static Menu Menu { get; set; }
         private static Battle Battle { get; set; }
+        public static BattleStaticData BattleStaticData => Battle.BattleStaticData;
         public static BattleFrame BattleFrame => Battle.Frame;
 
         public static int PlayerIndex { get; private set; }
@@ -34,13 +35,13 @@ namespace ArmadilloAssault.GameState.Battle
 
         public static ModeType? Mode => Battle?.Mode;
 
-        public static void Initialize(string data, int playerIndex)
+        public static void Initialize(BattleStaticData battleStaticData, int playerIndex)
         {
             PlayerIndex = playerIndex;
             FocusPlayerIndex = playerIndex;
 
             Paused = false;
-            Battle = new(data);
+            Battle = new(battleStaticData);
         }
 
         public static void Initialize(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Dictionary<int, AvatarProp> avatarProps, ModeType mode, string data)
@@ -162,17 +163,14 @@ namespace ArmadilloAssault.GameState.Battle
             }
         }
 
-        public static void PlayerDisconnected(int index)
-        {
-            if (Battle != null)
-            {
-                Battle.Avatars.Remove(index);
-            }
-        }
-
         public static void SetFrame(BattleFrame battleFrame)
         {
             Battle.Frame = battleFrame;
+
+            if (battleFrame.StatFrame != null)
+            {
+                Battle.StatFrame = battleFrame.StatFrame;
+            }
         }
     }
 }

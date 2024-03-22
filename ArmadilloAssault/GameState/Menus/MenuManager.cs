@@ -320,7 +320,7 @@ namespace ArmadilloAssault.GameState.Menus
                       LobbyFrame.PlayerNames
                     );
 
-                    DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));
+                    DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.LobbyAvatarFrame));
 
                     if (ConditionFulfilled(MenuCondition.mode_select) && ModeType.Regicide == LobbyFrame.SelectedMode)
                     {

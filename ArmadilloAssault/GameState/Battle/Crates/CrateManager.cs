@@ -236,8 +236,8 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             foreach (var crate in Crates)
             {
                 crateFrame.Types.Add(crate.Type);
-                crateFrame.PositionXs.Add(crate.Position.X);
-                crateFrame.PositionYs.Add(crate.Position.Y);
+                crateFrame.Xs.Add(crate.Position.X);
+                crateFrame.Ys.Add(crate.Position.Y);
                 crateFrame.Groundeds.Add(crate.Grounded);
                 crateFrame.GoingDowns.Add(crate.GoingDown);
             }
@@ -256,7 +256,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 {
                     var drawableCrate = new DrawableCrate(
                         type,
-                        new Vector2(crateFrame.PositionXs[index], crateFrame.PositionYs[index]),
+                        new Vector2(crateFrame.Xs[index], crateFrame.Ys[index]),
                         crateFrame.Groundeds[index],
                         crateFrame.GoingDowns[index]
                     );

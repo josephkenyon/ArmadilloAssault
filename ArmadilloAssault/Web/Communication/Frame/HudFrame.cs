@@ -1,33 +1,28 @@
-﻿using ArmadilloAssault.Configuration.Generics;
-using ArmadilloAssault.GameState.Battle.Mode;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class HudFrame
     {
-        public ModeType ModeType { get; set; }
-        public List<int> TeamIndices { get; set; } = [];
-        public List<int> ModeValues { get; set; } = [];
-        public List<int> PlayerIndices { get; set; } = [];
+        [JsonProperty("RTs")]
+        public List<string> RespawnTimers { get; set; }
 
-        public List<bool> Deads { get; set; } = [];
-        public List<bool> Visibles { get; set; } = [];
-        public List<int> AvatarXs { get; set; } = [];
-        public List<int> AvatarYs { get; set; } = [];
+        [JsonProperty("Hs")]
         public List<int> Healths { get; set; } = [];
+
+        [JsonProperty("As")]
         public List<int?> Ammos { get; set; } = [];
-        public ColorJson CapturePointColor { get; set; }
-        public int? CapturePointSeconds { get; set; }
 
+        [JsonProperty("FTVs")]
         public List<int> FlagTimerValues { get; set; } = [];
-        public List<float> FlagTimerXs { get; set; } = [];
-        public List<float> FlagTimerYs { get; set; } = [];
 
-        public List<int> Kills { get; set; } = [];
-        public List<int> Deaths { get; set; } = [];
-        public List<int> Dealts { get; set; } = [];
-        public List<int> Takens { get; set; } = [];
-        public List<string> Names { get; set; } = [];
+        [JsonProperty("FTXs")]
+        [JsonConverter(typeof(FloatConverter))]
+        public List<float> FlagTimerXs { get; set; } = [];
+
+        [JsonProperty("FTYs")]
+        [JsonConverter(typeof(FloatConverter))]
+        public List<float> FlageTimerYs { get; set; } = [];
     }
 }

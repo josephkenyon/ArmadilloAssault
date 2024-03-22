@@ -25,7 +25,6 @@ using ArmadilloAssault.Web.Server;
 using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Weapons;
-using ArmadilloAssault.GameState.Battle.PowerUps;
 using Microsoft.Xna.Framework.Input;
 using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
@@ -50,18 +49,23 @@ namespace ArmadilloAssault.GameState.Battle
         public EnvironmentalEffectsManager EnvironmentalEffectsManager { get; set; }
         public FlowManager FlowManager { get; set; }
         public ModeManager ModeManager { get; set; }
+
+        public BattleStaticData BattleStaticData { get; set; }
         public BattleFrame Frame { get; set; }
+        public StatFrame StatFrame { get; set; }
 
         public bool Paused { get; set; }
         public bool GameOver { get; set; }
 
         private int SpawnLocationIndex { get; set; }
 
-        public ModeType? Mode => ModeManager?.Mode;
+        public ModeType Mode => BattleStaticData != null ? BattleStaticData.ModeType : ModeManager.Mode;
 
-        public Battle(string data)
+        public Battle(BattleStaticData battleStaticData)
         {
-            var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(data);
+            BattleStaticData = battleStaticData;
+
+            var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(battleStaticData.SceneName);
 
             Scene = new Scene(sceneConfiguration);
 
@@ -83,7 +87,7 @@ namespace ArmadilloAssault.GameState.Battle
             ItemManager = new(this);
             ModeManager = new(this, avatars.Keys.Select(key => new KeyValuePair<int, int>(key, playerTeamRelations[key])), mode);
 
-            if (ModeType.Capture_the_Flag == Mode)
+            if (ModeType.Capture_the_Flag == mode)
             {
                 Dictionary<int, Point> flagDictionary = [];
 
@@ -98,7 +102,7 @@ namespace ArmadilloAssault.GameState.Battle
                     flagDictionary.Add(teamIndex, new Point(flag.X, flag.Y));
                 }
 
-                ModeManager.InitializeKingOfTheHill(flagDictionary);
+                ModeManager.InitializeCaptureTheFlag(flagDictionary);
 
                 Scene.UpdateTeamIndexes(orderedTeamIndices.First(), orderedTeamIndices.Last());
             }
@@ -144,6 +148,7 @@ namespace ArmadilloAssault.GameState.Battle
             PrecipitationManager = new(Scene.Size, sceneConfiguration.PrecipitationType);
 
             Frame = CreateFrame();
+            BattleStaticData = CreateBattleStaticData(sceneName);
         }
 
         public void Update()
@@ -219,8 +224,8 @@ namespace ArmadilloAssault.GameState.Battle
         {
             if (Frame != null)
             {
-                var index = Frame.AvatarFrame.PlayerIndices.IndexOf(BattleManager.FocusPlayerIndex);
-                CameraManager.UpdateFocusPoint(Frame.AvatarFrame.Positions[index]);
+                var index = BattleStaticData.AvatarStaticData.PlayerIndices.IndexOf(BattleManager.FocusPlayerIndex);
+                CameraManager.UpdateFocusPoint(new Vector2(Frame.AvatarFrame.Xs[index], Frame.AvatarFrame.Ys[index]));
             }
 
             GraphicsManager.Clear(Scene.BackgroundColor);
@@ -249,7 +254,7 @@ namespace ArmadilloAssault.GameState.Battle
                 DrawingManager.DrawCollection([.. list.Tiles]);
             }
 
-            if (Frame != null && Frame.HudFrame != null && Frame.HudFrame.CapturePointColor != null && Scene.CapturePoint != null)
+            if (Frame != null && Frame.HudFrame != null && Frame.ModeFrame.Colors != null && Scene.CapturePoint != null)
             {
                 var rectangle = new Rectangle(
                     Scene.CapturePoint.Value.X - CameraManager.Offset.X,
@@ -258,7 +263,7 @@ namespace ArmadilloAssault.GameState.Battle
                     Scene.CapturePoint.Value.Height
                 );
 
-                DrawingManager.DrawRectangle(rectangle, Frame.HudFrame.CapturePointColor.ToColor());
+                DrawingManager.DrawRectangle(rectangle, Frame.ModeFrame.Colors.ToColor());
             }
 
             if (Frame != null && Frame.HudFrame != null)
@@ -278,14 +283,14 @@ namespace ArmadilloAssault.GameState.Battle
                     }
                     else
                     {
-                        var orderedIndices = Frame.HudFrame.TeamIndices.Order();
+                        var orderedIndices = BattleStaticData.AvatarStaticData.TeamIndices.Order();
                         DrawingManager.DrawRectangle(rectangle, DrawingHelper.GetTeamColor(rec.TeamIndex == 0 ? orderedIndices.First() : orderedIndices.Last()));
                     }
                 });
 
                 SoundManager.PlaySounds(Frame.SoundFrame);
 
-                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame, BattleManager.PlayerIndex));
+                DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame, BattleStaticData.AvatarStaticData, BattleManager.PlayerIndex));
                 DrawingManager.DrawCollection(CrateManager.GetDrawableCrates(Frame.CrateFrame));
                 DrawingManager.DrawCollection(ItemManager.GetDrawableItems(Frame.ItemFrame));
             }
@@ -306,14 +311,17 @@ namespace ArmadilloAssault.GameState.Battle
 
             if (Frame != null)
             {
-                var offset = new Vector2(64, -48);
-                DrawingManager.DrawStrings(Frame.AvatarFrame.RespawnTimers, Frame.AvatarFrame.Positions.Select(position => position + offset - CameraManager.Offset.ToVector2()));
+                if (Frame.HudFrame.RespawnTimers != null)
+                {
+                    var offset = new Vector2(64, -48);
+                    DrawingManager.DrawStrings(Frame.HudFrame.RespawnTimers, Frame.AvatarFrame.GetPositions().Select(position => position + offset - CameraManager.Offset.ToVector2()));
+                }
 
                 if (Frame.HudFrame != null)
                 {
-                    DrawingManager.DrawHud(Frame.HudFrame, BattleManager.PlayerIndex);
+                    DrawingManager.DrawHud(BattleStaticData, Frame.HudFrame, Frame.ModeFrame, Frame.AvatarFrame, BattleManager.PlayerIndex);
 
-                    if (Frame.HudFrame.CapturePointColor != null && Scene.CapturePoint != null && Frame.HudFrame.CapturePointSeconds != null)
+                    if (Frame.ModeFrame.Colors != null && Scene.CapturePoint != null && Frame.ModeFrame.CapturePointSeconds != null)
                     {
                         var rectangle = new Rectangle(
                             Scene.CapturePoint.Value.X - CameraManager.Offset.X,
@@ -322,17 +330,17 @@ namespace ArmadilloAssault.GameState.Battle
                             Scene.CapturePoint.Value.Height
                         );
 
-                        DrawingManager.DrawString(Frame.HudFrame.CapturePointSeconds.ToString(), rectangle.Center.ToVector2(), DrawingHelper.MediumFont);
+                        DrawingManager.DrawString(Frame.ModeFrame.CapturePointSeconds.ToString(), rectangle.Center.ToVector2(), DrawingHelper.MediumFont);
                     }
 
-                    if (Frame.HudFrame.ModeType == ModeType.Capture_the_Flag)
+                    if (BattleStaticData.ModeType == ModeType.Capture_the_Flag)
                     {
                         var positions = new List<Vector2>();
 
                         for (int i = 0; i < Frame.HudFrame.FlagTimerXs.Count; i++)
                         {
                             positions.Add(
-                                new Vector2(Frame.HudFrame.FlagTimerXs[i], Frame.HudFrame.FlagTimerYs[i]) - CameraManager.Offset.ToVector2() + new Vector2(64, -16)
+                                new Vector2(Frame.HudFrame.FlagTimerXs[i], Frame.HudFrame.FlageTimerYs[i]) - CameraManager.Offset.ToVector2() + new Vector2(64, -16)
                             );
                         }
 
@@ -342,7 +350,7 @@ namespace ArmadilloAssault.GameState.Battle
                         );
                     }
 
-                    if (ControlsManager.IsControlDown(0, Control.Show_Stats) && ModeType.Tutorial != Frame.HudFrame.ModeType)
+                    if (ControlsManager.IsControlDown(0, Control.Show_Stats) && ModeType.Tutorial != BattleStaticData.ModeType)
                     {
                         DrawingManager.DrawRectangle(new Rectangle(478, 268, 964, 544), Color.White);
                         DrawingManager.DrawRectangle(new Rectangle(480, 270, 960, 540), Color.Black);
@@ -358,12 +366,12 @@ namespace ArmadilloAssault.GameState.Battle
                         DrawingManager.DrawString("Dmg Dealt", new Vector2(startingX + 208 * 2, startingY), DrawingHelper.SmallFont);
                         DrawingManager.DrawString("Dmg Taken", new Vector2(startingX + 208 * 3, startingY), DrawingHelper.SmallFont);
 
-                        for (int i = 0; i < Frame.HudFrame.Names.Count; i++)
+                        for (int i = 0; i < StatFrame.Names.Count; i++)
                         {
-                            DrawingManager.DrawString(Frame.HudFrame.Names[i], new Vector2(startingX, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
-                            DrawingManager.DrawString(Frame.HudFrame.Kills[i] + " / " + Frame.HudFrame.Deaths[i], new Vector2(startingX + x, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
-                            DrawingManager.DrawString(Frame.HudFrame.Dealts[i].ToString(), new Vector2(startingX + x * 2, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
-                            DrawingManager.DrawString(Frame.HudFrame.Takens[i].ToString(), new Vector2(startingX + x * 3, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(StatFrame.Names[i], new Vector2(startingX, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(StatFrame.Kills[i] + " / " + StatFrame.Deaths[i], new Vector2(startingX + x, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(StatFrame.DamageDealts[i].ToString(), new Vector2(startingX + x * 2, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(StatFrame.DamageTakens[i].ToString(), new Vector2(startingX + x * 3, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
 
                         }
                     }
@@ -393,87 +401,100 @@ namespace ArmadilloAssault.GameState.Battle
 
         private BattleFrame CreateFrame()
         {
-            var relations = ModeManager.PlayerTeamRelations;
-            var showColors = ModeType.Tutorial != Mode && (ModeType.Deathmatch != Mode || (relations.Values.Distinct().Count() != relations.Count));
-
             var battleFrame = new BattleFrame
             {
                 GameOverMessage = ModeManager.VictoryMessage,
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars, relations, showColors, showCrowns: ModeType.Regicide == Mode),
+                AvatarFrame = AvatarFrame.CreateFrom(Avatars),
                 BulletFrame = BulletManager.GetBulletFrame(),
                 CrateFrame = CrateManager.GetCrateFrame(),
                 EffectFrame = EffectManager.GetEffectFrame(),
                 HudFrame = CreateHudFrame(),
+                ModeFrame = CreateModeFrame(),
+                StatFrame = ModeManager.CreateStatFrameIfNewData(),
                 ItemFrame = ItemManager.GetItemFrame()
             };
 
+            if (battleFrame.StatFrame != null)
+            {
+                StatFrame = battleFrame.StatFrame;
+            }
+
             return battleFrame;
+        }
+
+        private BattleStaticData CreateBattleStaticData(string sceneName)
+        {
+            var relations = ModeManager.PlayerTeamRelations;
+            var showColors = ModeType.Tutorial != Mode && (ModeType.Deathmatch != Mode || (relations.Values.Distinct().Count() != relations.Count));
+
+            var battleStaticData = new BattleStaticData
+            {
+                SceneName = sceneName,
+                ModeType = Mode,
+                Names = ModeManager.PlayerTeamRelations.Keys.Select(ServerManager.GetPlayerName).ToList(),
+                AvatarStaticData = AvatarStaticData.CreateFrom(Avatars, relations, showColors, showCrowns: ModeType.Regicide == Mode),
+            };
+
+            return battleStaticData;
         }
 
         private HudFrame CreateHudFrame()
         {
             var hudFrame = new HudFrame();
 
-            if (ModeType.Tutorial != Mode)
+            if (ModeType.Tutorial != Mode && ModeType.Capture_the_Flag == Mode)
             {
-                hudFrame.ModeType = ModeManager.Mode;
-                hudFrame.TeamIndices = [.. ModeManager.PlayerTeamRelations.Values.Order()];
-                hudFrame.ModeValues = ModeManager.GetModeValues();
-
-                if (ModeType.Capture_the_Flag == Mode)
+                foreach (var timer in ModeManager.FlagReturnTimers)
                 {
-                    foreach (var timer in ModeManager.FlagReturnTimers)
+                    if (timer.Value != 0)
                     {
-                        if (timer.Value != 0)
-                        {
-                            hudFrame.FlagTimerValues.Add(5 - (timer.Value / 60));
+                        hudFrame.FlagTimerValues.Add(5 - (timer.Value / 60));
 
-                            var flag = ItemManager.Items.Single(item => item.TeamIndex == timer.Key && item.Type == ItemType.Flag);
+                        var flag = ItemManager.Items.Single(item => item.TeamIndex == timer.Key && item.Type == ItemType.Flag);
 
-                            hudFrame.FlagTimerXs.Add(flag.Position.X);
-                            hudFrame.FlagTimerYs.Add(flag.Position.Y);
-                        }
+                        hudFrame.FlagTimerXs.Add(flag.Position.X);
+                        hudFrame.FlageTimerYs.Add(flag.Position.Y);
                     }
+                }
+            }
+
+            if (Avatars.Values.Any(avatar => avatar.RespawnTimerFrames > 0))
+            {
+                hudFrame.RespawnTimers = [];
+                foreach (var avatar in Avatars.Values)
+                {
+                    hudFrame.RespawnTimers.Add(avatar.GetRespawnMessage());
                 }
             }
 
             foreach (var avatarKey in Avatars.Keys)
             {
                 var avatar = Avatars[avatarKey];
-
                 var weapon = avatar.SelectedWeapon;
 
-                hudFrame.PlayerIndices.Add(avatarKey);
-                hudFrame.Names.Add(ServerManager.GetPlayerName(avatarKey));
-
-                if (ModeManager != null)
-                {
-                    var playerStat = ModeManager.GetPlayerStat(avatarKey);
-
-                    if (playerStat != null)
-                    {
-                        hudFrame.Kills.Add(playerStat.Kills);
-                        hudFrame.Deaths.Add(playerStat.Deaths);
-                        hudFrame.Dealts.Add(playerStat.DamageDealt);
-                        hudFrame.Takens.Add(playerStat.DamageTaken);
-                    }
-                }
-
-                hudFrame.Deads.Add(avatar.IsDead);
-                hudFrame.Visibles.Add(PowerUpType.Invisibility != avatar.CurrentPowerUp);
-                hudFrame.AvatarXs.Add((int)avatar.Position.X);
-                hudFrame.AvatarYs.Add((int)avatar.Position.Y);
                 hudFrame.Healths.Add(avatar.Health);
                 hudFrame.Ammos.Add(weapon.AmmoInClip + weapon.Ammo);
             }
 
-            if (ModeType.King_of_the_Hill == Mode)
+            return hudFrame;
+        }
+
+        private ModeFrame CreateModeFrame()
+        {
+            var modeFrame = new ModeFrame();
+
+            if (ModeType.Tutorial != Mode)
             {
-                hudFrame.CapturePointColor = ColorJson.CreateFrom(ModeManager.GetCapturePointColor());
-                hudFrame.CapturePointSeconds = ModeManager.CaputurePointSeconds;
+                modeFrame.ModeValues = ModeManager.GetModeValues();
             }
 
-            return hudFrame;
+            if (ModeType.King_of_the_Hill == Mode)
+            {
+                modeFrame.Colors = ColorJson.CreateFrom(ModeManager.GetCapturePointColor());
+                modeFrame.CapturePointSeconds = ModeManager.CapturePointSeconds;
+            }
+
+            return modeFrame;
         }
 
         public void SetRespawnTimer(int avatarIndex, int frames)
@@ -543,9 +564,9 @@ namespace ArmadilloAssault.GameState.Battle
             }
             else if (Frame != null)
             {
-                var index = Frame.AvatarFrame.PlayerIndices.IndexOf(playerIndex);
+                var index = BattleStaticData.AvatarStaticData.PlayerIndices.IndexOf(playerIndex);
 
-                return !Frame.AvatarFrame.Deads[index];
+                return Frame.AvatarFrame.Animations[index] != Animation.Dead;
             }
 
             return true;
@@ -560,7 +581,7 @@ namespace ArmadilloAssault.GameState.Battle
             }
             else if (Frame != null)
             {
-                playerIds = [.. Frame.AvatarFrame.PlayerIndices];
+                playerIds = [.. BattleStaticData.AvatarStaticData.PlayerIndices];
             }
 
             if (playerIds.Count != 0)

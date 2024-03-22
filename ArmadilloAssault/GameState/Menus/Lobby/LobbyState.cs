@@ -144,7 +144,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         {
             var frame = new LobbyFrame
             {
-                AvatarFrame = AvatarFrame.CreateFrom(Avatars, PlayerTeamRelations, false, ModeSelect ? 32 : 0, ModeSelect && ModeType.Regicide == SelectedMode),
+                LobbyAvatarFrame = LobbyAvatarFrame.CreateFrom(Avatars, ModeSelect ? 32 : 0, ModeSelect && ModeType.Regicide == SelectedMode),
                 PlayerBackgrounds = GetPlayerBackgroundRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerModeButtons = GetPlayerModeButtonRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerBackgroundIds = [.. PlayerTeamRelations.Keys],

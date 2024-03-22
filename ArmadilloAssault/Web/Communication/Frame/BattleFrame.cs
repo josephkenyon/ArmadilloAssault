@@ -1,18 +1,38 @@
 ﻿using ArmadilloAssault.Sound;
+using Newtonsoft.Json;
 
 namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class BattleFrame : ISoundFrameContainer
     {
+        [JsonProperty("GOM")]
         public string GameOverMessage { get; set; }
+        
+        [JsonProperty("AF")]
         public AvatarFrame AvatarFrame { get; set; } = new();
+        
+        [JsonProperty("BF")]
         public BulletFrame BulletFrame { get; set; } = new();
+        
+        [JsonProperty("CF")]
         public CrateFrame CrateFrame { get; set; } = new();
+        
+        [JsonProperty("EF")]
         public EffectFrame EffectFrame { get; set; } = new();
+        
+        [JsonProperty("HF")]
         public HudFrame HudFrame { get; set; } = new();
+        
+        [JsonProperty("SF")]
         public SoundFrame SoundFrame { get; set; } = new();
 
-        public ItemFrame ItemFrame { get; set; }
+        [JsonProperty("StF")]
+        public StatFrame StatFrame { get; set; }
+        
+        [JsonProperty("MF")]
+        public ModeFrame ModeFrame { get; set; } = new();
 
+        [JsonProperty("IF")]
+        public ItemFrame ItemFrame { get; set; }
     }
 }

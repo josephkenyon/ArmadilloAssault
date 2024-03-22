@@ -44,7 +44,8 @@ namespace ArmadilloAssault.Assets
         private readonly Rectangle SpinningShellBox = ConfigurationHelper.GetRectangle(avatarJson.SpinningShellBox);
 
         // Drawing
-        public readonly TextureName TextureName = Enum.Parse<TextureName>(avatarJson.Type.ToString().ToLower());
+        public static TextureName GetTextureName(AvatarType avatarType) => Enum.Parse<TextureName>(avatarType.ToString().ToLower());
+        public readonly TextureName TextureName = GetTextureName(avatarJson.Type);
         public readonly TextureName WhiteTextureName = Enum.Parse<TextureName>(avatarJson.Type.ToString().ToLower() + "_white");
 
         public readonly Point Size = new(avatarJson.Size.X, avatarJson.Size.Y);

@@ -1,11 +1,13 @@
 ﻿using ArmadilloAssault.Assets;
-using ArmadilloAssault.Configuration.Scenes;
 using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Graphics.Drawing;
+using ArmadilloAssault.Web.Communication.Frame;
+using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Mode
@@ -35,7 +37,9 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         private List<int> ContestingTeamIndicies { get; set; } = [];
 
-        public int? CaputurePointSeconds => ContestingTeamIndicies.Count == 1 ? TeamBattleStats[ContestingTeamIndicies.First()].CapturePointFrames / 60 : null;
+        public int? CapturePointSeconds => ContestingTeamIndicies.Count == 1 ? TeamBattleStats[ContestingTeamIndicies.First()].CapturePointFrames / 60 : null;
+
+        private bool newData = true;
 
         public ModeManager(IModeManagerListener modeManagerListener, IEnumerable<KeyValuePair<int, int>> playerIndices, ModeType mode)
         {
@@ -64,7 +68,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             }
         }
 
-        public void InitializeKingOfTheHill(Dictionary<int, Point> flags)
+        public void InitializeCaptureTheFlag(Dictionary<int, Point> flags)
         {
             foreach (var flag in flags)
             {
@@ -79,7 +83,11 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
             if (ContestingTeamIndicies.Count == 1 && !GameOver)
             {
+                var capturePointSeconds = CapturePointSeconds;
+
                 TeamBattleStats[ContestingTeamIndicies.First()].CapturePointFrames++;
+
+                newData = capturePointSeconds != CapturePointSeconds;
             }
         }
 
@@ -91,12 +99,15 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
                 if (flag != null)
                 {
+                    Trace.WriteLine(zone.TeamIndex);
                     TeamBattleStats[zone.TeamIndex].Points++;
                     var avatar = ModeManagerListener.GetAvatars().Values.SingleOrDefault(avatar => avatar.HeldItems.Contains(flag));
                     avatar?.HeldItems.Remove(flag);
 
                     flag.SetPosition(FlagStartingLocations[flag.TeamIndex].ToVector2());
                     flag.Disturbed = false;
+
+                    newData = true;
                 }
             }
 
@@ -152,6 +163,8 @@ namespace ArmadilloAssault.GameState.Battle.Mode
         {
             IndividualBattleStats[hitIndex].DamageTaken += damage;
             IndividualBattleStats[firedIndex].DamageDealt += damage;
+
+            newData = true;
         }
 
         public void AvatarKilled(int deadIndex, int? killIndex)
@@ -162,6 +175,8 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                 IndividualBattleStats[(int)killIndex].Kills += 1;
                 TeamBattleStats[PlayerTeamRelations[(int)killIndex]].Kills += 1;
             }
+
+            newData = true;
         }
 
         private bool IsGameOver()
@@ -235,19 +250,17 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         public List<int> GetModeValues()
         {
-            var battleStats = TeamBattleStats.OrderBy(stat => stat.Key);
-
             if (Mode == ModeType.King_of_the_Hill)
             {
-                return battleStats.Select(stat => stat.Value.CapturePointFrames / 60).ToList();
+                return TeamBattleStats.Select(stat => stat.Value.CapturePointFrames / 60).ToList();
             }
             else if (Mode == ModeType.Capture_the_Flag)
             {
-                return battleStats.Select(stat => stat.Value.Points).ToList();
+                return TeamBattleStats.Select(stat => stat.Value.Points).ToList();
             }
             else
             {
-                return battleStats.Select(stat => stat.Value.Kills).ToList();
+                return TeamBattleStats.Select(stat => stat.Value.Kills).ToList();
             }
         }
 
@@ -276,6 +289,34 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             return true;
         }
 
-        public IndividualBattleStat GetPlayerStat(int playerIndex) => IndividualBattleStats[playerIndex];
+        public StatFrame CreateStatFrameIfNewData()
+        {
+            if (!newData)
+            {
+                return null;
+            }
+
+            var statFrame = new StatFrame();
+
+            foreach (var playerIndex in PlayerTeamRelations.Keys)
+            {
+                statFrame.PlayerIndices.Add(playerIndex);
+                statFrame.Names.Add(ServerManager.GetPlayerName(playerIndex));
+
+                var playerStat = IndividualBattleStats[playerIndex];
+
+                if (playerStat != null)
+                {
+                    statFrame.Kills.Add(playerStat.Kills);
+                    statFrame.Deaths.Add(playerStat.Deaths);
+                    statFrame.DamageDealts.Add(playerStat.DamageDealt);
+                    statFrame.DamageTakens.Add(playerStat.DamageTaken);
+                }
+            }
+
+            newData = false;
+
+            return statFrame;
+        }
     }
 }

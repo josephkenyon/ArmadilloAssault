@@ -12,6 +12,7 @@ using System.Linq;
 using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle.Mode;
+using ArmadilloAssault.Configuration.Avatars;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -223,17 +224,17 @@ namespace ArmadilloAssault.Graphics.Drawing
             }
         }
 
-        public static void DrawHud(HudFrame hudFrame, int playerIndex)
+        public static void DrawHud(BattleStaticData battleStaticData, HudFrame hudFrame, ModeFrame modeFrame, AvatarFrame avatarFrame, int playerIndex)
         {
-            for (int i = 0; i < hudFrame.PlayerIndices.Count; i++)
+            for (int i = 0; i < battleStaticData.AvatarStaticData.PlayerIndices.Count; i++)
             {
-                var avatarIndex = hudFrame.PlayerIndices[i];
+                var avatarIndex = battleStaticData.AvatarStaticData.PlayerIndices[i];
 
-                if ((!hudFrame.Visibles[i] && playerIndex != avatarIndex) || hudFrame.Deads[i]) { continue; }
+                if ((avatarFrame.Invisibles[i] && playerIndex != avatarIndex) || avatarFrame.Animations[i] == Animation.Dead) { continue; }
 
                 _spriteBatch.Draw(
                     texture: TextureManager.GetTexture(TextureName.white_pixel),
-                    destinationRectangle: new Rectangle(hudFrame.AvatarXs[i] + 16 - CameraManager.Offset.X, hudFrame.AvatarYs[i] - 24 - CameraManager.Offset.Y, 96, 8),
+                    destinationRectangle: new Rectangle((int)(avatarFrame.Xs[i] + 16 - CameraManager.Offset.X), (int)(avatarFrame.Ys[i] - 24 - CameraManager.Offset.Y), 96, 8),
                     sourceRectangle: new Rectangle(0, 0, 1, 1),
                     color: Color.Black * 0.5f
                 );
@@ -241,8 +242,8 @@ namespace ArmadilloAssault.Graphics.Drawing
                 _spriteBatch.Draw(
                    texture: TextureManager.GetTexture(TextureName.white_pixel),
                    destinationRectangle: new Rectangle(
-                       hudFrame.AvatarXs[i] + 16 - CameraManager.Offset.X,
-                       hudFrame.AvatarYs[i] - 24 - CameraManager.Offset.Y,
+                       (int)(avatarFrame.Xs[i] + 16 - CameraManager.Offset.X),
+                       (int)(avatarFrame.Ys[i] - 24 - CameraManager.Offset.Y),
                        Math.Clamp((int)(96f * (hudFrame.Healths[i] / 100f)), 2, 100), 8
                     ),
                    sourceRectangle: new Rectangle(0, 0, 1, 1),
@@ -254,8 +255,8 @@ namespace ArmadilloAssault.Graphics.Drawing
                     _spriteBatch.Draw(
                         texture: TextureManager.GetTexture(TextureName.bullet_box),
                         destinationRectangle: new Rectangle(
-                            hudFrame.AvatarXs[i] + 24 - CameraManager.Offset.X,
-                            hudFrame.AvatarYs[i] - 64 - CameraManager.Offset.Y,
+                            (int)(avatarFrame.Xs[i] + 24 - CameraManager.Offset.X),
+                            (int)(avatarFrame.Ys[i] - 64 - CameraManager.Offset.Y),
                             32, 32
                         ),
                         color: Color.White
@@ -264,15 +265,20 @@ namespace ArmadilloAssault.Graphics.Drawing
                     _spriteBatch.DrawString(
                         DrawingHelper.GetFont, $"x {hudFrame.Ammos[i]}",
                         new Vector2(
-                            hudFrame.AvatarXs[i] + 64 - CameraManager.Offset.X,
-                            hudFrame.AvatarYs[i] - 56 - CameraManager.Offset.Y
+                            avatarFrame.Xs[i] + 64 - CameraManager.Offset.X,
+                            avatarFrame.Ys[i] - 56 - CameraManager.Offset.Y
                         ),
                         Color.White
                     );
                 }
             }
 
-            foreach (var teamIndex in hudFrame.TeamIndices)
+            if (battleStaticData.ModeType == ModeType.Tutorial)
+            {
+                return;
+            }
+
+            foreach (var teamIndex in battleStaticData.AvatarStaticData.TeamIndices)
             {
                 _spriteBatch.Draw(
                    texture: TextureManager.GetTexture(TextureName.white_pixel),
@@ -290,12 +296,12 @@ namespace ArmadilloAssault.Graphics.Drawing
                   color: DrawingHelper.GetTeamColor(teamIndex) * 0.65f
                 );
 
-                var modeValueIndex = hudFrame.TeamIndices.Distinct().ToList().IndexOf(teamIndex);
+                var modeValueIndex = battleStaticData.AvatarStaticData.TeamIndices.Distinct().ToList().IndexOf(teamIndex);
 
-                var value = $"{hudFrame.ModeValues[modeValueIndex]}";
+                var value = $"{modeFrame.ModeValues[modeValueIndex]}";
                 var stringSize = DrawingHelper.GetFont.MeasureString(value);
 
-                var drawSkull = ModeType.Deathmatch == hudFrame.ModeType || ModeType.Regicide == hudFrame.ModeType;
+                var drawSkull = ModeType.Deathmatch == battleStaticData.ModeType || ModeType.Regicide == battleStaticData.ModeType;
                 if (drawSkull)
                 {
                     var texture = TextureManager.GetTexture(TextureName.skull);
@@ -307,7 +313,7 @@ namespace ArmadilloAssault.Graphics.Drawing
                 }
 
                 _spriteBatch.DrawString(
-                    DrawingHelper.GetFont, $"{hudFrame.ModeValues[modeValueIndex]}",
+                    DrawingHelper.GetFont, $"{modeFrame.ModeValues[modeValueIndex]}",
                     new Vector2(
                         rec.Center.X + (drawSkull ? 20 : 0) - (stringSize.X / 2f),
                         rec.Center.Y - (stringSize.Y / 2)

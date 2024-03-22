@@ -51,8 +51,8 @@ namespace ArmadilloAssault.GameState.Battle.Effects
             foreach (var effect in Effects)
             {
                 effectFrame.Types.Add(effect.Type);
-                effectFrame.PositionXs.Add(effect.Position.X);
-                effectFrame.PositionYs.Add(effect.Position.Y);
+                effectFrame.Xs.Add(effect.Position.X);
+                effectFrame.Ys.Add(effect.Position.Y);
                 effectFrame.Directions.Add(effect.Direction);
                 effectFrame.Frames.Add(effect.FrameCounter);
             }
@@ -71,7 +71,7 @@ namespace ArmadilloAssault.GameState.Battle.Effects
                 {
                     var drawableEffect = new DrawableEffect(
                         type,
-                        new Vector2(effectFrame.PositionXs[index], effectFrame.PositionYs[index]),
+                        new Vector2(effectFrame.Xs[index], effectFrame.Ys[index]),
                         effectFrame.Directions[index],
                         effectFrame.Frames[index]
                     );

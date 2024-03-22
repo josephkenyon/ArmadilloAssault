@@ -40,15 +40,14 @@ namespace ArmadilloAssault.Web.Server
             WebSocketServer.Start();
         }
 
-        public void MessageIntialization(string data)
+        public void MessageIntialization(BattleStaticData battleStaticData)
         {
             foreach (var player in ClientPlayers)
             {
                 var message = new ServerMessage
                 {
                     Type = ServerMessageType.BattleInitialization,
-                    AvatarTypes = MenuManager.LobbyState.Avatars.Values.Select(avatar => avatar.Type).ToList(),
-                    SceneName = data,
+                    BattleStaticData = battleStaticData,
                     BattleFrame = BattleManager.BattleFrame,
                     PlayerIndex = player.PlayerIndex
                 };

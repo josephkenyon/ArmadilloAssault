@@ -51,12 +51,12 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
 
             foreach (var item in Items)
             {
-                frame.ItemTypes.Add(item.Type);
+                frame.Types.Add(item.Type);
                 frame.Directions.Add(item.Direction);
                 frame.TeamIndices.Add(item.TeamIndex);
                 frame.SpriteXs.Add(item.BeingHeld ? 1 : 0);
-                frame.PositionXs.Add(item.Position.X);
-                frame.PositionYs.Add(item.Position.Y);
+                frame.Xs.Add(item.Position.X);
+                frame.Ys.Add(item.Position.Y);
             }
 
             return frame;
@@ -72,15 +72,15 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             }
 
             var index = 0;
-            foreach (var type in itemFrame.ItemTypes)
+            foreach (var type in itemFrame.Types)
             {
                 Color? color = itemFrame.TeamIndices[index] != null ? DrawingHelper.GetTeamColor((int)itemFrame.TeamIndices[index]) : null;
 
                 var drawableItem = new DrawableItem(
                     type,
                     new Vector2(
-                        itemFrame.PositionXs[index],
-                        itemFrame.PositionYs[index]
+                        itemFrame.Xs[index],
+                        itemFrame.Ys[index]
                     ),
                     itemFrame.Directions[index],
                     itemFrame.SpriteXs[index],

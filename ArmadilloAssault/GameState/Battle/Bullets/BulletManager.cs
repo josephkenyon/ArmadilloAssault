@@ -193,8 +193,8 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
             foreach (var bullet in Bullets)
             {
                 bulletFrame.WeaponTypes.Add(bullet.WeaponType);
-                bulletFrame.PositionXs.Add(bullet.Position.X);
-                bulletFrame.PositionYs.Add(bullet.Position.Y);
+                bulletFrame.Xs.Add(bullet.Position.X);
+                bulletFrame.Ys.Add(bullet.Position.Y);
                 bulletFrame.Rotations.Add(bullet.Angle);
             }
 
@@ -212,7 +212,7 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
                 {
                     var drawableBullet = new DrawableBullet(
                         type,
-                        new Vector2(bulletFrame.PositionXs[index], bulletFrame.PositionYs[index]),
+                        new Vector2(bulletFrame.Xs[index], bulletFrame.Ys[index]),
                         bulletFrame.Rotations[index]
                     );
 

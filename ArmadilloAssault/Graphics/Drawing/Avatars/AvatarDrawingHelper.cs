@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.Configuration;
+﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.GameState.Battle.Camera;
@@ -25,22 +26,70 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             }
         }
 
-        public static ICollection<IDrawableObject> GetDrawableAvatars(AvatarFrame avatarFrame, int playerIndex = 0)
+        public static ICollection<IDrawableObject> GetDrawableAvatars(LobbyAvatarFrame lobbyAvatarFrame)
         {
             var drawableAvatars = new List<IDrawableAvatar>();
 
-            if (avatarFrame.PlayerIndices.Count > 0)
+            var positions = lobbyAvatarFrame.GetPositions();
+
+            var index = 0;
+            foreach (var type in lobbyAvatarFrame.Types)
             {
-                var playerAvatarIndex = avatarFrame.PlayerIndices.FindIndex(frame => frame == playerIndex);
-                var playerTeamIndex = playerAvatarIndex != -1 ? avatarFrame.TeamIndices[playerAvatarIndex] : 0;
+                try
+                {
+                    var drawableAvatar = new DrawableAvatar
+                    {
+                        Animation = Animation.Resting,
+                        ArmAngle = 0f,
+                        AnimationFrame = 0,
+                        BreathingYOffset = lobbyAvatarFrame.BreathingYOffsets[index],
+                        Dead = false,
+                        Crowned = lobbyAvatarFrame.Crowneds[index],
+                        Direction = Direction.Right,
+                        Position = positions[index],
+                        Recoil = 0f,
+                        Rotation = 0f,
+                        Spinning = false,
+                        TextureName = Avatar.GetTextureName(type),
+                        WhiteTextureName = Avatar.GetTextureName(type),
+                        Type = type,
+                        WeaponTexture = TextureName.pistol,
+                        Color = Color.White,
+                        TeamColor = null,
+                        Opacity = 1f
+                    };
+
+                    drawableAvatars.Add(drawableAvatar);
+                }
+                catch (Exception ex)
+                {
+                    Trace.Write(ex);
+                }
+
+                index++;
+            }
+
+            return GetAvatars(drawableAvatars);
+        }
+
+        public static ICollection<IDrawableObject> GetDrawableAvatars(AvatarFrame avatarFrame, AvatarStaticData avatarStaticData, int playerIndex = 0)
+        {
+            var drawableAvatars = new List<IDrawableAvatar>();
+
+            if (avatarStaticData.PlayerIndices.Count > 0)
+            {
+                var playerAvatarIndex = avatarStaticData.PlayerIndices.FindIndex(frame => frame == playerIndex);
+                var playerTeamIndex = playerAvatarIndex != -1 ? avatarStaticData.TeamIndices[playerAvatarIndex] : 0;
+
+                var positions = avatarFrame.GetPositions();
 
                 var index = 0;
-                foreach (var type in avatarFrame.Types)
+                foreach (var type in avatarStaticData.Types)
                 {
                     try
                     {
-                        var avatarPlayerIndex = avatarFrame.PlayerIndices[index];
-                        var avatarTeamIndex = avatarFrame.TeamIndices[index];
+                        var avatarPlayerIndex = avatarStaticData.PlayerIndices[index];
+                        var avatarTeamIndex = avatarStaticData.TeamIndices[index];
 
                         var drawableAvatar = new DrawableAvatar
                         {
@@ -48,19 +97,19 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                             ArmAngle = avatarFrame.ArmAngles[index],
                             AnimationFrame = avatarFrame.AnimationFrames[index],
                             BreathingYOffset = avatarFrame.BreathingYOffsets[index],
-                            Dead = avatarFrame.Deads[index],
-                            Crowned = avatarFrame.HasCrowns[index],
+                            Dead = avatarFrame.Animations[index] == Animation.Dead,
+                            Crowned = avatarStaticData.HasCrowns[index],
                             Direction = avatarFrame.Directions[index],
-                            Position = avatarFrame.Positions[index],
+                            Position = positions[index],
                             Recoil = avatarFrame.Recoils[index],
                             Rotation = avatarFrame.Rotations[index],
-                            Spinning = avatarFrame.Spinnings[index],
-                            TextureName = avatarFrame.TextureNames[index],
-                            WhiteTextureName = avatarFrame.WhiteTextureNames[index],
-                            Type = avatarFrame.Types[index],
+                            Spinning = avatarFrame.Animations[index] == Animation.Rolling || avatarFrame.Animations[index] == Animation.Spinning,
+                            TextureName = avatarStaticData.TextureNames[index],
+                            WhiteTextureName = avatarStaticData.WhiteTextureNames[index],
+                            Type = avatarStaticData.Types[index],
                             WeaponTexture = avatarFrame.WeaponTextures[index],
                             Color = avatarFrame.Colors[index].ToColor(),
-                            TeamColor = avatarFrame.ShowTeamColors[index] ? DrawingHelper.GetTeamColor(avatarFrame.TeamIndices[index]) : null,
+                            TeamColor = avatarStaticData.ShowTeamColors[index] ? DrawingHelper.GetTeamColor(avatarStaticData.TeamIndices[index]) : null,
                             Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], playerTeamIndex, avatarTeamIndex)
                         };
 
