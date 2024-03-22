@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.Configuration.Avatars;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
@@ -32,7 +33,7 @@ namespace ArmadilloAssault.Web.Client
             {
                 Client = new Client();
                 CancellationTokenSource = new();
-                _ = Client.JoinGame("73.216.200.18", "Test", CancellationTokenSource);
+                _ = Client.JoinGame(ConfigurationManager.GetWebJson().IpAddress ?? "73.216.200.18", ConfigurationManager.GetWebJson().Username, CancellationTokenSource);
             }
         }
 

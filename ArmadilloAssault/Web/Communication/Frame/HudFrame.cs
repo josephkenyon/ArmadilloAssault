@@ -10,6 +10,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<int> TeamIndices { get; set; } = [];
         public List<int> ModeValues { get; set; } = [];
         public List<int> PlayerIndices { get; set; } = [];
+
         public List<bool> Deads { get; set; } = [];
         public List<bool> Visibles { get; set; } = [];
         public List<int> AvatarXs { get; set; } = [];
@@ -23,5 +24,10 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<float> FlagTimerXs { get; set; } = [];
         public List<float> FlagTimerYs { get; set; } = [];
 
+        public List<int> Kills { get; set; } = [];
+        public List<int> Deaths { get; set; } = [];
+        public List<int> Dealts { get; set; } = [];
+        public List<int> Takens { get; set; } = [];
+        public List<string> Names { get; set; } = [];
     }
 }

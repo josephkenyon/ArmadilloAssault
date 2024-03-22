@@ -4,6 +4,7 @@ using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Graphics.Drawing;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -274,5 +275,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
             return true;
         }
+
+        public IndividualBattleStat GetPlayerStat(int playerIndex) => IndividualBattleStats[playerIndex];
     }
 }

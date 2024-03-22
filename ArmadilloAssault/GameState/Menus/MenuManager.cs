@@ -316,7 +316,8 @@ namespace ArmadilloAssault.GameState.Menus
                     DrawingManager.DrawLobbyPlayerNames(
                       playerBackgroundRecs,
                       LobbyFrame.PlayerTeamIds,
-                      LobbyFrame.PlayerBackgroundIds
+                      LobbyFrame.PlayerBackgroundIds,
+                      LobbyFrame.PlayerNames
                     );
 
                     DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.AvatarFrame));

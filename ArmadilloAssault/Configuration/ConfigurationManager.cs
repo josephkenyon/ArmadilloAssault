@@ -11,12 +11,15 @@ using ArmadilloAssault.Configuration.Weapons;
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Configuration.Menus;
 using ArmadilloAssault.Configuration.Items;
+using ArmadilloAssault.Configuration.Web;
 
 namespace ArmadilloAssault.Configuration
 {
     public static class ConfigurationManager
     {
         public static ContentManager ContentManager { get; set; }
+
+        private static WebJson _webJson;
 
         private static Dictionary<string, MenuJson> _menuConfigurations;
         private static Dictionary<string, List<string>> _toolTips;
@@ -32,6 +35,7 @@ namespace ArmadilloAssault.Configuration
         {
             ContentManager = contentManager;
 
+            LoadWeb();
             LoadMenus();
             LoadTooltips();
             LoadScenes();
@@ -39,6 +43,30 @@ namespace ArmadilloAssault.Configuration
             LoadWeapons();
             LoadEffects();
             LoadItems();
+        }
+
+        private static void LoadWeb()
+        {
+            var fileNames = Directory
+                .GetFiles(ConfigurationHelper.GetConfigurationPath("Web"))
+                .Where(file => file.EndsWith("web.json"));
+
+            var fileName = fileNames.First();
+
+            using StreamReader r = new(fileName);
+
+            string json = r.ReadToEnd();
+
+            try
+            {
+                _webJson = JsonConvert.DeserializeObject<WebJson>(json);
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message, e);
+
+                _webJson = new WebJson();
+            }
         }
 
         private static void LoadMenus()
@@ -244,6 +272,11 @@ namespace ArmadilloAssault.Configuration
             {
                 Trace.TraceError(e.Message, e);
             }
+        }
+
+        public static WebJson GetWebJson()
+        {
+            return _webJson;
         }
 
         public static MenuJson GetMenuConfiguration(string name)

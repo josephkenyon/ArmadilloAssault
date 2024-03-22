@@ -135,6 +135,12 @@ namespace ArmadilloAssault.Web.Server
             Server.BroadcastGameOver();
         }
 
+        public static string GetPlayerName(int playerIndex)
+        {
+            var player = GetPlayer(playerIndex);
+            return player != null && player.Name != null ? player.Name : $"P{playerIndex + 1}";
+        }
+
         public static bool IsServing => Server != null;
     }
 }

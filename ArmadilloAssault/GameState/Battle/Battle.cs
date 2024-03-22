@@ -32,6 +32,7 @@ using ArmadilloAssault.GameState.Battle.Environment.Precipitation;
 using System;
 using ArmadilloAssault.GameState.Battle.Items;
 using ArmadilloAssault.Configuration.Items;
+using ArmadilloAssault.Controls;
 
 namespace ArmadilloAssault.GameState.Battle
 {
@@ -333,6 +334,32 @@ namespace ArmadilloAssault.GameState.Battle
                             positions
                         );
                     }
+
+                    if (ControlsManager.IsControlDown(0, Control.Show_Stats) && ModeType.Tutorial != Frame.HudFrame.ModeType)
+                    {
+                        DrawingManager.DrawRectangle(new Rectangle(478, 268, 964, 544), Color.White);
+                        DrawingManager.DrawRectangle(new Rectangle(480, 270, 960, 540), Color.Black);
+
+                        var x = 208;
+
+                        var startingY = 270 + 64;
+                        var startingX = 480 + 64 + (x / 2);
+
+                        var y = 58.85f;
+
+                        DrawingManager.DrawString("K/D", new Vector2(startingX + 208, startingY), DrawingHelper.SmallFont);
+                        DrawingManager.DrawString("Dmg Dealt", new Vector2(startingX + 208 * 2, startingY), DrawingHelper.SmallFont);
+                        DrawingManager.DrawString("Dmg Taken", new Vector2(startingX + 208 * 3, startingY), DrawingHelper.SmallFont);
+
+                        for (int i = 0; i < Frame.HudFrame.Names.Count; i++)
+                        {
+                            DrawingManager.DrawString(Frame.HudFrame.Names[i], new Vector2(startingX, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(Frame.HudFrame.Kills[i] + " / " + Frame.HudFrame.Deaths[i], new Vector2(startingX + x, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(Frame.HudFrame.Dealts[i].ToString(), new Vector2(startingX + x * 2, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(Frame.HudFrame.Takens[i].ToString(), new Vector2(startingX + x * 3, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+
+                        }
+                    }
                 }
             }
 
@@ -410,6 +437,21 @@ namespace ArmadilloAssault.GameState.Battle
                 var weapon = avatar.SelectedWeapon;
 
                 hudFrame.PlayerIndices.Add(avatarKey);
+                hudFrame.Names.Add(ServerManager.GetPlayerName(avatarKey));
+
+                if (ModeManager != null)
+                {
+                    var playerStat = ModeManager.GetPlayerStat(avatarKey);
+
+                    if (playerStat != null)
+                    {
+                        hudFrame.Kills.Add(playerStat.Kills);
+                        hudFrame.Deaths.Add(playerStat.Deaths);
+                        hudFrame.Dealts.Add(playerStat.DamageDealt);
+                        hudFrame.Takens.Add(playerStat.DamageTaken);
+                    }
+                }
+
                 hudFrame.Deads.Add(avatar.IsDead);
                 hudFrame.Visibles.Add(PowerUpType.Invisibility != avatar.CurrentPowerUp);
                 hudFrame.AvatarXs.Add((int)avatar.Position.X);

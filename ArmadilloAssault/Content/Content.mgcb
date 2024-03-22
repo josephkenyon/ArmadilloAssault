@@ -68,6 +68,9 @@
 #begin Configuration/Weapons/weapons.json
 /copy:Configuration/Weapons/weapons.json
 
+#begin Configuration/Web/web.json
+/copy:Configuration/Web/web.json
+
 #begin Graphics/Effects/blood_splatter.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -155,6 +158,13 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Graphics/Fonts/small_font.spritefont
+
+#begin Graphics/Fonts/tiny_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Graphics/Fonts/tiny_font.spritefont
 
 #begin Graphics/Sprites/Avatars/angie.png
 /importer:TextureImporter

@@ -1,4 +1,5 @@
-﻿using ArmadilloAssault.GameState;
+﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menus;
@@ -29,7 +30,8 @@ namespace ArmadilloAssault.Web.Server
             Players = [
                 new Player
                 {
-                    PlayerIndex = 0
+                    PlayerIndex = 0,
+                    Name = ConfigurationManager.GetWebJson().Username
                 }
             ];
 

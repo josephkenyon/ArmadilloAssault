@@ -128,7 +128,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             }
         }
 
-        public static void DrawLobbyPlayerNames(IEnumerable<Rectangle> lobbyPlayerRectangles, IEnumerable<int> lobbyTeamIds, IEnumerable<int> lobbyPlayerIds)
+        public static void DrawLobbyPlayerNames(IEnumerable<Rectangle> lobbyPlayerRectangles, IEnumerable<int> lobbyTeamIds, IEnumerable<int> lobbyPlayerIds, IEnumerable<string> playerNames)
         {
             var index = 0;
             foreach (var rectangle in lobbyPlayerRectangles)
@@ -136,8 +136,10 @@ namespace ArmadilloAssault.Graphics.Drawing
                 var playerId = lobbyPlayerIds.ElementAt(index);
                 var teamId = lobbyTeamIds.ElementAt(index);
 
-                var text = $"P{playerId + 1}";
-                var font = DrawingHelper.GetFont;
+                var text = playerNames.ElementAt(index) ?? $"P{playerId + 1}";
+
+                var font = playerNames.ElementAt(index) != null  ? DrawingHelper.TinyFont : DrawingHelper.GetFont;
+
                 var size = font.MeasureString(text);
 
                 var textPosition = new Point(rectangle.Center.X - (int)(size.X / 2), rectangle.Bottom - 32 - (int)(size.Y / 2));

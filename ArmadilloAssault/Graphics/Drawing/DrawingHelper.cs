@@ -16,6 +16,7 @@ namespace ArmadilloAssault.Graphics.Drawing
         private static SpriteFont EditorFont { get; set; }
         public static SpriteFont MediumFont { get; private set; }
         public static SpriteFont SmallFont { get; private set; }
+        public static SpriteFont TinyFont { get; private set; }
         private static SpriteFont GameFont { get; set; }
 
         public static readonly int FullTileSize = 48;
@@ -87,11 +88,13 @@ namespace ArmadilloAssault.Graphics.Drawing
             EditorFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "editor_font"));
             GameFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "game_font"));
             SmallFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "small_font"));
+            TinyFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "tiny_font"));
             MediumFont = contentManager.Load<SpriteFont>(Path.Combine("Graphics", "Fonts", "medium_font"));
 
             GameFont.Spacing = 4f;
             MediumFont.Spacing = 4f;
             SmallFont.Spacing = 4f;
+            TinyFont.Spacing = 0f;
         }
 
         public static Rectangle GetDestinationRectangle(Point point, Point? size = null)

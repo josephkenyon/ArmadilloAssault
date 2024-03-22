@@ -12,6 +12,7 @@
         Fire_Primary,
         Fire_Secondary,
         Reload,
+        Show_Stats,
         Cycle_Weapon,
         Cycle_Weapon_Backward,
         Confirm,

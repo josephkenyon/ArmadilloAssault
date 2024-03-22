@@ -149,6 +149,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                 PlayerModeButtons = GetPlayerModeButtonRectangles().Values.Select(background => RectangleJson.CreateFrom(background)).ToList(),
                 PlayerBackgroundIds = [.. PlayerTeamRelations.Keys],
                 PlayerTeamIds = [.. PlayerTeamRelations.Values],
+                PlayerNames = PlayerTeamRelations.Keys.Select(GetPlayerName).ToList(),
                 LevelSelect = LevelSelect,
                 ModeSelect = ModeSelect,
                 SelectedLevel = SelectedLevel,
@@ -160,6 +161,20 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             SoundManager.PushSounds(frame);
 
             return frame;
+        }
+
+        private string GetPlayerName(int playerIndex)
+        {
+            if (playerIndex == 0)
+            {
+                return ConfigurationManager.GetWebJson().Username;
+            }
+            else if (ServerManager.IsServing)
+            {
+                return ServerManager.GetPlayerName(playerIndex);
+            }
+
+            return null;
         }
 
         public void Update()
