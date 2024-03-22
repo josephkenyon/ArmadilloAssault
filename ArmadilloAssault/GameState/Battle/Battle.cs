@@ -85,15 +85,22 @@ namespace ArmadilloAssault.GameState.Battle
 
             if (ModeType.Capture_the_Flag == Mode)
             {
-                foreach (var flags in sceneConfiguration.Flags)
+                Dictionary<int, Point> flagDictionary = [];
+
+                var orderedTeamIndices = playerTeamRelations.Values.Distinct().Order();
+
+                foreach (var flag in sceneConfiguration.Flags)
                 {
-                    flags.TeamIndex = flags.TeamIndex == 0 ? playerTeamRelations.Values.Distinct().First() : playerTeamRelations.Values.Distinct().Last();
-                    ItemManager.CreateNewItem(ItemType.Flag, new Vector2(flags.X, flags.Y), flags.TeamIndex);
+                    var teamIndex = flag.TeamIndex == 0 ? orderedTeamIndices.First() : orderedTeamIndices.Last();
+
+                    ItemManager.CreateNewItem(ItemType.Flag, new Vector2(flag.X, flag.Y), teamIndex);
+
+                    flagDictionary.Add(teamIndex, new Point(flag.X, flag.Y));
                 }
 
-                ModeManager.InitializeKingOfTheHill(sceneConfiguration.Flags);
+                ModeManager.InitializeKingOfTheHill(flagDictionary);
 
-                Scene.UpdateTeamIndexes(playerTeamRelations.Values.Distinct().First(), playerTeamRelations.Values.Distinct().Last());
+                Scene.UpdateTeamIndexes(orderedTeamIndices.First(), orderedTeamIndices.Last());
             }
             else
             {
@@ -576,7 +583,8 @@ namespace ArmadilloAssault.GameState.Battle
             bool? leftTeam = null;
             if (ModeType.Capture_the_Flag == Mode)
             {
-                leftTeam = ModeManager.PlayerTeamRelations[playerIndex] == ModeManager.PlayerTeamRelations.Values.Last();
+                var teamIndices = ModeManager.PlayerTeamRelations.Values.Distinct().Order();
+                leftTeam = ModeManager.PlayerTeamRelations[playerIndex] == teamIndices.First();
             }
 
             var index = SpawnLocationIndex++;

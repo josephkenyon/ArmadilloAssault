@@ -64,12 +64,12 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             }
         }
 
-        public void InitializeKingOfTheHill(List<FlagJson> flags)
+        public void InitializeKingOfTheHill(Dictionary<int, Point> flags)
         {
             foreach (var flag in flags)
             {
-                FlagStartingLocations.Add(flag.TeamIndex, new Point(flag.X, flag.Y));
-                FlagReturnTimers.Add(flag.TeamIndex, 0);
+                FlagStartingLocations.Add(flag.Key, new Point(flag.Value.X, flag.Value.Y));
+                FlagReturnTimers.Add(flag.Key, 0);
             }
         }
 
