@@ -94,6 +94,10 @@ namespace ArmadilloAssault.GameState.Battle
 
                 Scene.UpdateTeamIndexes(playerTeamRelations.Values.Distinct().First(), playerTeamRelations.Values.Distinct().Last());
             }
+            else
+            {
+                Scene.TeamRectangles?.Clear();
+            }
 
             foreach (var index in avatars.Keys)
             {
@@ -356,7 +360,7 @@ namespace ArmadilloAssault.GameState.Battle
         private BattleFrame CreateFrame()
         {
             var relations = ModeManager.PlayerTeamRelations;
-            var showColors = ModeType.Deathmatch != Mode || (relations.Values.Distinct().Count() != relations.Count);
+            var showColors = ModeType.Tutorial != Mode && (ModeType.Deathmatch != Mode || (relations.Values.Distinct().Count() != relations.Count));
 
             var battleFrame = new BattleFrame
             {
