@@ -188,6 +188,8 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
 
         public BulletFrame GetBulletFrame()
         {
+            if (Bullets.Count == 0) return null;
+
             var bulletFrame = new BulletFrame();
 
             foreach (var bullet in Bullets)
@@ -204,6 +206,8 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
         public static ICollection<DrawableBullet> GetDrawableBullets(BulletFrame bulletFrame)
         {
             var drawableBullets = new List<DrawableBullet>();
+
+            if (bulletFrame == null) return drawableBullets;
 
             var index = 0;
             foreach (var type in bulletFrame.WeaponTypes)

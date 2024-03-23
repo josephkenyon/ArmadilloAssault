@@ -187,18 +187,6 @@ namespace ArmadilloAssault.GameState.Battle
                 CameraManager.UpdateFocusPoint(Avatars[BattleManager.FocusPlayerIndex].Position);
             }
 
-            if (Avatars.Count > 0)
-            {
-                Frame = CreateFrame();
-                
-                SoundManager.PushSounds(Frame);
-
-                if (ServerManager.IsServing)
-                {
-                    ServerManager.SendBattleFrame(Frame);
-                }
-            }
-
             if (ModeManager != null)
             {
                 if (ModeType.King_of_the_Hill == ModeManager.Mode)
@@ -216,6 +204,18 @@ namespace ArmadilloAssault.GameState.Battle
                 if (!GameOver && ModeManager.GameOver)
                 {
                     BattleManager.SetGameOver();
+                }
+            }
+
+            if (Avatars.Count > 0)
+            {
+                Frame = CreateFrame();
+
+                SoundManager.PushSounds(Frame);
+
+                if (ServerManager.IsServing)
+                {
+                    ServerManager.SendBattleFrame(Frame);
                 }
             }
         }
@@ -368,11 +368,12 @@ namespace ArmadilloAssault.GameState.Battle
 
                         for (int i = 0; i < StatFrame.Names.Count; i++)
                         {
-                            DrawingManager.DrawString(StatFrame.Names[i], new Vector2(startingX, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
+                            DrawingManager.DrawString(StatFrame.Names[i], new Vector2(startingX, startingY + ((i + 1) * y)), DrawingHelper.TinyFont,
+                                DrawingHelper.GetTeamColor(BattleStaticData.AvatarStaticData.GetTeamIndex(StatFrame.PlayerIndices[i])));
+
                             DrawingManager.DrawString(StatFrame.Kills[i] + " / " + StatFrame.Deaths[i], new Vector2(startingX + x, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
                             DrawingManager.DrawString(StatFrame.DamageDealts[i].ToString(), new Vector2(startingX + x * 2, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
                             DrawingManager.DrawString(StatFrame.DamageTakens[i].ToString(), new Vector2(startingX + x * 3, startingY + ((i + 1) * y)), DrawingHelper.TinyFont);
-
                         }
                     }
                 }

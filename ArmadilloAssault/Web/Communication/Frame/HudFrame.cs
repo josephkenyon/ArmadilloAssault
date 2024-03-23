@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ArmadilloAssault.Web.Converters;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Communication.Frame

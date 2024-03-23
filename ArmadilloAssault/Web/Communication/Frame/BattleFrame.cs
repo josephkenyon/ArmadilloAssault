@@ -12,13 +12,13 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public AvatarFrame AvatarFrame { get; set; } = new();
         
         [JsonProperty("BF")]
-        public BulletFrame BulletFrame { get; set; } = new();
+        public BulletFrame BulletFrame { get; set; }
         
         [JsonProperty("CF")]
-        public CrateFrame CrateFrame { get; set; } = new();
+        public CrateFrame CrateFrame { get; set; }
         
         [JsonProperty("EF")]
-        public EffectFrame EffectFrame { get; set; } = new();
+        public EffectFrame EffectFrame { get; set; }
         
         [JsonProperty("HF")]
         public HudFrame HudFrame { get; set; } = new();

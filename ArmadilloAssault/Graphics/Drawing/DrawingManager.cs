@@ -84,11 +84,11 @@ namespace ArmadilloAssault.Graphics.Drawing
             _spriteBatch.DrawString(spriteFont, text, position.ToVector2() * DrawingHelper.TileSize, Color.White);
         }
 
-        public static void DrawString(string text, Vector2 position, SpriteFont spriteFont = null)
+        public static void DrawString(string text, Vector2 position, SpriteFont spriteFont = null, Color? color = null)
         {
             var font = spriteFont ?? DrawingHelper.GetFont;
             var measureString = font.MeasureString(text);
-            _spriteBatch.DrawString(font, text, position - (measureString / 2), Color.White);
+            _spriteBatch.DrawString(font, text, position - (measureString / 2), color ?? Color.White);
         }
 
 

@@ -4,6 +4,7 @@ using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Generics;
+using ArmadilloAssault.Web.Converters;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -46,6 +47,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<float> Rotations { get; } = [];
 
         [JsonProperty("Is")]
+        [JsonConverter(typeof(BooleanConverter))]
         public List<bool> Invisibles { get; set; } = [];
 
         [JsonProperty("Ts")]

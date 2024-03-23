@@ -231,6 +231,8 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         public CrateFrame GetCrateFrame()
         {
+            if (Crates.Count == 0) return null;
+
             var crateFrame = new CrateFrame();
 
             foreach (var crate in Crates)
@@ -248,6 +250,8 @@ namespace ArmadilloAssault.GameState.Battle.Crates
         public static ICollection<DrawableCrate> GetDrawableCrates(CrateFrame crateFrame)
         {
             var drawableCrates = new List<DrawableCrate>();
+
+            if (crateFrame == null) return drawableCrates;
 
             var index = 0;
             foreach (var type in crateFrame.Types)

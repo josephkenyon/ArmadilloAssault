@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.Generics;
+using ArmadilloAssault.Web.Converters;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<Direction> Directions { get; set; } = [];
 
         [JsonProperty("Cs")]
+        [JsonConverter(typeof(BooleanConverter))]
         public List<bool> Crowneds { get; set; } = [];
 
         [JsonProperty("Xs")]

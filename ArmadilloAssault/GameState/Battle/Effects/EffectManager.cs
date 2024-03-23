@@ -46,6 +46,8 @@ namespace ArmadilloAssault.GameState.Battle.Effects
 
         public EffectFrame GetEffectFrame()
         {
+            if (Effects.Count == 0) return null;
+
             var effectFrame = new EffectFrame();
 
             foreach (var effect in Effects)
@@ -63,6 +65,8 @@ namespace ArmadilloAssault.GameState.Battle.Effects
         public static ICollection<DrawableEffect> GetDrawableEffects(EffectFrame effectFrame)
         {
             var drawableEffects = new List<DrawableEffect>();
+
+            if (effectFrame == null) return drawableEffects;
 
             var index = 0;
             foreach (var type in effectFrame.Types)

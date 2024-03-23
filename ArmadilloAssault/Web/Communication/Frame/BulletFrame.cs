@@ -1,4 +1,5 @@
 ﻿using ArmadilloAssault.Configuration.Weapons;
+using ArmadilloAssault.Web.Converters;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

@@ -1,9 +1,9 @@
-﻿namespace ArmadilloAssault.Web.Communication
-{
-    using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
+namespace ArmadilloAssault.Web.Converters
+{
     public class FloatConverter : JsonConverter<List<float>>
     {
         public override void WriteJson(JsonWriter writer, List<float> value, JsonSerializer serializer)

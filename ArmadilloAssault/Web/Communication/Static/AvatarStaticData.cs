@@ -33,5 +33,12 @@ namespace ArmadilloAssault.Web.Communication.Frame
 
             return avatarFrame;
         }
+
+        public int GetTeamIndex(int playerIndex)
+        {
+            var index = PlayerIndices.IndexOf(playerIndex);
+
+            return TeamIndices[index];
+        }
     }
 }

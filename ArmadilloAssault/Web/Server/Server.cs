@@ -71,14 +71,19 @@ namespace ArmadilloAssault.Web.Server
 
         public void SendBattleFrame(BattleFrame battleFrame)
         {
-            foreach (var player in ClientPlayers)
+            string message = "";
+
+            if (ClientPlayers.Any())
             {
-                var message = new ServerMessage
+                message = JsonConvert.SerializeObject(new ServerMessage
                 {
                     Type = ServerMessageType.BattleUpdate,
                     BattleFrame = battleFrame
-                };
+                });
+            }
 
+            foreach (var player in ClientPlayers)
+            {
                 Broadcast(message, player.ConnectionId);
             }
         }
@@ -106,6 +111,11 @@ namespace ArmadilloAssault.Web.Server
                 Trace.WriteLine(ex);
             }
             
+        }
+
+        public void Broadcast(string message, string id)
+        {
+            WebSocketServer.WebSocketServices["/game"].Sessions.SendTo(message, id);
         }
 
         public void Broadcast(ServerMessage serverMessage, string id)
