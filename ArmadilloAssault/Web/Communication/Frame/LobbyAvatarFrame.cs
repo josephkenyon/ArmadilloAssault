@@ -13,10 +13,6 @@ namespace ArmadilloAssault.Web.Communication.Frame
         [JsonProperty("Ts")]
         public List<AvatarType> Types { get; set; } = [];
 
-        [JsonProperty("BOs")]
-        [JsonConverter(typeof(FloatConverter))]
-        public List<float> BreathingYOffsets { get; set; } = [];
-
         [JsonProperty("Ds")]
         public List<Direction> Directions { get; set; } = [];
 
@@ -40,7 +36,6 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 var avatar = avatars[playerIndex];
 
                 avatarFrame.Types.Add(avatar.Type);
-                avatarFrame.BreathingYOffsets.Add(avatar.GetBreathingYOffset());
                 avatarFrame.Directions.Add(avatar.Direction);
                 avatarFrame.Crowneds.Add(avatar.Crowned && showCrowns);
                 avatarFrame.Xs.Add(avatar.Position.X);

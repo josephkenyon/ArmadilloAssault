@@ -26,7 +26,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
             }
         }
 
-        public static ICollection<IDrawableObject> GetDrawableAvatars(LobbyAvatarFrame lobbyAvatarFrame)
+        public static ICollection<IDrawableObject> GetDrawableAvatars(LobbyAvatarFrame lobbyAvatarFrame, float breathingOffset)
         {
             var drawableAvatars = new List<IDrawableAvatar>();
 
@@ -42,7 +42,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                         Animation = Animation.Resting,
                         ArmAngle = 0f,
                         AnimationFrame = 0,
-                        BreathingYOffset = lobbyAvatarFrame.BreathingYOffsets[index],
+                        BreathingYOffset = breathingOffset,
                         Dead = false,
                         Crowned = lobbyAvatarFrame.Crowneds[index],
                         Direction = Direction.Right,

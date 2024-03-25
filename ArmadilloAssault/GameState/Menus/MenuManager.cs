@@ -39,6 +39,7 @@ namespace ArmadilloAssault.GameState.Menus
 
         public static Point ButtonSize { get; private set; } = new Point(384, 96);
 
+        private static bool _clearLobbyFrame = false;
         private static LobbyFrame _lobbyFrame;
         public static LobbyFrame LobbyFrame { get { return _lobbyFrame; } set { UpdateLobbyFrame(value); } }
 
@@ -121,14 +122,18 @@ namespace ArmadilloAssault.GameState.Menus
                 LobbyState.Update();
                 LobbyFrame = LobbyState.CreateFrame();
 
-                if (ServerManager.IsServing)
+                if (LobbyState.SendFrame && ServerManager.IsServing)
                 {
                     ServerManager.SendLobbyFrame(LobbyFrame);
                 }
+
+                LobbyState?.ResetSendFrame();
             }
             else if (MenuStack.Peek() == "Root" && Keyboard.GetState().IsKeyDown(Keys.Back)) {
-                InvokeAction(MenuAction.open_editor);
+                _ = InvokeAction(MenuAction.open_editor);
             }
+
+            UpdateBreathingFrameCounter();
         }
 
         public static Task InvokeAction(MenuAction action, string data = "")
@@ -320,7 +325,7 @@ namespace ArmadilloAssault.GameState.Menus
                       LobbyFrame.PlayerNames
                     );
 
-                    DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.LobbyAvatarFrame));
+                    DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(LobbyFrame.LobbyAvatarFrame, GetBreathingYOffset()));
 
                     if (ConditionFulfilled(MenuCondition.mode_select) && ModeType.Regicide == LobbyFrame.SelectedMode)
                     {
@@ -384,6 +389,12 @@ namespace ArmadilloAssault.GameState.Menus
 
                 DrawingManager.DrawTooltip(ConfigurationManager.GetToolTip(LobbyFrame.SelectedMode.ToString()), new Point(960, 288));
             }
+
+            if (_clearLobbyFrame)
+            {
+                _clearLobbyFrame = false;
+                _lobbyFrame = null;
+            }
         }
 
         private static void UpdateCurrentMenu() {
@@ -401,7 +412,7 @@ namespace ArmadilloAssault.GameState.Menus
 
         public static void ClearLobbyFrame()
         {
-            _lobbyFrame = null;
+            _clearLobbyFrame = true;
         }
 
         private static void UpdateLobbyFrame(LobbyFrame value)
@@ -543,6 +554,39 @@ namespace ArmadilloAssault.GameState.Menus
         {
             var strings = value.Split("_");
             return string.Join("  ", strings.Select(UppercaseFirst));
+        }
+
+        // Breathing
+        public static int BreathingFrameCounter { get; private set; }
+        private static bool BreathingIn { get; set; }
+
+        private static void UpdateBreathingFrameCounter()
+        {
+            if (BreathingFrameCounter == Avatar.BreathingCycleFrameLength * 2)
+            {
+                BreathingIn = false;
+            }
+            else if (BreathingFrameCounter == 0)
+            {
+                BreathingIn = true;
+            }
+
+            if (BreathingIn)
+            {
+                BreathingFrameCounter++;
+            }
+            else
+            {
+                BreathingFrameCounter--;
+            }
+        }
+
+        private static float GetBreathingYOffset()
+        {
+            var A = 5f;
+            var B = Avatar.BreathingCycleFrameLength * 2;
+            var X = Math.Clamp(BreathingFrameCounter, 0, Avatar.BreathingCycleFrameLength);
+            return (float)(A * Math.Sin(X * Math.PI / B)) - 3;
         }
     }
 }

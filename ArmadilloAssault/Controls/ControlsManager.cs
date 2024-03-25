@@ -82,6 +82,7 @@ namespace ArmadilloAssault.Controls
             if (keyboardState.IsKeyDown(Keys.LeftAlt) && keyboardState.IsKeyDown(Keys.Enter) && !JustToggledFullscreen)
             {
                 GraphicsManager.ToggleFullscreen();
+                GraphicsManager.ToggleBorderless();
                 JustToggledFullscreen = true;
             }
             else if (keyboardState.IsKeyUp(Keys.LeftAlt) && keyboardState.IsKeyUp(Keys.Enter) && JustToggledFullscreen) {

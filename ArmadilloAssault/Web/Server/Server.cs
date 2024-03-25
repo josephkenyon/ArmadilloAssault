@@ -3,6 +3,7 @@ using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menus;
+using ArmadilloAssault.GameState.Menus.Lobby;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
@@ -90,17 +91,24 @@ namespace ArmadilloAssault.Web.Server
 
         public void SendLobbyFrame(LobbyFrame lobbyFrame)
         {
+            string message = "";
+
+            if (ClientPlayers.Any())
+            {
+                message = JsonConvert.SerializeObject(new ServerMessage
+                {
+                    Type = ServerMessageType.LobbyUpdate,
+                    LobbyFrame = lobbyFrame
+                });
+            }
+
+            Trace.WriteLine(message);
+
             var index = 1;
             try
             {
                 foreach (var player in ClientPlayers)
                 {
-                    var message = new ServerMessage
-                    {
-                        Type = ServerMessageType.LobbyUpdate,
-                        LobbyFrame = lobbyFrame
-                    };
-
                     Broadcast(message, player.ConnectionId);
 
                     index++;
@@ -195,7 +203,7 @@ namespace ArmadilloAssault.Web.Server
                     PlayerIndex = newIndex
                 });
 
-                MenuManager.LobbyState?.PlayerTeamRelations.TryAdd(newIndex, newIndex);
+                MenuManager.LobbyState?.AddPlayer(newIndex);
 
                 Players = [.. Players.OrderBy(player => player.PlayerIndex)];
             }

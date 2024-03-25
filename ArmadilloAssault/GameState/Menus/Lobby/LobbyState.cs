@@ -24,10 +24,22 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         public ModeType SelectedMode { get; private set; } = ModeType.Deathmatch;
         public bool LevelSelect { get; private set; } = false;
         public bool ModeSelect { get; private set; } = false;
+        public bool SendFrame { get; private set; } = true;
 
         public LobbyState()
         {
             PlayerTeamRelations.TryAdd(0, 0);
+        }
+
+        public void ResetSendFrame()
+        {
+            SendFrame = false;
+        }
+
+        public void AddPlayer(int newIndex)
+        {
+            PlayerTeamRelations.TryAdd(newIndex, newIndex);
+            SendFrame = true;
         }
 
         public void AvatarSelected(int index, AvatarType avatarType)
@@ -58,6 +70,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
             Avatars[index].SetX(rectangle.X);
             Avatars[index].SetY(rectangle.Y + 16);
+
+            SendFrame = true;
         }
 
         public Dictionary<int, Rectangle> GetPlayerBackgroundRectangles()
@@ -212,16 +226,19 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
         {
             Avatars.Remove(index);
             PlayerTeamRelations.Remove(index);
+            SendFrame = true;
         }
 
         public void SetLevelSelect(bool levelSelect)
         {
             LevelSelect = levelSelect;
+            SendFrame = true;
         }
 
         public void SetModeSelect(bool modeSelect)
         {
             ModeSelect = modeSelect;
+            SendFrame = true;
         }
 
         public void NextLevel()
@@ -235,6 +252,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             }
 
             _selectedLevel = keys[index];
+
+            SendFrame = true;
         }
 
         public void PreviousLevel()
@@ -248,6 +267,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             }
 
             _selectedLevel = keys[index];
+
+            SendFrame = true;
         }
 
         public void NextMode()
@@ -264,6 +285,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             }
 
             SelectedMode = values[index];
+
+            SendFrame = true;
         }
 
         public void PreviousMode()
@@ -280,6 +303,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             }
 
             SelectedMode = values[index];
+
+            SendFrame = true;
         }
 
         public void IncrementTeamIndex(int playerIndex)
@@ -312,6 +337,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             }
 
             PlayerTeamRelations[playerIndex] = newTeamIndex;
+            SendFrame = true;
         }
 
         public void CrownPlayer(int crownedPlayerIndex)
@@ -326,6 +352,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
                     Avatars[playerIndex].Crowned = playerIndex == crownedPlayerIndex;
                 }
             }
+
+            SendFrame = true;
         }
 
         public bool ModeConditionsComplete()
