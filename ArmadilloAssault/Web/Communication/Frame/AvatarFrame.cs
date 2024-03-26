@@ -8,6 +8,7 @@ using ArmadilloAssault.Web.Converters;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ArmadilloAssault.Web.Communication.Frame
 {
@@ -53,12 +54,13 @@ namespace ArmadilloAssault.Web.Communication.Frame
         [JsonProperty("Ts")]
         public List<TextureName> WeaponTextures { get; set; } = [];
 
-        [JsonProperty("Cs")]
-        public List<ColorJson> Colors { get; set; } = [];
+        [JsonProperty("Cs", NullValueHandling = NullValueHandling.Ignore)]
+        public List<ColorJson> Colors { get; set; }
 
         public static AvatarFrame CreateFrom(Dictionary<int, Avatar> avatars)
         {
             var avatarFrame = new AvatarFrame();
+
             foreach (var playerIndex in avatars.Keys)
             {
                 var avatar = avatars[playerIndex];
@@ -74,7 +76,12 @@ namespace ArmadilloAssault.Web.Communication.Frame
                 avatarFrame.Rotations.Add(avatar.Rotation);
                 avatarFrame.Invisibles.Add(avatar.CurrentPowerUp == PowerUpType.Invisibility);
                 avatarFrame.WeaponTextures.Add(avatar.CurrentWeaponConfiguration.TextureName);
-                avatarFrame.Colors.Add(avatar.GetColor());
+            }
+
+            var colors = avatars.Values.Select(avatar => avatar.GetColor());
+            if (colors.Any(color => color != null))
+            {
+                avatarFrame.Colors = colors.ToList();
             }
 
             return avatarFrame;

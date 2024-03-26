@@ -6,6 +6,8 @@ using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
+using ArmadilloAssault.Web.Communication.Frame;
+using LiteNetLib;
 
 namespace ArmadilloAssault.Web.Client
 {
@@ -14,6 +16,8 @@ namespace ArmadilloAssault.Web.Client
         private ClientWebSocket WebSocket { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         public bool Connected => WebSocket != null && WebSocket.State == WebSocketState.Open;
+
+        private NetManager UdpClient = null;
 
         public async Task JoinGame(string ipAddress, string name, CancellationTokenSource cts)
         {
@@ -27,9 +31,30 @@ namespace ArmadilloAssault.Web.Client
             {
                 await WebSocket.ConnectAsync(new Uri(serverAddress), CancellationTokenSource.Token);
 
+                var listener = new EventBasedNetListener();
+                UdpClient = new NetManager(listener);
+
+                UdpClient.Start();
+                UdpClient.Connect(ipAddress, 25565, "Game");
+                listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
+                {
+                    try
+                    {
+                        var message = dataReader.GetString();
+                        Trace.WriteLine(message);
+                        BattleUpdateReceived(message);
+                        dataReader.Recycle();
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(ex.Message);
+                    }
+               
+                };
+
                 Trace.WriteLine("Connected to server.");
 
-                Task receivingTask = ReceiveMessages();
+                Task tcpReceivingTask = ReceiveMessages();
 
                 var joinGameMessage = new ClientMessage
                 {
@@ -41,7 +66,7 @@ namespace ArmadilloAssault.Web.Client
 
                 ClientManager.ConnectionEstablished();
 
-                await Task.WhenAny(receivingTask);
+                await Task.WhenAny(tcpReceivingTask);
 
                 cts.Cancel();
             }
@@ -51,13 +76,19 @@ namespace ArmadilloAssault.Web.Client
             }
             finally
             {
+                UdpClient?.Stop();
                 ClientManager.ConnectionTerminated();
             }
         }
 
+        public void PollEvents()
+        {
+            UdpClient.PollEvents();
+        }
+
         private async Task ReceiveMessages()
         {
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[2048];
 
             while (!CancellationTokenSource.Token.IsCancellationRequested)
             {
@@ -106,6 +137,20 @@ namespace ArmadilloAssault.Web.Client
                 var clientMessage = JsonConvert.DeserializeObject<ServerMessage>(messageString);
 
                 ClientManager.OnServerUpdate(clientMessage);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+        }
+
+        private static void BattleUpdateReceived(string messageString)
+        {
+            try
+            {
+                var battleFrame = JsonConvert.DeserializeObject<BattleFrame>(messageString);
+
+                ClientManager.OnServerUpdate(new ServerMessage { Type = ServerMessageType.BattleUpdate, BattleFrame = battleFrame });
             }
             catch (Exception ex)
             {

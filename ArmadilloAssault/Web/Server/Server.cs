@@ -3,9 +3,10 @@ using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
 using ArmadilloAssault.GameState.Menus;
-using ArmadilloAssault.GameState.Menus.Lobby;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
+using LiteNetLib;
+using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System;
@@ -26,6 +27,9 @@ namespace ArmadilloAssault.Web.Server
 
         private IEnumerable<Player> ClientPlayers => Players.Where(player => player.ConnectionId != null);
 
+        private NetManager UdpServer { get; set; }
+        private NetDataWriter UdpWriter { get; set; }
+
         public void Start()
         {
             Players = [
@@ -39,19 +43,40 @@ namespace ArmadilloAssault.Web.Server
             WebSocketServer = new WebSocketServer(25565);
             WebSocketServer.AddWebSocketService<Game>("/game");
             WebSocketServer.Start();
+
+            var listener = new EventBasedNetListener();
+            UdpServer = new NetManager(listener);
+            UdpWriter = new();
+
+            UdpServer.Start(25565);
+
+            listener.ConnectionRequestEvent += request =>
+            {
+                if (UdpServer.ConnectedPeersCount < 6)
+                    request.AcceptIfKey("Game");
+                else
+                    request.Reject();
+
+                Trace.WriteLine("UDP connected");
+            };
+        }
+
+        public void PollEvents()
+        {
+            UdpServer.PollEvents();
         }
 
         public void MessageIntialization(BattleStaticData battleStaticData)
         {
             foreach (var player in ClientPlayers)
             {
-                var message = new ServerMessage
+                var message = JsonConvert.SerializeObject(new ServerMessage
                 {
                     Type = ServerMessageType.BattleInitialization,
                     BattleStaticData = battleStaticData,
                     BattleFrame = BattleManager.BattleFrame,
                     PlayerIndex = player.PlayerIndex
-                };
+                });
 
                 Broadcast(message, player.ConnectionId);
             }
@@ -59,77 +84,77 @@ namespace ArmadilloAssault.Web.Server
 
         public void MessageGameEnd()
         {
-            foreach (var player in ClientPlayers)
+            if (ClientPlayers.Any())
             {
-                var message = new ServerMessage
+                var message = JsonConvert.SerializeObject(new ServerMessage
                 {
                     Type = ServerMessageType.BattleTermination,
-                };
+                });
 
-                Broadcast(message, player.ConnectionId);
+                Broadcast(message);
             }
         }
 
         public void SendBattleFrame(BattleFrame battleFrame)
         {
-            string message = "";
-
             if (ClientPlayers.Any())
             {
-                message = JsonConvert.SerializeObject(new ServerMessage
-                {
-                    Type = ServerMessageType.BattleUpdate,
-                    BattleFrame = battleFrame
-                });
-            }
+                var message = JsonConvert.SerializeObject(battleFrame);
 
-            foreach (var player in ClientPlayers)
-            {
-                Broadcast(message, player.ConnectionId);
+                BroadcastUdp(message);
             }
         }
 
         public void SendLobbyFrame(LobbyFrame lobbyFrame)
         {
-            string message = "";
-
             if (ClientPlayers.Any())
             {
-                message = JsonConvert.SerializeObject(new ServerMessage
+                var message = JsonConvert.SerializeObject(new ServerMessage
                 {
                     Type = ServerMessageType.LobbyUpdate,
                     LobbyFrame = lobbyFrame
                 });
+
+                Broadcast(message);
             }
+        }
 
-            Trace.WriteLine(message);
-
-            var index = 1;
+        public void Broadcast(string message)
+        {
             try
             {
-                foreach (var player in ClientPlayers)
-                {
-                    Broadcast(message, player.ConnectionId);
-
-                    index++;
-                }
+                WebSocketServer.WebSocketServices["/game"].Sessions.Broadcast(message);
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
             }
-            
         }
 
-        public void Broadcast(string message, string id)
+        public void Broadcast(string message, string playerId)
         {
-            WebSocketServer.WebSocketServices["/game"].Sessions.SendTo(message, id);
+            try
+            {
+                WebSocketServer.WebSocketServices["/game"].Sessions.SendTo(message, playerId);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
         }
 
-        public void Broadcast(ServerMessage serverMessage, string id)
+        public void BroadcastUdp(string message)
         {
-            var message = JsonConvert.SerializeObject(serverMessage);
-            WebSocketServer.WebSocketServices["/game"].Sessions.SendTo(message, id);
+            try
+            {
+                UdpWriter.Put(message);
+                UdpServer.SendToAll(UdpWriter, DeliveryMethod.Sequenced);
+                UdpWriter.Reset();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
         }
 
         public void OnNext(string value, string id)
@@ -257,6 +282,8 @@ namespace ArmadilloAssault.Web.Server
         {
             WebSocketServer.Stop();
             WebSocketServer = null;
+
+            UdpServer?.Stop();
         }
 
         public void ClientDisconnected(string id)
@@ -274,11 +301,11 @@ namespace ArmadilloAssault.Web.Server
         {
             foreach (var player in ClientPlayers)
             {
-                var message = new ServerMessage
+                var message = JsonConvert.SerializeObject(new ServerMessage
                 {
                     Type = ServerMessageType.Pause,
                     Paused = paused
-                };
+                });
 
                 Broadcast(message, player.ConnectionId);
             }
@@ -288,10 +315,10 @@ namespace ArmadilloAssault.Web.Server
         {
             foreach (var player in ClientPlayers)
             {
-                var message = new ServerMessage
+                var message = JsonConvert.SerializeObject(new ServerMessage
                 {
                     Type = ServerMessageType.GameOver,
-                };
+                });
 
                 Broadcast(message, player.ConnectionId);
             }

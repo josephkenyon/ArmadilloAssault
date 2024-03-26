@@ -10,6 +10,7 @@ using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Graphics.Drawing.Textures;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Client;
+using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -61,14 +62,19 @@ namespace ArmadilloAssault
                 Mouse.SetPosition(Math.Clamp(mouseState.Position.X, 0, 1920), Math.Clamp(mouseState.Position.Y, 0, 1080));
             }
 
-            GameStateManager.Update();
-
-            ControlsManager.Update(IsActive);
-
             if (ClientManager.IsActive)
             {
                 _ = ClientManager.BroadcastUpdate();
+                ClientManager.PollEvents();
             }
+            else if (ServerManager.IsServing)
+            {
+                ServerManager.PollEvents();
+            }
+
+            GameStateManager.Update();
+
+            ControlsManager.Update(IsActive);
 
             IsMouseVisible = GameStateManager.State != State.Battle || BattleManager.ShowCursor;
 

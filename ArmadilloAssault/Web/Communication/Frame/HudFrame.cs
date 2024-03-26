@@ -6,7 +6,7 @@ namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class HudFrame
     {
-        [JsonProperty("RTs")]
+        [JsonProperty("RTs", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> RespawnTimers { get; set; }
 
         [JsonProperty("Hs")]
@@ -15,15 +15,15 @@ namespace ArmadilloAssault.Web.Communication.Frame
         [JsonProperty("As")]
         public List<int?> Ammos { get; set; } = [];
 
-        [JsonProperty("FTVs")]
-        public List<int> FlagTimerValues { get; set; } = [];
+        [JsonProperty("FTVs", NullValueHandling = NullValueHandling.Ignore)]
+        public List<int> FlagTimerValues { get; set; }
 
-        [JsonProperty("FTXs")]
+        [JsonProperty("FTXs", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(FloatConverter))]
-        public List<float> FlagTimerXs { get; set; } = [];
+        public List<float> FlagTimerXs { get; set; }
 
-        [JsonProperty("FTYs")]
+        [JsonProperty("FTYs", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(FloatConverter))]
-        public List<float> FlageTimerYs { get; set; } = [];
+        public List<float> FlageTimerYs { get; set; }
     }
 }

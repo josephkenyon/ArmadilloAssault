@@ -337,17 +337,23 @@ namespace ArmadilloAssault.GameState.Battle
                     {
                         var positions = new List<Vector2>();
 
-                        for (int i = 0; i < Frame.HudFrame.FlagTimerXs.Count; i++)
+                        if (Frame.HudFrame.FlagTimerXs != null)
                         {
-                            positions.Add(
-                                new Vector2(Frame.HudFrame.FlagTimerXs[i], Frame.HudFrame.FlageTimerYs[i]) - CameraManager.Offset.ToVector2() + new Vector2(64, -16)
-                            );
+                            for (int i = 0; i < Frame.HudFrame.FlagTimerXs.Count; i++)
+                            {
+                                positions.Add(
+                                    new Vector2(Frame.HudFrame.FlagTimerXs[i], Frame.HudFrame.FlageTimerYs[i]) - CameraManager.Offset.ToVector2() + new Vector2(64, -16)
+                                );
+                            }
                         }
 
-                        DrawingManager.DrawStrings(
-                            Frame.HudFrame.FlagTimerValues.Select(value => value.ToString()),
-                            positions
-                        );
+                        if (Frame.HudFrame.FlagTimerValues != null)
+                        {
+                            DrawingManager.DrawStrings(
+                               Frame.HudFrame.FlagTimerValues.Select(value => value.ToString()),
+                               positions
+                           );
+                        }
                     }
 
                     if (ControlsManager.IsControlDown(0, Control.Show_Stats) && ModeType.Tutorial != BattleStaticData.ModeType)
@@ -443,8 +449,12 @@ namespace ArmadilloAssault.GameState.Battle
         {
             var hudFrame = new HudFrame();
 
-            if (ModeType.Tutorial != Mode && ModeType.Capture_the_Flag == Mode)
+            if (ModeType.Capture_the_Flag == Mode)
             {
+                hudFrame.FlagTimerValues = [];
+                hudFrame.FlagTimerXs = [];
+                hudFrame.FlageTimerYs = [];
+
                 foreach (var timer in ModeManager.FlagReturnTimers)
                 {
                     if (timer.Value != 0)

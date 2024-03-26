@@ -870,8 +870,6 @@ namespace ArmadilloAssault.Assets
 
         public ColorJson GetColor()
         {
-            var color = ColorJson.White;
-
             if (CurrentPowerUp != null)
             {
                 var blinkFrame = PowerUpFramesLeft - ((PowerUpFramesLeft / 60) * 60);
@@ -883,11 +881,11 @@ namespace ArmadilloAssault.Assets
                     PowerUpType.Damage_Up => new ColorJson(255, blinkFrame, blinkFrame),
                     PowerUpType.Super_Speed => new ColorJson(blinkFrame, 255, blinkFrame),
                     PowerUpType.Invincibility => new ColorJson(blinkFrame, blinkFrame, 255),
-                    _ => new ColorJson(255, 255, 255),
+                    _ => null,
                 };
             }
 
-            return color;
+            return null;
         }
 
         public string GetRespawnMessage()

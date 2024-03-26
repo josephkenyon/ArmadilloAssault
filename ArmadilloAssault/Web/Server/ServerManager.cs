@@ -86,6 +86,11 @@ namespace ArmadilloAssault.Web.Server
             }
         }
 
+        public static void PollEvents()
+        {
+            Server?.PollEvents();
+        }
+
         public static void TerminateServer()
         {
             Server.Stop();

@@ -1,6 +1,7 @@
 ﻿using ArmadilloAssault.Assets;
 using ArmadilloAssault.Configuration;
 using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.Configuration.Textures;
 using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.Generics;
@@ -83,6 +84,8 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
 
                 var positions = avatarFrame.GetPositions();
 
+                var colorJson = avatarFrame.Colors == null ? new ColorJson(255, 255, 255) : null;
+
                 var index = 0;
                 foreach (var type in avatarStaticData.Types)
                 {
@@ -108,7 +111,7 @@ namespace ArmadilloAssault.Graphics.Drawing.Avatars
                             WhiteTextureName = avatarStaticData.WhiteTextureNames[index],
                             Type = avatarStaticData.Types[index],
                             WeaponTexture = avatarFrame.WeaponTextures[index],
-                            Color = avatarFrame.Colors[index].ToColor(),
+                            Color = (colorJson ?? avatarFrame.Colors[index] ?? new ColorJson(255, 255, 255)).ToColor(),
                             TeamColor = avatarStaticData.ShowTeamColors[index] ? DrawingHelper.GetTeamColor(avatarStaticData.TeamIndices[index]) : null,
                             Opacity = MathUtils.GetAlpha(avatarFrame.Invisibles[index], playerTeamIndex, avatarTeamIndex)
                         };

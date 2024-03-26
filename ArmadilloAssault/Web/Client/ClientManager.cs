@@ -52,6 +52,11 @@ namespace ArmadilloAssault.Web.Client
             CancellationTokenSource = null;
         }
 
+        public static void PollEvents()
+        {
+            Client?.PollEvents();
+        }
+
         public static void ConnectionEstablished()
         {
             MenuManager.EnterLobby();

@@ -6,10 +6,10 @@ namespace ArmadilloAssault.Web.Communication.Frame
 {
     public class ModeFrame
     {
-        [JsonProperty("CPC")]
+        [JsonProperty("CPC", NullValueHandling = NullValueHandling.Ignore)]
         public ColorJson Colors { get; set; }
 
-        [JsonProperty("CPS")]
+        [JsonProperty("CPS", NullValueHandling = NullValueHandling.Ignore)]
         public int? CapturePointSeconds { get; set; }
 
         [JsonProperty("MVs")]
