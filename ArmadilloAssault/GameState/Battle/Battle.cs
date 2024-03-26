@@ -37,7 +37,7 @@ namespace ArmadilloAssault.GameState.Battle
 {
     public class Battle : IModeManagerListener, IAvatarListener, IBulletListener, IWeaponListener, IItemListener
     {
-        public Dictionary<int, Avatar> Avatars { get; set; } = [];
+        public Dictionary<int, Avatar> Avatars { get; set; }
 
         public Scene Scene { get; set; }
         public BulletManager BulletManager { get; set; }
@@ -111,6 +111,7 @@ namespace ArmadilloAssault.GameState.Battle
                 Scene.TeamRectangles?.Clear();
             }
 
+            Avatars = [];
             foreach (var index in avatars.Keys)
             {
                 var crowned = false;
@@ -182,7 +183,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             ItemManager?.UpdateItems(Scene);
 
-            if (Avatars.Count > 0)
+            if (Avatars != null)
             {
                 CameraManager.UpdateFocusPoint(Avatars[BattleManager.FocusPlayerIndex].Position);
             }
@@ -207,7 +208,7 @@ namespace ArmadilloAssault.GameState.Battle
                 }
             }
 
-            if (Avatars.Count > 0)
+            if (Avatars != null)
             {
                 Frame = CreateFrame();
 
@@ -586,7 +587,7 @@ namespace ArmadilloAssault.GameState.Battle
         public int GetNextPlayerIndex(int focusPlayerIndex)
         {
             List<int> playerIds = [];
-            if (Avatars.Count > 0)
+            if (Avatars != null)
             {
                 playerIds = [.. Avatars.Keys];
             }

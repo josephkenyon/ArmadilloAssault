@@ -39,29 +39,23 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
         public void UpdateCrates(ICollection<Avatar> avatars)
         {
-            if (CollisionBoxes.Count == 0) {
-                return;
-            }
+            var avatarCount = avatars != null ? avatars.Count : 0;
 
             TimeSinceLastCrate++;
 
-            if (!InitialDrop && TimeSinceLastCrate == CrateSpawnRate(avatars.Count))
+            if (!InitialDrop && TimeSinceLastCrate == CrateSpawnRate(avatarCount))
             {
                 InitialDrop = true;
                 TimeSinceLastCrate = 0;
 
-                foreach(var avatar in avatars)
+                for (var i = 0; i < avatarCount; i++)
                 {
                     CreateNewCrate(CrateType.Weapon);
                     CreateNewCrate(CrateType.Weapon);
-                }
-
-                for (var i = 0; i < avatars.Count; i++)
-                {
                     CreateNewCrate(CrateType.Power_Up);
                 }
             }
-            else if (TimeSinceLastCrate >= CrateSpawnRate(avatars.Count) && Crates.Count <= 10)
+            else if (TimeSinceLastCrate >= CrateSpawnRate(avatarCount) && Crates.Count <= 10)
             {
                 TimeSinceLastCrate = 0;
                 CreateNewCrate();
@@ -73,18 +67,21 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 UpdateCratePosition(crate);
             }
 
-            foreach (var avatar in avatars)
+            if (avatars != null)
             {
-                Crates.RemoveAll(crate =>
+                foreach (var avatar in avatars)
                 {
-                    if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox()) && (avatar.CanPickUpPowerUps || crate.Type != CrateType.Power_Up)) {
-                        GiveCrate(avatar, crate);
-                        return true;
-                    }
+                    Crates.RemoveAll(crate =>
+                    {
+                        if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox()) && (avatar.CanPickUpPowerUps || crate.Type != CrateType.Power_Up))
+                        {
+                            GiveCrate(avatar, crate);
+                            return true;
+                        }
 
-                    return false;
-                });
-                   
+                        return false;
+                    });
+                }
             }
         }
 
@@ -96,7 +93,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 {
                     if (crate.GoingDown)
                     {
-                        if (collisionBox.Bottom < crate.RelevantCollisionBox.Top)
+                        if (collisionBox.Bottom < crate.FinalY)
                         {
                             crate.SetY(crate.Position.Y + crate.MaxVelocity.Y);
                         }
@@ -107,7 +104,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                     }
                     else
                     {
-                        if (collisionBox.Bottom > crate.RelevantCollisionBox.Top)
+                        if (collisionBox.Bottom > crate.FinalY)
                         {
                             crate.SetY(crate.Position.Y - crate.MaxVelocity.Y);
                         }
@@ -120,8 +117,36 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             }
         }
 
+        public void CreateNewCrate(CrateType crateType, int x, int finalY, bool goingDown)
+        {
+            var crate = new Crate(crateType, null)
+            {
+                GoingDown = DirectionDown,
+            };
+
+            crate.SetX(x);
+
+            if (!goingDown)
+            {
+                crate.SetY(sceneSize.Y);
+            }
+            else
+            {
+                crate.SetY(-200);
+            }
+
+            crate.FinalY = finalY;
+
+            crate.GoingDown = goingDown;
+        }
+
         public void CreateNewCrate(CrateType? crateType = null, WeaponType? weaponType = null, Vector2? position = null, bool singleClip = false)
         {
+            if (CollisionBoxes.Count == 0)
+            {
+                return;
+            }
+
             var typeDouble = Random.NextDouble();
             var type = crateType != null ? (CrateType)crateType : CrateType.Weapon;
 
@@ -165,7 +190,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                     return;
                 }
 
-                crate.RelevantCollisionBox = collisionBoxes.First();
+                crate.FinalY = collisionBoxes.First().Top;
 
                 crate.GoingDown = true;
             }
@@ -194,7 +219,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
                 crate.SetX(x - (crate.Size.X / 2));
 
-                crate.RelevantCollisionBox = relevantCollisionBox;
+                crate.FinalY = relevantCollisionBox.Top;
 
                 if (!crate.GoingDown)
                 {
