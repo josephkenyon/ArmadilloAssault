@@ -97,9 +97,13 @@ namespace ArmadilloAssault.Web.Client
 
                 GameStateManager.PushNewState(State.Battle);
             }
-            else if (serverMessage.Type == ServerMessageType.BattleUpdate)
+            else if (serverMessage.Type == ServerMessageType.BattleFrame)
             {
                 BattleManager.SetFrame(serverMessage.BattleFrame);
+            }
+            else if (serverMessage.Type == ServerMessageType.BattleUpdate)
+            {
+                BattleManager.QueueBattleUpdate(serverMessage.BattleUpdate);
             }
             else if (serverMessage.Type == ServerMessageType.LobbyUpdate)
             {

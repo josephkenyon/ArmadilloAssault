@@ -2,7 +2,7 @@
 using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Graphics.Drawing;
-using ArmadilloAssault.Web.Communication.Frame;
+using ArmadilloAssault.Web.Communication.Update;
 using ArmadilloAssault.Web.Server;
 using Microsoft.Xna.Framework;
 using System;
@@ -289,14 +289,14 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             return true;
         }
 
-        public StatFrame CreateStatFrameIfNewData()
+        public StatUpdate CreateStatFrameIfNewData()
         {
             if (!newData)
             {
                 return null;
             }
 
-            var statFrame = new StatFrame();
+            var statFrame = new StatUpdate();
 
             foreach (var playerIndex in PlayerTeamRelations.Keys)
             {

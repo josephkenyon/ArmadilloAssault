@@ -32,10 +32,11 @@ using System;
 using ArmadilloAssault.GameState.Battle.Items;
 using ArmadilloAssault.Configuration.Items;
 using ArmadilloAssault.Controls;
+using ArmadilloAssault.Web.Communication.Update;
 
 namespace ArmadilloAssault.GameState.Battle
 {
-    public class Battle : IModeManagerListener, IAvatarListener, IBulletListener, IWeaponListener, IItemListener
+    public class Battle : IModeManagerListener, ICrateManagerListener, IAvatarListener, IBulletListener, IWeaponListener, IItemListener
     {
         public Dictionary<int, Avatar> Avatars { get; set; }
 
@@ -52,7 +53,11 @@ namespace ArmadilloAssault.GameState.Battle
 
         public BattleStaticData BattleStaticData { get; set; }
         public BattleFrame Frame { get; set; }
-        public StatFrame StatFrame { get; set; }
+        public StatUpdate StatFrame { get; set; }
+
+        public Queue<BattleUpdate> UpdateQueue { get; set; } = [];
+        public BattleUpdate BattleUpdate { get; set; }
+
 
         public bool Paused { get; set; }
         public bool GameOver { get; set; }
@@ -72,6 +77,7 @@ namespace ArmadilloAssault.GameState.Battle
             CameraManager.Initialize(Scene.Size);
 
             EffectManager = new();
+            CrateManager = new(this);
             EnvironmentalEffectsManager = new(sceneConfiguration.EnvironmentalEffects);
             CloudManager = new(sceneConfiguration.HighCloudsOnly, Scene.Size);
             FlowManager = new(sceneConfiguration.Flow);
@@ -138,7 +144,7 @@ namespace ArmadilloAssault.GameState.Battle
             }
 
             BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);
-            CrateManager = new(Scene.CollisionBoxes, Scene.Size);
+            CrateManager = new(this);
 
             EffectManager = new();
 
@@ -148,38 +154,46 @@ namespace ArmadilloAssault.GameState.Battle
             FlowManager = new(sceneConfiguration.Flow);
             PrecipitationManager = new(Scene.Size, sceneConfiguration.PrecipitationType);
 
-            Frame = CreateFrame();
+            Frame = CreateFrame(initialization: true);
             BattleStaticData = CreateBattleStaticData(sceneName);
         }
 
         public void Update()
         {
+            while (UpdateQueue.Count > 0)
+            {
+                ApplyUpdate(UpdateQueue.Dequeue());
+            }
+
             CameraManager.UpdateFocusOffset(Mouse.GetState().Position.ToVector2());
 
             EffectManager?.UpdateEffects();
 
-            foreach (var avatarPair in Avatars)
+            if (Avatars != null)
             {
-                var avatar = avatarPair.Value;
-
-                if (!avatar.IsDead && !GameOver)
+                foreach (var avatarPair in Avatars)
                 {
-                    InputManager.UpdateAvatar(avatarPair.Key, avatar);
+                    var avatar = avatarPair.Value;
+
+                    if (!avatar.IsDead && !GameOver)
+                    {
+                        InputManager.UpdateAvatar(avatarPair.Key, avatar);
+                    }
+
+                    PhysicsManager.Update(avatar, Scene);
+
+                    avatar.Update();
                 }
 
-                PhysicsManager.Update(avatar, Scene);
-
-                avatar.Update();
+                BulletManager?.UpdateBullets([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
             }
-
-            BulletManager?.UpdateBullets([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
 
             EnvironmentalEffectsManager.UpdateEffects();
             CloudManager.UpdateClouds();
             FlowManager.UpdateFlows();
             PrecipitationManager.UpdatePrecipitation();
 
-            CrateManager?.UpdateCrates([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
+            CrateManager?.UpdateCrates(Avatars?.Values);
 
             ItemManager?.UpdateItems(Scene);
 
@@ -212,13 +226,56 @@ namespace ArmadilloAssault.GameState.Battle
             {
                 Frame = CreateFrame();
 
-                SoundManager.PushSounds(Frame);
+                if (SoundManager.HasAny())
+                {
+                    if (ServerManager.IsServing)
+                    {
+                        BattleUpdate ??= new BattleUpdate();
+                        SoundManager.PushSounds(BattleUpdate);
+                    }
+                    else
+                    {
+                        SoundManager.PlaySounds();
+                    }
+                }
 
                 if (ServerManager.IsServing)
                 {
                     ServerManager.SendBattleFrame(Frame);
+
+                    if (BattleUpdate != null)
+                    {
+                        ServerManager.SendBattleUpdate(BattleUpdate);
+                    }
                 }
+
+                BattleUpdate = null;
             }
+        }
+
+        public void ApplyUpdate(BattleUpdate battleUpdate)
+        {
+            var crateUpdate = battleUpdate.CrateUpdate;
+
+            if (crateUpdate != null)
+            {
+                if (crateUpdate.NewTypes != null)
+                {
+                    for (int i = 0; i < crateUpdate.NewTypes.Count; i++)
+                    {
+                        CrateManager?.CreateNewCrate(
+                            crateUpdate.NewTypes[i],
+                            crateUpdate.NewXs[i],
+                            crateUpdate.NewFinalYs[i],
+                            crateUpdate.NewGoingDowns[i]
+                        );
+                    }
+                }
+
+                CrateManager?.DeleteCrates(crateUpdate.DeletedIds);
+            }
+
+            SoundManager.PlaySounds(battleUpdate.SoundFrame);
         }
 
         public void Draw()
@@ -289,10 +346,8 @@ namespace ArmadilloAssault.GameState.Battle
                     }
                 });
 
-                SoundManager.PlaySounds(Frame.SoundFrame);
-
                 DrawingManager.DrawCollection(AvatarDrawingHelper.GetDrawableAvatars(Frame.AvatarFrame, BattleStaticData.AvatarStaticData, BattleManager.PlayerIndex));
-                DrawingManager.DrawCollection(CrateManager.GetDrawableCrates(Frame.CrateFrame));
+                DrawingManager.DrawCollection(CrateManager.GetDrawableCrates());
                 DrawingManager.DrawCollection(ItemManager.GetDrawableItems(Frame.ItemFrame));
             }
 
@@ -407,24 +462,23 @@ namespace ArmadilloAssault.GameState.Battle
             }
         }
 
-        private BattleFrame CreateFrame()
+        private BattleFrame CreateFrame(bool initialization = false)
         {
             var battleFrame = new BattleFrame
             {
                 GameOverMessage = ModeManager.VictoryMessage,
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars),
                 BulletFrame = BulletManager.GetBulletFrame(),
-                CrateFrame = CrateManager.GetCrateFrame(),
                 EffectFrame = EffectManager.GetEffectFrame(),
                 HudFrame = CreateHudFrame(),
                 ModeFrame = CreateModeFrame(),
-                StatFrame = ModeManager.CreateStatFrameIfNewData(),
+                StatUpdate = initialization == true ? ModeManager.CreateStatFrameIfNewData() : null,
                 ItemFrame = ItemManager.GetItemFrame()
             };
 
-            if (battleFrame.StatFrame != null)
+            if (battleFrame.StatUpdate != null)
             {
-                StatFrame = battleFrame.StatFrame;
+                StatFrame = battleFrame.StatUpdate;
             }
 
             return battleFrame;
@@ -491,9 +545,9 @@ namespace ArmadilloAssault.GameState.Battle
             return hudFrame;
         }
 
-        private ModeFrame CreateModeFrame()
+        private ModeUpdate CreateModeFrame()
         {
-            var modeFrame = new ModeFrame();
+            var modeFrame = new ModeUpdate();
 
             if (ModeType.Tutorial != Mode)
             {
@@ -570,7 +624,7 @@ namespace ArmadilloAssault.GameState.Battle
 
         public bool IsAlive(int playerIndex)
         {
-            if (Avatars.TryGetValue(playerIndex, out Avatar value))
+            if (Avatars != null && Avatars.TryGetValue(playerIndex, out Avatar value))
             {
                 return !value.IsDead;
             }
@@ -640,6 +694,30 @@ namespace ArmadilloAssault.GameState.Battle
         public bool BeingHeld(Item item)
         {
             return Avatars.Values.Any(avatar => avatar.HeldItems.Contains(item));
+        }
+
+        public ICollection<Rectangle> GetCollisionBoxes()
+        {
+            return Scene.CollisionBoxes;
+        }
+
+        public Point GetSceneSize()
+        {
+            return Scene.Size;
+        }
+
+        public void CrateCreated(Crate crate)
+        {
+            BattleUpdate ??= new BattleUpdate();
+
+            BattleUpdate.CrateCreated(crate);
+        }
+
+        public void CrateDeleted(int id)
+        {
+            BattleUpdate ??= new BattleUpdate();
+
+            BattleUpdate.CrateDeleted(id);
         }
     }
 }

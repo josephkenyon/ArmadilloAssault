@@ -167,10 +167,15 @@ namespace ArmadilloAssault.GameState.Battle
         {
             Battle.Frame = battleFrame;
 
-            if (battleFrame.StatFrame != null)
+            if (battleFrame.StatUpdate != null)
             {
-                Battle.StatFrame = battleFrame.StatFrame;
+                Battle.StatFrame = battleFrame.StatUpdate;
             }
+        }
+
+        public static void QueueBattleUpdate(BattleUpdate battleUpdate)
+        {
+            Battle.UpdateQueue.Enqueue(battleUpdate);
         }
     }
 }

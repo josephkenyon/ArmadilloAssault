@@ -4,21 +4,19 @@ using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.GameState.Battle.PowerUps;
 using ArmadilloAssault.Graphics.Drawing;
 using ArmadilloAssault.Sound;
-using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Crates
 {
-    public class CrateManager(ICollection<Rectangle> collisionBoxes, Point sceneSize)
+    public class CrateManager(ICrateManagerListener listener)
     {
-        private List<Rectangle> CollisionBoxes { get; set; } = collisionBoxes.Where(box =>
+        private List<Rectangle> CollisionBoxes { get; set; } = listener.GetCollisionBoxes().Where(box =>
             {
                 var testRectangle = new Rectangle(box.Center.X, box.Top - 10, 48, 10);
-                if (collisionBoxes.Any(box => box.Intersects(testRectangle)))
+                if (listener.GetCollisionBoxes().Any(box => box.Intersects(testRectangle)))
                 {
                     return false;
                 }
@@ -43,22 +41,25 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
             TimeSinceLastCrate++;
 
-            if (!InitialDrop && TimeSinceLastCrate == CrateSpawnRate(avatarCount))
+            if (avatars != null)
             {
-                InitialDrop = true;
-                TimeSinceLastCrate = 0;
-
-                for (var i = 0; i < avatarCount; i++)
+                if (!InitialDrop && TimeSinceLastCrate == CrateSpawnRate(avatarCount))
                 {
-                    CreateNewCrate(CrateType.Weapon);
-                    CreateNewCrate(CrateType.Weapon);
-                    CreateNewCrate(CrateType.Power_Up);
+                    InitialDrop = true;
+                    TimeSinceLastCrate = 0;
+
+                    for (var i = 0; i < avatarCount; i++)
+                    {
+                        CreateNewCrate(CrateType.Weapon);
+                        CreateNewCrate(CrateType.Weapon);
+                        CreateNewCrate(CrateType.Power_Up);
+                    }
                 }
-            }
-            else if (TimeSinceLastCrate >= CrateSpawnRate(avatarCount) && Crates.Count <= 10)
-            {
-                TimeSinceLastCrate = 0;
-                CreateNewCrate();
+                else if (TimeSinceLastCrate >= CrateSpawnRate(avatarCount) && Crates.Count <= 10)
+                {
+                    TimeSinceLastCrate = 0;
+                    CreateNewCrate();
+                }
             }
 
             var crates = Crates.Where(crate => !crate.Grounded);
@@ -69,13 +70,14 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
             if (avatars != null)
             {
-                foreach (var avatar in avatars)
+                foreach (var avatar in avatars.Where(av => !av.IsDead))
                 {
                     Crates.RemoveAll(crate =>
                     {
                         if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox()) && (avatar.CanPickUpPowerUps || crate.Type != CrateType.Power_Up))
                         {
                             GiveCrate(avatar, crate);
+                            listener.CrateDeleted(crate.id);
                             return true;
                         }
 
@@ -117,7 +119,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             }
         }
 
-        public void CreateNewCrate(CrateType crateType, int x, int finalY, bool goingDown)
+        public void CreateNewCrate(CrateType crateType, float x, int finalY, bool goingDown)
         {
             var crate = new Crate(crateType, null)
             {
@@ -128,7 +130,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
             if (!goingDown)
             {
-                crate.SetY(sceneSize.Y);
+                crate.SetY(listener.GetSceneSize().Y);
             }
             else
             {
@@ -138,6 +140,8 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             crate.FinalY = finalY;
 
             crate.GoingDown = goingDown;
+
+            Crates.Add(crate);
         }
 
         public void CreateNewCrate(CrateType? crateType = null, WeaponType? weaponType = null, Vector2? position = null, bool singleClip = false)
@@ -223,7 +227,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
                 if (!crate.GoingDown)
                 {
-                    crate.SetY(sceneSize.Y);
+                    crate.SetY(listener.GetSceneSize().Y);
                 }
                 else
                 {
@@ -233,7 +237,9 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                 DirectionDown = !DirectionDown;
             }
 
+
             Crates.Add(crate);
+            listener.CrateCreated(crate);
         }
 
         private static void GiveCrate(Avatar avatar, Crate crate)
@@ -254,53 +260,31 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             SoundManager.QueueBattleSound(BattleSound.ammo);
         }
 
-        public CrateFrame GetCrateFrame()
-        {
-            if (Crates.Count == 0) return null;
-
-            var crateFrame = new CrateFrame();
-
-            foreach (var crate in Crates)
-            {
-                crateFrame.Types.Add(crate.Type);
-                crateFrame.Xs.Add(crate.Position.X);
-                crateFrame.Ys.Add(crate.Position.Y);
-                crateFrame.Groundeds.Add(crate.Grounded);
-                crateFrame.GoingDowns.Add(crate.GoingDown);
-            }
-
-            return crateFrame;
-        }
-
-        public static ICollection<DrawableCrate> GetDrawableCrates(CrateFrame crateFrame)
+        public ICollection<DrawableCrate> GetDrawableCrates()
         {
             var drawableCrates = new List<DrawableCrate>();
 
-            if (crateFrame == null) return drawableCrates;
-
-            var index = 0;
-            foreach (var type in crateFrame.Types)
+            foreach (var crate in Crates)
             {
-                try
-                {
-                    var drawableCrate = new DrawableCrate(
-                        type,
-                        new Vector2(crateFrame.Xs[index], crateFrame.Ys[index]),
-                        crateFrame.Groundeds[index],
-                        crateFrame.GoingDowns[index]
-                    );
+                var drawableCrate = new DrawableCrate(
+                    crate.Type,
+                    crate.Position,
+                    crate.Grounded,
+                    crate.GoingDown
+                );
 
-                    drawableCrates.Add(drawableCrate);
-                }
-                catch (Exception ex)
-                {
-                    Trace.Write(ex);
-                }
-
-                index++;
+                drawableCrates.Add(drawableCrate);
             }
 
             return drawableCrates;
+        }
+
+        public void DeleteCrates(List<int> deletedIds)
+        {
+            if (deletedIds != null)
+            {
+                Crates.RemoveAll(crate => deletedIds.Contains(crate.id));
+            }
         }
     }
 }

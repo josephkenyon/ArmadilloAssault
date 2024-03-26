@@ -41,8 +41,7 @@ namespace ArmadilloAssault.Web.Client
                     try
                     {
                         var message = dataReader.GetString();
-                        Trace.WriteLine(message);
-                        BattleUpdateReceived(message);
+                        BattleFrameReceived(message);
                         dataReader.Recycle();
                     }
                     catch (Exception ex)
@@ -144,13 +143,13 @@ namespace ArmadilloAssault.Web.Client
             }
         }
 
-        private static void BattleUpdateReceived(string messageString)
+        private static void BattleFrameReceived(string messageString)
         {
             try
             {
                 var battleFrame = JsonConvert.DeserializeObject<BattleFrame>(messageString);
 
-                ClientManager.OnServerUpdate(new ServerMessage { Type = ServerMessageType.BattleUpdate, BattleFrame = battleFrame });
+                ClientManager.OnServerUpdate(new ServerMessage { Type = ServerMessageType.BattleFrame, BattleFrame = battleFrame });
             }
             catch (Exception ex)
             {

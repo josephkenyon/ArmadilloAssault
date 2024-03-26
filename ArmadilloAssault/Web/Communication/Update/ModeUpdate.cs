@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace ArmadilloAssault.Web.Communication.Frame
+namespace ArmadilloAssault.Web.Communication.Update
 {
-    public class ModeFrame
+    public class ModeUpdate
     {
         [JsonProperty("CPC", NullValueHandling = NullValueHandling.Ignore)]
         public ColorJson Colors { get; set; }

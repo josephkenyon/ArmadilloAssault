@@ -7,10 +7,11 @@
         EndConnection,
         LobbyUpdate,
         BattleInitialization,
-        BattleUpdate,
+        BattleFrame,
         BattleTermination,
         Pause,
-        GameOver
+        GameOver,
+        BattleUpdate
     }
 
     public enum ClientMessageType

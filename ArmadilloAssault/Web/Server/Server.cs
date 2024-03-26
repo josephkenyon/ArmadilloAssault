@@ -105,6 +105,22 @@ namespace ArmadilloAssault.Web.Server
             }
         }
 
+        public void SendBattleUpdate(BattleUpdate battleUpdate)
+        {
+            if (ClientPlayers.Any())
+            {
+                var message = JsonConvert.SerializeObject(new ServerMessage
+                {
+                    Type = ServerMessageType.BattleUpdate,
+                    BattleUpdate = battleUpdate
+                });
+
+                Trace.WriteLine(message);
+
+                Broadcast(message);
+            }
+        }
+
         public void SendLobbyFrame(LobbyFrame lobbyFrame)
         {
             if (ClientPlayers.Any())

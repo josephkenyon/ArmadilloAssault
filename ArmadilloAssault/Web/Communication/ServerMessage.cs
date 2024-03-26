@@ -14,11 +14,14 @@ namespace ArmadilloAssault.Web.Communication
         [JsonProperty("PI")]
         public int PlayerIndex { get; set; }
 
-        [JsonProperty("BSD")]
+        [JsonProperty("BSD", NullValueHandling = NullValueHandling.Ignore)]
         public BattleStaticData BattleStaticData { get; set; }
 
-        [JsonProperty("BF")]
+        [JsonProperty("BF", NullValueHandling = NullValueHandling.Ignore)]
         public BattleFrame BattleFrame { get; set; }
+
+        [JsonProperty("BU", NullValueHandling = NullValueHandling.Ignore)]
+        public BattleUpdate BattleUpdate { get; set; }
 
         [JsonProperty("LF")]
         public LobbyFrame LobbyFrame { get; set; }

@@ -109,6 +109,19 @@ namespace ArmadilloAssault.Web.Server
             }
         }
 
+        public static void SendBattleUpdate(BattleUpdate battleUpdate)
+        {
+            try
+            {
+                Server.SendBattleUpdate(battleUpdate);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+        }
+
+
         public static void SendLobbyFrame(LobbyFrame lobbyFrame)
         {
             Server.SendLobbyFrame(lobbyFrame);

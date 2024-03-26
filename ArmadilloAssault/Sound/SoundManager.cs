@@ -197,8 +197,14 @@ namespace ArmadilloAssault.Sound
 
         public static void CancelReloadSoundEffects()
         {
-            _soundFrame ??= new SoundFrame();
+            _soundFrame ??= new();
             _soundFrame.CancelReloudSound = true;
+        }
+
+        public static void PlaySounds()
+        {
+            PlaySounds(_soundFrame);
+            _soundFrame = new();
         }
 
         public static void PlaySounds(SoundFrame soundFrame)
@@ -276,5 +282,7 @@ namespace ArmadilloAssault.Sound
             soundFrameContainer.SoundFrame = _soundFrame;
             _soundFrame = null;
         }
+
+        public static bool HasAny() => _soundFrame != null;
     }
 }

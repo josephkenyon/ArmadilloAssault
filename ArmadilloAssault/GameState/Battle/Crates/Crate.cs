@@ -16,7 +16,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
         public readonly WeaponType? WeaponType = type == CrateType.Weapon ? weaponType ?? GetRandomWeaponType() : null;
         public readonly PowerUpType? PowerUpType = type == CrateType.Power_Up ? GetRandomPowerUpType() : null;
 
-        public readonly int CrateId = NextCrateId++;
+        public readonly int id = NextCrateId++;
         public Point Size => Grounded ? new Point(96, 96) : new Point(128, 204);
         public CrateType Type { get; private set; } = type;
         public bool SingleClip { get; private set; } = singleClip;

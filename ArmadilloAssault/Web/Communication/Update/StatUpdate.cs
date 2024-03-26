@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace ArmadilloAssault.Web.Communication.Frame
+namespace ArmadilloAssault.Web.Communication.Update
 {
-    public class StatFrame
+    public class StatUpdate
     {
         [JsonProperty("PIS")]
         public List<int> PlayerIndices { get; set; } = [];

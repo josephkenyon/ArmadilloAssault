@@ -13,6 +13,7 @@ using ArmadilloAssault.GameState.Battle.Camera;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.Configuration.Avatars;
+using ArmadilloAssault.Web.Communication.Update;
 
 namespace ArmadilloAssault.Graphics.Drawing
 {
@@ -224,7 +225,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             }
         }
 
-        public static void DrawHud(BattleStaticData battleStaticData, HudFrame hudFrame, ModeFrame modeFrame, AvatarFrame avatarFrame, int playerIndex)
+        public static void DrawHud(BattleStaticData battleStaticData, HudFrame hudFrame, ModeUpdate modeFrame, AvatarFrame avatarFrame, int playerIndex)
         {
             for (int i = 0; i < battleStaticData.AvatarStaticData.PlayerIndices.Count; i++)
             {
