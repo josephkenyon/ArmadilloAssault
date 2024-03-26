@@ -313,6 +313,10 @@ namespace ArmadilloAssault.GameState.Battle.Input
                     {
                         avatar.BufferAnimation(Animation.Resting);
                     }
+                    else if (avatar.CanRoll)
+                    {
+                        avatar.BufferAnimation(Animation.Rolling);
+                    }
                 }
                 else if (avatar.CanRoll)
                 {
