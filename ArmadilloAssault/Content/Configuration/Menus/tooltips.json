@@ -36,17 +36,17 @@
   {
     "Key": "movement",
     "Texts": [
-      "Move  around  with  w,  a,  s,  d.  and  jump",
-      "with  space  bar.  You  can  enter  or  exit  a",
-      "roll  by  pressing  down  (s)  or  up  (w).  The",
-      "S  key  also  passes  through  small  platforms."
+      "Move  around  with  'W',  'A',  'S',  'D'.  and  jump",
+      "with  'Spacebar'.  You  can  enter  a  roll  by",
+      "pressing  'S'  or  'left-Ctrl',  and  'W'  to  exit.",
+      "'S'  also  passes  through  small  platforms."
     ]
   },
   {
     "Key": "firing",
     "Texts": [
       "Aim  with  your  cursor  and  left-click",
-      "to  fire.  Press  R  to  reload  when  ammo  is",
+      "to  fire.  Press  'R'  to  reload  when  ammo  is",
       "low.  Middle-click  will  toggle  a  scoped",
       "mode  for  shooting  far  away  targets.",
       "Bullets  will  ricochet  off  of  shells."
@@ -58,7 +58,7 @@
       "Pick  up  a  weapon  crate  to  gain  ammo",
       "and  additional  weapons.  The  mouse  wheel",
       "will  cycle  through  your  weapons,  or  you",
-      "can  use  the  1,  2,  3,  and  4  number  keys."
+      "can  use  the  '1',  '2',  '3',  and  '4'  number  keys."
     ]
   },
   {
