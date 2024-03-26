@@ -26,9 +26,6 @@
     <PackageReference Include="SpriteFontPlus" Version="0.9.2" />
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Backup\" />
-  </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
     <Exec Command="dotnet tool restore" />

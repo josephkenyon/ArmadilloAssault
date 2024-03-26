@@ -33,11 +33,17 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             }
 
             _textures.Add(TextureName.loading_spinner, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "loading_spinner")));
-            _textures.Add(TextureName.clouds, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "clouds")));
-            _textures.Add(TextureName.crates, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates")));
-            _textures.Add(TextureName.crates_parachuting, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates_parachuting")));
-            _textures.Add(TextureName.crates_ballooning, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "crates_ballooning")));
-            _textures.Add(TextureName.smoke, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "smoke")));
+            _textures.Add(TextureName.crates, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Crates", "crates")));
+            _textures.Add(TextureName.crates_parachuting, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Crates", "crates_parachuting")));
+            _textures.Add(TextureName.crates_ballooning, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Crates", "crates_ballooning")));
+
+            _textures.Add(TextureName.blood_splatter, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Effects", "blood_splatter")));
+            _textures.Add(TextureName.clouds, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Effects", "clouds")));
+            _textures.Add(TextureName.dust_cloud, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Effects", "dust_cloud")));
+            _textures.Add(TextureName.muzzle_flash_small, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Effects", "muzzle_flash_small")));
+            _textures.Add(TextureName.muzzle_flash_large, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Effects", "muzzle_flash_large")));
+            _textures.Add(TextureName.ricochet, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Effects", "ricochet")));
+            _textures.Add(TextureName.smoke, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Sprites", "Effects", "smoke")));
 
             _textures.Add(TextureName.pistol, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "pistol")));
             _textures.Add(TextureName.assault, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Textures", "Weapons", "assault")));
@@ -76,12 +82,6 @@ namespace ArmadilloAssault.Graphics.Drawing.Textures
             _textures.Add(TextureName.floating_island_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "floating_island_tileset")));
             _textures.Add(TextureName.snow_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "snow_tileset")));
             _textures.Add(TextureName.haunted_house_tileset, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Tilesets", "haunted_house_tileset")));
-
-            _textures.Add(TextureName.muzzle_flash_small, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_small")));
-            _textures.Add(TextureName.muzzle_flash_large, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "muzzle_flash_large")));
-            _textures.Add(TextureName.dust_cloud, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "dust_cloud")));
-            _textures.Add(TextureName.blood_splatter, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "blood_splatter")));
-            _textures.Add(TextureName.ricochet, contentManager.Load<Texture2D>(Path.Combine("Graphics", "Effects", "ricochet")));
         }
 
         public static Texture2D GetTexture(TextureName textureName)
