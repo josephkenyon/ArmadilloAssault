@@ -2,7 +2,6 @@
 using ArmadilloAssault.Configuration.Effects;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Graphics.Drawing;
-using ArmadilloAssault.Web.Communication.Frame;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,17 +9,17 @@ using System.Diagnostics;
 
 namespace ArmadilloAssault.GameState.Battle.Effects
 {
-    public class EffectManager
+    public class EffectManager(IEffectManagerListener listener)
     {
         public List<Effect> Effects { get; private set; } = [];
 
-        public void CreateEffect(Vector2 position, EffectType effectType, Direction? direction = null, double? weaponAngle = null)
+        public void CreateEffect(Vector2 position, EffectType effectType, Direction? direction = null, double? weaponAngle = null, bool fromUpdate = false)
         {
             var effectConfiguration = ConfigurationManager.GetEffectConfiguration(effectType);
 
             var effectPosition = new Vector2(
-                position.X - effectConfiguration.Size.X / 2,
-                position.Y - effectConfiguration.Size.Y / 2
+                position.X - (fromUpdate ? 0 : (effectConfiguration.Size.X / 2)),
+                position.Y - (fromUpdate ? 0 : (effectConfiguration.Size.Y / 2))
             );
 
             if (direction != null && weaponAngle != null)
@@ -31,7 +30,14 @@ namespace ArmadilloAssault.GameState.Battle.Effects
                 );
             }
 
-            Effects.Add(new Effect(effectType, effectPosition, direction));
+            var effect = new Effect(effectType, effectPosition, direction);
+
+            Effects.Add(effect);
+
+            if (!fromUpdate)
+            {
+                listener.EffectCreated(effect);
+            }
         }
 
         public void UpdateEffects()
@@ -44,40 +50,20 @@ namespace ArmadilloAssault.GameState.Battle.Effects
             }
         }
 
-        public EffectFrame GetEffectFrame()
-        {
-            if (Effects.Count == 0) return null;
-
-            var effectFrame = new EffectFrame();
-
-            foreach (var effect in Effects)
-            {
-                effectFrame.Types.Add(effect.Type);
-                effectFrame.Xs.Add(effect.Position.X);
-                effectFrame.Ys.Add(effect.Position.Y);
-                effectFrame.Directions.Add(effect.Direction);
-                effectFrame.Frames.Add(effect.FrameCounter);
-            }
-
-            return effectFrame;
-        }
-
-        public static ICollection<DrawableEffect> GetDrawableEffects(EffectFrame effectFrame)
+        public ICollection<DrawableEffect> GetDrawableEffects()
         {
             var drawableEffects = new List<DrawableEffect>();
 
-            if (effectFrame == null) return drawableEffects;
-
             var index = 0;
-            foreach (var type in effectFrame.Types)
+            foreach (var effect in Effects)
             {
                 try
                 {
                     var drawableEffect = new DrawableEffect(
-                        type,
-                        new Vector2(effectFrame.Xs[index], effectFrame.Ys[index]),
-                        effectFrame.Directions[index],
-                        effectFrame.Frames[index]
+                        effect.Type,
+                        effect.Position,
+                        effect.Direction,
+                        effect.FrameCounter
                     );
 
                     drawableEffects.Add(drawableEffect);
@@ -91,6 +77,14 @@ namespace ArmadilloAssault.GameState.Battle.Effects
             }
 
             return drawableEffects;
+        }
+
+        internal void DeleteEffects(List<int> deletedIds)
+        {
+            if (deletedIds != null)
+            {
+                Effects.RemoveAll(effect => deletedIds.Contains(effect.id));
+            }
         }
     }
 }

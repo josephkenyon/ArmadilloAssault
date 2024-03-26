@@ -1,4 +1,6 @@
 ﻿using ArmadilloAssault.GameState.Battle.Crates;
+using ArmadilloAssault.GameState.Battle.Effects;
+using ArmadilloAssault.Generics;
 using ArmadilloAssault.Sound;
 using ArmadilloAssault.Web.Communication.Update;
 using Newtonsoft.Json;
@@ -9,11 +11,14 @@ namespace ArmadilloAssault.Web.Communication.Frame
     {
         [JsonProperty("C", NullValueHandling = NullValueHandling.Ignore)]
         public CrateUpdate CrateUpdate { get; set; }
-        
-        [JsonProperty("SF", NullValueHandling = NullValueHandling.Ignore)]
+
+        [JsonProperty("E", NullValueHandling = NullValueHandling.Ignore)]
+        public EffectUpdate EffectUpdate { get; set; }
+
+        [JsonProperty("S", NullValueHandling = NullValueHandling.Ignore)]
         public SoundFrame SoundFrame { get; set; }
 
-        internal void CrateCreated(Crate crate)
+        public void CrateCreated(Crate crate)
         {
             CrateUpdate ??= new CrateUpdate();
 
@@ -30,12 +35,29 @@ namespace ArmadilloAssault.Web.Communication.Frame
             CrateUpdate.NewGoingDowns.Add(crate.GoingDown);
         }
 
-        internal void CrateDeleted(int id)
+        public void CrateDeleted(int id)
         {
             CrateUpdate ??= new CrateUpdate();
 
             CrateUpdate.DeletedIds ??= [];
             CrateUpdate.DeletedIds.Add(id);
+        }
+
+        public void EffectCreated(Effect effect)
+        {
+            EffectUpdate ??= new EffectUpdate();
+
+            EffectUpdate.NewTypes ??= [];
+            EffectUpdate.NewTypes.Add(effect.Type);
+
+            EffectUpdate.NewXs ??= [];
+            EffectUpdate.NewXs.Add(effect.Position.X);
+
+            EffectUpdate.NewYs ??= [];
+            EffectUpdate.NewYs.Add(effect.Position.Y);
+
+            EffectUpdate.NewDirectionLefts ??= [];
+            EffectUpdate.NewDirectionLefts.Add(effect.Direction == Direction.Left);
         }
     }
 }

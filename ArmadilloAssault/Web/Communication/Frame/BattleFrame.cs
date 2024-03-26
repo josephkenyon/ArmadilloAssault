@@ -18,9 +18,6 @@ namespace ArmadilloAssault.Web.Communication.Frame
         [JsonProperty("CF", NullValueHandling = NullValueHandling.Ignore)]
         public CrateUpdate CrateFrame { get; set; }
         
-        [JsonProperty("EF", NullValueHandling = NullValueHandling.Ignore)]
-        public EffectFrame EffectFrame { get; set; }
-        
         [JsonProperty("HF")]
         public HudFrame HudFrame { get; set; } = new();
         

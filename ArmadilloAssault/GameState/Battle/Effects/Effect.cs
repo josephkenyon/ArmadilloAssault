@@ -6,6 +6,9 @@ namespace ArmadilloAssault.GameState.Battle.Effects
 {
     public class Effect(EffectType type, Vector2 position, Direction? direction = null)
     {
+        private static int NextEffectId = 0;
+        public readonly int id = NextEffectId++;
+
         public EffectType Type { get; set; } = type;
         public Vector2 Position { get; set; } = position;
         public Direction? Direction { get; set; } = direction;

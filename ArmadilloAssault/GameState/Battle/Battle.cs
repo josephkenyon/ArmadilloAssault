@@ -36,7 +36,7 @@ using ArmadilloAssault.Web.Communication.Update;
 
 namespace ArmadilloAssault.GameState.Battle
 {
-    public class Battle : IModeManagerListener, ICrateManagerListener, IAvatarListener, IBulletListener, IWeaponListener, IItemListener
+    public class Battle : IModeManagerListener, ICrateManagerListener, IEffectManagerListener, IAvatarListener, IBulletListener, IWeaponListener, IItemListener
     {
         public Dictionary<int, Avatar> Avatars { get; set; }
 
@@ -76,7 +76,9 @@ namespace ArmadilloAssault.GameState.Battle
 
             CameraManager.Initialize(Scene.Size);
 
-            EffectManager = new();
+            CrateManager = new(this);
+            EffectManager = new(this);
+
             CrateManager = new(this);
             EnvironmentalEffectsManager = new(sceneConfiguration.EnvironmentalEffects);
             CloudManager = new(sceneConfiguration.HighCloudsOnly, Scene.Size);
@@ -144,9 +146,9 @@ namespace ArmadilloAssault.GameState.Battle
             }
 
             BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);
-            CrateManager = new(this);
 
-            EffectManager = new();
+            CrateManager = new(this);
+            EffectManager = new(this);
 
             EnvironmentalEffectsManager = new(sceneConfiguration.EnvironmentalEffects);
 
@@ -256,7 +258,6 @@ namespace ArmadilloAssault.GameState.Battle
         public void ApplyUpdate(BattleUpdate battleUpdate)
         {
             var crateUpdate = battleUpdate.CrateUpdate;
-
             if (crateUpdate != null)
             {
                 if (crateUpdate.NewTypes != null)
@@ -273,6 +274,23 @@ namespace ArmadilloAssault.GameState.Battle
                 }
 
                 CrateManager?.DeleteCrates(crateUpdate.DeletedIds);
+            }
+
+            var effectUpdate = battleUpdate.EffectUpdate;
+            if (effectUpdate != null)
+            {
+                if (effectUpdate.NewTypes != null)
+                {
+                    for (int i = 0; i < effectUpdate.NewTypes.Count; i++)
+                    {
+                        EffectManager?.CreateEffect(
+                            new Vector2(effectUpdate.NewXs[i], effectUpdate.NewYs[i]),
+                            effectUpdate.NewTypes[i],
+                            direction: effectUpdate.NewDirectionLefts[i] ? Direction.Left : null,
+                            fromUpdate: true
+                        );
+                    }
+                }
             }
 
             SoundManager.PlaySounds(battleUpdate.SoundFrame);
@@ -359,7 +377,7 @@ namespace ArmadilloAssault.GameState.Battle
             if (Frame != null)
             {
                 DrawingManager.DrawCollection(BulletManager.GetDrawableBullets(Frame.BulletFrame));
-                DrawingManager.DrawCollection(EffectManager.GetDrawableEffects(Frame.EffectFrame));
+                DrawingManager.DrawCollection(EffectManager.GetDrawableEffects());
             }
 
             DrawingManager.DrawCollection(CloudManager.Clouds.Where(cloud => cloud.Foreground));
@@ -469,7 +487,6 @@ namespace ArmadilloAssault.GameState.Battle
                 GameOverMessage = ModeManager.VictoryMessage,
                 AvatarFrame = AvatarFrame.CreateFrom(Avatars),
                 BulletFrame = BulletManager.GetBulletFrame(),
-                EffectFrame = EffectManager.GetEffectFrame(),
                 HudFrame = CreateHudFrame(),
                 ModeFrame = CreateModeFrame(),
                 StatUpdate = initialization == true ? ModeManager.CreateStatFrameIfNewData() : null,
@@ -718,6 +735,13 @@ namespace ArmadilloAssault.GameState.Battle
             BattleUpdate ??= new BattleUpdate();
 
             BattleUpdate.CrateDeleted(id);
+        }
+
+        public void EffectCreated(Effect effect)
+        {
+            BattleUpdate ??= new BattleUpdate();
+
+            BattleUpdate.EffectCreated(effect);
         }
     }
 }
