@@ -36,7 +36,7 @@ using ArmadilloAssault.Web.Communication.Update;
 
 namespace ArmadilloAssault.GameState.Battle
 {
-    public class Battle : IModeManagerListener, ICrateManagerListener, IEffectManagerListener, IAvatarListener, IBulletListener, IWeaponListener, IItemListener
+    public class Battle : IModeManagerListener, ICrateManagerListener, IEffectManagerListener, IAvatarListener, IBulletManagerListener, IWeaponListener, IItemListener
     {
         public Dictionary<int, Avatar> Avatars { get; set; }
 
@@ -53,11 +53,10 @@ namespace ArmadilloAssault.GameState.Battle
 
         public BattleStaticData BattleStaticData { get; set; }
         public BattleFrame Frame { get; set; }
-        public StatUpdate StatFrame { get; set; }
+        public StatFrame StatFrame { get; set; }
 
         public Queue<BattleUpdate> UpdateQueue { get; set; } = [];
         public BattleUpdate BattleUpdate { get; set; }
-
 
         public bool Paused { get; set; }
         public bool GameOver { get; set; }
@@ -65,6 +64,8 @@ namespace ArmadilloAssault.GameState.Battle
         private int SpawnLocationIndex { get; set; }
 
         public ModeType Mode => BattleStaticData != null ? BattleStaticData.ModeType : ModeManager.Mode;
+
+        public readonly bool Hosting;
 
         public Battle(BattleStaticData battleStaticData)
         {
@@ -87,6 +88,8 @@ namespace ArmadilloAssault.GameState.Battle
         }
 
         public Battle(Dictionary<int, AvatarType> avatars, Dictionary<int, int> playerTeamRelations, Dictionary<int, AvatarProp> avatarProps, ModeType mode, string sceneName) {
+            Hosting = true;
+
             var sceneConfiguration = ConfigurationManager.GetSceneConfiguration(sceneName);
             Scene = new Scene(sceneConfiguration);
 
@@ -156,8 +159,14 @@ namespace ArmadilloAssault.GameState.Battle
             FlowManager = new(sceneConfiguration.Flow);
             PrecipitationManager = new(Scene.Size, sceneConfiguration.PrecipitationType);
 
-            Frame = CreateFrame(initialization: true);
+            Frame = CreateFrame();
+            StatFrame = ModeManager.CreateStatFrameIfNewData();
             BattleStaticData = CreateBattleStaticData(sceneName);
+
+            BattleUpdate = new BattleUpdate
+            {
+                StatFrame = StatFrame
+            };
         }
 
         public void Update()
@@ -171,24 +180,18 @@ namespace ArmadilloAssault.GameState.Battle
 
             EffectManager?.UpdateEffects();
 
-            if (Avatars != null)
+            Avatars?.ToList().ForEach(avatar =>
             {
-                foreach (var avatarPair in Avatars)
+                if (!avatar.Value.IsDead && !GameOver)
                 {
-                    var avatar = avatarPair.Value;
-
-                    if (!avatar.IsDead && !GameOver)
-                    {
-                        InputManager.UpdateAvatar(avatarPair.Key, avatar);
-                    }
-
-                    PhysicsManager.Update(avatar, Scene);
-
-                    avatar.Update();
+                    InputManager.UpdateAvatar(avatar.Key, avatar.Value);
                 }
 
-                BulletManager?.UpdateBullets([.. Avatars.Values.Where(avatar => !avatar.IsDead)]);
-            }
+                PhysicsManager.Update(avatar.Value, Scene);
+                avatar.Value.Update();
+            });
+
+            BulletManager?.UpdateBullets(Avatars?.Values.Where(avatar => !avatar.IsDead).ToList());
 
             EnvironmentalEffectsManager.UpdateEffects();
             CloudManager.UpdateClouds();
@@ -222,41 +225,52 @@ namespace ArmadilloAssault.GameState.Battle
                 {
                     BattleManager.SetGameOver();
                 }
+
+                var newStatFrame = ModeManager.CreateStatFrameIfNewData();
+                if (newStatFrame != null)
+                {
+                    StatFrame = newStatFrame;
+                    BattleUpdate ??= new BattleUpdate();
+                    BattleUpdate.StatFrame = StatFrame;
+                }
             }
 
-            if (Avatars != null)
+            if (!Hosting) return;
+
+            Frame = CreateFrame();
+            if (SoundManager.HasAny())
             {
-                Frame = CreateFrame();
-
-                if (SoundManager.HasAny())
-                {
-                    if (ServerManager.IsServing)
-                    {
-                        BattleUpdate ??= new BattleUpdate();
-                        SoundManager.PushSounds(BattleUpdate);
-                    }
-                    else
-                    {
-                        SoundManager.PlaySounds();
-                    }
-                }
-
                 if (ServerManager.IsServing)
                 {
-                    ServerManager.SendBattleFrame(Frame);
-
-                    if (BattleUpdate != null)
-                    {
-                        ServerManager.SendBattleUpdate(BattleUpdate);
-                    }
+                    BattleUpdate ??= new BattleUpdate();
+                    SoundManager.PushSounds(BattleUpdate);
                 }
-
-                BattleUpdate = null;
+                else
+                {
+                    SoundManager.PlaySounds();
+                }
             }
+
+            if (ServerManager.IsServing)
+            {
+                ServerManager.SendBattleFrame(Frame);
+
+                if (BattleUpdate != null)
+                {
+                    ServerManager.SendBattleUpdate(BattleUpdate);
+                }
+            }
+
+            BattleUpdate = null;
         }
 
         public void ApplyUpdate(BattleUpdate battleUpdate)
         {
+            if (battleUpdate.StatFrame != null)
+            {
+                StatFrame = battleUpdate.StatFrame;
+            }
+
             var crateUpdate = battleUpdate.CrateUpdate;
             if (crateUpdate != null)
             {
@@ -480,7 +494,7 @@ namespace ArmadilloAssault.GameState.Battle
             }
         }
 
-        private BattleFrame CreateFrame(bool initialization = false)
+        private BattleFrame CreateFrame()
         {
             var battleFrame = new BattleFrame
             {
@@ -489,14 +503,8 @@ namespace ArmadilloAssault.GameState.Battle
                 BulletFrame = BulletManager.GetBulletFrame(),
                 HudFrame = CreateHudFrame(),
                 ModeFrame = CreateModeFrame(),
-                StatUpdate = initialization == true ? ModeManager.CreateStatFrameIfNewData() : null,
                 ItemFrame = ItemManager.GetItemFrame()
             };
-
-            if (battleFrame.StatUpdate != null)
-            {
-                StatFrame = battleFrame.StatUpdate;
-            }
 
             return battleFrame;
         }
@@ -721,6 +729,16 @@ namespace ArmadilloAssault.GameState.Battle
         public Point GetSceneSize()
         {
             return Scene.Size;
+        }
+
+        public void BulletCreated(Bullet bullet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void BulletDeleted(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public void CrateCreated(Crate crate)

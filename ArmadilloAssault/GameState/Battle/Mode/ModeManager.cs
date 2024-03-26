@@ -289,14 +289,14 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             return true;
         }
 
-        public StatUpdate CreateStatFrameIfNewData()
+        public StatFrame CreateStatFrameIfNewData()
         {
             if (!newData)
             {
                 return null;
             }
 
-            var statFrame = new StatUpdate();
+            var statFrame = new StatFrame();
 
             foreach (var playerIndex in PlayerTeamRelations.Keys)
             {

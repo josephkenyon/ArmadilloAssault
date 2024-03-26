@@ -22,6 +22,7 @@ namespace ArmadilloAssault.GameState.Battle
         private static Menu Menu { get; set; }
         private static Battle Battle { get; set; }
         public static BattleStaticData BattleStaticData => Battle.BattleStaticData;
+        public static BattleUpdate BattleUpdate => Battle.BattleUpdate;
         public static BattleFrame BattleFrame => Battle.Frame;
 
         public static int PlayerIndex { get; private set; }
@@ -166,11 +167,6 @@ namespace ArmadilloAssault.GameState.Battle
         public static void SetFrame(BattleFrame battleFrame)
         {
             Battle.Frame = battleFrame;
-
-            if (battleFrame.StatUpdate != null)
-            {
-                Battle.StatFrame = battleFrame.StatUpdate;
-            }
         }
 
         public static void QueueBattleUpdate(BattleUpdate battleUpdate)

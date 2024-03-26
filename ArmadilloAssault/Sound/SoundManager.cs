@@ -29,8 +29,8 @@ namespace ArmadilloAssault.Sound
         public static bool MusicEnabled { get; private set; } = true;
         public static bool SoundEffectsEnabled { get; private set; } = true;
 
-        private static SoundEffectInstance _reloadInstance;
-        private static SoundEffectInstance _reloadEndInstance;
+        private static Dictionary<int, SoundEffectInstance> _reloadInstances = [];
+        private static Dictionary<int, SoundEffectInstance> _reloadEndInstances = [];
 
         public static void LoadContent(ContentManager contentManager)
         {
@@ -166,9 +166,27 @@ namespace ArmadilloAssault.Sound
             _menuSounds[menuSound].Play(SoundScaler, 0f, 0f);
         }
 
+        public static void QueueReloadSound(int index)
+        {
+            _soundFrame ??= new SoundFrame();
+            _soundFrame.PlayerReloads ??= [];
+
+            _soundFrame.PlayerReloads.Add(index);
+        }
+
+        public static void QueueReloadEndSound(int index)
+        {
+            _soundFrame ??= new SoundFrame();
+            _soundFrame.PlayerReloadEnds ??= [];
+
+            _soundFrame.PlayerReloadEnds.Add(index);
+        }
+
+
         public static void QueueBattleSound(BattleSound battleSound)
         {
             _soundFrame ??= new SoundFrame();
+            _soundFrame.BattleSounds ??= [];
 
             if (!_soundFrame.BattleSounds.Contains(battleSound))
             {
@@ -179,6 +197,7 @@ namespace ArmadilloAssault.Sound
         public static void QueueWeaponSound(WeaponType weaponType)
         {
             _soundFrame ??= new SoundFrame();
+            _soundFrame.WeaponSounds ??= [];
 
             if (!_soundFrame.WeaponSounds.Contains(weaponType))
             {
@@ -189,91 +208,85 @@ namespace ArmadilloAssault.Sound
         public static void QueueAvatarSound(AvatarType avatarType, AvatarSound avatarSound)
         {
             _soundFrame ??= new SoundFrame();
+            _soundFrame.AvatarSounds ??= [];
+
             if (!_soundFrame.AvatarSounds.Any(sound => sound.Key == avatarType && sound.Value == avatarSound))
             {
                 _soundFrame.AvatarSounds.Add(new(avatarType, avatarSound));
             }
         }
 
-        public static void CancelReloadSoundEffects()
+        public static void CancelReloadSoundEffects(int playerIndex)
         {
             _soundFrame ??= new();
-            _soundFrame.CancelReloudSound = true;
+            _soundFrame.CancelReloudSounds ??= [];
+
+            _soundFrame.CancelReloudSounds.Add(playerIndex);
         }
 
         public static void PlaySounds()
         {
             PlaySounds(_soundFrame);
-            _soundFrame = new();
+            _soundFrame = null;
         }
 
         public static void PlaySounds(SoundFrame soundFrame)
         {
-            if (soundFrame != null && !soundFrame.Played)
+            if (soundFrame != null)
             {
-                soundFrame.Played = true;
-
-                if (soundFrame.CancelReloudSound)
-                {
-                    CancelReloadInstances();
-                }
+                soundFrame.CancelReloudSounds?.ForEach(CancelReloadEndInstance);
 
                 if (SoundEffectsEnabled)
                 {
-                    foreach (var battleSound in soundFrame.BattleSounds)
+                    soundFrame.PlayerReloads?.ForEach(index =>
                     {
-                        if (battleSound == BattleSound.reload)
-                        {
-                            _reloadInstance = _battleSounds[battleSound].CreateInstance();
-                            _reloadInstance.Volume = SoundScaler;
-                            _reloadInstance.Play();
-                        }
-                        else if (battleSound == BattleSound.reload_end)
-                        {
-                            _reloadEndInstance = _battleSounds[battleSound].CreateInstance();
-                            _reloadEndInstance.Volume = SoundScaler;
-                            _reloadEndInstance.Play();
+                        CancelReloadInstance(index);
 
-                            CancelReloadInstance();
-                        }
-                        else
-                        {
-                            _battleSounds[battleSound].Play(SoundScaler, 0f, 0f);
-                        }
-                    }
+                        _reloadInstances[index] = _battleSounds[BattleSound.reload].CreateInstance();
+                        _reloadInstances[index].Volume = SoundScaler;
+                        _reloadInstances[index].Play();
+                    });
 
-                    foreach (var weaponSound in soundFrame.WeaponSounds.Distinct())
+                    soundFrame.PlayerReloadEnds?.ForEach(index =>
                     {
-                        _weaponSounds[weaponSound].Play(0.5f * SoundScaler, 0f, 0f);
-                    }
+                        CancelReloadEndInstance(index);
 
-                    foreach (var avatarSound in soundFrame.AvatarSounds.Distinct())
+                        _reloadInstances[index] = _battleSounds[BattleSound.reload_end].CreateInstance();
+                        _reloadInstances[index].Volume = SoundScaler;
+                        _reloadInstances[index].Play();
+                    });
+
+                    soundFrame.BattleSounds?.ForEach(battleSound => _battleSounds[battleSound].Play(SoundScaler, 0f, 0f));
+
+                    soundFrame.WeaponSounds?.Distinct().ToList().ForEach(weaponSound => _weaponSounds[weaponSound].Play(0.5f * SoundScaler, 0f, 0f));
+
+                    soundFrame.AvatarSounds?.Distinct().ToList().ForEach(avatarSound =>
                     {
                         var scaleFactor = (avatarSound.Key == AvatarType.Claus || (avatarSound.Key == AvatarType.Angie && avatarSound.Value == AvatarSound.Ready))
                             ? 1f : (avatarSound.Value == AvatarSound.Hurt || avatarSound.Value == AvatarSound.Dead ? 0.75f : 0.5f);
+
                         _avatarSounds[avatarSound.Key][avatarSound.Value].Play(scaleFactor * SoundScaler, 0f, 0f);
-                    }
+                    });
                 }
             }
         }
 
-        private static void CancelReloadInstances()
+        private static void CancelReloadEndInstance(int playerIndex)
         {
-            if (_reloadEndInstance != null && _reloadEndInstance.State == SoundState.Playing)
+            if (_reloadEndInstances.TryGetValue(playerIndex, out var instance) && instance != null && instance.State == SoundState.Playing)
             {
-                _reloadEndInstance.Stop();
-                _reloadEndInstance = null;
+                instance.Stop();
+
             }
 
-            CancelReloadInstance();
+            CancelReloadInstance(playerIndex);
         }
 
-        private static void CancelReloadInstance()
+        private static void CancelReloadInstance(int playerIndex)
         {
-            if (_reloadInstance != null && _reloadInstance.State == SoundState.Playing)
+            if (_reloadInstances.TryGetValue(playerIndex, out var instance) && instance != null && instance.State == SoundState.Playing)
             {
-                _reloadInstance.Stop();
-                _reloadInstance = null;
+                instance.Stop();
             }
         }
 

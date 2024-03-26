@@ -73,7 +73,7 @@ namespace ArmadilloAssault.Web.Server
             BattleManager.Initialize(avatarTypeDictionary, MenuManager.LobbyState.PlayerTeamRelations, avatarProps, MenuManager.LobbyState.SelectedMode, data);
             GameStateManager.PushNewState(State.Battle);
 
-            Server.MessageIntialization(BattleManager.BattleStaticData);
+            Server.MessageIntialization();
         }
 
         public static void EndGame()

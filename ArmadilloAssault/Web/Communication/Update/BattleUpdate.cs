@@ -18,6 +18,9 @@ namespace ArmadilloAssault.Web.Communication.Frame
         [JsonProperty("S", NullValueHandling = NullValueHandling.Ignore)]
         public SoundFrame SoundFrame { get; set; }
 
+        [JsonProperty("St", NullValueHandling = NullValueHandling.Ignore)]
+        public StatFrame StatFrame { get; set; }
+
         public void CrateCreated(Crate crate)
         {
             CrateUpdate ??= new CrateUpdate();

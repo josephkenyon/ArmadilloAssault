@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace ArmadilloAssault.GameState.Battle.Bullets
 {
-    public class BulletManager(ICollection<Rectangle> collisionBoxes, Point sceneSize, IBulletListener bulletListener)
+    public class BulletManager(ICollection<Rectangle> collisionBoxes, Point sceneSize, IBulletManagerListener bulletListener)
     {
         public static readonly float Bullet_Speed = 44f;
 
@@ -40,6 +40,16 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
 
         public void UpdateBullets(List<Avatar> avatars)
         {
+            if (avatars == null)
+            {
+                foreach (var bullet in Bullets)
+                {
+                    bullet.Position = GetNewBulletPosition(bullet.Position, bullet.Angle);
+                }
+
+                return;
+            }
+
             var boxLists = avatars.Select(avatar => {
                 var avatarHurtBoxes = avatar.GetHurtBoxes().OrderBy(rec => rec.Top);
 

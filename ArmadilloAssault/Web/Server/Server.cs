@@ -66,15 +66,16 @@ namespace ArmadilloAssault.Web.Server
             UdpServer.PollEvents();
         }
 
-        public void MessageIntialization(BattleStaticData battleStaticData)
+        public void MessageIntialization()
         {
             foreach (var player in ClientPlayers)
             {
                 var message = JsonConvert.SerializeObject(new ServerMessage
                 {
                     Type = ServerMessageType.BattleInitialization,
-                    BattleStaticData = battleStaticData,
+                    BattleStaticData = BattleManager.BattleStaticData,
                     BattleFrame = BattleManager.BattleFrame,
+                    BattleUpdate = BattleManager.BattleUpdate,
                     PlayerIndex = player.PlayerIndex
                 });
 

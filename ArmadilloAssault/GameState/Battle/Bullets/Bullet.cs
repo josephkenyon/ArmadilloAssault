@@ -6,6 +6,9 @@ namespace ArmadilloAssault.GameState.Battle.Bullets
 {
     public class Bullet
     {
+        private static int NextEffectId = 0;
+        public readonly int id = NextEffectId++;
+
         public int PlayerIndex { get; set; }
         public WeaponType WeaponType { get; set; }
         public Vector2 Position { get; set; }

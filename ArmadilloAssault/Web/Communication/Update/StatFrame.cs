@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Communication.Update
 {
-    public class StatUpdate
+    public class StatFrame
     {
         [JsonProperty("PIS")]
         public List<int> PlayerIndices { get; set; } = [];

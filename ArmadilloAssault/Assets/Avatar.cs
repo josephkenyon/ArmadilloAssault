@@ -293,7 +293,7 @@ namespace ArmadilloAssault.Assets
 
                     if (ReloadingFrames == 35)
                     {
-                        SoundManager.QueueBattleSound(BattleSound.reload_end);
+                        SoundManager.QueueReloadEndSound(PlayerIndex);
                     }
                 }
                 else
@@ -384,7 +384,7 @@ namespace ArmadilloAssault.Assets
                 Recoil = (float)(Math.PI / 2f / (FastReload ? 2f : 1f));
                 SwitchingWeapons = false;
                 FramesUntilRecoil = -1;
-                SoundManager.QueueBattleSound(BattleSound.reload);
+                SoundManager.QueueReloadSound(PlayerIndex);
             }
 
             BufferedShotFrameCounter = 0;
@@ -438,7 +438,7 @@ namespace ArmadilloAssault.Assets
             Recoil = (float)(Math.PI / 2);
             FramesUntilRecoil = -1;
             Reloading = false;
-            SoundManager.CancelReloadSoundEffects();
+            SoundManager.CancelReloadSoundEffects(PlayerIndex);
             ReloadingFrames = 0;
             SwitchingWeapons = true;
 
@@ -599,7 +599,7 @@ namespace ArmadilloAssault.Assets
             WeaponSelectionIndex = 0;
             FramesUntilRecoil = -1;
             Reloading = false;
-            SoundManager.CancelReloadSoundEffects();
+            SoundManager.CancelReloadSoundEffects(PlayerIndex);
             ReloadingFrames = 0;
             Recoil = 0;
             LastHurtBy = null;

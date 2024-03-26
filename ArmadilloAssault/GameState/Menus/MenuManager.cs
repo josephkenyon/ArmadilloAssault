@@ -347,6 +347,7 @@ namespace ArmadilloAssault.GameState.Menus
             if (LobbyFrame != null)
             {
                 SoundManager.PlaySounds(LobbyFrame.SoundFrame);
+                LobbyFrame.SoundFrame = null;
             }
 
             if (ConditionFulfilled(MenuCondition.level_select) && LobbyFrame != null)

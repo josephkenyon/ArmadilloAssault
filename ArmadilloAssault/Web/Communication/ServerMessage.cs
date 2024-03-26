@@ -23,7 +23,7 @@ namespace ArmadilloAssault.Web.Communication
         [JsonProperty("BU", NullValueHandling = NullValueHandling.Ignore)]
         public BattleUpdate BattleUpdate { get; set; }
 
-        [JsonProperty("LF")]
+        [JsonProperty("LF", NullValueHandling = NullValueHandling.Ignore)]
         public LobbyFrame LobbyFrame { get; set; }
     }
 }
