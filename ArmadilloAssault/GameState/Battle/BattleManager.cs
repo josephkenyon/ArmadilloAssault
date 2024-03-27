@@ -31,6 +31,7 @@ namespace ArmadilloAssault.GameState.Battle
         public static bool AmAlive => Battle.IsAlive(PlayerIndex);
 
         public static bool Paused { get; private set; }
+        public static bool SendInputs => Battle != null;
         public static bool GameOver => Battle != null && Battle.GameOver;
         public static bool ShowCursor => Paused || (Battle != null && Battle.GameOver);
 

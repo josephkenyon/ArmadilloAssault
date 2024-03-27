@@ -1,7 +1,5 @@
 ﻿using ArmadilloAssault.Configuration.Avatars;
-using ArmadilloAssault.Controls;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Communication
 {
@@ -15,15 +13,6 @@ namespace ArmadilloAssault.Web.Communication
 
         [JsonProperty("N", NullValueHandling = NullValueHandling.Ignore)]
         public string Name { get; set; } = null;
-
-        [JsonProperty("X", NullValueHandling = NullValueHandling.Ignore)]
-        public float AimX { get; set; }
-
-        [JsonProperty("Y", NullValueHandling = NullValueHandling.Ignore)]
-        public float? AimY { get; set; }
-
-        [JsonProperty("C", NullValueHandling = NullValueHandling.Ignore)]
-        public List<Control> AreControlsDown { get; set; }
 
         [JsonProperty("A", NullValueHandling = NullValueHandling.Ignore)]
         public AvatarType? AvatarType { get; set; }

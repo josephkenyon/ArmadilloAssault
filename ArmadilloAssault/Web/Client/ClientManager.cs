@@ -4,12 +4,11 @@ using ArmadilloAssault.Controls;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Camera;
-using ArmadilloAssault.GameState.Battle.Mode;
 using ArmadilloAssault.GameState.Menus;
 using ArmadilloAssault.Generics;
 using ArmadilloAssault.Web.Communication;
 using ArmadilloAssault.Web.Communication.Frame;
-using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ namespace ArmadilloAssault.Web.Client
     {
         private static Client Client { get; set; }
 
-        private static Vector2 LastAim = Vector2.Zero;
+        private static string LastInputFrame;
 
         private static bool LastUpdateWasEmpty = false;
         public static BattleFrame BattleFrame { get; set; }
@@ -64,28 +63,27 @@ namespace ArmadilloAssault.Web.Client
 
         public static async Task BroadcastUpdate()
         {
+            if (!Client.UdpEstablished || !BattleManager.SendInputs) return;
+
             var controlsDown = ControlsManager.AreControlsDown(0);
             var aim = CameraManager.GetAimAngle();
 
-            var hasUpdates = controlsDown.Count > 0
-                && !MathUtils.FloatsAreEqual(aim.X, LastAim.X)
-                && !MathUtils.FloatsAreEqual(aim.Y, LastAim.Y);
-
-            if (hasUpdates || !LastUpdateWasEmpty)
+            var inputFrame = new InputFrame
             {
-                var clientMessage = new ClientMessage
-                {
-                    Type = ClientMessageType.InputUpdate,
-                    AreControlsDown = controlsDown,
-                    AimX = aim.X,
-                    AimY = aim.Y
-                };
+                PlayerIndex = BattleManager.PlayerIndex,
+                AreControlsDown = controlsDown.Count > 0 ? controlsDown : null,
+                AimX = aim.X,
+                AimY = aim.Y
+            };
 
-                await Client.MessageServer(clientMessage);
+            var message = JsonConvert.SerializeObject(inputFrame);
+
+            if (message != LastInputFrame)
+            {
+                await Client.MessageInputUpdateUdp(message);
             }
 
-            LastUpdateWasEmpty = hasUpdates;
-            LastAim = aim;
+            LastInputFrame = message;
         }
 
         public static void OnServerUpdate(ServerMessage serverMessage)

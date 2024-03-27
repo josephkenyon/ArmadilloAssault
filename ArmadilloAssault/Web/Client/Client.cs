@@ -8,6 +8,7 @@ using System.Threading;
 using System.Text;
 using ArmadilloAssault.Web.Communication.Frame;
 using LiteNetLib;
+using LiteNetLib.Utils;
 
 namespace ArmadilloAssault.Web.Client
 {
@@ -17,7 +18,11 @@ namespace ArmadilloAssault.Web.Client
         private CancellationTokenSource CancellationTokenSource { get; set; }
         public bool Connected => WebSocket != null && WebSocket.State == WebSocketState.Open;
 
-        private NetManager UdpClient = null;
+        private NetManager UdpInClient = null;
+        private NetManager UdpOutClient = null;
+        private NetDataWriter UdpWriter { get; set; }
+
+        public bool UdpEstablished => UdpOutClient != null;
 
         public async Task JoinGame(string ipAddress, string name, CancellationTokenSource cts)
         {
@@ -31,12 +36,12 @@ namespace ArmadilloAssault.Web.Client
             {
                 await WebSocket.ConnectAsync(new Uri(serverAddress), CancellationTokenSource.Token);
 
-                var listener = new EventBasedNetListener();
-                UdpClient = new NetManager(listener);
+                var inListener = new EventBasedNetListener();
+                UdpInClient = new NetManager(inListener);
 
-                UdpClient.Start();
-                UdpClient.Connect(ipAddress, 25565, "Game");
-                listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
+                UdpInClient.Start();
+                UdpInClient.Connect(ipAddress, 25565, "Game");
+                inListener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
                 {
                     try
                     {
@@ -47,9 +52,16 @@ namespace ArmadilloAssault.Web.Client
                     catch (Exception ex)
                     {
                         Trace.WriteLine(ex.Message);
-                    }
-               
+                    }               
                 };
+
+                var outListener = new EventBasedNetListener();
+                UdpOutClient = new NetManager(outListener);
+
+                UdpOutClient.Start();
+                UdpOutClient.Connect(ipAddress, 7177, "GameIn");
+
+                UdpWriter = new();
 
                 Trace.WriteLine("Connected to server.");
 
@@ -75,14 +87,18 @@ namespace ArmadilloAssault.Web.Client
             }
             finally
             {
-                UdpClient?.Stop();
+                UdpInClient?.Stop();
                 ClientManager.ConnectionTerminated();
             }
         }
 
         public void PollEvents()
         {
-            UdpClient.PollEvents();
+            if (UdpEstablished)
+            {
+                UdpInClient.PollEvents();
+                UdpOutClient.PollEvents();
+            }
         }
 
         private async Task ReceiveMessages()
@@ -127,6 +143,23 @@ namespace ArmadilloAssault.Web.Client
             {
                 Trace.WriteLine(ex.Message);
             }
+        }
+
+        public Task MessageInputUpdateUdp(string message)
+        {
+            try
+            {
+                UdpWriter.Put(message);
+                UdpOutClient.SendToAll(UdpWriter, DeliveryMethod.Sequenced);
+                UdpWriter.Reset();
+
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+
+            return Task.CompletedTask;
         }
 
         private static void MessageReceived(string messageString)

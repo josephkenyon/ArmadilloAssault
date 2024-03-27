@@ -11,11 +11,11 @@ namespace ArmadilloAssault.Web.Communication.Update
         public List<EffectType> NewTypes { get; set; }
 
         [JsonProperty("Xs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> NewXs { get; set; }
 
         [JsonProperty("Ys")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> NewYs { get; set; }
 
         [JsonProperty("Drs")]

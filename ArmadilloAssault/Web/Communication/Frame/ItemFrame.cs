@@ -21,11 +21,11 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<int?> TeamIndices { get; set; } = [];
 
         [JsonProperty("Xs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Xs { get; set; } = [];
 
         [JsonProperty("Ys")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Ys { get; set; } = [];
     }
 }

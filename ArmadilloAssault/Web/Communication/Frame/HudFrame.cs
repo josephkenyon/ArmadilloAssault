@@ -19,11 +19,11 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<int> FlagTimerValues { get; set; }
 
         [JsonProperty("FTXs", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> FlagTimerXs { get; set; }
 
         [JsonProperty("FTYs", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> FlageTimerYs { get; set; }
     }
 }

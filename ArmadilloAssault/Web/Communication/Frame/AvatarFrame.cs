@@ -18,33 +18,33 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<Animation> Animations { get; set; } = [];
 
         [JsonProperty("AAs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> ArmAngles { get; set; } = [];
 
         [JsonProperty("Fs")]
         public List<int> AnimationFrames { get; set; } = [];
 
         [JsonProperty("BOs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> BreathingYOffsets { get; set; } = [];
 
         [JsonProperty("Ds")]
         public List<Direction> Directions { get; set; } = [];
 
         [JsonProperty("Xs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Xs { get; } = [];
 
         [JsonProperty("Ys")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Ys { get; } = [];
 
         [JsonProperty("Rcs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Recoils { get; set; } = [];
 
         [JsonProperty("Rts")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Rotations { get; } = [];
 
         [JsonProperty("Is")]

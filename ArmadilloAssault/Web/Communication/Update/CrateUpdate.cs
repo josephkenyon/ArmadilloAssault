@@ -11,7 +11,7 @@ namespace ArmadilloAssault.Web.Communication.Update
         public List<CrateType> NewTypes { get; set; }
 
         [JsonProperty("Xs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> NewXs { get; set; }
 
         [JsonProperty("Ys")]

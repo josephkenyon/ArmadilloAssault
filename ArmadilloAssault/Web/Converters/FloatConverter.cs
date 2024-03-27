@@ -1,23 +1,16 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Converters
 {
-    public class FloatConverter : JsonConverter<List<float>>
+    public class FloatConverter : JsonConverter<float>
     {
-        public override void WriteJson(JsonWriter writer, List<float> value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, float value, JsonSerializer serializer)
         {
-            writer.WriteStartArray();
-            foreach (float floatValue in value)
-            {
-                float roundedValue = (float)Math.Round(floatValue, 2);
-                writer.WriteValue(roundedValue);
-            }
-            writer.WriteEndArray();
+            writer.WriteValue((float)Math.Round(value, 2));
         }
 
-        public override List<float> ReadJson(JsonReader reader, Type objectType, List<float> existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override float ReadJson(JsonReader reader, Type objectType, float existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException("CustomFloatListConverter is only for serialization, not deserialization.");
         }

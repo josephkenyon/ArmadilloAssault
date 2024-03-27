@@ -28,7 +28,8 @@ namespace ArmadilloAssault.Web.Server
 
         private IEnumerable<Player> ClientPlayers => Players.Where(player => player.ConnectionId != null);
 
-        private NetManager UdpServer { get; set; }
+        private NetManager UdpOutServer { get; set; }
+        private NetManager UdpInServer { get; set; }
         private NetDataWriter UdpWriter { get; set; }
 
         public void Start()
@@ -45,26 +46,53 @@ namespace ArmadilloAssault.Web.Server
             WebSocketServer.AddWebSocketService<Game>("/game");
             WebSocketServer.Start();
 
-            var listener = new EventBasedNetListener();
-            UdpServer = new NetManager(listener);
+            var outListener = new EventBasedNetListener();
+            var inListener = new EventBasedNetListener();
+
+            UdpOutServer = new NetManager(outListener);
+            UdpInServer = new NetManager(inListener);
+
             UdpWriter = new();
 
-            UdpServer.Start(25565);
+            UdpOutServer.Start(25565);
+            UdpInServer.Start(7177);
 
-            listener.ConnectionRequestEvent += request =>
+            outListener.ConnectionRequestEvent += request =>
             {
-                if (UdpServer.ConnectedPeersCount < 6)
+                if (UdpOutServer.ConnectedPeersCount < 6)
                     request.AcceptIfKey("Game");
                 else
                     request.Reject();
+            };
 
-                Trace.WriteLine("UDP connected");
+            inListener.ConnectionRequestEvent += request =>
+            {
+                if (UdpOutServer.ConnectedPeersCount < 6)
+                    request.AcceptIfKey("GameIn");
+                else
+                    request.Reject();
+            };
+
+            inListener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
+            {
+                try
+                {
+                    var message = dataReader.GetString();
+                    UpdateInput(message);
+                    dataReader.Recycle();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message);
+                }
+
             };
         }
 
         public void PollEvents()
         {
-            UdpServer.PollEvents();
+            UdpOutServer.PollEvents();
+            UdpInServer.PollEvents();
         }
 
         public void MessageIntialization()
@@ -99,12 +127,9 @@ namespace ArmadilloAssault.Web.Server
 
         public void SendBattleFrame(BattleFrame battleFrame)
         {
-            var message = JsonConvert.SerializeObject(battleFrame);
-            Trace.WriteLine(message);
-
             if (ClientPlayers.Any())
             {
-                message = JsonConvert.SerializeObject(battleFrame);
+                var message = JsonConvert.SerializeObject(battleFrame);
 
                 BroadcastUdp(message);
             }
@@ -119,8 +144,6 @@ namespace ArmadilloAssault.Web.Server
                     Type = ServerMessageType.BattleUpdate,
                     BattleUpdate = battleUpdate
                 });
-
-                Trace.WriteLine(message);
 
                 Broadcast(message);
             }
@@ -169,7 +192,7 @@ namespace ArmadilloAssault.Web.Server
             try
             {
                 UdpWriter.Put(message);
-                UdpServer.SendToAll(UdpWriter, DeliveryMethod.Sequenced);
+                UdpOutServer.SendToAll(UdpWriter, DeliveryMethod.Sequenced);
                 UdpWriter.Reset();
             }
             catch (Exception ex)
@@ -187,10 +210,6 @@ namespace ArmadilloAssault.Web.Server
                 if (clientMessage.Type == ClientMessageType.JoinGame)
                 {
                     OnJoinGame(clientMessage.Name, id);
-                }
-                else if (clientMessage.Type == ClientMessageType.InputUpdate)
-                {
-                    UpdateInput(clientMessage, id);
                 }
                 else if (clientMessage.Type == ClientMessageType.AvatarSelection)
                 {
@@ -266,14 +285,31 @@ namespace ArmadilloAssault.Web.Server
             }
         }
 
-        private void UpdateInput(ClientMessage message, string id)
+        private void UpdateInput(string messageString)
         {
-            var index = Players.FindIndex(player => player.ConnectionId == id);
-            if (index != -1)
+            try
             {
-                Players[index].AreControlsDown = message.AreControlsDown;
-                Players[index].AimPosition = new Vector2((float)message.AimX, (float)message.AimY);
+                var inputFrame = JsonConvert.DeserializeObject<InputFrame>(messageString);
+
+                if (inputFrame != null)
+                {
+                    var index = Players.FindIndex(player => player.PlayerIndex == inputFrame.PlayerIndex);
+                    if (index != -1)
+                    {
+                        Players[index].AreControlsDown = inputFrame.AreControlsDown ?? [];
+
+                        if (inputFrame.AimX != null && inputFrame.AimY != null)
+                        {
+                            Players[index].AimPosition = new Vector2((float)inputFrame.AimX, (float)inputFrame.AimY);
+                        }
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+
         }
 
         private void UpdateAvatarSelection(ClientMessage message, string id)
@@ -304,7 +340,7 @@ namespace ArmadilloAssault.Web.Server
             WebSocketServer.Stop();
             WebSocketServer = null;
 
-            UdpServer?.Stop();
+            UdpOutServer?.Stop();
         }
 
         public void ClientDisconnected(string id)

@@ -21,11 +21,11 @@ namespace ArmadilloAssault.Web.Communication.Frame
         public List<bool> Crowneds { get; set; } = [];
 
         [JsonProperty("Xs")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Xs { get; } = [];
 
         [JsonProperty("Ys")]
-        [JsonConverter(typeof(FloatConverter))]
+        [JsonConverter(typeof(FloatListConverter))]
         public List<float> Ys { get; } = [];
 
         public static LobbyAvatarFrame CreateFrom(Dictionary<int, Avatar> avatars, int yOffset, bool showCrowns)
