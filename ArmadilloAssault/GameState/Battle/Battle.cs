@@ -96,7 +96,7 @@ namespace ArmadilloAssault.GameState.Battle
             CameraManager.Initialize(Scene.Size);
 
             ItemManager = new(this);
-            ModeManager = new(this, avatars.Keys.Select(key => new KeyValuePair<int, int>(key, playerTeamRelations[key])), mode);
+            ModeManager = new(this, avatars.Keys.Select(key => new KeyValuePair<int, int>(key, playerTeamRelations[key])), mode, avatarProps);
 
             if (ModeType.Capture_the_Flag == mode)
             {

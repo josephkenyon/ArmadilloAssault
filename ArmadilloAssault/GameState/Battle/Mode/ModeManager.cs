@@ -41,7 +41,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         private bool newData = true;
 
-        public ModeManager(IModeManagerListener modeManagerListener, IEnumerable<KeyValuePair<int, int>> playerIndices, ModeType mode)
+        public ModeManager(IModeManagerListener modeManagerListener, IEnumerable<KeyValuePair<int, int>> playerIndices, ModeType mode, Dictionary<int, AvatarProp> avatarProps)
         {
             ModeManagerListener = modeManagerListener;
 
@@ -56,13 +56,13 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
             if (mode == ModeType.Regicide)
             {
-                foreach (var avatar in modeManagerListener.GetAvatars().Values)
+                foreach (var avatar in avatarProps)
                 {
-                    var teamIndex = PlayerTeamRelations[avatar.PlayerIndex];
+                    var teamIndex = PlayerTeamRelations[avatar.Key];
 
-                    if (avatar.Crowned)
+                    if (avatar.Value.Crowned)
                     {
-                        CrownedPlayerIndices.Add(teamIndex, avatar.PlayerIndex);
+                        CrownedPlayerIndices.Add(teamIndex, avatar.Key);
                     }
                 }
             }
