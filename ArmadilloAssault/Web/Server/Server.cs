@@ -1,4 +1,5 @@
 ﻿using ArmadilloAssault.Configuration;
+using ArmadilloAssault.Configuration.Avatars;
 using ArmadilloAssault.GameState;
 using ArmadilloAssault.GameState.Battle;
 using ArmadilloAssault.GameState.Battle.Players;
@@ -98,9 +99,12 @@ namespace ArmadilloAssault.Web.Server
 
         public void SendBattleFrame(BattleFrame battleFrame)
         {
+            var message = JsonConvert.SerializeObject(battleFrame);
+            Trace.WriteLine(message);
+
             if (ClientPlayers.Any())
             {
-                var message = JsonConvert.SerializeObject(battleFrame);
+                message = JsonConvert.SerializeObject(battleFrame);
 
                 BroadcastUdp(message);
             }
@@ -219,7 +223,7 @@ namespace ArmadilloAssault.Web.Server
 
                 else if (clientMessage.Type == ClientMessageType.Pause)
                 {
-                    BattleManager.ClientPauseRequest(clientMessage.Paused);
+                    BattleManager.ClientPauseRequest((bool)clientMessage.Paused);
                 }
             }
             catch (Exception ex)
@@ -268,7 +272,7 @@ namespace ArmadilloAssault.Web.Server
             if (index != -1)
             {
                 Players[index].AreControlsDown = message.AreControlsDown;
-                Players[index].AimPosition = new Vector2(message.AimX, message.AimY);
+                Players[index].AimPosition = new Vector2((float)message.AimX, (float)message.AimY);
             }
         }
 
@@ -277,7 +281,7 @@ namespace ArmadilloAssault.Web.Server
             var player = Players.Find(player => player.ConnectionId == id);
             if (player != null)
             {
-                MenuManager.UpdateAvatarSelection(player.PlayerIndex, message.AvatarType);
+                MenuManager.UpdateAvatarSelection(player.PlayerIndex, (AvatarType)message.AvatarType);
             }
         }
 

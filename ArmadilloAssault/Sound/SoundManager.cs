@@ -293,6 +293,10 @@ namespace ArmadilloAssault.Sound
         public static void PushSounds(ISoundFrameContainer soundFrameContainer)
         {
             soundFrameContainer.SoundFrame = _soundFrame;
+        }
+
+        public static void ClearFrame()
+        {
             _soundFrame = null;
         }
 

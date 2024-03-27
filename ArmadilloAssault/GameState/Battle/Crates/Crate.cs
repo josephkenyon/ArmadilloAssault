@@ -41,5 +41,10 @@ namespace ArmadilloAssault.GameState.Battle.Crates
 
             return types[index];
         }
+
+        public static void ResetIdIndex()
+        {
+            NextCrateId = 0;
+        }
     }
 }

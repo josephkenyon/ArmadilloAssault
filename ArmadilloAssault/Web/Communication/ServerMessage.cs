@@ -8,11 +8,11 @@ namespace ArmadilloAssault.Web.Communication
         [JsonProperty("T")]
         public ServerMessageType Type { get; set; }
 
-        [JsonProperty("P")]
-        public bool Paused { get; set; }
+        [JsonProperty("P", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Paused { get; set; }
 
-        [JsonProperty("PI")]
-        public int PlayerIndex { get; set; }
+        [JsonProperty("PI", NullValueHandling = NullValueHandling.Ignore)]
+        public int? PlayerIndex { get; set; }
 
         [JsonProperty("BSD", NullValueHandling = NullValueHandling.Ignore)]
         public BattleStaticData BattleStaticData { get; set; }

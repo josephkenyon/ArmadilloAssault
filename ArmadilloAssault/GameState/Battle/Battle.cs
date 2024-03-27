@@ -77,10 +77,10 @@ namespace ArmadilloAssault.GameState.Battle
 
             CameraManager.Initialize(Scene.Size);
 
+            Crate.ResetIdIndex();
             CrateManager = new(this);
             EffectManager = new(this);
 
-            CrateManager = new(this);
             EnvironmentalEffectsManager = new(sceneConfiguration.EnvironmentalEffects);
             CloudManager = new(sceneConfiguration.HighCloudsOnly, Scene.Size);
             FlowManager = new(sceneConfiguration.Flow);
@@ -150,6 +150,7 @@ namespace ArmadilloAssault.GameState.Battle
 
             BulletManager = new(Scene.CollisionBoxes.Where(box => box.Height > CollisionHelper.PassableYThreshold).ToList(), Scene.Size, this);
 
+            Crate.ResetIdIndex();
             CrateManager = new(this);
             EffectManager = new(this);
 
@@ -245,10 +246,8 @@ namespace ArmadilloAssault.GameState.Battle
                     BattleUpdate ??= new BattleUpdate();
                     SoundManager.PushSounds(BattleUpdate);
                 }
-                else
-                {
-                    SoundManager.PlaySounds();
-                }
+
+                SoundManager.PlaySounds();
             }
 
             if (ServerManager.IsServing)
@@ -512,7 +511,11 @@ namespace ArmadilloAssault.GameState.Battle
         private BattleStaticData CreateBattleStaticData(string sceneName)
         {
             var relations = ModeManager.PlayerTeamRelations;
-            var showColors = ModeType.Tutorial != Mode && (ModeType.Deathmatch != Mode || (relations.Values.Distinct().Count() != relations.Count));
+
+            var peopleOnTeams = relations.Values.Distinct().Count() != relations.Count;
+            var duplicateAvatars = Avatars.Values.Select(avatar => avatar.Type).Distinct().Count() != Avatars.Count;
+
+            var showColors = ModeType.Tutorial != Mode && (ModeType.Deathmatch != Mode || peopleOnTeams || duplicateAvatars);
 
             var battleStaticData = new BattleStaticData
             {

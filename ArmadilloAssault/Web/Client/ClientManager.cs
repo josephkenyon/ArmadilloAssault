@@ -92,7 +92,7 @@ namespace ArmadilloAssault.Web.Client
         {
             if (serverMessage.Type == ServerMessageType.BattleInitialization)
             {
-                BattleManager.Initialize(serverMessage.BattleStaticData, serverMessage.PlayerIndex);
+                BattleManager.Initialize(serverMessage.BattleStaticData, (int)serverMessage.PlayerIndex);
                 BattleManager.SetFrame(serverMessage.BattleFrame);
 
                 GameStateManager.PushNewState(State.Battle);
@@ -113,9 +113,9 @@ namespace ArmadilloAssault.Web.Client
             {
                 GameStateManager.PushNewState(State.Menu);
             }
-            else if (serverMessage.Type == ServerMessageType.Pause)
+            else if (serverMessage.Type == ServerMessageType.Pause && serverMessage.Paused != null)
             {
-                BattleManager.SetPaused(serverMessage.Paused);
+                BattleManager.SetPaused((bool)serverMessage.Paused);
             }
             else if (serverMessage.Type == ServerMessageType.GameOver)
             {

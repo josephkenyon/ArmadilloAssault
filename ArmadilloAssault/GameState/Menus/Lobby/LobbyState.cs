@@ -44,6 +44,8 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
         public void AvatarSelected(int index, AvatarType avatarType)
         {
+            SendFrame = true;
+
             if (Avatars.TryGetValue(index, out Avatar value) && value.Type == avatarType)
             {
                 Avatars.Remove(index);
@@ -70,8 +72,6 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
 
             Avatars[index].SetX(rectangle.X);
             Avatars[index].SetY(rectangle.Y + 16);
-
-            SendFrame = true;
         }
 
         public Dictionary<int, Rectangle> GetPlayerBackgroundRectangles()
@@ -173,6 +173,7 @@ namespace ArmadilloAssault.GameState.Menus.Lobby
             };
 
             SoundManager.PushSounds(frame);
+            SoundManager.ClearFrame();
 
             return frame;
         }

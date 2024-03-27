@@ -1,5 +1,4 @@
-﻿using ArmadilloAssault.Sound;
-using ArmadilloAssault.Web.Communication.Update;
+﻿using ArmadilloAssault.Web.Communication.Update;
 using Newtonsoft.Json;
 
 namespace ArmadilloAssault.Web.Communication.Frame
@@ -14,9 +13,6 @@ namespace ArmadilloAssault.Web.Communication.Frame
         
         [JsonProperty("BF", NullValueHandling = NullValueHandling.Ignore)]
         public BulletFrame BulletFrame { get; set; }
-        
-        [JsonProperty("CF", NullValueHandling = NullValueHandling.Ignore)]
-        public CrateUpdate CrateFrame { get; set; }
         
         [JsonProperty("HF")]
         public HudFrame HudFrame { get; set; } = new();
