@@ -341,6 +341,7 @@ namespace ArmadilloAssault.Web.Server
             WebSocketServer = null;
 
             UdpOutServer?.Stop();
+            UdpInServer?.Stop();
         }
 
         public void ClientDisconnected(string id)

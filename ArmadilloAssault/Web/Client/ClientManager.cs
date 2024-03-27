@@ -20,11 +20,9 @@ namespace ArmadilloAssault.Web.Client
     {
         private static Client Client { get; set; }
 
-        private static string LastInputFrame;
-
-        private static bool LastUpdateWasEmpty = false;
         public static BattleFrame BattleFrame { get; set; }
         private static CancellationTokenSource CancellationTokenSource { get; set; }
+        private static string LastInputFrame { get; set; }
 
         public static void AttemptConnection()
         {

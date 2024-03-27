@@ -225,7 +225,7 @@ namespace ArmadilloAssault.Graphics.Drawing
             }
         }
 
-        public static void DrawHud(BattleStaticData battleStaticData, HudFrame hudFrame, ModeUpdate modeFrame, AvatarFrame avatarFrame, int playerIndex)
+        public static void DrawHud(BattleStaticData battleStaticData, HudFrame hudFrame, ModeFrame modeFrame, AvatarFrame avatarFrame, int playerIndex)
         {
             for (int i = 0; i < battleStaticData.AvatarStaticData.PlayerIndices.Count; i++)
             {

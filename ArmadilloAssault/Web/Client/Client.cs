@@ -88,6 +88,7 @@ namespace ArmadilloAssault.Web.Client
             finally
             {
                 UdpInClient?.Stop();
+                UdpOutClient?.Stop();
                 ClientManager.ConnectionTerminated();
             }
         }

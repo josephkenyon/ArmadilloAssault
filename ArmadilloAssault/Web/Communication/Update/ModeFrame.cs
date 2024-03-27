@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ArmadilloAssault.Web.Communication.Update
 {
-    public class ModeUpdate
+    public class ModeFrame
     {
         [JsonProperty("CPC", NullValueHandling = NullValueHandling.Ignore)]
         public ColorJson Colors { get; set; }

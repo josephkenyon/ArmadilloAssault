@@ -16,9 +16,6 @@ namespace ArmadilloAssault.Web.Communication.Frame
         
         [JsonProperty("HF")]
         public HudFrame HudFrame { get; set; } = new();
-        
-        [JsonProperty("MF")]
-        public ModeUpdate ModeFrame { get; set; } = new();
 
         [JsonProperty("IF", NullValueHandling = NullValueHandling.Ignore)]
         public ItemFrame ItemFrame { get; set; }

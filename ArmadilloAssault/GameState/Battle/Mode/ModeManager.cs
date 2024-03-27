@@ -1,4 +1,5 @@
 ﻿using ArmadilloAssault.Assets;
+using ArmadilloAssault.Configuration.Generics;
 using ArmadilloAssault.GameState.Battle.Avatars;
 using ArmadilloAssault.GameState.Battle.Physics;
 using ArmadilloAssault.Graphics.Drawing;
@@ -39,7 +40,10 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         public int? CapturePointSeconds => ContestingTeamIndicies.Count == 1 ? TeamBattleStats[ContestingTeamIndicies.First()].CapturePointFrames / 60 : null;
 
-        private bool newData = true;
+        private Color lastColor = Color.White;
+
+        private bool newStatData = true;
+        public bool NewModeData { get; set; } = true;
 
         public ModeManager(IModeManagerListener modeManagerListener, IEnumerable<KeyValuePair<int, int>> playerIndices, ModeType mode, Dictionary<int, AvatarProp> avatarProps)
         {
@@ -66,6 +70,9 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                     }
                 }
             }
+
+            newStatData = true;
+            NewModeData = true;
         }
 
         public void InitializeCaptureTheFlag(Dictionary<int, Point> flags)
@@ -87,7 +94,10 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
                 TeamBattleStats[ContestingTeamIndicies.First()].CapturePointFrames++;
 
-                newData = capturePointSeconds != CapturePointSeconds;
+                if (capturePointSeconds != CapturePointSeconds)
+                {
+                    NewModeData = true;
+                }
             }
         }
 
@@ -107,7 +117,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                     flag.SetPosition(FlagStartingLocations[flag.TeamIndex].ToVector2());
                     flag.Disturbed = false;
 
-                    newData = true;
+                    NewModeData = true;
                 }
             }
 
@@ -156,6 +166,13 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                 );
             });
 
+            if (returnColor != lastColor)
+            {
+                NewModeData = true;
+            }
+
+            lastColor = returnColor;
+
             return returnColor;
         }
 
@@ -164,7 +181,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
             IndividualBattleStats[hitIndex].DamageTaken += damage;
             IndividualBattleStats[firedIndex].DamageDealt += damage;
 
-            newData = true;
+            newStatData = true;
         }
 
         public void AvatarKilled(int deadIndex, int? killIndex)
@@ -176,7 +193,12 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                 TeamBattleStats[PlayerTeamRelations[(int)killIndex]].Kills += 1;
             }
 
-            newData = true;
+            newStatData = true;
+
+            if (Mode == ModeType.Deathmatch || Mode == ModeType.Regicide)
+            {
+                NewModeData = true;
+            }
         }
 
         private bool IsGameOver()
@@ -291,7 +313,7 @@ namespace ArmadilloAssault.GameState.Battle.Mode
 
         public StatFrame CreateStatFrameIfNewData()
         {
-            if (!newData)
+            if (!newStatData)
             {
                 return null;
             }
@@ -314,9 +336,27 @@ namespace ArmadilloAssault.GameState.Battle.Mode
                 }
             }
 
-            newData = false;
+            newStatData = false;
 
             return statFrame;
+        }
+
+        public ModeFrame CreateModeFrame()
+        {
+            var modeFrame = new ModeFrame();
+
+            if (ModeType.Tutorial != Mode)
+            {
+                modeFrame.ModeValues = GetModeValues();
+            }
+
+            if (ModeType.King_of_the_Hill == Mode)
+            {
+                modeFrame.Colors = ColorJson.CreateFrom(GetCapturePointColor());
+                modeFrame.CapturePointSeconds = CapturePointSeconds;
+            }
+
+            return modeFrame;
         }
     }
 }
