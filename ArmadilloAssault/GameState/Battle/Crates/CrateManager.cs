@@ -77,7 +77,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
                         if (avatar.GetCollisionBox().Intersects(crate.GetCollisionBox()) && (avatar.CanPickUpPowerUps || crate.Type != CrateType.Power_Up))
                         {
                             GiveCrate(avatar, crate);
-                            listener.CrateDeleted(crate.id);
+                            listener.CrateDeleted(crate.Id);
                             return true;
                         }
 
@@ -119,9 +119,9 @@ namespace ArmadilloAssault.GameState.Battle.Crates
             }
         }
 
-        public void CreateNewCrate(CrateType crateType, float x, int finalY, bool goingDown)
+        public void CreateNewCrate(int id, CrateType crateType, float x, int finalY, bool goingDown)
         {
-            var crate = new Crate(crateType, null)
+            var crate = new Crate(crateType, null, id: id)
             {
                 GoingDown = DirectionDown,
             };
@@ -283,7 +283,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
         {
             if (deletedIds != null)
             {
-                Crates.RemoveAll(crate => deletedIds.Contains(crate.id));
+                Crates.RemoveAll(crate => deletedIds.Contains(crate.Id));
             }
         }
     }

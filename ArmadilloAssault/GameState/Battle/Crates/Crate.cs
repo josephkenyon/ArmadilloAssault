@@ -6,7 +6,7 @@ using System;
 
 namespace ArmadilloAssault.GameState.Battle.Crates
 {
-    public class Crate(CrateType type, WeaponType? weaponType, bool singleClip = false) : PhysicsObject
+    public class Crate(CrateType type, WeaponType? weaponType, bool singleClip = false, int? id = null) : PhysicsObject
     {
         private static int NextCrateId = 0;
 
@@ -16,7 +16,7 @@ namespace ArmadilloAssault.GameState.Battle.Crates
         public readonly WeaponType? WeaponType = type == CrateType.Weapon ? weaponType ?? GetRandomWeaponType() : null;
         public readonly PowerUpType? PowerUpType = type == CrateType.Power_Up ? GetRandomPowerUpType() : null;
 
-        public readonly int id = NextCrateId++;
+        public readonly int Id = id ?? NextCrateId++;
         public Point Size => Grounded ? new Point(96, 96) : new Point(128, 204);
         public CrateType Type { get; private set; } = type;
         public bool SingleClip { get; private set; } = singleClip;

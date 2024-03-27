@@ -278,6 +278,7 @@ namespace ArmadilloAssault.GameState.Battle
                     for (int i = 0; i < crateUpdate.NewTypes.Count; i++)
                     {
                         CrateManager?.CreateNewCrate(
+                            crateUpdate.NewIds[i],
                             crateUpdate.NewTypes[i],
                             crateUpdate.NewXs[i],
                             crateUpdate.NewFinalYs[i],

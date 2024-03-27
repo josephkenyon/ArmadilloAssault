@@ -7,21 +7,24 @@ namespace ArmadilloAssault.Web.Communication.Update
 {
     public class CrateUpdate
     {
-        [JsonProperty("Ts")]
+        [JsonProperty("I")]
+        public List<int> NewIds { get; set; }
+
+        [JsonProperty("T")]
         public List<CrateType> NewTypes { get; set; }
 
-        [JsonProperty("Xs")]
+        [JsonProperty("X")]
         [JsonConverter(typeof(FloatListConverter))]
         public List<float> NewXs { get; set; }
 
-        [JsonProperty("Ys")]
+        [JsonProperty("Y")]
         public List<int> NewFinalYs { get; set; }
 
-        [JsonProperty("Gs")]
+        [JsonProperty("G")]
         [JsonConverter(typeof(BooleanConverter))]
         public List<bool> NewGoingDowns { get; set; }
 
-        [JsonProperty("Ds")]
+        [JsonProperty("D")]
         public List<int> DeletedIds { get; set; }
     }
 }

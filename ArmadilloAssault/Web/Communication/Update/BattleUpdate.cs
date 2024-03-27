@@ -25,6 +25,9 @@ namespace ArmadilloAssault.Web.Communication.Frame
         {
             CrateUpdate ??= new CrateUpdate();
 
+            CrateUpdate.NewIds ??= [];
+            CrateUpdate.NewIds.Add(crate.Id);
+
             CrateUpdate.NewTypes ??= [];
             CrateUpdate.NewTypes.Add(crate.Type);
 
